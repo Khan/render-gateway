@@ -1,0 +1,57 @@
+name: Node CI
+
+on:
+  pull_request:
+    branches:
+    - master
+    - feature/*
+
+  push:
+    branches:
+    - master
+    - feature/*
+
+jobs:
+  lint:
+    name: Lint and flow check
+    env:
+      CI: true
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [10.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Lint
+      run: yarn lint
+    - name: Flow
+      run: yarn flow:ci
+
+
+  test:
+    needs: [lint]
+    name: Test
+    env:
+      CI: true
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        node-version: [10.x, 12.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install dependencies
+      run: yarn install
+    - name: Run tests
+      run: yarn test

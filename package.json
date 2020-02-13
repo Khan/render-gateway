@@ -2,9 +2,23 @@
   "name": "render-gateway",
   "version": "0.0.1",
   "description": "The core implementation for a render server",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": "git@github.com:Khan/render-gateway.git",
   "author": "Jeff Yates <jeff@khanacademy.org>",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "test": "echo 'TODO'",
+    "lint": "echo 'TODO'",
+    "flow:ci": "flow check",
+    "build:noclean": "echo 'TODO'",
+    "build": "yarn clean && yarn build:noclean"
+  },
+  "devDependencies": {
+    "flow-bin": "^0.118.0"
+  }
 }
