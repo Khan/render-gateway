@@ -16,9 +16,24 @@
     "lint": "echo 'TODO'",
     "flow:ci": "flow check",
     "build:noclean": "echo 'TODO'",
-    "build": "yarn clean && yarn build:noclean"
+    "build": "yarn clean && yarn build:noclean",
+    "pretty": "echo 'TODO'"
   },
   "devDependencies": {
-    "flow-bin": "^0.118.0"
+    "flow-bin": "^0.118.0",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.7"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "yarn lint",
+      "yarn test --findRelatedTests",
+      "yarn pretty"
+    ]
   }
 }
