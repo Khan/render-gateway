@@ -16,6 +16,7 @@ jobs:
     name: Lint and flow check
     env:
       CI: true
+      NOYARNPOSTINSTALL: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
