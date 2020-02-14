@@ -9,7 +9,7 @@
     "javascript.validate.enable": false,
     "coverage-gutters.lcovname": "./coverage/lcov.info",
     "jest.enableSnapshotUpdateMessages": true,
-    "jest.pathToConfig": "./config/jest/test.config.js",
+    "jest.pathToConfig": "./jest.config.js",
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     }
