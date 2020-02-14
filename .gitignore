@@ -1,7 +1,3 @@
-# The secrets files used for /render requests, graphite logging, etc.
-secret
-hostedgraphite.api_key
-
 #### git defaults:
 
 # Logs
@@ -34,3 +30,7 @@ node_modules
 
 # Output Dir
 dist
+
+# Editor and workflow-related
+!.vscode
+!.github

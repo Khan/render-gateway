@@ -13,16 +13,31 @@
   "scripts": {
     "clean": "rm -rf dist",
     "test": "echo 'TODO'",
-    "lint": "echo 'TODO'",
+    "lint": "eslint --report-unused-disable-directives --config .eslintrc.js \"{src,bin,__{tests,mocks}__}/**/*.js\"",
     "flow:ci": "flow check",
     "build:noclean": "echo 'TODO'",
     "build": "yarn clean && yarn build:noclean",
-    "pretty": "echo 'TODO'"
+    "pretty": "pretty-quick"
   },
   "devDependencies": {
+    "@khanacademy/eslint-config": "^0.0.5",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-disable": "^1.0.5",
+    "eslint-plugin-eslint-comments": "^3.1.2",
+    "eslint-plugin-flowtype": "^4.6.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.18.3",
     "flow-bin": "^0.118.0",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.7"
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1"
   },
   "husky": {
     "hooks": {
