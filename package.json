@@ -11,6 +11,7 @@
     "node": ">=10"
   },
   "scripts": {
+    "start": "yarn build && node run_local.js",
     "clean": "rm -rf dist",
     "test": "jest --colors --config jest.config.js src",
     "coverage": "jest --colors --config jest.config.js --coverage",
