@@ -7,13 +7,13 @@ const {default: runServer} = require("./src/index.js");
 
 // TODO(somewhatabstract): Everything should be imported from index.js so
 // that we're testing the package interface only.
-const {createLogger} = require("./src/shared/create-logger.js");
+const {getLogger} = require("./src/ka-shared/get-logger.js");
 
 async function main() {
     runServer({
         name: "DEV_LOCAL",
         port: 8080,
-        logger: createLogger("development", "silly"),
+        logger: getLogger(),
     });
 }
 
