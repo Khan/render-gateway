@@ -4,36 +4,39 @@ import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
 describe("#start-gateway", () => {
-    it("should add GAE middleware", () => {
+    it("should add GAE middleware", async () => {
         // Arrange
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
             logger: createLogger("test", "debug"),
+            mode: "test",
         };
         const pretendApp = ({
             listen: jest.fn(),
         }: any);
         const useAppEngineMiddlewareSpy = jest
             .spyOn(UseAppEngineMiddleware, "useAppEngineMiddleware")
-            .mockReturnValue(pretendApp);
+            .mockReturnValue(Promise.resolve(pretendApp));
 
         // Act
-        startGateway(options, pretendApp);
+        await startGateway(options, pretendApp);
 
         // Assert
         expect(useAppEngineMiddlewareSpy).toHaveBeenCalledWith(
             pretendApp,
+            "test",
             options.logger,
         );
     });
 
-    it("should listen on the configured port", () => {
+    it("should listen on the configured port", async () => {
         // Arrange
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
             logger: createLogger("test", "debug"),
+            mode: "test",
         };
         const pretendApp = ({
             listen: jest.fn(),
@@ -41,10 +44,10 @@ describe("#start-gateway", () => {
         jest.spyOn(
             UseAppEngineMiddleware,
             "useAppEngineMiddleware",
-        ).mockReturnValue(pretendApp);
+        ).mockReturnValue(Promise.resolve(pretendApp));
 
         // Act
-        startGateway(options, pretendApp);
+        await startGateway(options, pretendApp);
 
         // Assert
         expect(pretendApp.listen).toHaveBeenCalledWith(
@@ -54,12 +57,13 @@ describe("#start-gateway", () => {
     });
 
     describe("listen callback", () => {
-        it("should report start failure if gateway is null", () => {
+        it("should report start failure if gateway is null", async () => {
             // Arrange
             const options = {
                 name: "TEST_GATEWAY",
                 port: 42,
                 logger: createLogger("test", "debug"),
+                mode: "test",
             };
             const listenMock = jest.fn().mockReturnValue(null);
             const pretendApp = ({
@@ -68,8 +72,8 @@ describe("#start-gateway", () => {
             jest.spyOn(
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
-            ).mockReturnValue(pretendApp);
-            startGateway(options, pretendApp);
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            await startGateway(options, pretendApp);
             const errorSpy = jest.spyOn(options.logger, "error");
             const listenCallback = listenMock.mock.calls[0][1];
 
@@ -82,12 +86,13 @@ describe("#start-gateway", () => {
             );
         });
 
-        it("should report start failure if there's an error", () => {
+        it("should report start failure if there's an error", async () => {
             // Arrange
             const options = {
                 name: "TEST_GATEWAY",
                 port: 42,
                 logger: createLogger("test", "debug"),
+                mode: "test",
             };
             const listenMock = jest.fn().mockReturnValue(null);
             const pretendApp = ({
@@ -96,8 +101,8 @@ describe("#start-gateway", () => {
             jest.spyOn(
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
-            ).mockReturnValue(pretendApp);
-            startGateway(options, pretendApp);
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            await startGateway(options, pretendApp);
             const errorSpy = jest.spyOn(options.logger, "error");
             const listenCallback = listenMock.mock.calls[0][1];
 
@@ -112,12 +117,13 @@ describe("#start-gateway", () => {
 
         it.each([[null, undefined, "ADDRESS"]])(
             "should report start failure if address is %s",
-            (address) => {
+            async (address) => {
                 // Arrange
                 const options = {
                     name: "TEST_GATEWAY",
                     port: 42,
                     logger: createLogger("test", "debug"),
+                    mode: "test",
                 };
                 const fakeServer = {
                     address: () => address,
@@ -129,8 +135,8 @@ describe("#start-gateway", () => {
                 jest.spyOn(
                     UseAppEngineMiddleware,
                     "useAppEngineMiddleware",
-                ).mockReturnValue(pretendApp);
-                startGateway(options, pretendApp);
+                ).mockReturnValue(Promise.resolve(pretendApp));
+                await startGateway(options, pretendApp);
                 const warnSpy = jest.spyOn(options.logger, "warn");
                 const listenCallback = listenMock.mock.calls[0][1];
 
@@ -144,12 +150,13 @@ describe("#start-gateway", () => {
             },
         );
 
-        it("should report a successful start", () => {
+        it("should report a successful start", async () => {
             // Arrange
             const options = {
                 name: "TEST_GATEWAY",
                 port: 42,
                 logger: createLogger("test", "debug"),
+                mode: "test",
             };
             const fakeServer = {
                 address: () => ({
@@ -164,8 +171,8 @@ describe("#start-gateway", () => {
             jest.spyOn(
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
-            ).mockReturnValue(pretendApp);
-            startGateway(options, pretendApp);
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            await startGateway(options, pretendApp);
             const infoSpy = jest.spyOn(options.logger, "info");
             const listenCallback = listenMock.mock.calls[0][1];
 

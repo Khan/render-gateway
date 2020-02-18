@@ -1,12 +1,15 @@
 // @flow
 import * as Express from "express";
 import * as MakeErrorMiddleware from "../make-error-middleware.js";
+import * as MakeRequestMiddleware from "../make-request-middleware.js";
 import {useAppEngineMiddleware} from "../use-app-engine-middleware.js";
 
 jest.mock("express");
+jest.mock("../make-error-middleware.js");
+jest.mock("../make-request-middleware.js");
 
 describe("#useAppEngineMiddleware", () => {
-    it("should use the passed application", () => {
+    it("should use the passed application", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         const pretendApp = ({}: any);
@@ -16,13 +19,13 @@ describe("#useAppEngineMiddleware", () => {
         jest.spyOn(Express, "default").mockReturnValue(newApp);
 
         // Act
-        useAppEngineMiddleware(pretendApp, pretendLogger);
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
 
         // Assert
         expect(newApp.use).toHaveBeenCalledWith(pretendApp);
     });
 
-    it("should add error middleware", () => {
+    it("should add error middleware", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         const pretendApp = ({}: any);
@@ -36,13 +39,13 @@ describe("#useAppEngineMiddleware", () => {
         );
 
         // Act
-        useAppEngineMiddleware(pretendApp, pretendLogger);
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
 
         // Assert
         expect(newApp.use).toHaveBeenCalledWith(pretendErrorMiddleware);
     });
 
-    it("should pass logger to error middleware", () => {
+    it("should pass logger to error middleware", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         const pretendApp = ({}: any);
@@ -56,13 +59,57 @@ describe("#useAppEngineMiddleware", () => {
             .mockReturnValue(pretendErrorMiddleware);
 
         // Act
-        useAppEngineMiddleware(pretendApp, pretendLogger);
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
 
         // Assert
         expect(makeErrorMiddlewareSpy).toHaveBeenCalledWith(pretendLogger);
     });
 
-    it("should return the updated application", () => {
+    it("should add request middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendApp = ({}: any);
+        const pretendRequestMiddleware = ({}: any);
+        const newApp = ({
+            use: jest.fn(() => newApp),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(newApp);
+        jest.spyOn(
+            MakeRequestMiddleware,
+            "makeRequestMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendRequestMiddleware));
+
+        // Act
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
+
+        // Assert
+        expect(newApp.use).toHaveBeenCalledWith(pretendRequestMiddleware);
+    });
+
+    it("should pass logger and mode to request middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendApp = ({}: any);
+        const pretendRequestMiddleware = ({}: any);
+        const newApp = ({
+            use: jest.fn(() => newApp),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(newApp);
+        const makeRequestMiddlewareSpy = jest
+            .spyOn(MakeRequestMiddleware, "makeRequestMiddleware")
+            .mockReturnValue(Promise.resolve(pretendRequestMiddleware));
+
+        // Act
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
+
+        // Assert
+        expect(makeRequestMiddlewareSpy).toHaveBeenCalledWith(
+            "test",
+            pretendLogger,
+        );
+    });
+
+    it("should return the updated application", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         const pretendApp = ({}: any);
@@ -72,7 +119,11 @@ describe("#useAppEngineMiddleware", () => {
         jest.spyOn(Express, "default").mockReturnValue(newApp);
 
         // Act
-        const result = useAppEngineMiddleware(pretendApp, pretendLogger);
+        const result = await useAppEngineMiddleware(
+            pretendApp,
+            "test",
+            pretendLogger,
+        );
 
         // Assert
         expect(result).toBe(newApp);
