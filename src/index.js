@@ -4,6 +4,11 @@ import type {$Request, $Response} from "express";
 import {startGateway} from "./shared/start-gateway.js";
 import type {GatewayOptions} from "./shared/types.js";
 
+// TODO(somewhatabstract): Export appropriate KA Shared and Shared things as
+// KAShared and Shared.
+
+// TODO(somewhatabstract): Export types.
+
 export default function runServer(options: GatewayOptions) {
     // TODO: Do a real server.
     // For now, we just handle all gets and return a response that is the

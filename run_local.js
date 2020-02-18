@@ -1,12 +1,20 @@
 // @noflow
+/* eslint-disable import/no-commonjs */
 /**
  * This is a simple local server for testing this code works.
  */
-// eslint-disable-next-line import/no-commonjs
 const {default: runServer} = require("./src/index.js");
 
+// TODO(somewhatabstract): Everything should be imported from index.js so
+// that we're testing the package interface only.
+const {createLogger} = require("./src/shared/create-logger.js");
+
 async function main() {
-    runServer({name: "DEV_LOCAL", port: 8080});
+    runServer({
+        name: "DEV_LOCAL",
+        port: 8080,
+        logger: createLogger("development", "silly"),
+    });
 }
 
 main().catch((err) => {
