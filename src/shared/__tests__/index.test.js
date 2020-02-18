@@ -9,7 +9,12 @@ describe("index.js", () => {
 
         // Assert
         expect(Object.keys(result).sort()).toEqual(
-            ["createLogger", "getRuntimeMode", "startGateway"].sort(),
+            [
+                "createLogger",
+                "getRequestLogger",
+                "getRuntimeMode",
+                "startGateway",
+            ].sort(),
         );
     });
 });

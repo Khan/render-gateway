@@ -1,6 +1,7 @@
 // @flow
 import * as Express from "express";
 import * as MakeErrorMiddleware from "../make-error-middleware.js";
+import * as MakeAppEngineRequestIDMiddleware from "../make-app-engine-request-id-middleware.js";
 import * as MakeRequestMiddleware from "../make-request-middleware.js";
 import {useAppEngineMiddleware} from "../use-app-engine-middleware.js";
 
@@ -63,6 +64,50 @@ describe("#useAppEngineMiddleware", () => {
 
         // Assert
         expect(makeErrorMiddlewareSpy).toHaveBeenCalledWith(pretendLogger);
+    });
+
+    it("should add requestID middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendApp = ({}: any);
+        const pretendMiddleware = ({}: any);
+        const newApp = ({
+            use: jest.fn(() => newApp),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(newApp);
+        jest.spyOn(
+            MakeAppEngineRequestIDMiddleware,
+            "makeAppEngineRequestIDMiddleware",
+        ).mockReturnValue(pretendMiddleware);
+
+        // Act
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
+
+        // Assert
+        expect(newApp.use).toHaveBeenCalledWith(pretendMiddleware);
+    });
+
+    it("should pass logger to requestID middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendApp = ({}: any);
+        const pretendMiddleware = ({}: any);
+        const newApp = ({
+            use: jest.fn(() => newApp),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(newApp);
+        const makeMiddlewareSpy = jest
+            .spyOn(
+                MakeAppEngineRequestIDMiddleware,
+                "makeAppEngineRequestIDMiddleware",
+            )
+            .mockReturnValue(pretendMiddleware);
+
+        // Act
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
+
+        // Assert
+        expect(makeMiddlewareSpy).toHaveBeenCalledWith(pretendLogger);
     });
 
     it("should add request middleware", async () => {

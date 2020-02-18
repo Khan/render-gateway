@@ -1,6 +1,6 @@
 // @flow
 import type {$Request} from "express";
-import {createLogger} from "../shared/index.js";
+import {createLogger, getRequestLogger} from "../shared/index.js";
 import {getRuntimeMode} from "./get-runtime-mode.js";
 import {getLogLevel} from "./get-log-level.js";
 import type {Logger, RequestWithLog} from "../shared/index.js";
@@ -27,5 +27,4 @@ const rootLogger = createLogger(getRuntimeMode(), getLogLevel());
  */
 export const getLogger = <TReq: RequestWithLog<$Request>>(
     request?: TReq,
-): Logger =>
-    request != null && request.log != null ? request.log : rootLogger;
+): Logger => getRequestLogger(rootLogger, request);

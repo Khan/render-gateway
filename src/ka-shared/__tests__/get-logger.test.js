@@ -35,6 +35,20 @@ describe("get-logger.js", () => {
     });
 
     describe("#getLogger", () => {
+        beforeAll(() => {
+            /**
+             * Let's make sure the shared code we use gets used here.
+             */
+            jest.spyOn(Shared, "getRequestLogger").mockImplementation(
+                (...args) => {
+                    const realGetRequestLogger = jest.requireActual(
+                        "../../shared/index.js",
+                    ).getRequestLogger;
+                    return realGetRequestLogger(...args);
+                },
+            );
+        });
+
         it("should return the logger created on import when there is no request", async () => {
             // Arrange
             const {getLogger} = await import("../get-logger.js");
