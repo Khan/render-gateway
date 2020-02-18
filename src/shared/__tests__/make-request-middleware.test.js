@@ -90,7 +90,7 @@ describe("#makeRequestMiddleware", () => {
                 .mockReturnValue(pretendExpressWinstonMiddleware);
 
             // Act
-            await makeRequestMiddleware("production", pretendLogger);
+            await makeRequestMiddleware("development", pretendLogger);
 
             // Assert
             expect(middlewareSpy).toHaveBeenCalledWith(

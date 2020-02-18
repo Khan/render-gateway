@@ -3,7 +3,8 @@
 declare class debugagent$Debuglet {}
 
 declare type debugagent$Config = {
-    logLevel: number,
+    logLevel?: number,
+    allowExpressions?: boolean,
 };
 
 declare function debugagent$start(
