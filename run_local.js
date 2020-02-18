@@ -10,13 +10,14 @@
  */
 const {
     runServer,
-    KAShared: {getLogger},
+    KAShared: {getLogger, getRuntimeMode},
 } = require("./src/index.js");
 
 async function main() {
     runServer({
         name: "DEV_LOCAL",
         port: 8080,
+        mode: getRuntimeMode(),
         logger: getLogger(),
     });
 }

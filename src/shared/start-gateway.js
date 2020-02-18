@@ -1,7 +1,7 @@
 // @flow
 import type {$Application, $Request, $Response} from "express";
 import {useAppEngineMiddleware} from "./use-app-engine-middleware.js";
-import type {GatewayOptions} from "./types.js";
+import type {GatewayOptions, RequestWithLog} from "./types.js";
 
 /**
  * Start a gateway application server.
@@ -9,14 +9,18 @@ import type {GatewayOptions} from "./types.js";
  * This takes a server application definition and attaches middleware before
  * listening on the appropriate port per the passed options.
  */
-export const startGateway = <TReq: $Request, TRes: $Response>(
-    options: GatewayOptions,
-    app: $Application<TReq, TRes>,
-): void => {
-    const {logger, port, name} = options;
+export async function startGateway<
+    TReq: RequestWithLog<$Request>,
+    TRes: $Response,
+>(options: GatewayOptions, app: $Application<TReq, TRes>): Promise<void> {
+    const {logger, port, name, mode} = options;
 
     // Add GAE middleware.
-    const appWithMiddleware = useAppEngineMiddleware(app, logger);
+    const appWithMiddleware = await useAppEngineMiddleware<TReq, TRes>(
+        app,
+        mode,
+        logger,
+    );
 
     /**
      * Start the gateway listening.
@@ -43,4 +47,4 @@ export const startGateway = <TReq: $Request, TRes: $Response>(
         const port = address.port;
         logger.info(`${name} running at http://${host}:${port}`);
     });
-};
+}
