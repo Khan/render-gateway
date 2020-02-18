@@ -22,7 +22,10 @@ describe("#start-gateway", () => {
         startGateway(options, pretendApp);
 
         // Assert
-        expect(useAppEngineMiddlewareSpy).toHaveBeenCalledWith(pretendApp);
+        expect(useAppEngineMiddlewareSpy).toHaveBeenCalledWith(
+            pretendApp,
+            options.logger,
+        );
     });
 
     it("should listen on the configured port", () => {

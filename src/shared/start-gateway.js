@@ -9,14 +9,14 @@ import type {GatewayOptions} from "./types.js";
  * This takes a server application definition and attaches middleware before
  * listening on the appropriate port per the passed options.
  */
-export const startGateway = (
+export const startGateway = <TReq: $Request, TRes: $Response>(
     options: GatewayOptions,
-    app: $Application<$Request, $Response>,
+    app: $Application<TReq, TRes>,
 ): void => {
     const {logger, port, name} = options;
 
     // Add GAE middleware.
-    const appWithMiddleware = useAppEngineMiddleware(app);
+    const appWithMiddleware = useAppEngineMiddleware(app, logger);
 
     /**
      * Start the gateway listening.
