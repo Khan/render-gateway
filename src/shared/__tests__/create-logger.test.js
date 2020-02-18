@@ -2,17 +2,18 @@
 import winston from "winston";
 import {createLogger} from "../create-logger.js";
 
-/**
- * The full LoggingWinston type will cause tests to hang weirdly, so we mock
- * that and return a pretend one.
- */
 jest.mock("@google-cloud/logging-winston", () => ({
     LoggingWinston: function() {
-        return {
-            __FAKE_LOGGING_WINSTON__: true,
-            log: jest.fn(),
-            on: jest.fn(),
-        };
+        const localWinston = jest.requireActual("winston");
+        /**
+         * The full LoggingWinston type will cause tests to hang weirdly, so we
+         * return a console one but add our little identifier to indicate it
+         * is fake.
+         */
+        const fakeLoggingWinston = new localWinston.transports.Console();
+        // We made this up for testing purposes. $FlowIgnore
+        fakeLoggingWinston.__FAKE_LOGGING_WINSTON__ = true;
+        return fakeLoggingWinston;
     },
 }));
 
@@ -24,6 +25,20 @@ describe("#createLogger", () => {
 
             // Act
             createLogger("test", "silly");
+            const {transports} = mockCreateLogger.mock.calls[0][0];
+
+            // Assert
+            expect(transports).toBeInstanceOf(winston.transports.Stream);
+        });
+    });
+
+    describe("unrecognised runtime mode", () => {
+        it("should write to a stream", () => {
+            // Arrange
+            const mockCreateLogger = jest.spyOn(winston, "createLogger");
+
+            // Act
+            createLogger(("MADE UP RUNTIME MODE": any), "silly");
             const {transports} = mockCreateLogger.mock.calls[0][0];
 
             // Assert

@@ -80,7 +80,7 @@ const getTransport = (mode: Runtime): Transport => {
  */
 export const createLogger = (
     runtimeMode: Runtime,
-    logLevel: LogLevel = "debug",
+    logLevel: LogLevel,
 ): Logger => {
     const winstonLogger = winston.createLogger<NpmLogLevels>({
         level: logLevel,
