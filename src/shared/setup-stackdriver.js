@@ -11,4 +11,7 @@ export const setupStackdriver = async (mode: Runtime): Promise<void> => {
 
     const debugAgent = await import("@google-cloud/debug-agent");
     debugAgent.start({allowExpressions: true});
+
+    const profiler = await import("@google-cloud/profiler");
+    profiler.start();
 };
