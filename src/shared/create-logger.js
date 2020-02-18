@@ -35,6 +35,11 @@ const getFormatters = (mode: Runtime): Format => {
  */
 const getTransport = (mode: Runtime): Transport => {
     switch (mode) {
+        /**
+         * Our flow types guard against misuse as long as someone is using them.
+         * Let's be defensive and cope with a bad value. In that case, we'll
+         * assume our test mode as it's the most inert.
+         */
         default:
         case "test":
             /**
