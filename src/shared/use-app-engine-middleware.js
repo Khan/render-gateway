@@ -3,6 +3,7 @@ import express from "express";
 import type {$Application, $Request, $Response} from "express";
 import {makeErrorMiddleware} from "./make-error-middleware.js";
 import {makeRequestMiddleware} from "./make-request-middleware.js";
+import {makeAppEngineRequestIDMiddleware} from "./make-app-engine-request-id-middleware.js";
 
 import type {Logger, Runtime} from "./types.js";
 
@@ -17,11 +18,12 @@ export async function useAppEngineMiddleware<TReq: $Request, TRes: $Response>(
     return (
         express<TReq, TRes>()
             // Add the request logging middleware.
-            .use(await makeRequestMiddleware<TReq, TRes>(mode, logger))
-            // TODO: Add requestID middleware
+            .use(await makeRequestMiddleware(mode, logger))
+            // Add requestID middleware
+            .use(makeAppEngineRequestIDMiddleware(logger))
             // Add the app.
             .use(app)
             // Add the error logging middleware.
-            .use(makeErrorMiddleware<TReq, TRes>(logger))
+            .use(makeErrorMiddleware(logger))
     );
 }
