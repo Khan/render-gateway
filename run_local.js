@@ -3,11 +3,10 @@
 /**
  * This is a simple local server for testing this code works.
  */
-const {default: runServer} = require("./src/index.js");
-
-// TODO(somewhatabstract): Everything should be imported from index.js so
-// that we're testing the package interface only.
-const {getLogger} = require("./src/ka-shared/get-logger.js");
+const {
+    runServer,
+    KAShared: {getLogger},
+} = require("./src/index.js");
 
 async function main() {
     runServer({

@@ -1,5 +1,5 @@
 // @flow
-import type {LogLevel} from "../shared/types.js";
+import type {LogLevel} from "../shared/index.js";
 
 /**
  * Determine the level at which to log.

@@ -1,7 +1,7 @@
 // @flow
-import {getRuntimeMode as getNodeRuntimeMode} from "../shared/get-runtime-mode.js";
+import {getRuntimeMode as getNodeRuntimeMode} from "../shared/index.js";
 
-import type {Runtime} from "../shared/types.js";
+import type {Runtime} from "../shared/index.js";
 
 /**
  * Get the runtime mode based off process.env.NODE_ENV or KA_IS_DEV_SERVER.
