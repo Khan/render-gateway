@@ -12,5 +12,6 @@
     "jest.pathToConfig": "./jest.config.js",
     "editor.codeActionsOnSave": {
         "source.fixAll": true
-    }
+    },
+    "jestTestExplorer.pathToJestConfig": "./jest.config.js"
 }
