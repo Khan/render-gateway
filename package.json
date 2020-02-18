@@ -61,5 +61,8 @@
       "yarn test --findRelatedTests",
       "yarn pretty"
     ]
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
