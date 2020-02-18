@@ -3,6 +3,11 @@
 /**
  * This is a simple local server for testing this code works.
  */
+
+/**
+ * NOTE: We import everyting from index.js to ensure we're testing the public
+ * interface of this package.
+ */
 const {
     runServer,
     KAShared: {getLogger},
