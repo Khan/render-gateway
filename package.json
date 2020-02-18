@@ -65,6 +65,7 @@
     ]
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-winston": "^4.0.3"
   }
 }
