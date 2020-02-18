@@ -35,7 +35,7 @@ describe("get-logger.js", () => {
     });
 
     describe("#getLogger", () => {
-        it("should return the logger created on import", async () => {
+        it("should return the logger created on import when there is no request", async () => {
             // Arrange
             const {getLogger} = await import("../get-logger.js");
 
@@ -44,6 +44,32 @@ describe("get-logger.js", () => {
 
             // Assert
             expect(result).toBe(fakeLogger);
+        });
+
+        it("should return the logger created on import when the request has no log", async () => {
+            // Arrange
+            const {getLogger} = await import("../get-logger.js");
+
+            // Act
+            const result = getLogger(({}: any));
+
+            // Assert
+            expect(result).toBe(fakeLogger);
+        });
+
+        it("should return the request logger when the request has a log", async () => {
+            // Arrange
+            const {getLogger} = await import("../get-logger.js");
+            const pretendRequestLogger = ({}: any);
+            const pretendRequest = ({
+                log: pretendRequestLogger,
+            }: any);
+
+            // Act
+            const result = getLogger(pretendRequest);
+
+            // Assert
+            expect(result).toBe(pretendRequestLogger);
         });
     });
 });
