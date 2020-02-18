@@ -8,5 +8,5 @@ import type {Runtime} from "../shared/index.js";
  */
 export const getRuntimeMode = (): Runtime =>
     getNodeRuntimeMode(
-        process.env.KA_IS_DEV_SERVER === "0" ? "production" : "development",
+        process.env.KA_IS_DEV_SERVER === "1" ? "development" : "production",
     );
