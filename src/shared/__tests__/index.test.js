@@ -9,7 +9,7 @@ describe("index.js", () => {
 
         // Assert
         expect(Object.keys(result).sort()).toEqual(
-            ["KAShared", "runServer"].sort(),
+            ["createLogger", "getRuntimeMode", "startGateway"].sort(),
         );
     });
 });

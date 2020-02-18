@@ -1,12 +1,24 @@
 // @noflow
+/* eslint-disable import/no-commonjs */
 /**
  * This is a simple local server for testing this code works.
  */
-// eslint-disable-next-line import/no-commonjs
-const {default: runServer} = require("./src/index.js");
+
+/**
+ * NOTE: We import everyting from index.js to ensure we're testing the public
+ * interface of this package.
+ */
+const {
+    runServer,
+    KAShared: {getLogger},
+} = require("./src/index.js");
 
 async function main() {
-    runServer({name: "DEV_LOCAL", port: 8080});
+    runServer({
+        name: "DEV_LOCAL",
+        port: 8080,
+        logger: getLogger(),
+    });
 }
 
 main().catch((err) => {
