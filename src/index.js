@@ -9,7 +9,7 @@ export default function runServer(options: GatewayOptions) {
     // For now, we just handle all gets and return a response that is the
     // url that was requested.
     const app = express().get("/*", async (req: $Request, res: $Response) => {
-        res.send(req.url);
+        res.send(`The URL you requested was ${req.url}`);
     });
 
     // Start the app.
