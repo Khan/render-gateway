@@ -11,7 +11,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "KA_LOG_LEVEL=silly babel-watch run_local.js",
+    "start": "KA_LOG_LEVEL=silly NODE_ENV=development babel-watch run_local.js",
     "clean": "rm -rf dist",
     "test": "jest --colors --config jest.config.js src",
     "coverage": "jest --colors --config jest.config.js --coverage",
