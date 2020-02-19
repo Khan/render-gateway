@@ -8,8 +8,6 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(Object.keys(result).sort()).toEqual(
-            ["getLogger", "getRuntimeMode"].sort(),
-        );
+        expect(Object.keys(result).sort()).toEqual(["getLogger"].sort());
     });
 });

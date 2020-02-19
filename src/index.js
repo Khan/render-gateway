@@ -1,4 +1,11 @@
 // @flow
+/**
+ * Trace agent is a special case where it must be imported first to ensure
+ * correct instrumentation of other imported modules.
+ */
+// eslint-disable-next-line import/no-unassigned-import
+import "./ka-shared/start-trace-agent.js";
+
 import express from "express";
 import type {$Request, $Response} from "express";
 import {startGateway} from "./shared/index.js";
