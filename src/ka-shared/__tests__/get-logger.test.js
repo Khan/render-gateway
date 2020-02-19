@@ -35,7 +35,7 @@ describe("get-logger.js", () => {
     });
 
     describe("#getLogger", () => {
-        beforeAll(() => {
+        beforeEach(() => {
             /**
              * Let's make sure the shared code we use gets used here.
              */

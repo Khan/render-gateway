@@ -1,9 +1,36 @@
 // @flow
 import * as UseAppEngineMiddleware from "../use-app-engine-middleware.js";
+import * as SetupStackdriver from "../setup-stackdriver.js";
 import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
 describe("#start-gateway", () => {
+    it("should setup stackdriver", async () => {
+        // Arrange
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const pretendApp = ({
+            listen: jest.fn(),
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+        const setupStackdriverSpy = jest
+            .spyOn(SetupStackdriver, "setupStackdriver")
+            .mockReturnValue(Promise.resolve(pretendApp));
+
+        // Act
+        await startGateway(options, pretendApp);
+
+        // Assert
+        expect(setupStackdriverSpy).toHaveBeenCalledWith("test");
+    });
+
     it("should add GAE middleware", async () => {
         // Arrange
         const options = {

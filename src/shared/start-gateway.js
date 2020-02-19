@@ -1,6 +1,7 @@
 // @flow
 import type {$Application, $Request, $Response} from "express";
 import {useAppEngineMiddleware} from "./use-app-engine-middleware.js";
+import {setupStackdriver} from "./setup-stackdriver.js";
 import type {GatewayOptions, RequestWithLog} from "./types.js";
 
 /**
@@ -14,6 +15,9 @@ export async function startGateway<
     TRes: $Response,
 >(options: GatewayOptions, app: $Application<TReq, TRes>): Promise<void> {
     const {logger, port, name, mode} = options;
+
+    // Set up stackdriver integrations.
+    await setupStackdriver(mode);
 
     // Add GAE middleware.
     const appWithMiddleware = await useAppEngineMiddleware<TReq, TRes>(
