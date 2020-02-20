@@ -83,6 +83,6 @@ jobs:
         title: Publish build of changes to dist for ${{ github.head_ref }}
         description: This won't trigger any actions. An admin should merge this.
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit_message: Updating build artifacts (Run=$GITHUB_RUN_ID, SHA=$GITHUB_SHA)
+        commit-message: Updating build artifacts (Run=$GITHUB_RUN_ID, SHA=$GITHUB_SHA)
         team-reviewers: 'Khan/frontend-infra'
         branch: ${{ env.PUBLISH_BRANCH_NAME }}
