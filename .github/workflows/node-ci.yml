@@ -9,7 +9,6 @@ on:
   push:
     branches:
     - master
-    - feature/*
 
 jobs:
   lint:
@@ -58,12 +57,14 @@ jobs:
 
   publish:
     name: Publish
-    if: github.base_ref == 'master'
+    if: github.base_ref == 'master' && github.event_name == 'pull_request'
     env:
       CI: true
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
     - name: Use Node.js 12
       uses: actions/setup-node@v1
       with:
@@ -72,7 +73,7 @@ jobs:
       run: yarn install
     - name: Build
       run: yarn build
-    - name: Extract current branch name
+    - name: Determine publish branch name
       run: |
         PUBLISH_BRANCH_NAME='${{ github.head_ref }}/publish'
         echo Publish branch will be $PUBLISH_BRANCH_NAME
