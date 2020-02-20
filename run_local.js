@@ -8,17 +8,12 @@
  * NOTE: We import everyting from index.js to ensure we're testing the public
  * interface of this package.
  */
-const {
-    runServer,
-    KAShared: {getLogger, getRuntimeMode},
-} = require("./src/index.js");
+const {runServer} = require("./src/index.js");
 
 async function main() {
     runServer({
         name: "DEV_LOCAL",
         port: 8080,
-        mode: getRuntimeMode(),
-        logger: getLogger(),
     });
 }
 

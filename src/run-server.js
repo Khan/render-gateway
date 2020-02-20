@@ -2,9 +2,15 @@
 import express from "express";
 import type {$Request, $Response} from "express";
 import {startGateway} from "./shared/index.js";
+import type {RenderGatewayOptions} from "./types.js";
 import type {GatewayOptions, RequestWithLog} from "./shared/index.js";
+import {getLogger} from "./ka-shared/index.js";
+import {getRuntimeMode} from "./ka-shared/get-runtime-mode.js";
 
-export const runServer = (options: GatewayOptions): void => {
+/**
+ * Run the render-gateway server using the provided options.
+ */
+export const runServer = (options: RenderGatewayOptions): void => {
     // TODO: Do a real server.
     //   For now, we just handle all gets and return a response that is the
     //   url that was requested.
@@ -16,5 +22,10 @@ export const runServer = (options: GatewayOptions): void => {
     );
 
     // Start the gateway.
-    startGateway<RequestWithLog<$Request>, $Response>(options, app);
+    const gatewayOptions: GatewayOptions = {
+        mode: getRuntimeMode(),
+        logger: getLogger(),
+        ...options,
+    };
+    startGateway<RequestWithLog<$Request>, $Response>(gatewayOptions, app);
 };
