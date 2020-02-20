@@ -15,9 +15,9 @@ the server automatically to incorporate your changes as you go.
 
 ## Release Changes
 
-Our NodeCI action will automatically update build artifacts whenever changes
-are pushed to `master`. If for some reason this does not occur, this can be
-performed manually by:
+Our NodeCI action will automatically update your branch with build artifacts
+whenever you create or change a pull request. However, if you wish to manually
+update them, you can follow these instructions.
 
 1. `yarn install`
 2. `yarn build`
