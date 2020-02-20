@@ -76,4 +76,4 @@ jobs:
     - name: Commit files
       uses: elstudio/actions-js-build/commit@v3
       with:
-        commitMessage: Updating branch with build artifacts (Run=${{ env.GITHUB_RUN_ID }})
+        commitMessage: Updating branch with build artifacts (Run=${{ github.run_id }})
