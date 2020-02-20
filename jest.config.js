@@ -6,6 +6,9 @@ module.exports = {
     // Automatically restore mocks between every test
     restoreMocks: true,
 
+    // Automatically reset mocks between every test.
+    resetMocks: true,
+
     // The directory where Jest should output its coverage files
     coverageDirectory: "coverage",
 

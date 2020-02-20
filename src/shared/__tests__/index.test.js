@@ -8,6 +8,13 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(Object.keys(result).sort()).toEqual(["runServer"].sort());
+        expect(Object.keys(result).sort()).toEqual(
+            [
+                "createLogger",
+                "getRequestLogger",
+                "getRuntimeMode",
+                "startGateway",
+            ].sort(),
+        );
     });
 });

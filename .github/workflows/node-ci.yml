@@ -16,7 +16,6 @@ jobs:
     name: Lint and flow check
     env:
       CI: true
-      NOYARNPOSTINSTALL: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -56,3 +55,25 @@ jobs:
       run: yarn install
     - name: Run tests
       run: yarn test
+
+  publish:
+    needs: [test]
+    name: Publish
+    if: github.ref == 'master' && github.event == 'push'
+    env:
+      CI: true
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Install dependencies
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Commit files
+      uses: elstudio/actions-js-build/commit@v3
+      with:
+        commitMessage: Updating build artifacts (Run=$GITHUB_RUN_ID, SHA=$GITHUB_SHA)

@@ -9,7 +9,6 @@ module.exports = {
         },
     },
     rules: {
-        "flowtype/require-exact-type": ["error", "always"],
         "flowtype/no-types-missing-file-annotation": "error",
         "import/no-unresolved": "error",
         "import/named": "error",
