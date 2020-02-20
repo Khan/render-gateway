@@ -59,7 +59,7 @@ jobs:
   publish:
     needs: [test]
     name: Publish
-    if: github.ref == 'master' && github.event == 'push'
+    if: github.ref == 'refs/heads/master' && github.event == 'push'
     env:
       CI: true
     runs-on: ubuntu-latest
