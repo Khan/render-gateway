@@ -18,7 +18,7 @@ describe("#setupStackdriver", () => {
             // Assert
             expect(agentSpy).toHaveBeenCalled();
         });
-      
+
         it("should setup @google-cloud/profiler", async () => {
             // Arrange
             const agentSpy = jest.spyOn(Profiler, "start");
