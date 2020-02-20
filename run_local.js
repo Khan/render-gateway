@@ -1,4 +1,4 @@
-// @noflow
+// @flow
 /* eslint-disable import/no-commonjs */
 /**
  * This is a simple local server for testing this code works.
