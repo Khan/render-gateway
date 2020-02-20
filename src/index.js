@@ -1,26 +1,11 @@
 // @flow
-import express from "express";
-import type {$Request, $Response} from "express";
-import {startGateway} from "./shared/index.js";
-import type {GatewayOptions} from "./shared/index.js";
+/**
+ * Trace agent is a special case where it must be imported first to ensure
+ * correct instrumentation of other imported modules.
+ */
+// eslint-disable-next-line import/no-unassigned-import
+import "./ka-shared/start-trace-agent.js";
 
-import * as KA from "./ka-shared/index.js";
+export type {RenderGatewayOptions} from "./types.js";
 
-export const KAShared = KA;
-
-// TODO(somewhatabstract): Export appropriate KA Shared and Shared things as
-// KAShared and Shared.
-
-// TODO(somewhatabstract): Export types.
-
-export const runServer = (options: GatewayOptions): void => {
-    // TODO: Do a real server.
-    // For now, we just handle all gets and return a response that is the
-    // url that was requested.
-    const app = express().get("/*", async (req: $Request, res: $Response) => {
-        res.send(`The URL you requested was ${req.url}`);
-    });
-
-    // Start the app.
-    startGateway(options, app);
-};
+export {runServer} from "./run-server.js";

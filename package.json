@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "test": "jest --colors --config jest.config.js src",
     "coverage": "jest --colors --config jest.config.js --coverage",
-    "lint": "eslint --report-unused-disable-directives --config .eslintrc.js \"{src,bin,__{tests,mocks}__}/**/*.js\"",
+    "lint": "eslint --report-unused-disable-directives --config .eslintrc.js \"{run_local.js,src,bin,__{tests,mocks}__}/**/*.js\"",
     "flow:ci": "flow check",
     "build:noclean": "babel src --out-dir dist --source-maps --config-file ./.babelrc.js --ignore \"**/__tests__/**/*.js\",\"**/__mocks__/**/*.js\"",
     "build": "yarn clean && yarn build:noclean",
@@ -68,6 +68,7 @@
     "@google-cloud/debug-agent": "^4.2.2",
     "@google-cloud/logging-winston": "^3.0.5",
     "@google-cloud/profiler": "^3.0.1",
+    "@google-cloud/trace-agent": "^4.2.5",
     "express": "^4.17.1",
     "express-winston": "^4.0.3",
     "winston": "^3.2.1"

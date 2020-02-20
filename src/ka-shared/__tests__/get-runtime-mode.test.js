@@ -1,8 +1,8 @@
 // @flow
-import * as Shared from "../../shared/index.js";
+import * as GetRuntimeMode from "../../shared/get-runtime-mode.js";
 import {getRuntimeMode} from "../get-runtime-mode.js";
 
-jest.mock("../../shared/index.js");
+jest.mock("../../shared/get-runtime-mode.js");
 
 describe("#getRuntimeMode", () => {
     let KA_IS_DEV_SERVER;
@@ -17,7 +17,7 @@ describe("#getRuntimeMode", () => {
     it("should default to production when KA_IS_DEV_SERVER is 0", () => {
         // Arrange
         process.env.KA_IS_DEV_SERVER = "0";
-        const getRuntimeModeSpy = jest.spyOn(Shared, "getRuntimeMode");
+        const getRuntimeModeSpy = jest.spyOn(GetRuntimeMode, "getRuntimeMode");
 
         // Act
         getRuntimeMode();
@@ -29,7 +29,7 @@ describe("#getRuntimeMode", () => {
     it("should default to development when KA_IS_DEV_SERVER is 1", () => {
         // Arrange
         process.env.KA_IS_DEV_SERVER = "1";
-        const getRuntimeModeSpy = jest.spyOn(Shared, "getRuntimeMode");
+        const getRuntimeModeSpy = jest.spyOn(GetRuntimeMode, "getRuntimeMode");
 
         // Act
         getRuntimeMode();

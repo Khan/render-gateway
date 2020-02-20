@@ -13,6 +13,7 @@ implicit-inexact-object=error
 <PROJECT_ROOT>/bin
 
 [include]
+<PROJECT_ROOT>/run_local.js
 <PROJECT_ROOT>/src
 .*/__tests__/.*
 
