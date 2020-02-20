@@ -72,7 +72,7 @@ jobs:
     - name: Install dependencies
       run: yarn install
     - name: Build
-      run: yarn Build
+      run: yarn build
     - name: Commit files
       uses: elstudio/actions-js-build/commit@v3
       with:
