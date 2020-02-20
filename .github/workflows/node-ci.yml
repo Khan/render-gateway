@@ -83,6 +83,6 @@ jobs:
         title: Publish build of changes to dist for ${{ github.head_ref }}
         body: This PR adds the build artifacts for ${{ github.head_ref }}. It does not trigger any actions. An admin should check that this only updates files in the `dist` folder and, if so, force merge it.
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: Updating build artifacts (Run=${{ env.GITHUB_RUN_ID }}, SHA=${{ env.$GITHUB_SHA }})
+        commit-message: Updating build artifacts (Run=${{ env.GITHUB_RUN_ID }}, SHA=${{ env.GITHUB_SHA }})
         team-reviewers: 'Khan/frontend-infra'
         branch: ${{ env.PUBLISH_BRANCH_NAME }}
