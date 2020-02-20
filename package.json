@@ -19,8 +19,7 @@
     "flow:ci": "flow check",
     "build:noclean": "babel src --out-dir dist --source-maps --config-file ./.babelrc.js --ignore \"**/__tests__/**/*.js\",\"**/__mocks__/**/*.js\"",
     "build": "yarn clean && yarn build:noclean",
-    "pretty": "pretty-quick",
-    "postinstall": "test -n \"$NOYARNPOSTINSTALL\" || yarn build"
+    "pretty": "pretty-quick"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
