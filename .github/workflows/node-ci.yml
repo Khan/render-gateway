@@ -80,6 +80,8 @@ jobs:
     - name: Update pull request
       uses: peter-evans/create-pull-request@v2.4.2
       with:
+        title: Publish build of changes to dist for ${{ github.head_ref }}
+        description: This won't trigger any actions. An admin should merge this.
         token: ${{ secrets.GITHUB_TOKEN }}
         commit_message: Updating build artifacts (Run=$GITHUB_RUN_ID, SHA=$GITHUB_SHA)
         team-reviewers: 'Khan/frontend-infra'
