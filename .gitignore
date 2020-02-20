@@ -29,7 +29,8 @@ build/Release
 node_modules
 
 # Output Dir
-dist
+# TODO(somewhatabstract): Ignore dist when we no longer need to "publish" by committing dist to source control.
+# dist
 
 # Editor and workflow-related
 !.vscode
