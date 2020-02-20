@@ -28,11 +28,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
-      run: |
-         echo ${{ github.base_ref }}
-         echo ${{ github.head_ref }}
-         echo ${{ github.ref }}
-         yarn install
+      run: yarn install
     - name: Lint
       run: yarn lint
     - name: Flow
@@ -62,7 +58,7 @@ jobs:
 
   publish:
     name: Publish
-    if: github.base_ref == 'refs/heads/master'
+    if: github.base_ref == 'master'
     env:
       CI: true
     runs-on: ubuntu-latest
@@ -78,8 +74,7 @@ jobs:
       run: yarn build
     - name: Extract current branch name
       run: |
-        BASE_BRANCH_NAME=${GITHUB_REF#refs/heads/}
-        PUBLISH_BRANCH_NAME='$BASE_BRANCH_NAME/publish'
+        PUBLISH_BRANCH_NAME='${{ github.head_ref }}/publish'
         echo Publish branch will be $PUBLISH_BRANCH_NAME
     - name: Update pull request
       uses: peter-evans/create-pull-request@v2.4.2
