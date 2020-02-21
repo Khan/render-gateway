@@ -75,7 +75,5 @@ jobs:
       run: yarn build
     - name: Commit files
       uses: elstudio/actions-js-build/commit@v3
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
         commitMessage: Updating branch with build artifacts (Run=${{ github.run_id }})
