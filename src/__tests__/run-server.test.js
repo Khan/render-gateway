@@ -18,6 +18,7 @@ describe("#runServer", () => {
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
         const pretendApp = ({
+            use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
         }: any);
         const expressSpy = jest
@@ -31,12 +32,35 @@ describe("#runServer", () => {
         expect(expressSpy).toHaveBeenCalledTimes(1);
     });
 
+    it("should setup the common service routes", () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
+        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        const pretendApp = ({
+            use: jest.fn().mockReturnThis(),
+            get: jest.fn().mockReturnThis(),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(pretendApp);
+        const pretendCommonServiceRouter = ({}: any);
+        jest.spyOn(KAShared, "makeCommonServiceRouter").mockReturnValue(
+            pretendCommonServiceRouter,
+        );
+
+        // Act
+        runServer({name: "MY_TEST", port: 42});
+
+        // Assert
+        expect(pretendApp.use).toHaveBeenCalledWith(pretendCommonServiceRouter);
+    });
+
     it("should start the gateway", () => {
         // Arrange
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
         const pretendApp = ({
+            use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
         }: any);
         jest.spyOn(Express, "default").mockReturnValue(pretendApp);
