@@ -92,5 +92,5 @@ jobs:
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git config user.name "$GITHUB_ACTOR"
         git add .
-        git commit -m "Updating branch with build artifacts (Run=${{ github.run_id }})"
+        git commit -m "Updating branch with build artifacts (https://github.com/Khan/render-gateway/actions/runs/${{ github.run_id }})"
         git push
