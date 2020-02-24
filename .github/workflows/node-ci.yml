@@ -88,8 +88,12 @@ jobs:
       run: |
         HAS_CHANGES=$(git status --porcelain | wc -l)
         echo $HAS_CHANGES
+    - name: Check if env var is in next step
+      run: |
+        echo ${{ env.HAS_CHANGES }}
+        echo $HAS_CHANGES
     - name: Commit changes
-      if: env.HAS_CHANGES != 0
+      if: env.HAS_CHANGES != "0"
       run: |
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git config user.name "$GITHUB_ACTOR"
