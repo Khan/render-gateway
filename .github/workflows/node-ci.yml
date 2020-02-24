@@ -85,9 +85,7 @@ jobs:
     - name: Build the distributable artifacts
       run: yarn build
     - name: Detect changes
-      run: |
-        HAS_CHANGES=$(git status --porcelain | wc -l)
-        echo $HAS_CHANGES
+      run: echo ::set-env name=HAS_CHANGES::$(git status --porcelain | wc -l)
     - name: Check if env var is in next step
       run: |
         echo ${{ env.HAS_CHANGES }}
