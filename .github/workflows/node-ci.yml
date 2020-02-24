@@ -85,7 +85,9 @@ jobs:
     - name: Build the distributable artifacts
       run: yarn build
     - name: Detect changes
-      run: HAS_CHANGES=$(git status --porcelain | wc -l)
+      run: |
+        HAS_CHANGES=$(git status --porcelain | wc -l)
+        echo $HAS_CHANGES
     - name: Commit changes
       if: env.HAS_CHANGES != 0
       run: |
