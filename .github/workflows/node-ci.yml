@@ -63,6 +63,9 @@ jobs:
   # the repo.
   publish_to_branch:
     name: Publish to branch
+    # We only want to run this if it's a push event or a pull_request for
+    # a non-feature branch.
+    if: github.event_name == 'push' || !startsWith(github.head_ref, 'feature/')
     env:
       CI: true
     runs-on: ubuntu-latest
