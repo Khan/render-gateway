@@ -15,8 +15,16 @@ Object.defineProperty(exports, "makeCommonServiceRouter", {
     return _makeCommonServiceRouter.makeCommonServiceRouter;
   }
 });
+Object.defineProperty(exports, "getGCloudSecrets", {
+  enumerable: true,
+  get: function () {
+    return _getGcloudSecrets.getGCloudSecrets;
+  }
+});
 
 var _getLogger = require("./get-logger.js");
 
 var _makeCommonServiceRouter = require("./routes/make-common-service-router.js");
+
+var _getGcloudSecrets = require("./get-gcloud-secrets.js");
 //# sourceMappingURL=index.js.map
