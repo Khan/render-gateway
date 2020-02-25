@@ -83,8 +83,8 @@ jobs:
     - name: Determine checkout branch
       run: |
         _PUBLISH_BRANCH=$(test $GITHUB_HEAD_REF && echo $GITHUB_HEAD_REF || echo $GITHUB_REF | sed -e "s/refs\/heads\///g")
-        test ${{ _PUBLISH_BRANCH }} || exit 1
-        echo ::set-env name=PUBLISH_BRANCH::$(echo $_PUBLISH_BRANCH)
+        test $_PUBLISH_BRANCH || exit 1
+        echo ::set-env name=PUBLISH_BRANCH::$_PUBLISH_BRANCH
 
     - name: Checkout via SSH
       if: github.event_name == 'pull_request'
