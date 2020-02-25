@@ -7,12 +7,11 @@ import type {Secrets} from "./ka-shared/index.js";
 /**
  * Get the secrets table for the service.
  */
-export const getSecrets = (): Promise<Secrets> => {
+export const getSecrets = (cryptoKeyPath: string): Promise<Secrets> => {
     switch (getRuntimeMode()) {
         case "production":
             return getGCloudSecrets({
-                cryptoKeyPath:
-                    "projects/khan-academy/locations/global/keyRings/secrets/cryptoKeys/render-gateway",
+                cryptoKeyPath,
             });
 
         default:

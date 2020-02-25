@@ -12,11 +12,11 @@ var _getRuntimeMode = require("./ka-shared/get-runtime-mode.js");
 /**
  * Get the secrets table for the service.
  */
-const getSecrets = () => {
+const getSecrets = cryptoKeyPath => {
   switch ((0, _getRuntimeMode.getRuntimeMode)()) {
     case "production":
       return (0, _index.getGCloudSecrets)({
-        cryptoKeyPath: "projects/khan-academy/locations/global/keyRings/secrets/cryptoKeys/render-gateway"
+        cryptoKeyPath
       });
 
     default:

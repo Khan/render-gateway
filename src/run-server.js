@@ -6,11 +6,16 @@ import type {RenderGatewayOptions} from "./types.js";
 import type {GatewayOptions, RequestWithLog} from "./shared/index.js";
 import {getLogger, makeCommonServiceRouter} from "./ka-shared/index.js";
 import {getRuntimeMode} from "./ka-shared/get-runtime-mode.js";
+import {makeCheckSecretMiddleware} from "./middleware/make-check-secret-middleware.js";
 
 /**
  * Run the render-gateway server using the provided options.
  */
-export const runServer = (options: RenderGatewayOptions): void => {
+export const runServer = async (
+    options: RenderGatewayOptions,
+): Promise<void> => {
+    const {authentication, ...remainingOptions} = options;
+
     // TODO: Do a real server.
     //   For now, we just handle all gets and return a response that is the
     //   url that was requested.
@@ -24,6 +29,7 @@ export const runServer = (options: RenderGatewayOptions): void => {
                 process.env.GAE_VERSION || "fake-dev-version",
             ),
         )
+        .use(await makeCheckSecretMiddleware(authentication))
         .get("/*", async (req, res) => {
             res.send(`The URL you requested was ${req.url}`);
         });
@@ -32,7 +38,7 @@ export const runServer = (options: RenderGatewayOptions): void => {
     const gatewayOptions: GatewayOptions = {
         mode: getRuntimeMode(),
         logger: getLogger(),
-        ...options,
+        ...remainingOptions,
     };
     startGateway<RequestWithLog<$Request>, $Response>(gatewayOptions, app);
 };
