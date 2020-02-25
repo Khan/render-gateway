@@ -82,6 +82,7 @@ jobs:
       # would update the default branch, which is not what we want at all.
     - name: Determine checkout branch
       run: |
+        echo GITHUB_ACTION=$GITHUB_ACTION
         _PUBLISH_BRANCH=$(test $GITHUB_HEAD_REF && echo $GITHUB_HEAD_REF || echo $GITHUB_REF | sed -e "s/refs\/heads\///g")
         test $_PUBLISH_BRANCH || exit 1
         echo ::set-env name=PUBLISH_BRANCH::$_PUBLISH_BRANCH
@@ -106,5 +107,5 @@ jobs:
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git config user.name "$GITHUB_ACTOR"
         git add .
-        git commit -m "Updating branch with build artifacts (https://github.com/Khan/render-gateway/actions/runs/${{ github.run_id }}?check_suite_focus=true)"
+        git commit -m "Updating branch with build artifacts (https://github.com/Khan/render-gateway/actions/runs/${{ github.run_id }})"
         git push
