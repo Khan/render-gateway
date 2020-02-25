@@ -2,6 +2,8 @@ name: Node CI
 
 on:
   pull_request:
+    # edited is needed because that's the trigger when the base branch is changed on a PR
+    # The rest are the defaults.
     types: [edited, opened, synchronize, reopened]
 
   push:
@@ -55,25 +57,40 @@ jobs:
       run: yarn test
 
 
-  publish:
-    name: Publish
-    if: github.base_ref != 'master' && github.event_name == 'pull_request'
+  # This workflow will build distributable artifacts and commit them to the
+  # branch that is being used for the PR. This should work even on protected
+  # branches because of our use of an SSH deploy key that is setup against
+  # the repo.
+  publish_to_branch:
+    name: Publish to branch
     env:
       CI: true
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: webfactory/ssh-agent@v0.2.0
       with:
-        ref: ${{ github.head_ref }}
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Checkout via SSH
+      run: |
+        git clone git@github.com:Khan/render-gateway.git .
+        git checkout ${{ github.head_ref }}
     - name: Use Node.js 12
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
     - name: Install dependencies
       run: yarn install
-    - name: Build
+    - name: Run tests
+      run: yarn test
+    - name: Build the distributable artifacts
       run: yarn build
-    - name: Commit files
-      uses: elstudio/actions-js-build/commit@v3
-      with:
-        commitMessage: Updating branch with build artifacts (Run=${{ github.run_id }})
+    - name: Detect changes
+      run: echo ::set-env name=HAS_CHANGES::$(git status --porcelain | wc -l)
+    - name: Commit changes
+      if: env.HAS_CHANGES != '0'
+      run: |
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git config user.name "$GITHUB_ACTOR"
+        git add .
+        git commit -m "Updating branch with build artifacts (https://github.com/Khan/render-gateway/actions/runs/${{ github.run_id }})"
+        git push
