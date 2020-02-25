@@ -21,5 +21,5 @@ export type SecretsConfig =
           /**
            * A function used to lookup a secret by name.
            */
-          lookupFn: (name: string) => ?SecretString,
+          lookupFn: (name: string, config: string) => ?SecretString,
       };

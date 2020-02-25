@@ -19,14 +19,19 @@ const readFile = promisify(fs.readFile);
  */
 const secretsForDev = async (
     serviceRootPath: string,
-    lookupFn: (name: string) => ?SecretString,
-): Secrets => {
-    // $FlowIgnore
-    const secretsNames = require(path.join(path, "secrets-config.json"));
+    lookupFn: (name: string, config: string) => ?SecretString,
+): Promise<Secrets> => {
+    // NOTE(somewhatabstract): It's convenient to use require here since that
+    // already understands JSON, but that's harder to test. This way we get
+    // the same functionality but we can actually test it.
+    const configBuffer = await readFile(
+        path.join(serviceRootPath, "secrets-config.json"),
+    );
+    const secretsConfig = JSON.parse(configBuffer);
 
     const secrets: Secrets = {};
-    Object.keys(secretsNames).forEach((name) => {
-        const secret = lookupFn(name);
+    Object.keys(secretsConfig).forEach((name) => {
+        const secret = lookupFn(name, secretsConfig[name]);
         if (!secret) {
             throw new Error(`Could not read secret ${name}`);
         }
@@ -42,7 +47,7 @@ const secretsForDev = async (
  * This is based on
  * https://cloud.google.com/kms/docs/encrypt-decrypt#kms-howto-encrypt-nodejs
  */
-const secretsForProd = async (cryptoKeyPath: string): Secrets => {
+const secretsForProd = async (cryptoKeyPath: string): Promise<Secrets> => {
     const client = new kms.KeyManagementServiceClient();
     const contentsBuffer = await readFile("./secrets.json.enc");
     const ciphertext = contentsBuffer.toString("base64");
@@ -53,7 +58,7 @@ const secretsForProd = async (cryptoKeyPath: string): Secrets => {
 /**
  * Get secrets
  */
-export const getGCloudSecrets = (config: SecretsConfig): Secrets => {
+export const getGCloudSecrets = (config: SecretsConfig): Promise<Secrets> => {
     if (config.cryptoKeyPath) {
         return secretsForProd(config.cryptoKeyPath);
     } else if (config.serviceRootPath) {
