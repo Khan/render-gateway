@@ -73,20 +73,21 @@ jobs:
     - name: Clone repository
       run: git clone git@github.com:Khan/render-gateway.git .
 
-      # Checkout steps
       # For PRs, we can use github.head_ref to get the branch that the PR
       # is made from. We cannot use github.ref as that points to the PR, not
-      # its branch.
-      # For pushes, we have to get the branch name from GITHUB_REF (aka
-      # github.ref) which, instead of just being a branch name, is of the form
+      # its branch. For pushes, we have to get the branch name from GITHUB_REF
+      # which, instead of just being a branch name, is of the form
       # refs/heads/<BRANCH NAME>
-    - name: Checkout via SSH (PR)
-      if: github.event_name == 'pull_request'
-      run: git checkout ${{ github.head_ref }}
-    - name: Checkout via SSH (Push)
-      if: github.event_name == 'push'
-      run: git checkout $(echo ${GITHUB_REF} | sed -e "s/refs\/heads\///g")
+      # Note if we end up with a blank branch name, we quit as otherwise, we
+      # would update the default branch, which is not what we want at all.
+    - name: Determine checkout branch
+      run: |
+        echo ::set-env name=PUBLISH_BRANCH::$(test $GITHUB_HEAD_REF && echo $GITHUB_HEAD_REF || echo $GITHUB_REF | sed -e "s/refs\/heads\///g")
+        test $PUBLISH_BRANCH || exit 1
 
+    - name: Checkout via SSH
+      if: github.event_name == 'pull_request'
+      run: git checkout $PUBLISH_BRANCH
     - name: Use Node.js 12
       uses: actions/setup-node@v1
       with:
