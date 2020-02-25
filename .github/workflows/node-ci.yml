@@ -87,7 +87,6 @@ jobs:
         echo ::set-env name=PUBLISH_BRANCH::$_PUBLISH_BRANCH
 
     - name: Checkout via SSH
-      if: github.event_name == 'pull_request'
       run: git checkout ${{ env.PUBLISH_BRANCH }}
     - name: Use Node.js 12
       uses: actions/setup-node@v1
