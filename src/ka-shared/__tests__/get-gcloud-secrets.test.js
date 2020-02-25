@@ -232,7 +232,7 @@ describe("#getGcloudSecrets", () => {
 
             // Assert
             expect(underTest).toThrowErrorMatchingInlineSnapshot(
-                `"Unsupport configuration"`,
+                `"Unsupported configuration"`,
             );
         });
     });

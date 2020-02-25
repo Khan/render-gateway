@@ -65,5 +65,5 @@ export const getGCloudSecrets = (config: SecretsConfig): Promise<Secrets> => {
         return secretsForDev(config.serviceRootPath, config.lookupFn);
     }
 
-    throw new Error("Unsupport configuration");
+    throw new Error("Unsupported configuration");
 };
