@@ -73,7 +73,7 @@ type JestMockFn<TArguments: $ReadOnlyArray<*>, TReturn> = {
     /**
      * Just a simple sugar function for returning `this`
      */
-    mockReturnThis(): void,
+    mockReturnThis(): JestMockFn<TArguments, TReturn>,
     /**
      * Accepts a value that will be returned whenever the mock function is called.
      */

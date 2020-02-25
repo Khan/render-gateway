@@ -5,14 +5,16 @@ import {runServer} from "../run-server.js";
 import * as GetRuntimeMode from "../ka-shared/get-runtime-mode.js";
 import * as Shared from "../shared/index.js";
 import * as KAShared from "../ka-shared/index.js";
+import * as MakeCheckSecretMiddleware from "../middleware/make-check-secret-middleware.js";
 
 jest.mock("express");
 jest.mock("../ka-shared/get-runtime-mode.js");
 jest.mock("../ka-shared/index.js");
 jest.mock("../shared/index.js");
+jest.mock("../middleware/make-check-secret-middleware.js");
 
 describe("#runServer", () => {
-    it("should create an express app", () => {
+    it("should create an express app", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
@@ -26,13 +28,13 @@ describe("#runServer", () => {
             .mockReturnValue(pretendApp);
 
         // Act
-        runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42});
 
         // Assert
         expect(expressSpy).toHaveBeenCalledTimes(1);
     });
 
-    it("should setup the common service routes", () => {
+    it("should setup the common service routes", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
@@ -48,13 +50,42 @@ describe("#runServer", () => {
         );
 
         // Act
-        runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42});
 
         // Assert
         expect(pretendApp.use).toHaveBeenCalledWith(pretendCommonServiceRouter);
     });
 
-    it("should start the gateway", () => {
+    it("should add check secret middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendAuthOptions = ({}: any);
+        jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
+        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        const pretendApp = ({
+            use: jest.fn().mockReturnThis(),
+            get: jest.fn().mockReturnThis(),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(pretendApp);
+        const makeCheckSecretMiddlewareSpy = jest.spyOn(
+            MakeCheckSecretMiddleware,
+            "makeCheckSecretMiddleware",
+        );
+
+        // Act
+        await runServer({
+            name: "MY_TEST",
+            port: 42,
+            authentication: pretendAuthOptions,
+        });
+
+        // Assert
+        expect(makeCheckSecretMiddlewareSpy).toHaveBeenCalledWith(
+            pretendAuthOptions,
+        );
+    });
+
+    it("should start the gateway", async () => {
         // Arrange
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
@@ -67,7 +98,7 @@ describe("#runServer", () => {
         const startGatewaySpy = jest.spyOn(Shared, "startGateway");
 
         // Act
-        runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42});
 
         // Assert
         expect(startGatewaySpy).toHaveBeenCalledWith(

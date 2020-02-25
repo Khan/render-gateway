@@ -8,7 +8,7 @@ jest.mock("../ka-shared/index.js");
 
 describe("#getSecrets", () => {
     describe("in production", () => {
-        it("should lookup secrets with render-gateway crypto key path", () => {
+        it("should lookup secrets with crypto key path", () => {
             // Arrange
             jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue(
                 "production",
@@ -19,12 +19,11 @@ describe("#getSecrets", () => {
             );
 
             // Act
-            getSecrets();
+            getSecrets("CRYPTO_KEY_PATH");
 
             // Assert
             expect(getGCloudSecretsSpy).toHaveBeenCalledWith({
-                cryptoKeyPath:
-                    "projects/khan-academy/locations/global/keyRings/secrets/cryptoKeys/render-gateway",
+                cryptoKeyPath: "CRYPTO_KEY_PATH",
             });
         });
     });
@@ -41,7 +40,7 @@ describe("#getSecrets", () => {
             );
 
             // Act
-            getSecrets();
+            getSecrets("CRYPTO_KEY_PATH");
 
             // Assert
             expect(getGCloudSecretsSpy).toHaveBeenCalledWith({
@@ -59,7 +58,7 @@ describe("#getSecrets", () => {
                 KAShared,
                 "getGCloudSecrets",
             );
-            getSecrets();
+            getSecrets("CRYPTO_KEY_PATH");
             const lookupFn = getGCloudSecretsSpy.mock.calls[0][0].lookupFn;
 
             // Act
