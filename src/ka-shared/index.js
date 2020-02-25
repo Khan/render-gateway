@@ -1,6 +1,7 @@
 // @flow
 export {getLogger} from "./get-logger.js";
 export {makeCommonServiceRouter} from "./routes/make-common-service-router.js";
+export {getGCloudSecrets} from "./get-gcloud-secrets.js";
 
 /**
  * NOTE: getRuntimeMode and startTraceAgent should be imported directly. They
