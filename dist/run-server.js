@@ -28,7 +28,12 @@ const runServer = options => {
   // TODO: Do a real server.
   //   For now, we just handle all gets and return a response that is the
   //   url that was requested.
-  const app = (0, _express.default)().get("/*", async (req, res) => {
+  const app = (0, _express.default)().use(
+  /**
+   * This sets up the /_api/ route handlers that are used by the KA
+   * deployment system.
+   */
+  (0, _index2.makeCommonServiceRouter)(process.env.GAE_VERSION || "fake-dev-version")).get("/*", async (req, res) => {
     res.send(`The URL you requested was ${req.url}`);
   }); // Start the gateway.
 
