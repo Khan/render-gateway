@@ -83,11 +83,11 @@ jobs:
     - name: Determine checkout branch
       run: |
         echo ::set-env name=PUBLISH_BRANCH::$(test $GITHUB_HEAD_REF && echo $GITHUB_HEAD_REF || echo $GITHUB_REF | sed -e "s/refs\/heads\///g")
-        test $PUBLISH_BRANCH || exit 1
+        test ${{ env.PUBLISH_BRANCH }} || exit 1
 
     - name: Checkout via SSH
       if: github.event_name == 'pull_request'
-      run: git checkout $PUBLISH_BRANCH
+      run: git checkout ${{ env.PUBLISH_BRANCH }}
     - name: Use Node.js 12
       uses: actions/setup-node@v1
       with:
