@@ -2,7 +2,7 @@
 
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=Khan/render-gateway&identifier=240386730)](https://dependabot.com) [![Node CI](https://github.com/Khan/render-gateway/workflows/Node%20CI/badge.svg)](https://github.com/Khan/render-gateway/actions)
 
-The core implementation of our render-gateway service
+The core implementation of a render-gateway service.
 
 ## Development
 
@@ -13,13 +13,10 @@ The core implementation of our render-gateway service
 Once started, you can make code changes. `babel-watch` takes care of restarting
 the server automatically to incorporate your changes as you go.
 
-## Release Changes
+For more information on developing, contributing, and releasing, please see [our
+CONTRIBUTING document](./CONTRIBUTING.md).
 
-Our NodeCI action will automatically update your branch with build artifacts
-whenever you create or change a pull request. However, if you wish to manually
-update them, you can follow these instructions.
+## Code of Conduct
 
-1. `yarn install`
-2. `yarn build`
-3. `git add *`
-4. `git commit -m "<suitable commit message goes here>"`
+We believe in fostering an open, welcoming, and collaborative environment for
+all. Please read and abide by our [CODE OF CONDUCT](./CODE_OF_CONDUCT.md).
