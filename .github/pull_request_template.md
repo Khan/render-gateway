@@ -1,5 +1,7 @@
 # Summary
 
+⚠️ **We are not currently accepting externally provided code changes**
+
 - Provide a clear and concise description of what the changes are.
 
 ## Issues

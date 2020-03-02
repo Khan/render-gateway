@@ -8,6 +8,8 @@ labels: enhancement, needs triage
 
 ## Summary
 
+⚠️ **We are not currently accepting externally raised feature requests**
+
 - Add a clear and concise description of what problem feature addresses. Ex. I'm always frustrated when [...]
 
 ## Description

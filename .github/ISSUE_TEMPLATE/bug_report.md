@@ -6,6 +6,8 @@ labels: bug, needs triage
 
 ---
 
+⚠️ **We are not currently accepting externally raised bug reports**
+
 ## Description
 
 - Provide a clear and concise description of what the bug is.
