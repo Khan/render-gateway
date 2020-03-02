@@ -1,16 +1,20 @@
 # Contributing to `render-gateway`
 
-🙇Thank you for your interest in contributing to the Render Gateway repository.
+🙇Thank you for your interest in contributing to the Render Gateway repository. However, **we are not currently accepting community contributions** on this project.
 
-Whether raising an issue, reviewing a pull request, or implementing a change, the participation of others is a wonderful 🎁gift. Read on to find out how you can get involved. However, please note that we are not currently seeking active participation from the community on this project.
+The participation of others is a wonderful 🎁gift. When we are ready to accept that gift, we will update these guidelines.
+If you have already been invited to participate, the remainder of these guidelines are for you.
 
 📖 Be sure to read our [Code of Conduct](https://github.com/Khan/render-gateway/blob/master/CODE_OF_CONDUCT.md).
 
 ## 🛑 Bugs And Feature Requests
 
+⚠️ **We are not currently accepting externally raised bugs and feature requests**
 If you identify a bug or want to suggest enhancements to the project, head on over to the [🔗Issues](https://github.com/Khan/render-gateway/issues) section and raise an issue. The issue templates will guide you in providing details that will help others help you.
 
 ## 💻 Code Changes
+
+⚠️ **We are not currently accepting externally provided code changes**
 
 ### ⓵ Making your first change
 
