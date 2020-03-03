@@ -35,6 +35,29 @@ jobs:
       run: yarn flow:ci
 
 
+  coverage:
+    needs: [lint]
+    name: Coverage
+    env:
+      CI: true
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Install dependencies
+      run: yarn install
+    - name: Run tests with coverage
+      run: yarn coverage
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1.0.5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+
+
   test:
     needs: [lint]
     name: Test
@@ -45,6 +68,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest]
         node-version: [10.x, 12.x]
+        exclude:
+          # The coverage job covers this configuration
+          - os: ubuntu-latest
+            node-version: 12.x
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}

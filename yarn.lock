@@ -845,10 +845,10 @@
   dependencies:
     google-gax "^1.7.5"
 
-"@google-cloud/logging-winston@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-3.0.5.tgz#8219cbd47b6c7b05a46a36c810b9bc9b08911b35"
-  integrity sha512-pyN4z+CleRvq8b/Pzti31lSwTOEGUB36jT6Njz7/Gw1v19xG/7+cISP69nkQkeqEHDAsy8EiDtEYxT7kaXz9ew==
+"@google-cloud/logging-winston@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-3.0.6.tgz#a9bf62d60794127ec3be87fceec5c852f76f251a"
+  integrity sha512-EzGHmitM3BGNgSLbBoUispgeVgUUPcnV8C+1pSpK28p6k9I9j/LPp33jFPm6VxLoVjEZ7VIoUhEegpF2ytB1ZQ==
   dependencies:
     "@google-cloud/logging" "^7.0.0"
     google-auth-library "^5.2.2"
@@ -3575,10 +3575,10 @@ flatted@^2.0.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.1.tgz#69e57caa8f0eacbc281d2e2cb458d46fdb449e08"
   integrity sha512-a1hQMktqW9Nmqr5aktAux3JMNqaucxGcjtjWnZLHX7yyPCmlSV3M54nGYbqT8K+0GhF3NBgmJCc3ma+WOgX8Jg==
 
-flow-bin@^0.119.0:
-  version "0.119.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.119.0.tgz#f72523b4843caf7302576f7ad3f63637070b69f1"
-  integrity sha512-fCVv++rjBsx/q6YVeB3F+A/owztjUO5PyBLwhGZdK5igVmiFQ8RKBTR9T2mb+SQRLZJJhl/xwPLhNzr3dBba6w==
+flow-bin@^0.119.1:
+  version "0.119.1"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.119.1.tgz#b6d763b386ec9f1085848ca7df98909d80a16bd0"
+  integrity sha512-mX6qjJVi7aLqR9sDf8QIHt8yYEWQbkMLw7qFoC7sM/AbJwvqFm3pATPN96thsaL9o1rrshvxJpSgoj1PJSC3KA==
 
 flow-typed@^3.0.0:
   version "3.0.0"
