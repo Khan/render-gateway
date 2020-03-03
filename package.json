@@ -70,6 +70,7 @@
     "@google-cloud/profiler": "^3.0.1",
     "@google-cloud/trace-agent": "^4.2.5",
     "express": "^4.17.1",
+    "express-async-handler": "^1.1.4",
     "express-winston": "^4.0.3",
     "winston": "^3.2.1"
   }
