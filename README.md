@@ -1,6 +1,6 @@
 # render-gateway
 
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=Khan/render-gateway&identifier=240386730)](https://dependabot.com) [![Node CI](https://github.com/Khan/render-gateway/workflows/Node%20CI/badge.svg)](https://github.com/Khan/render-gateway/actions)
+[![codecov](https://codecov.io/gh/Khan/render-gateway/branch/master/graph/badge.svg?token=dJBz8T4PlI)](https://codecov.io/gh/Khan/render-gateway) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=Khan/render-gateway&identifier=240386730)](https://dependabot.com) [![Node CI](https://github.com/Khan/render-gateway/workflows/Node%20CI/badge.svg)](https://github.com/Khan/render-gateway/actions)
 
 The core implementation of a render-gateway service.
 
