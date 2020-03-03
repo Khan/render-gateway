@@ -845,10 +845,10 @@
   dependencies:
     google-gax "^1.7.5"
 
-"@google-cloud/logging-winston@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-3.0.5.tgz#8219cbd47b6c7b05a46a36c810b9bc9b08911b35"
-  integrity sha512-pyN4z+CleRvq8b/Pzti31lSwTOEGUB36jT6Njz7/Gw1v19xG/7+cISP69nkQkeqEHDAsy8EiDtEYxT7kaXz9ew==
+"@google-cloud/logging-winston@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-3.0.6.tgz#a9bf62d60794127ec3be87fceec5c852f76f251a"
+  integrity sha512-EzGHmitM3BGNgSLbBoUispgeVgUUPcnV8C+1pSpK28p6k9I9j/LPp33jFPm6VxLoVjEZ7VIoUhEegpF2ytB1ZQ==
   dependencies:
     "@google-cloud/logging" "^7.0.0"
     google-auth-library "^5.2.2"
