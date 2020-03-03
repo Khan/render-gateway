@@ -7,6 +7,8 @@ exports.runServer = void 0;
 
 var _express = _interopRequireDefault(require("express"));
 
+var _expressAsyncHandler = _interopRequireDefault(require("express-async-handler"));
+
 var _index = require("./shared/index.js");
 
 var _index2 = require("./ka-shared/index.js");
@@ -14,6 +16,8 @@ var _index2 = require("./ka-shared/index.js");
 var _getRuntimeMode = require("./ka-shared/get-runtime-mode.js");
 
 var _makeCheckSecretMiddleware = require("./middleware/make-check-secret-middleware.js");
+
+var _renderHandler = require("./handlers/render-handler.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -34,19 +38,24 @@ const runServer = async options => {
   const {
     authentication
   } = options,
-        remainingOptions = _objectWithoutProperties(options, ["authentication"]); // TODO: Do a real server.
-  //   For now, we just handle all gets and return a response that is the
-  //   url that was requested.
-
+        remainingOptions = _objectWithoutProperties(options, ["authentication"]);
 
   const app = (0, _express.default)().use(
   /**
    * This sets up the /_api/ route handlers that are used by the KA
    * deployment system.
    */
-  (0, _index2.makeCommonServiceRouter)(process.env.GAE_VERSION || "fake-dev-version")).use((await (0, _makeCheckSecretMiddleware.makeCheckSecretMiddleware)(authentication))).get("/*", async (req, res) => {
-    res.send(`The URL you requested was ${req.url}`);
-  }); // Start the gateway.
+  (0, _index2.makeCommonServiceRouter)(process.env.GAE_VERSION || "fake-dev-version"))
+  /**
+   * This adds a check that requests below this point are coming from
+   * a known source.
+   */
+  .use((await (0, _makeCheckSecretMiddleware.makeCheckSecretMiddleware)(authentication)))
+  /**
+   * This is our render route. This will handle all remaining gets as
+   * render requests and response accordingly.
+   */
+  .get("/*", (0, _expressAsyncHandler.default)(_renderHandler.renderHandler)); // Start the gateway.
 
   const gatewayOptions = _objectSpread({
     mode: (0, _getRuntimeMode.getRuntimeMode)(),
