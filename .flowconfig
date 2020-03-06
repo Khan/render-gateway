@@ -24,6 +24,7 @@ implicit-inexact-object=error
 emoji=true
 exact_by_default=true
 module.use_strict=true
+esproposal.optional_chaining=enable
 
 # $FlowFixMe
 # This suppression hould be used to suppress an issue that requires additional

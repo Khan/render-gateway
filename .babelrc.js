@@ -11,6 +11,9 @@ module.exports = {
         ],
         "@babel/preset-flow",
     ],
-    plugins: ["@babel/plugin-proposal-class-properties"],
+    plugins: [
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-proposal-optional-chaining",
+    ],
     sourceMaps: true,
 };
