@@ -27,6 +27,12 @@ Object.defineProperty(exports, "startGateway", {
     return _startGateway.startGateway;
   }
 });
+Object.defineProperty(exports, "trace", {
+  enumerable: true,
+  get: function () {
+    return _trace.trace;
+  }
+});
 
 var _createLogger = require("./create-logger.js");
 
@@ -35,4 +41,6 @@ var _getRequestLogger = require("./get-request-logger.js");
 var _getRuntimeMode = require("./get-runtime-mode.js");
 
 var _startGateway = require("./start-gateway.js");
+
+var _trace = require("./trace.js");
 //# sourceMappingURL=index.js.map

@@ -21,10 +21,18 @@ Object.defineProperty(exports, "getGCloudSecrets", {
     return _getGcloudSecrets.getGCloudSecrets;
   }
 });
+Object.defineProperty(exports, "trace", {
+  enumerable: true,
+  get: function () {
+    return _trace.trace;
+  }
+});
 
 var _getLogger = require("./get-logger.js");
 
 var _makeCommonServiceRouter = require("./routes/make-common-service-router.js");
 
 var _getGcloudSecrets = require("./get-gcloud-secrets.js");
+
+var _trace = require("./trace.js");
 //# sourceMappingURL=index.js.map
