@@ -9,7 +9,12 @@ describe("index.js", () => {
 
         // Assert
         expect(Object.keys(result).sort()).toEqual(
-            ["getGCloudSecrets", "getLogger", "makeCommonServiceRouter"].sort(),
+            [
+                "getGCloudSecrets",
+                "getLogger",
+                "makeCommonServiceRouter",
+                "trace",
+            ].sort(),
         );
     });
 });
