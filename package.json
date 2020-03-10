@@ -75,7 +75,7 @@
     "express-async-handler": "^1.1.4",
     "express-winston": "^4.0.3",
     "superagent": "^5.2.2",
-    "superagent-cache-plugin": "^3.0.0-beta.1",
+    "superagent-cache-plugin": "^2.1.0",
     "winston": "^3.2.1"
   }
 }
