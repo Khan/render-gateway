@@ -1,5 +1,6 @@
 // @flow
 import type {$Request, $Response} from "express";
+import type {CallbackHandler} from "superagent";
 import type {RequestWithLog} from "./shared/index.js";
 
 /**
@@ -133,6 +134,21 @@ export type RequestsOptions = {
      * two retries - so three total requests).
      */
     retries?: number,
+
+    /**
+     * Callback invoked if a retry occurs.
+     * This should return null for the default behavior to apply, true to allow
+     * the retry, and false to block further retries.
+     *
+     * Returning a non-boolean value causes superagent to do its default
+     * behavior, which is:
+     * - allow retry for all 500 errors except 501
+     * - allow retry for err.code set to any:
+     *      ['ECONNRESET', 'ETIMEDOUT', 'EADDRINFO', 'ESOCKETTIMEDOUT']
+     * - allow retry if err.timeout is truthy and err.code is 'ECONNABORTED`
+     * - allow retry if err.crossDomain is truthy
+     */
+    shouldRetry?: CallbackHandler,
 };
 
 /**

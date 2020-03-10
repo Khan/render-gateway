@@ -5,6 +5,7 @@ export type {
     Logger,
     GatewayOptions,
     RequestWithLog,
+    AmbiguousError,
 } from "./types.js";
 
 export {createLogger} from "./create-logger.js";
