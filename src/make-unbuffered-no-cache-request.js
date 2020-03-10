@@ -39,7 +39,10 @@ export const makeUnbufferedNoCacheRequest = (
              * takes precedence over our callback response, so we can't retry
              * forever).
              */
-            .retry(requestOptions?.retries || 2, makeShouldRetry(logger))
+            .retry(
+                requestOptions?.retries || 2,
+                makeShouldRetry(logger, requestOptions?.shouldRetry),
+            )
             /**
              * We add a user agent header so that we can easily identify our
              * requests in logs.
