@@ -11,6 +11,7 @@ describe("index.js", () => {
         expect(Object.keys(result).sort()).toEqual(
             [
                 "createLogger",
+                "extractErrorString",
                 "getRequestLogger",
                 "getRuntimeMode",
                 "startGateway",

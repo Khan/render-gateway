@@ -14,6 +14,22 @@ export type LogLevel = $Keys<NpmLogLevels>;
 export type Logger = WinstonLogger<NpmLogLevels>;
 
 /**
+ * Represents an error when we don't really know how it is structured.
+ *
+ * Use extractErrorString to turn this into a string.
+ */
+export type AmbiguousError =
+    | string
+    | {
+          error?: AmbiguousError,
+          response?: {
+              error?: string,
+          },
+          stack?: string,
+          ...
+      };
+
+/**
  * Information to attach to a trace session.
  */
 export type TraceSessionInfo = {
