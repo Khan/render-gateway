@@ -15,7 +15,7 @@ import {renderHandler} from "./handlers/render-handler.js";
 export const runServer = async (
     options: RenderGatewayOptions,
 ): Promise<void> => {
-    const {authentication, ...remainingOptions} = options;
+    const {authentication, requests: _, ...remainingOptions} = options;
 
     const app = express<Request, Response>()
         .use(
