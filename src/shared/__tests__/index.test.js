@@ -14,6 +14,7 @@ describe("index.js", () => {
                 "getRequestLogger",
                 "getRuntimeMode",
                 "startGateway",
+                "trace",
             ].sort(),
         );
     });

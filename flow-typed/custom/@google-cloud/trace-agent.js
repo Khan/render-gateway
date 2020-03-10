@@ -37,6 +37,8 @@ declare function traceagent$start(
     config?: traceagent$Config,
 ): traceagent$Tracer;
 
+declare function traceagent$get(): traceagent$Tracer;
+
 declare module "@google-cloud/trace-agent" {
     declare export type Config = traceagent$Config;
     declare export type SpanOptions = traceagent$SpanOptions;
@@ -44,5 +46,6 @@ declare module "@google-cloud/trace-agent" {
     declare export type Tracer = traceagent$Tracer;
     declare module.exports: {
         start: typeof traceagent$start,
+        get: typeof traceagent$get,
     };
 }
