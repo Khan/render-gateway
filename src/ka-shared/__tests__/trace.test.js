@@ -12,7 +12,9 @@ jest.mock("../get-logger.js");
 describe("#trace", () => {
     it("should pass request to getLogger", () => {
         // Arrange
-        const fakeRequest: any = ({}: any);
+        const fakeRequest: any = ({
+            url: "",
+        }: any);
         const fakeLogger: any = ({}: any);
         const fakeTracer: any = ({}: any);
         jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
