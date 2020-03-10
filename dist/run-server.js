@@ -36,9 +36,10 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
  */
 const runServer = async options => {
   const {
-    authentication
+    authentication,
+    requests: _
   } = options,
-        remainingOptions = _objectWithoutProperties(options, ["authentication"]);
+        remainingOptions = _objectWithoutProperties(options, ["authentication", "requests"]);
 
   const app = (0, _express.default)().use(
   /**
