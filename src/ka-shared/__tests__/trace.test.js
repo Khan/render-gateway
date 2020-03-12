@@ -10,57 +10,137 @@ jest.mock("../../shared/index.js");
 jest.mock("../get-logger.js");
 
 describe("#trace", () => {
-    it("should pass request to getLogger", () => {
-        // Arrange
-        const fakeRequest: any = ({
-            url: "",
-        }: any);
-        const fakeLogger: any = ({}: any);
-        const fakeTracer: any = ({}: any);
-        jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
-        const getLoggerSpy = jest
-            .spyOn(GetLogger, "getLogger")
-            .mockReturnValue(fakeLogger);
+    describe("with request", () => {
+        it("should pass request to getLogger", () => {
+            // Arrange
+            const fakeRequest: any = ({
+                url: "",
+            }: any);
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            const getLoggerSpy = jest
+                .spyOn(GetLogger, "getLogger")
+                .mockReturnValue(fakeLogger);
 
-        // Act
-        trace("TRACE_THIS!", fakeRequest);
+            // Act
+            trace("TRACE_THIS!", fakeRequest);
 
-        // Assert
-        expect(getLoggerSpy).toHaveBeenCalledWith(fakeRequest);
+            // Assert
+            expect(getLoggerSpy).toHaveBeenCalledWith(fakeRequest);
+        });
+
+        it("should invoke the shared trace implementation with the logger and tracer", () => {
+            // Arrange
+            const fakeRequest: any = ({
+                url: "",
+            }: any);
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            jest.spyOn(GetLogger, "getLogger").mockReturnValue(fakeLogger);
+            const traceImplSpy = jest.spyOn(Shared, "trace");
+
+            // Act
+            trace("TRACE_THIS!", fakeRequest);
+
+            // Assert
+            expect(traceImplSpy).toHaveBeenCalledWith(
+                fakeLogger,
+                "TRACE_THIS!",
+                fakeTracer,
+            );
+        });
+
+        it("should return the trace session", () => {
+            // Arrange
+            const fakeTraceSession: any = ({}: any);
+            const fakeRequest: any = ({
+                url: "",
+            }: any);
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            jest.spyOn(GetLogger, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+
+            // Act
+            const result = trace("TRACE_THIS!", fakeRequest);
+
+            // Assert
+            expect(result).toBe(fakeTraceSession);
+        });
     });
 
-    it("should invoke the shared trace implementation with the logger and tracer", () => {
-        // Arrange
-        const fakeLogger: any = ({}: any);
-        const fakeTracer: any = ({}: any);
-        jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
-        jest.spyOn(GetLogger, "getLogger").mockReturnValue(fakeLogger);
-        const traceImplSpy = jest.spyOn(Shared, "trace");
+    describe("without logger nor request", () => {
+        it("should invoke the shared trace implementation with the logger and tracer", () => {
+            // Arrange
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            jest.spyOn(GetLogger, "getLogger").mockReturnValue(fakeLogger);
+            const traceImplSpy = jest.spyOn(Shared, "trace");
 
-        // Act
-        trace("TRACE_THIS!");
+            // Act
+            trace("TRACE_THIS!");
 
-        // Assert
-        expect(traceImplSpy).toHaveBeenCalledWith(
-            fakeLogger,
-            "TRACE_THIS!",
-            fakeTracer,
-        );
+            // Assert
+            expect(traceImplSpy).toHaveBeenCalledWith(
+                fakeLogger,
+                "TRACE_THIS!",
+                fakeTracer,
+            );
+        });
+
+        it("should return the trace session", () => {
+            // Arrange
+            const fakeTraceSession: any = ({}: any);
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            jest.spyOn(GetLogger, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+
+            // Act
+            const result = trace("TRACE_THIS!");
+
+            // Assert
+            expect(result).toBe(fakeTraceSession);
+        });
     });
 
-    it("should return the trace session", () => {
-        // Arrange
-        const fakeTraceSession: any = ({}: any);
-        const fakeLogger: any = ({}: any);
-        const fakeTracer: any = ({}: any);
-        jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
-        jest.spyOn(GetLogger, "getLogger").mockReturnValue(fakeLogger);
-        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+    describe("with logger", () => {
+        it("should invoke the shared trace implementation with the logger and tracer", () => {
+            // Arrange
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            const traceImplSpy = jest.spyOn(Shared, "trace");
 
-        // Act
-        const result = trace("TRACE_THIS!");
+            // Act
+            trace("TRACE_THIS!", fakeLogger);
 
-        // Assert
-        expect(result).toBe(fakeTraceSession);
+            // Assert
+            expect(traceImplSpy).toHaveBeenCalledWith(
+                fakeLogger,
+                "TRACE_THIS!",
+                fakeTracer,
+            );
+        });
+
+        it("should return the trace session", () => {
+            // Arrange
+            const fakeTraceSession: any = ({}: any);
+            const fakeLogger: any = ({}: any);
+            const fakeTracer: any = ({}: any);
+            jest.spyOn(TraceAgent, "get").mockReturnValue(fakeTracer);
+            jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+
+            // Act
+            const result = trace("TRACE_THIS!", fakeLogger);
+
+            // Assert
+            expect(result).toBe(fakeTraceSession);
+        });
     });
 });
