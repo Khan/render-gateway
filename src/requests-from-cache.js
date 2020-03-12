@@ -1,9 +1,6 @@
 // @flow
 import superagentCachePlugin from "superagent-cache-plugin";
-import type {
-    SuperAgentRequest,
-    Response as SuperAgentResponse,
-} from "superagent";
+import type {Request, Response} from "superagent";
 import type {CachingStrategy} from "./types.js";
 
 /**
@@ -18,7 +15,7 @@ export const FROM_CACHE_PROP_NAME: string = "_fromCache";
  * @param {SuperAgentResponse} response The response to check.
  * @returns {boolean} true if the response was from cache; otherwise false.
  */
-export const isFromCache = (response: SuperAgentResponse): boolean =>
+export const isFromCache = (response: Response): boolean =>
     response[FROM_CACHE_PROP_NAME] === true;
 
 /**
@@ -28,16 +25,16 @@ export const isFromCache = (response: SuperAgentResponse): boolean =>
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
- * @param {SuperAgentRequest} request The request to be modified.
+ * @param {Request} request The request to be modified.
  * @param {boolean} buffer When true, the response body will be buffered,
  * otherwise it will not.
- * @returns {SuperAgentRequest} A superagent request supporting caching for the
+ * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 export const asUncachedRequest = (
-    request: SuperAgentRequest,
+    request: Request,
     buffer: boolean,
-): SuperAgentRequest =>
+): Promise<Response> =>
     request.buffer(buffer).then((res) => {
         /**
          * There's no cache, so this is definitely not from cache.
@@ -55,18 +52,18 @@ export const asUncachedRequest = (
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
- * @param {SuperAgentRequest} request The request to be modified.
+ * @param {Request} request The request to be modified.
  * @param {CachingStrategy} strategy The strategy to control caching.
  * @param {boolean} buffer When true, the response body will be buffered,
  * otherwise it will not.
- * @returns {SuperAgentRequest} A superagent request supporting caching for the
+ * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 export const asCachedRequest = (
-    request: SuperAgentRequest,
+    request: Request,
     strategy: CachingStrategy,
     buffer: boolean,
-): SuperAgentRequest => {
+): Promise<Response> => {
     const {provider, getExpiration} = strategy;
 
     const superagentCache = superagentCachePlugin(provider);

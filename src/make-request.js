@@ -1,5 +1,5 @@
 // @flow
-import type {SuperAgentRequest} from "superagent";
+import type {Response as SuperAgentResponse} from "superagent";
 import type {RenderGatewayOptions} from "./types.js";
 import {isCacheable} from "./is-cacheable.js";
 import type {Logger} from "./shared/index.js";
@@ -20,14 +20,14 @@ import {asCachedRequest, asUncachedRequest} from "./requests-from-cache.js";
  * @param {Logger} logger The logger to use.
  * @param {boolean} [buffer] Defaults to true. When true, the response body will
  * be buffered, otherwise it will not.
- * @returns {SuperAgentRequest} A superagent request for the URL.
+ * @returns {Promise<SuperAgentResponse>} A superagent request for the URL.
  */
 export const makeRequest = (
     options: RenderGatewayOptions,
     url: string,
     logger: Logger,
     buffer?: boolean = true,
-): SuperAgentRequest => {
+): Promise<SuperAgentResponse> => {
     /**
      * Create the base request with our various options.
      */

@@ -18,7 +18,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should create an agent for the request", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -30,7 +30,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             },
         };
         const fakeLogger: any = {};
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         const makeAgentSpy = jest.spyOn(MakeAgent, "makeAgent");
 
         // Act
@@ -40,10 +40,10 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         expect(makeAgentSpy).toHaveBeenCalledWith(fakeKeepAlive);
     });
 
-    it("should apply the agent to the request", () => {
+    it("should get the URL", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -57,21 +57,21 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         };
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        const agentSpy = jest
-            .spyOn(Superagent, "agent")
+        const getSpy = jest
+            .spyOn(Superagent, "get")
             .mockReturnValue(fakeSuperagent);
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
 
         // Assert
-        expect(agentSpy).toHaveBeenCalledWith(fakeAgent);
+        expect(getSpy).toHaveBeenCalledWith("URL");
     });
 
-    it("should get the URL", () => {
+    it("should apply the agent to the request", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -85,19 +85,19 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         };
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
 
         // Assert
-        expect(fakeSuperagent.get).toHaveBeenCalledWith("URL");
+        expect(fakeSuperagent.agent).toHaveBeenCalledWith(fakeAgent);
     });
 
     it("should default retries to 2", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -112,7 +112,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const fakeShouldRetry = jest.fn();
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
         );
@@ -127,7 +127,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should use retries count from options", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -143,7 +143,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const fakeShouldRetry = jest.fn();
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
         );
@@ -158,7 +158,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should make shouldRetry with override from options and logger", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -173,7 +173,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         };
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         const makeShouldRetrySpy = jest.spyOn(
             MakeShouldRetry,
             "makeShouldRetry",
@@ -193,7 +193,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         // Arrange
         process.env.GAE_VERSION = "TEST_GAE_VERSION";
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -208,7 +208,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         };
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
@@ -229,7 +229,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
          */
         delete process.env.GAE_VERSION;
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -244,7 +244,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         };
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
@@ -259,7 +259,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should default timeout to 1 minute (60000 ms)", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -274,7 +274,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const fakeShouldRetry = jest.fn();
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
         );
@@ -289,7 +289,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should set timeout from options", () => {
         // Arrange
         const fakeSuperagent = {
-            get: jest.fn().mockReturnThis(),
+            agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
             timeout: jest.fn().mockReturnThis(),
@@ -305,7 +305,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const fakeShouldRetry = jest.fn();
         const fakeLogger: any = {};
         jest.spyOn(MakeAgent, "makeAgent").mockReturnValue(fakeAgent);
-        jest.spyOn(Superagent, "agent").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
         );

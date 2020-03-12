@@ -12,7 +12,7 @@ jest.mock("superagent-cache-plugin");
 describe("#isFromCache", () => {
     it("should return true if the response FROM_CACHE_PROP_NAME property is true", () => {
         // Arrange
-        const fakeResponse = {};
+        const fakeResponse: any = {};
         fakeResponse[FROM_CACHE_PROP_NAME] = true;
 
         // Act
@@ -26,7 +26,7 @@ describe("#isFromCache", () => {
         "should return false if the response FROM_CACHE_PROP_NAME property is %s",
         (testPoint) => {
             // Arrange
-            const fakeResponse = {};
+            const fakeResponse: any = {};
             fakeResponse[FROM_CACHE_PROP_NAME] = testPoint;
 
             // Act
@@ -39,7 +39,7 @@ describe("#isFromCache", () => {
 
     it("should return false if the response FROM_CACHE_PROP_NAME property missing", () => {
         // Arrange
-        const fakeResponse = {};
+        const fakeResponse: any = {};
 
         // Act
         const result = isFromCache(fakeResponse);
@@ -53,7 +53,7 @@ describe("#asUncachedRequest", () => {
     it("should buffer according to the buffer argument", () => {
         // Arrange
         const fakeBufferArg: any = "BUFFERS";
-        const fakeRequest = {
+        const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             then: jest.fn().mockReturnThis(),
         };
@@ -86,7 +86,7 @@ describe("#asCachedRequest", () => {
         const fakeCachingStrategy: any = {
             provider: "FAKE_PROVIDER",
         };
-        const fakeRequest = {
+        const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
             prune: jest.fn().mockReturnThis(),
@@ -108,7 +108,7 @@ describe("#asCachedRequest", () => {
         // Arrange
         const fakeBufferArg: any = "BUFFERS";
         const fakeCachingStrategy: any = {};
-        const fakeRequest = {
+        const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
             prune: jest.fn().mockReturnThis(),
@@ -132,7 +132,7 @@ describe("#asCachedRequest", () => {
         const fakeCachingStrategy: any = {
             getExpiration: null,
         };
-        const fakeRequest = {
+        const fakeRequest: any = {
             url: "THE URL",
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -154,7 +154,7 @@ describe("#asCachedRequest", () => {
         const fakeCachingStrategy: any = {
             getExpiration: jest.fn(),
         };
-        const fakeRequest = {
+        const fakeRequest: any = {
             url: "THE URL",
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -178,7 +178,7 @@ describe("#asCachedRequest", () => {
         const fakeCachingStrategy: any = {
             getExpiration: jest.fn().mockReturnValue("EXPIRATION VALUE"),
         };
-        const fakeRequest = {
+        const fakeRequest: any = {
             url: "THE URL",
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -198,7 +198,7 @@ describe("#asCachedRequest", () => {
         // Arrange
         const fakeBufferArg: any = "BUFFERS";
         const fakeCachingStrategy: any = {};
-        const fakeRequest = {
+        const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
             prune: jest.fn().mockReturnThis(),
@@ -218,7 +218,7 @@ describe("#asCachedRequest", () => {
             // Arrange
             const fakeBufferArg: any = "BUFFERS";
             const fakeCachingStrategy: any = {};
-            const fakeRequest = {
+            const fakeRequest: any = {
                 buffer: jest.fn().mockReturnThis(),
                 expiration: jest.fn().mockReturnThis(),
                 prune: jest.fn().mockReturnThis(),
@@ -241,7 +241,7 @@ describe("#asCachedRequest", () => {
             // Arrange
             const fakeBufferArg: any = "BUFFERS";
             const fakeCachingStrategy: any = {};
-            const fakeRequest = {
+            const fakeRequest: any = {
                 buffer: jest.fn().mockReturnThis(),
                 expiration: jest.fn().mockReturnThis(),
                 prune: jest.fn().mockReturnThis(),
@@ -267,7 +267,7 @@ describe("#asCachedRequest", () => {
         // Arrange
         const fakeBufferArg: any = "BUFFERS";
         const fakeCachingStrategy: any = {};
-        const fakeRequest = {
+        const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
             prune: jest.fn().mockReturnThis(),

@@ -1,6 +1,6 @@
 // @flow
 import superagent from "superagent";
-import type {SuperAgentRequest} from "superagent";
+import type {Request} from "superagent";
 import {makeAgent} from "./make-agent.js";
 import type {RenderGatewayOptions} from "./types.js";
 import {makeShouldRetry} from "./make-should-retry.js";
@@ -20,7 +20,7 @@ export const makeUnbufferedNoCacheRequest = (
     options: RenderGatewayOptions,
     url: string,
     logger: Logger,
-): SuperAgentRequest => {
+): Request => {
     const {name: gatewayName, requests: requestOptions} = options;
 
     // Get an agent.
@@ -29,8 +29,8 @@ export const makeUnbufferedNoCacheRequest = (
     // Build our main fetcher using the configured agent.
     return (
         superagent
-            .agent(agent)
             .get(url)
+            .agent(agent)
             /**
              * Configure retries since superagent can handle this for us.
              * We give it a callback so we can log the retry and, if we so choose
