@@ -17,19 +17,15 @@ var _requestsFromCache = require("./requests-from-cache.js");
  * Could resolve from cache if caching is enabled and the request has already
  * been fulfilled once. Otherwise, this creates a new request for the URL.
  *
- * The request will resolve with an additional _fromCache property, which will
+ * The request will resolve with an additional property, which will
  * indicate if it was resolved from cache or not.
  *
- * @param {RenderGatewayOptions} options The options used to start the gateway.
+ * @param {RequestOptions} options The options used to configure the request.
  * @param {string} url The URL to be requested.
  * @param {Logger} logger The logger to use.
- * @param {boolean} [buffer] Defaults to true. When true, the response body will
- * be buffered, otherwise it will not.
  * @returns {Promise<SuperAgentResponse>} A superagent request for the URL.
  */
-const makeRequest = (options, url, logger, buffer = true) => {
-  var _options$requests;
-
+const makeRequest = (options, url, logger) => {
   /**
    * Create the base request with our various options.
    */
@@ -41,20 +37,18 @@ const makeRequest = (options, url, logger, buffer = true) => {
    * options.
    */
 
-  const cacheOptions = (_options$requests = options.requests) === null || _options$requests === void 0 ? void 0 : _options$requests.caching;
-
-  if (cacheOptions && (0, _isCacheable.isCacheable)(url, cacheOptions.isCacheable)) {
+  if (options.cachePlugin && (0, _isCacheable.isCacheable)(url, options.isCacheable)) {
     /**
      * If we get here, we are caching this request.
      */
-    return (0, _requestsFromCache.asCachedRequest)(request, cacheOptions, buffer);
+    return (0, _requestsFromCache.asCachedRequest)(options, request);
   }
   /**
    * We're not caching this request, so let's just not set caching up.
    */
 
 
-  return (0, _requestsFromCache.asUncachedRequest)(request, buffer);
+  return (0, _requestsFromCache.asUncachedRequest)(options, request);
 };
 
 exports.makeRequest = makeRequest;

@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.asCachedRequest = exports.asUncachedRequest = exports.isFromCache = exports.FROM_CACHE_PROP_NAME = void 0;
 
-var _superagentCachePlugin = _interopRequireDefault(require("superagent-cache-plugin"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * This is the name of the property we attach to responses so that we can
  * indicate if a response was from the cache or not.
@@ -31,9 +27,9 @@ const isFromCache = response => response[FROM_CACHE_PROP_NAME] === true;
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
+ * @param {RequestOptions} options Used to determine if the request should
+ * buffer or not.
  * @param {Request} request The request to be modified.
- * @param {boolean} buffer When true, the response body will be buffered,
- * otherwise it will not.
  * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
@@ -41,7 +37,7 @@ const isFromCache = response => response[FROM_CACHE_PROP_NAME] === true;
 
 exports.isFromCache = isFromCache;
 
-const asUncachedRequest = (request, buffer) => request.buffer(buffer).then(res => {
+const asUncachedRequest = (options, request) => request.buffer(options.buffer).then(res => {
   /**
    * There's no cache, so this is definitely not from cache.
    */
@@ -57,10 +53,9 @@ const asUncachedRequest = (request, buffer) => request.buffer(buffer).then(res =
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
+ * @param {RequestOptions} options Used to determine caching setup and whether
+ * the request should be buffered or not.
  * @param {Request} request The request to be modified.
- * @param {CachingStrategy} strategy The strategy to control caching.
- * @param {boolean} buffer When true, the response body will be buffered,
- * otherwise it will not.
  * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
@@ -68,14 +63,19 @@ const asUncachedRequest = (request, buffer) => request.buffer(buffer).then(res =
 
 exports.asUncachedRequest = asUncachedRequest;
 
-const asCachedRequest = (request, strategy, buffer) => {
+const asCachedRequest = (options, request) => {
   const {
-    provider,
-    getExpiration
-  } = strategy;
-  const superagentCache = (0, _superagentCachePlugin.default)(provider);
+    cachePlugin,
+    getExpiration,
+    buffer
+  } = options;
+
+  if (cachePlugin == null) {
+    throw new Error("Cannot cache request without cache plugin instance.");
+  }
+
   const FRESHLY_PRUNED = "PRUNED";
-  return request.use(superagentCache).expiration(getExpiration === null || getExpiration === void 0 ? void 0 : getExpiration(request.url)).prune((response, gutResponse) => {
+  return request.use(cachePlugin).expiration(getExpiration === null || getExpiration === void 0 ? void 0 : getExpiration(request.url)).prune((response, gutResponse) => {
     /**
      * This is called to prune a response before it goes into the
      * cache.
