@@ -14,7 +14,7 @@ import {extractErrorString} from "./shared/index.js";
  */
 export const makeShouldRetry = (
     logger: Logger,
-    override?: CallbackHandler,
+    override: ?CallbackHandler,
 ): CallbackHandler => {
     return (err: AmbiguousError, res: SuperAgentResponse): ?boolean => {
         logger.warn("Request failed. Might retry.", {

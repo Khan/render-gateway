@@ -12,37 +12,31 @@ describe("#makeRequest", () => {
     it("should get an unbuffered, no cache request", () => {
         // Arrange
         const fakeLogger: any = "LOGGER";
-        const fakeRenderGatewayOptions: any = {
-            name: "RENDER_GATEWAY_TEST",
-        };
+        const fakeRequestOptions: any = "FAKE_OPTIONS";
         const makeUnbufferedNoCacheRequestSpy = jest.spyOn(
             MakeUnbufferedNoCacheRequest,
             "makeUnbufferedNoCacheRequest",
         );
 
         // Act
-        makeRequest(fakeRenderGatewayOptions, "URL", fakeLogger);
+        makeRequest(fakeRequestOptions, "URL", fakeLogger);
 
         // Assert
         expect(makeUnbufferedNoCacheRequestSpy).toHaveBeenCalledWith(
-            fakeRenderGatewayOptions,
+            fakeRequestOptions,
             "URL",
             fakeLogger,
         );
     });
 
-    describe("with caching options", () => {
+    describe("with cache plugin", () => {
         it("should call isCacheable", () => {
             // Arrange
             const fakeLogger: any = "LOGGER";
             const fakeIsCacheableOverride = "FAKE_ISCACHEABLE";
-            const fakeRenderGatewayOptions: any = {
-                name: "RENDER_GATEWAY_TEST",
-                requests: {
-                    caching: {
-                        isCacheable: fakeIsCacheableOverride,
-                    },
-                },
+            const fakeRequestOptions: any = {
+                cachePlugin: "FAKE_PLUGIN",
+                isCacheable: fakeIsCacheableOverride,
             };
             const isCacheableSpy = jest.spyOn(IsCacheable, "isCacheable");
             jest.spyOn(
@@ -52,7 +46,7 @@ describe("#makeRequest", () => {
             jest.spyOn(RequestsFromCache, "asUncachedRequest");
 
             // Act
-            makeRequest(fakeRenderGatewayOptions, "URL", fakeLogger);
+            makeRequest(fakeRequestOptions, "URL", fakeLogger);
 
             // Assert
             expect(isCacheableSpy).toHaveBeenCalledWith(
@@ -62,17 +56,12 @@ describe("#makeRequest", () => {
         });
 
         describe("isCachable returns true", () => {
-            it("should call asUncachedRequest with request and buffer value", () => {
+            it("should call asCachedRequest", () => {
                 // Arrange
                 const fakeRequest = "FAKE_REQUEST";
-                const fakeBuffer: any = "FAKE_BUFFER";
                 const fakeLogger: any = "LOGGER";
-                const fakeCachingStrategy = "FAKE_CACHING_STRATEGY";
-                const fakeRenderGatewayOptions: any = {
-                    name: "RENDER_GATEWAY_TEST",
-                    requests: {
-                        caching: fakeCachingStrategy,
-                    },
+                const fakeRequestOptions: any = {
+                    cachePlugin: "FAKE_PLUGIN",
                 };
                 jest.spyOn(IsCacheable, "isCacheable").mockReturnValue(true);
                 jest.spyOn(
@@ -85,18 +74,12 @@ describe("#makeRequest", () => {
                 );
 
                 // Act
-                makeRequest(
-                    fakeRenderGatewayOptions,
-                    "URL",
-                    fakeLogger,
-                    fakeBuffer,
-                );
+                makeRequest(fakeRequestOptions, "URL", fakeLogger);
 
                 // Assert
                 expect(asCachedRequestSpy).toHaveBeenCalledWith(
+                    fakeRequestOptions,
                     fakeRequest,
-                    fakeCachingStrategy,
-                    fakeBuffer,
                 );
             });
 
@@ -104,11 +87,8 @@ describe("#makeRequest", () => {
                 // Arrange
                 const fakeCachedRequest = "FAKE_CACHED_REQUEST";
                 const fakeLogger: any = "LOGGER";
-                const fakeRenderGatewayOptions: any = {
-                    name: "RENDER_GATEWAY_TEST",
-                    requests: {
-                        caching: {},
-                    },
+                const fakeRequestOptions: any = {
+                    cachePlugin: "FAKE_CACHING_STRATEGY",
                 };
                 jest.spyOn(IsCacheable, "isCacheable").mockReturnValue(true);
                 jest.spyOn(
@@ -122,7 +102,7 @@ describe("#makeRequest", () => {
 
                 // Act
                 const result = makeRequest(
-                    fakeRenderGatewayOptions,
+                    fakeRequestOptions,
                     "URL",
                     fakeLogger,
                 );
@@ -136,13 +116,9 @@ describe("#makeRequest", () => {
             it("should call asUncachedRequest with request and buffer value", () => {
                 // Arrange
                 const fakeRequest = "FAKE_REQUEST";
-                const fakeBuffer: any = "FAKE_BUFFER";
                 const fakeLogger: any = "LOGGER";
-                const fakeRenderGatewayOptions: any = {
-                    name: "RENDER_GATEWAY_TEST",
-                    requests: {
-                        caching: {},
-                    },
+                const fakeRequestOptions: any = {
+                    cachePlugin: "FAKE_CACHING_STRATEGY",
                 };
                 jest.spyOn(IsCacheable, "isCacheable").mockReturnValue(false);
                 jest.spyOn(
@@ -155,17 +131,12 @@ describe("#makeRequest", () => {
                 );
 
                 // Act
-                makeRequest(
-                    fakeRenderGatewayOptions,
-                    "URL",
-                    fakeLogger,
-                    fakeBuffer,
-                );
+                makeRequest(fakeRequestOptions, "URL", fakeLogger);
 
                 // Assert
                 expect(asUncachedRequestSpy).toHaveBeenCalledWith(
+                    fakeRequestOptions,
                     fakeRequest,
-                    fakeBuffer,
                 );
             });
 
@@ -173,11 +144,8 @@ describe("#makeRequest", () => {
                 // Arrange
                 const fakeUncachedRequest = "FAKE_UNCACHED_REQUEST";
                 const fakeLogger: any = "LOGGER";
-                const fakeRenderGatewayOptions: any = {
-                    name: "RENDER_GATEWAY_TEST",
-                    requests: {
-                        caching: {},
-                    },
+                const fakeRequestOptions: any = {
+                    cachePlugin: "FAKE_CACHING_STRATEGY",
                 };
                 jest.spyOn(IsCacheable, "isCacheable").mockReturnValue(false);
                 jest.spyOn(
@@ -191,7 +159,7 @@ describe("#makeRequest", () => {
 
                 // Act
                 const result = makeRequest(
-                    fakeRenderGatewayOptions,
+                    fakeRequestOptions,
                     "URL",
                     fakeLogger,
                 );
@@ -202,15 +170,12 @@ describe("#makeRequest", () => {
         });
     });
 
-    describe("with no caching options", () => {
+    describe("with no cache plugin", () => {
         it("should call asUncachedRequest with request and buffer value", () => {
             // Arrange
             const fakeRequest = "FAKE_REQUEST";
-            const fakeBuffer: any = "FAKE_BUFFER";
             const fakeLogger: any = "LOGGER";
-            const fakeRenderGatewayOptions: any = {
-                name: "RENDER_GATEWAY_TEST",
-            };
+            const fakeRequestOptions: any = "FAKE_OPTIONS";
             jest.spyOn(
                 MakeUnbufferedNoCacheRequest,
                 "makeUnbufferedNoCacheRequest",
@@ -221,17 +186,12 @@ describe("#makeRequest", () => {
             );
 
             // Act
-            makeRequest(
-                fakeRenderGatewayOptions,
-                "URL",
-                fakeLogger,
-                fakeBuffer,
-            );
+            makeRequest(fakeRequestOptions, "URL", fakeLogger);
 
             // Assert
             expect(asUncachedRequestSpy).toHaveBeenCalledWith(
+                fakeRequestOptions,
                 fakeRequest,
-                fakeBuffer,
             );
         });
 
@@ -239,9 +199,7 @@ describe("#makeRequest", () => {
             // Arrange
             const fakeUncachedRequest = "FAKE UNCACHED REQUEST";
             const fakeLogger: any = "LOGGER";
-            const fakeRenderGatewayOptions: any = {
-                name: "RENDER_GATEWAY_TEST",
-            };
+            const fakeRequestOptions: any = "FAKE_OPTIONS";
             jest.spyOn(
                 MakeUnbufferedNoCacheRequest,
                 "makeUnbufferedNoCacheRequest",
@@ -251,11 +209,7 @@ describe("#makeRequest", () => {
             );
 
             // Act
-            const result = makeRequest(
-                fakeRenderGatewayOptions,
-                "URL",
-                fakeLogger,
-            );
+            const result = makeRequest(fakeRequestOptions, "URL", fakeLogger);
 
             // Assert
             expect(result).toBe(fakeUncachedRequest);

@@ -1,5 +1,4 @@
 // @flow
-import * as SuperagentCachePlugin from "superagent-cache-plugin";
 import {
     FROM_CACHE_PROP_NAME,
     isFromCache,
@@ -50,29 +49,32 @@ describe("#isFromCache", () => {
 });
 
 describe("#asUncachedRequest", () => {
-    it("should buffer according to the buffer argument", () => {
+    it("should buffer according to the buffer option", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
+        const fakeOptions: any = {
+            buffer: "FAKE_BUFFER",
+        };
         const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             then: jest.fn().mockReturnThis(),
         };
 
         // Act
-        asUncachedRequest(fakeRequest, fakeBufferArg);
+        asUncachedRequest(fakeOptions, fakeRequest);
 
         // Assert
-        expect(fakeRequest.buffer).toHaveBeenCalledWith(fakeBufferArg);
+        expect(fakeRequest.buffer).toHaveBeenCalledWith(fakeOptions.buffer);
     });
 
     it("should resolve with the FROM_CACHE_PROP_NAME prop set to false", async () => {
         // Arrange
         const fakeResponse = {};
         const fakeRequest: any = Promise.resolve(fakeResponse);
+        const fakeOptions: any = {};
         fakeRequest.buffer = jest.fn().mockReturnThis();
 
         // Act
-        const result = await asUncachedRequest(fakeRequest, false);
+        const result = await asUncachedRequest(fakeOptions, fakeRequest);
 
         // Assert
         expect(result).toHaveProperty(FROM_CACHE_PROP_NAME, false);
@@ -80,12 +82,9 @@ describe("#asUncachedRequest", () => {
 });
 
 describe("#asCachedRequest", () => {
-    it("should invoke superagent cache plugin with provider from strategy", () => {
+    it("should throw if no cache plugin instance provided", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {
-            provider: "FAKE_PROVIDER",
-        };
+        const fakeOptions: any = {};
         const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -93,21 +92,21 @@ describe("#asCachedRequest", () => {
             use: jest.fn().mockReturnThis(),
             then: jest.fn().mockReturnThis(),
         };
-        const superagentCacheSpy = jest.spyOn(SuperagentCachePlugin, "default");
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        const underTest = () => asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
-        expect(superagentCacheSpy).toHaveBeenCalledWith(
-            fakeCachingStrategy.provider,
+        expect(underTest).toThrowErrorMatchingInlineSnapshot(
+            `"Cannot cache request without cache plugin instance."`,
         );
     });
 
-    it("should use the superagent cache plugin instance", () => {
+    it("should use the superagent cache plugin instance from options", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {};
+        const fakeOptions: any = {
+            cachePlugin: "FAKE_CACHE_PLUGIN",
+        };
         const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -115,21 +114,18 @@ describe("#asCachedRequest", () => {
             use: jest.fn().mockReturnThis(),
             then: jest.fn().mockReturnThis(),
         };
-        jest.spyOn(SuperagentCachePlugin, "default").mockReturnValue(
-            "FAKE_CACHE_PLUGIN",
-        );
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
         expect(fakeRequest.use).toHaveBeenCalledWith("FAKE_CACHE_PLUGIN");
     });
 
-    it("should set the cache expiration to undefined if no caching strategy for expiration", () => {
+    it("should set the cache expiration to undefined if no getExpiration option", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {
+        const fakeOptions: any = {
+            cachePlugin: "FAKE_PLUGIN",
             getExpiration: null,
         };
         const fakeRequest: any = {
@@ -142,16 +138,16 @@ describe("#asCachedRequest", () => {
         };
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
         expect(fakeRequest.expiration).toHaveBeenCalledWith(undefined);
     });
 
-    it("should get an expiration value based off the caching strategy", () => {
+    it("should get an expiration value based off the getExpiration option", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {
+        const fakeOptions: any = {
+            cachePlugin: "FAKE_PLUGIN",
             getExpiration: jest.fn(),
         };
         const fakeRequest: any = {
@@ -164,18 +160,16 @@ describe("#asCachedRequest", () => {
         };
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
-        expect(fakeCachingStrategy.getExpiration).toHaveBeenCalledWith(
-            "THE URL",
-        );
+        expect(fakeOptions.getExpiration).toHaveBeenCalledWith("THE URL");
     });
 
     it("should set the cache expiration based off the caching strategy value", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {
+        const fakeOptions: any = {
+            cachePlugin: "FAKE_PLUGIN",
             getExpiration: jest.fn().mockReturnValue("EXPIRATION VALUE"),
         };
         const fakeRequest: any = {
@@ -188,7 +182,7 @@ describe("#asCachedRequest", () => {
         };
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
         expect(fakeRequest.expiration).toHaveBeenCalledWith("EXPIRATION VALUE");
@@ -196,8 +190,9 @@ describe("#asCachedRequest", () => {
 
     it("should add a custom prune function to the request caching", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {};
+        const fakeOptions: any = {
+            cachePlugin: "FAKE_PLUGIN",
+        };
         const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -207,7 +202,7 @@ describe("#asCachedRequest", () => {
         };
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
         expect(fakeRequest.prune).toHaveBeenCalledWith(expect.any(Function));
@@ -216,8 +211,9 @@ describe("#asCachedRequest", () => {
     describe("prune operation", () => {
         it("should gut the response with the passed function", () => {
             // Arrange
-            const fakeBufferArg: any = "BUFFERS";
-            const fakeCachingStrategy: any = {};
+            const fakeOptions: any = {
+                cachePlugin: "FAKE_PLUGIN",
+            };
             const fakeRequest: any = {
                 buffer: jest.fn().mockReturnThis(),
                 expiration: jest.fn().mockReturnThis(),
@@ -227,7 +223,7 @@ describe("#asCachedRequest", () => {
             };
             const fakeResponse = "FAKE_RESPONSE";
             const gutResponseFn = jest.fn().mockReturnValue({});
-            asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+            asCachedRequest(fakeOptions, fakeRequest);
             const pruneFn = fakeRequest.prune.mock.calls[0][0];
 
             // Act
@@ -239,8 +235,9 @@ describe("#asCachedRequest", () => {
 
         it("should initialize the FROM_CACHE_PROP_NAME property on the response to a non-boolean, non-falsy placeholder value", () => {
             // Arrange
-            const fakeBufferArg: any = "BUFFERS";
-            const fakeCachingStrategy: any = {};
+            const fakeOptions: any = {
+                cachePlugin: "FAKE_PLUGIN",
+            };
             const fakeRequest: any = {
                 buffer: jest.fn().mockReturnThis(),
                 expiration: jest.fn().mockReturnThis(),
@@ -250,7 +247,7 @@ describe("#asCachedRequest", () => {
             };
             const fakeResponse = {};
             const gutResponseFn = jest.fn().mockReturnValue(fakeResponse);
-            asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+            asCachedRequest(fakeOptions, fakeRequest);
             const pruneFn = fakeRequest.prune.mock.calls[0][0];
 
             // Act
@@ -265,8 +262,10 @@ describe("#asCachedRequest", () => {
 
     it("should buffer according to the buffer argument", () => {
         // Arrange
-        const fakeBufferArg: any = "BUFFERS";
-        const fakeCachingStrategy: any = {};
+        const fakeOptions: any = {
+            buffer: "FAKE_BUFFER",
+            cachePlugin: "FAKE_PLUGIN",
+        };
         const fakeRequest: any = {
             buffer: jest.fn().mockReturnThis(),
             expiration: jest.fn().mockReturnThis(),
@@ -276,16 +275,18 @@ describe("#asCachedRequest", () => {
         };
 
         // Act
-        asCachedRequest(fakeRequest, fakeCachingStrategy, fakeBufferArg);
+        asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
-        expect(fakeRequest.buffer).toHaveBeenCalledWith(fakeBufferArg);
+        expect(fakeRequest.buffer).toHaveBeenCalledWith(fakeOptions.buffer);
     });
 
     describe("when the request is freshly pruned (i.e. just cached)", () => {
         it("it should resolve with the FROM_CACHE_PROP_NAME prop set to false", async () => {
             // Arrange
-            const fakeCachingStrategy: any = {};
+            const fakeOptions: any = {
+                cachePlugin: "FAKE_PLUGIN",
+            };
             const fakeResponse = {};
             const fakeRequest: any = Promise.resolve(fakeResponse);
             Object.assign(fakeRequest, {
@@ -304,11 +305,7 @@ describe("#asCachedRequest", () => {
             });
 
             // Act
-            const result = await asCachedRequest(
-                fakeRequest,
-                fakeCachingStrategy,
-                false,
-            );
+            const result = await asCachedRequest(fakeOptions, fakeRequest);
 
             // Assert
             expect(result).toHaveProperty(FROM_CACHE_PROP_NAME, false);
@@ -318,7 +315,9 @@ describe("#asCachedRequest", () => {
     describe("when the request is from cache", () => {
         it("it should resolve with the FROM_CACHE_PROP_NAME prop set to true", async () => {
             // Arrange
-            const fakeCachingStrategy: any = {};
+            const fakeOptions: any = {
+                cachePlugin: "FAKE_PLUGIN",
+            };
             const fakeResponse = {};
             /**
              * A cached response, as the earlier test shows, gets this
@@ -340,11 +339,7 @@ describe("#asCachedRequest", () => {
             });
 
             // Act
-            const result = await asCachedRequest(
-                fakeRequest,
-                fakeCachingStrategy,
-                false,
-            );
+            const result = await asCachedRequest(fakeOptions, fakeRequest);
 
             // Assert
             expect(result).toHaveProperty(FROM_CACHE_PROP_NAME, true);

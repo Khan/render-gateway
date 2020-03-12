@@ -1,8 +1,7 @@
 // @flow
 import superagent from "superagent";
 import type {Request} from "superagent";
-import {makeAgent} from "./make-agent.js";
-import type {RenderGatewayOptions} from "./types.js";
+import type {RequestOptions} from "./types.js";
 import {makeShouldRetry} from "./make-should-retry.js";
 import type {Logger} from "./shared/index.js";
 
@@ -17,47 +16,32 @@ import type {Logger} from "./shared/index.js";
  * @returns {SuperAgentRequest} A superagent request for the URL.
  */
 export const makeUnbufferedNoCacheRequest = (
-    options: RenderGatewayOptions,
+    options: RequestOptions,
     url: string,
     logger: Logger,
-): Request => {
-    const {name: gatewayName, requests: requestOptions} = options;
-
-    // Get an agent.
-    const agent = makeAgent(requestOptions?.keepAlive);
-
-    // Build our main fetcher using the configured agent.
-    return (
-        superagent
-            .get(url)
-            .agent(agent)
-            /**
-             * Configure retries since superagent can handle this for us.
-             * We give it a callback so we can log the retry and, if we so choose
-             * in the future, decide whether we should allow any more. This would
-             * allow us to short circuit the retry count (the max retries still
-             * takes precedence over our callback response, so we can't retry
-             * forever).
-             */
-            .retry(
-                requestOptions?.retries || 2,
-                makeShouldRetry(logger, requestOptions?.shouldRetry),
-            )
-            /**
-             * We add a user agent header so that we can easily identify our
-             * requests in logs.
-             *
-             * The header has a form like:
-             *     gateway-name (GAE_VERSION_STRING_HERE)
-             */
-            .set(
-                "User-Agent",
-                `${gatewayName} (${process.env.GAE_VERSION || "UNKNOWN"})`,
-            )
-            /**
-             * Our default timeout is 1 minute, but we allow for it to be
-             * overridden by gateway options.
-             */
-            .timeout(requestOptions?.timeout || 60000)
-    );
-};
+): Request =>
+    superagent
+        .get(url)
+        .agent(options.agent)
+        /**
+         * Configure retries since superagent can handle this for us.
+         * We give it a callback so we can log the retry and, if we so choose
+         * in the future, decide whether we should allow any more. This would
+         * allow us to short circuit the retry count (the max retries still
+         * takes precedence over our callback response, so we can't retry
+         * forever).
+         */
+        .retry(options.retries, makeShouldRetry(logger, options.shouldRetry))
+        /**
+         * We add a user agent header so that we can easily identify our
+         * requests in logs.
+         *
+         * The header has a form like:
+         *     GAE_SERVICE_STRING_HERE (GAE_VERSION_STRING_HERE)
+         */
+        .set(
+            "User-Agent",
+            `${process.env.GAE_SERVICE || "unnamed-render-gateway"} (${process
+                .env.GAE_VERSION || "UNKNOWN"})`,
+        )
+        .timeout(options.timeout);

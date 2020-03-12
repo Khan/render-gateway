@@ -1,6 +1,7 @@
 // @flow
+import type {Agent} from "http";
 import type {$Request, $Response} from "express";
-import type {CallbackHandler} from "superagent";
+import type {CallbackHandler, Plugin} from "superagent";
 import type {RequestWithLog} from "./shared/index.js";
 
 /**
@@ -191,3 +192,70 @@ export type Request = RequestWithLog<$Request>;
  * The response type that we use with express.
  */
 export type Response = $Response;
+
+/**
+ * Options to configure a request.
+ */
+export type RequestOptions = {
+    /**
+     * When true, the response body will be buffered, otherwise it will not.
+     */
+    buffer: boolean,
+
+    /**
+     * Time to wait in milliseconds before a request times out.
+     */
+    timeout: number,
+
+    /**
+     * The number of times a request is retried if it fails from a transient
+     * error. This is in addition to the initial request. For example, if this
+     * were set to 3, then there could be a total of 4 requests.
+     * Note that for all GET requests made during server-side rendering,
+     * it is assumed they will be idempotent.
+     */
+    retries: number,
+
+    /**
+     * HTTP agent to be used for the requests.
+     */
+    agent?: Agent,
+
+    /**
+     * The superagent-cache-plugin instance that will be used.
+     */
+    cachePlugin: ?Plugin,
+
+    /**
+     * A callback to calculate when the cached response for a given URL should
+     * expire. If this method is omitted, the cache provider's default
+     * expiration will be used. The result is given to superagent-cache-plugin
+     * and works according to its documentation.
+     *
+     * https://github.com/jpodwys/superagent-cache-plugin/tree/02e41c5b98c89318133d4736b2bd1abcc1866bab
+     */
+    getExpiration: ?(url: string) => ?number,
+
+    /**
+     * A callback used to determine if a particular URL's result should be
+     * cached or not. This defaults to only allowing JS file extensions to be
+     * stored. This callback should return null for the default behavior to
+     * apply.
+     */
+    isCacheable: ?(url: string) => ?boolean,
+
+    /**
+     * Callback invoked if a retry occurs.
+     * This should return null for the default behavior to apply, true to allow
+     * the retry, and false to block further retries.
+     *
+     * Returning a non-boolean value causes superagent to do its default
+     * behavior, which is:
+     * - allow retry for all 500 errors except 501
+     * - allow retry for err.code set to any:
+     *      ['ECONNRESET', 'ETIMEDOUT', 'EADDRINFO', 'ESOCKETTIMEDOUT']
+     * - allow retry if err.timeout is truthy and err.code is 'ECONNABORTED`
+     * - allow retry if err.crossDomain is truthy
+     */
+    shouldRetry: ?CallbackHandler,
+};

@@ -1,7 +1,6 @@
 // @flow
-import superagentCachePlugin from "superagent-cache-plugin";
 import type {Request, Response} from "superagent";
-import type {CachingStrategy} from "./types.js";
+import type {RequestOptions} from "./types.js";
 
 /**
  * This is the name of the property we attach to responses so that we can
@@ -25,17 +24,17 @@ export const isFromCache = (response: Response): boolean =>
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
+ * @param {RequestOptions} options Used to determine if the request should
+ * buffer or not.
  * @param {Request} request The request to be modified.
- * @param {boolean} buffer When true, the response body will be buffered,
- * otherwise it will not.
  * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 export const asUncachedRequest = (
+    options: RequestOptions,
     request: Request,
-    buffer: boolean,
 ): Promise<Response> =>
-    request.buffer(buffer).then((res) => {
+    request.buffer(options.buffer).then((res) => {
         /**
          * There's no cache, so this is definitely not from cache.
          */
@@ -52,25 +51,25 @@ export const asUncachedRequest = (
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
+ * @param {RequestOptions} options Used to determine caching setup and whether
+ * the request should be buffered or not.
  * @param {Request} request The request to be modified.
- * @param {CachingStrategy} strategy The strategy to control caching.
- * @param {boolean} buffer When true, the response body will be buffered,
- * otherwise it will not.
  * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 export const asCachedRequest = (
+    options: RequestOptions,
     request: Request,
-    strategy: CachingStrategy,
-    buffer: boolean,
 ): Promise<Response> => {
-    const {provider, getExpiration} = strategy;
+    const {cachePlugin, getExpiration, buffer} = options;
+    if (cachePlugin == null) {
+        throw new Error("Cannot cache request without cache plugin instance.");
+    }
 
-    const superagentCache = superagentCachePlugin(provider);
     const FRESHLY_PRUNED = "PRUNED";
 
     return request
-        .use(superagentCache)
+        .use(cachePlugin)
         .expiration(getExpiration?.(request.url))
         .prune((response, gutResponse) => {
             /**
