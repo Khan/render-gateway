@@ -70,7 +70,7 @@ export const asCachedRequest = (
     const {provider, getExpiration} = strategy;
 
     const superagentCache = superagentCachePlugin(provider);
-    const NEW_CACHE_ENTRY = "NO";
+    const FRESHLY_PRUNED_RESPONSE = "PRUNED";
 
     return request
         .use(superagentCache)
@@ -87,25 +87,32 @@ export const asCachedRequest = (
              * do, for now.
              */
             const guttedResponse = gutResponse(response);
-            guttedResponse[FROM_CACHE_PROP_NAME] = NEW_CACHE_ENTRY;
+            guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED_RESPONSE;
             return guttedResponse;
         })
         .buffer(buffer)
         .then((res) => {
             /**
-             * Set the _fromCache option to a boolean value.
+             * Set the FROM_CACHE_PROP_NAME property to a boolean value.
              *
-             * This works because if it was just cached, then the _fromCache
-             * is set explicitly to "NO". If we just retrieved the response
-             * from cache, then _fromCache would be true/false, and so
-             * will not match our default.
+             * This works because if it is a brand new response that was just
+             * cached, then the FROM_CACHE_PROP_NAME property is set explicitly
+             * to FRESHLY_PRUNED_RESPONSE. Therefore, we know it was not
+             * previously cached. So, we set FROM_CACHE_PROP_NAME property to
+             * false.
              *
-             * It also works because the response we get here is what is in
-             * the cache so any modifications we make are reflected in the
-             * cached value. Cheeky, but it works 😈
+             * The response we get here is what is in the cache so any
+             * modifications we make are reflected in the cached value.
+             *
+             * That means that if we get here and the FROM_CACHE_PROP_NAME is
+             * not equal to FRESHLY_PRUNED_RESPONSE, it MUST have come from the
+             * cache and not a brand new request, so we can set the
+             * FROM_CACHE_PROP_NAME property to true!
+             *
+             * Cheeky, but it works 😈
              */
             res[FROM_CACHE_PROP_NAME] =
-                res[FROM_CACHE_PROP_NAME] !== NEW_CACHE_ENTRY;
+                res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED_RESPONSE;
             return res;
         });
 };
