@@ -31,7 +31,7 @@ const makeUnbufferedNoCacheRequest = (options, url, logger) => {
 
   const agent = (0, _makeAgent.makeAgent)(requestOptions === null || requestOptions === void 0 ? void 0 : requestOptions.keepAlive); // Build our main fetcher using the configured agent.
 
-  return _superagent.default.agent(agent).get(url)
+  return _superagent.default.get(url).agent(agent)
   /**
    * Configure retries since superagent can handle this for us.
    * We give it a callback so we can log the retry and, if we so choose

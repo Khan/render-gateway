@@ -25,7 +25,7 @@ var _requestsFromCache = require("./requests-from-cache.js");
  * @param {Logger} logger The logger to use.
  * @param {boolean} [buffer] Defaults to true. When true, the response body will
  * be buffered, otherwise it will not.
- * @returns {SuperAgentRequest} A superagent request for the URL.
+ * @returns {Promise<SuperAgentResponse>} A superagent request for the URL.
  */
 const makeRequest = (options, url, logger, buffer = true) => {
   var _options$requests;
