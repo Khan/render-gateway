@@ -70,7 +70,7 @@ export const asCachedRequest = (
     const {provider, getExpiration} = strategy;
 
     const superagentCache = superagentCachePlugin(provider);
-    const FRESHLY_PRUNED_RESPONSE = "PRUNED";
+    const FRESHLY_PRUNED = "PRUNED";
 
     return request
         .use(superagentCache)
@@ -87,7 +87,7 @@ export const asCachedRequest = (
              * do, for now.
              */
             const guttedResponse = gutResponse(response);
-            guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED_RESPONSE;
+            guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED;
             return guttedResponse;
         })
         .buffer(buffer)
@@ -97,7 +97,7 @@ export const asCachedRequest = (
              *
              * This works because if it is a brand new response that was just
              * cached, then the FROM_CACHE_PROP_NAME property is set explicitly
-             * to FRESHLY_PRUNED_RESPONSE. Therefore, we know it was not
+             * to FRESHLY_PRUNED. Therefore, we know it was not
              * previously cached. So, we set FROM_CACHE_PROP_NAME property to
              * false.
              *
@@ -105,14 +105,14 @@ export const asCachedRequest = (
              * modifications we make are reflected in the cached value.
              *
              * That means that if we get here and the FROM_CACHE_PROP_NAME is
-             * not equal to FRESHLY_PRUNED_RESPONSE, it MUST have come from the
+             * not equal to FRESHLY_PRUNED, it MUST have come from the
              * cache and not a brand new request, so we can set the
              * FROM_CACHE_PROP_NAME property to true!
              *
              * Cheeky, but it works 😈
              */
             res[FROM_CACHE_PROP_NAME] =
-                res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED_RESPONSE;
+                res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
             return res;
         });
 };
