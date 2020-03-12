@@ -13,12 +13,12 @@ implicit-inexact-object=error
 <PROJECT_ROOT>/bin
 
 [include]
-<PROJECT_ROOT>/run_local.js
-<PROJECT_ROOT>/src
+run_local.js
+src
 .*/__tests__/.*
 
 [libs]
-<PROJECT_ROOT>/flow-typed/**/*.js
+flow-typed
 
 [options]
 emoji=true
