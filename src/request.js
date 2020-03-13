@@ -1,7 +1,7 @@
 // @flow
 import type {Response} from "superagent";
 import type {
-    InflightRequests,
+    InFlightRequests,
     RequestOptions,
     AbortablePromise,
 } from "./types.js";
@@ -13,7 +13,18 @@ import {trace} from "./ka-shared/index.js";
 /**
  * This tracks our inflight requests.
  */
-const inFlightRequests: InflightRequests = {};
+const inFlightRequests: InFlightRequests = {};
+
+/**
+ * Abort any requests that are inflight and clears the inflight request queue.
+ */
+export const abortInFlightRequests = (): void => {
+    for (const url of Object.keys(inFlightRequests)) {
+        const request = inFlightRequests[url];
+        delete inFlightRequests[url];
+        request.abort();
+    }
+};
 
 /**
  * Request a URL.

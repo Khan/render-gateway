@@ -11,7 +11,7 @@ import type {RequestWithLog} from "./shared/index.js";
 /**
  * Used to track inflight requests.
  */
-export type InflightRequests = {
+export type InFlightRequests = {
     [url: string]: AbortablePromise<SuperAgentResponse>,
     ...,
 };
