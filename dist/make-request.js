@@ -21,15 +21,15 @@ var _requestsFromCache = require("./requests-from-cache.js");
  * indicate if it was resolved from cache or not.
  *
  * @param {RequestOptions} options The options used to configure the request.
- * @param {string} url The URL to be requested.
  * @param {Logger} logger The logger to use.
+ * @param {string} url The URL to be requested.
  * @returns {Promise<SuperAgentResponse>} A superagent request for the URL.
  */
-const makeRequest = (options, url, logger) => {
+const makeRequest = (options, logger, url) => {
   /**
    * Create the base request with our various options.
    */
-  const request = (0, _makeUnbufferedNoCacheRequest.makeUnbufferedNoCacheRequest)(options, url, logger);
+  const request = (0, _makeUnbufferedNoCacheRequest.makeUnbufferedNoCacheRequest)(options, logger, url);
   /**
    * We only add caching support if we were given a cache to use.
    * We also make sure that this request is something we want to cache.

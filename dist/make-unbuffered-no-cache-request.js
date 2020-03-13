@@ -17,11 +17,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * This is not intended for direct use. Use makeRequest.
  *
  * @param {RenderGatewayOptions} options The options used to start the gateway.
- * @param {string} url The URL to be requested.
  * @param {Logger} logger The logger to use.
+ * @param {string} url The URL to be requested.
  * @returns {SuperAgentRequest} A superagent request for the URL.
  */
-const makeUnbufferedNoCacheRequest = (options, url, logger) => _superagent.default.get(url).agent(options.agent)
+const makeUnbufferedNoCacheRequest = (options, logger, url) => _superagent.default.get(url).agent(options.agent)
 /**
  * Configure retries since superagent can handle this for us.
  * We give it a callback so we can log the retry and, if we so choose
