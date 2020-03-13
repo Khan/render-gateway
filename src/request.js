@@ -16,7 +16,7 @@ import {trace} from "./ka-shared/index.js";
 const inFlightRequests: InFlightRequests = {};
 
 /**
- * Abort any requests that are inflight and clears the inflight request queue.
+ * Abort any requests that are inflight and clear the inflight request queue.
  */
 export const abortInFlightRequests = (): void => {
     for (const url of Object.keys(inFlightRequests)) {

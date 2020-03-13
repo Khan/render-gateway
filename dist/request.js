@@ -16,7 +16,7 @@ var _index = require("./ka-shared/index.js");
  */
 const inFlightRequests = {};
 /**
- * Abort any requests that are inflight and clears the inflight request queue.
+ * Abort any requests that are inflight and clear the inflight request queue.
  */
 
 const abortInFlightRequests = () => {
