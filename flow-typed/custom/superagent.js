@@ -302,6 +302,7 @@ declare module "superagent" {
     declare export type Response = superagent$Response;
     declare export type SuperAgentRequest = superagent$SuperAgentRequest;
     declare export type Request = superagent$Request;
+    declare export type Plugin = superagent$Plugin;
 
     declare module.exports: superagent$SuperAgentStatic;
 }

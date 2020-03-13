@@ -1,7 +1,7 @@
 // @flow
 export const isCacheable = (
     url: string,
-    overrideFn?: (string) => ?boolean,
+    overrideFn: ?(string) => ?boolean,
 ): boolean => {
     const override = overrideFn?.(url);
     if (override != null) {

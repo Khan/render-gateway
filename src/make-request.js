@@ -1,6 +1,6 @@
 // @flow
 import type {Response as SuperAgentResponse} from "superagent";
-import type {RenderGatewayOptions} from "./types.js";
+import type {RequestOptions} from "./types.js";
 import {isCacheable} from "./is-cacheable.js";
 import type {Logger} from "./shared/index.js";
 import {makeUnbufferedNoCacheRequest} from "./make-unbuffered-no-cache-request.js";
@@ -12,21 +12,18 @@ import {asCachedRequest, asUncachedRequest} from "./requests-from-cache.js";
  * Could resolve from cache if caching is enabled and the request has already
  * been fulfilled once. Otherwise, this creates a new request for the URL.
  *
- * The request will resolve with an additional _fromCache property, which will
+ * The request will resolve with an additional property, which will
  * indicate if it was resolved from cache or not.
  *
- * @param {RenderGatewayOptions} options The options used to start the gateway.
+ * @param {RequestOptions} options The options used to configure the request.
  * @param {string} url The URL to be requested.
  * @param {Logger} logger The logger to use.
- * @param {boolean} [buffer] Defaults to true. When true, the response body will
- * be buffered, otherwise it will not.
  * @returns {Promise<SuperAgentResponse>} A superagent request for the URL.
  */
 export const makeRequest = (
-    options: RenderGatewayOptions,
+    options: RequestOptions,
     url: string,
     logger: Logger,
-    buffer?: boolean = true,
 ): Promise<SuperAgentResponse> => {
     /**
      * Create the base request with our various options.
@@ -39,16 +36,15 @@ export const makeRequest = (
      * We default to JS files only, but this can be overridden in the gateway
      * options.
      */
-    const cacheOptions = options.requests?.caching;
-    if (cacheOptions && isCacheable(url, cacheOptions.isCacheable)) {
+    if (options.cachePlugin && isCacheable(url, options.isCacheable)) {
         /**
          * If we get here, we are caching this request.
          */
-        return asCachedRequest(request, cacheOptions, buffer);
+        return asCachedRequest(options, request);
     }
 
     /**
      * We're not caching this request, so let's just not set caching up.
      */
-    return asUncachedRequest(request, buffer);
+    return asUncachedRequest(options, request);
 };
