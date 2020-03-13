@@ -1,6 +1,6 @@
 // @flow
 import type {Request, Response} from "superagent";
-import type {RequestOptions} from "./types.js";
+import type {RequestOptions, AbortablePromise} from "./types.js";
 
 /**
  * This is the name of the property we attach to responses so that we can
@@ -33,14 +33,25 @@ export const isFromCache = (response: Response): boolean =>
 export const asUncachedRequest = (
     options: RequestOptions,
     request: Request,
-): Promise<Response> =>
-    request.buffer(options.buffer).then((res) => {
+): AbortablePromise<Response> => {
+    /**
+     * We need to ensure that what we return has the `abort` method still so
+     * that we can let things like JSDOM call abort on promises.
+     */
+    const superagentRequest = request.buffer(options.buffer);
+    const abortFn = superagentRequest.abort;
+    const responsePromise = superagentRequest.then((res) => {
         /**
          * There's no cache, so this is definitely not from cache.
          */
         res[FROM_CACHE_PROP_NAME] = false;
         return res;
     });
+
+    const abortableResponse: AbortablePromise<Response> = (responsePromise: any);
+    abortableResponse.abort = abortFn;
+    return abortableResponse;
+};
 
 /**
  * Turn unbuffered, uncached request into cached request with or without buffer.
@@ -60,7 +71,7 @@ export const asUncachedRequest = (
 export const asCachedRequest = (
     options: RequestOptions,
     request: Request,
-): Promise<Response> => {
+): AbortablePromise<Response> => {
     const {cachePlugin, getExpiration, buffer} = options;
     if (cachePlugin == null) {
         throw new Error("Cannot cache request without cache plugin instance.");
@@ -68,7 +79,11 @@ export const asCachedRequest = (
 
     const FRESHLY_PRUNED = "PRUNED";
 
-    return request
+    /**
+     * We need to ensure that what we return has the `abort` method still so
+     * that we can let things like JSDOM call abort on promises.
+     */
+    const superagentRequest = request
         .use(cachePlugin)
         .expiration(getExpiration?.(request.url))
         .prune((response, gutResponse) => {
@@ -86,29 +101,36 @@ export const asCachedRequest = (
             guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED;
             return guttedResponse;
         })
-        .buffer(buffer)
-        .then((res) => {
-            /**
-             * Set the FROM_CACHE_PROP_NAME property to a boolean value.
-             *
-             * This works because if it is a brand new response that was just
-             * cached, then the FROM_CACHE_PROP_NAME property is set explicitly
-             * to FRESHLY_PRUNED. Therefore, we know it was not
-             * previously cached. So, we set FROM_CACHE_PROP_NAME property to
-             * false.
-             *
-             * The response we get here is what is in the cache so any
-             * modifications we make are reflected in the cached value.
-             *
-             * That means that if we get here and the FROM_CACHE_PROP_NAME is
-             * not equal to FRESHLY_PRUNED, it MUST have come from the
-             * cache and not a brand new request, so we can set the
-             * FROM_CACHE_PROP_NAME property to true!
-             *
-             * Cheeky, but it works 😈
-             */
-            res[FROM_CACHE_PROP_NAME] =
-                res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
-            return res;
-        });
+        .buffer(buffer);
+
+    const abortFn = superagentRequest.abort;
+
+    const responsePromise = superagentRequest.then((res) => {
+        /**
+         * Set the FROM_CACHE_PROP_NAME property to a boolean value.
+         *
+         * This works because if it is a brand new response that was just
+         * cached, then the FROM_CACHE_PROP_NAME property is set explicitly
+         * to FRESHLY_PRUNED. Therefore, we know it was not
+         * previously cached. So, we set FROM_CACHE_PROP_NAME property to
+         * false.
+         *
+         * The response we get here is what is in the cache so any
+         * modifications we make are reflected in the cached value.
+         *
+         * That means that if we get here and the FROM_CACHE_PROP_NAME is
+         * not equal to FRESHLY_PRUNED, it MUST have come from the
+         * cache and not a brand new request, so we can set the
+         * FROM_CACHE_PROP_NAME property to true!
+         *
+         * Cheeky, but it works 😈
+         */
+        res[FROM_CACHE_PROP_NAME] =
+            res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
+        return res;
+    });
+
+    const abortableResponse: AbortablePromise<Response> = (responsePromise: any);
+    abortableResponse.abort = abortFn;
+    return abortableResponse;
 };

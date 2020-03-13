@@ -11,14 +11,14 @@ import type {Logger} from "./shared/index.js";
  * This is not intended for direct use. Use makeRequest.
  *
  * @param {RenderGatewayOptions} options The options used to start the gateway.
- * @param {string} url The URL to be requested.
  * @param {Logger} logger The logger to use.
+ * @param {string} url The URL to be requested.
  * @returns {SuperAgentRequest} A superagent request for the URL.
  */
 export const makeUnbufferedNoCacheRequest = (
     options: RequestOptions,
-    url: string,
     logger: Logger,
+    url: string,
 ): Request =>
     superagent
         .get(url)
