@@ -31,10 +31,10 @@ const isFromCache = response => response[FROM_CACHE_PROP_NAME] === true;
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
- * @param {SuperAgentRequest} request The request to be modified.
+ * @param {Request} request The request to be modified.
  * @param {boolean} buffer When true, the response body will be buffered,
  * otherwise it will not.
- * @returns {SuperAgentRequest} A superagent request supporting caching for the
+ * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 
@@ -57,11 +57,11 @@ const asUncachedRequest = (request, buffer) => request.buffer(buffer).then(res =
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
- * @param {SuperAgentRequest} request The request to be modified.
+ * @param {Request} request The request to be modified.
  * @param {CachingStrategy} strategy The strategy to control caching.
  * @param {boolean} buffer When true, the response body will be buffered,
  * otherwise it will not.
- * @returns {SuperAgentRequest} A superagent request supporting caching for the
+ * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 

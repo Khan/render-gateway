@@ -74,7 +74,7 @@ describe("#makeShouldRetry", () => {
             // Arrange
             const fakeLogger: any = {warn: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
-            const overrideFn = jest.fn().mockReturnValue("OVERRIDE!");
+            const overrideFn: any = jest.fn().mockReturnValue("OVERRIDE!");
             const shouldRetry = makeShouldRetry(fakeLogger, overrideFn);
 
             // Act
