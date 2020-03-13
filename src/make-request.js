@@ -1,6 +1,6 @@
 // @flow
 import type {Response as SuperAgentResponse} from "superagent";
-import type {RequestOptions} from "./types.js";
+import type {RequestOptions, AbortablePromise} from "./types.js";
 import {isCacheable} from "./is-cacheable.js";
 import type {Logger} from "./shared/index.js";
 import {makeUnbufferedNoCacheRequest} from "./make-unbuffered-no-cache-request.js";
@@ -16,19 +16,19 @@ import {asCachedRequest, asUncachedRequest} from "./requests-from-cache.js";
  * indicate if it was resolved from cache or not.
  *
  * @param {RequestOptions} options The options used to configure the request.
- * @param {string} url The URL to be requested.
  * @param {Logger} logger The logger to use.
+ * @param {string} url The URL to be requested.
  * @returns {Promise<SuperAgentResponse>} A superagent request for the URL.
  */
 export const makeRequest = (
     options: RequestOptions,
-    url: string,
     logger: Logger,
-): Promise<SuperAgentResponse> => {
+    url: string,
+): AbortablePromise<SuperAgentResponse> => {
     /**
      * Create the base request with our various options.
      */
-    const request = makeUnbufferedNoCacheRequest(options, url, logger);
+    const request = makeUnbufferedNoCacheRequest(options, logger, url);
 
     /**
      * We only add caching support if we were given a cache to use.

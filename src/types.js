@@ -1,8 +1,20 @@
 // @flow
 import type {Agent} from "http";
 import type {$Request, $Response} from "express";
-import type {CallbackHandler, Plugin} from "superagent";
+import type {
+    CallbackHandler,
+    Plugin,
+    Response as SuperAgentResponse,
+} from "superagent";
 import type {RequestWithLog} from "./shared/index.js";
+
+/**
+ * Used to track inflight requests.
+ */
+export type InFlightRequests = {
+    [url: string]: AbortablePromise<SuperAgentResponse>,
+    ...,
+};
 
 /**
  * Options for configuring incoming request authentication.

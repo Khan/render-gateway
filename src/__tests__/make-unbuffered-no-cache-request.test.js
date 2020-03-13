@@ -31,7 +31,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             .mockReturnValue(fakeSuperagent);
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(getSpy).toHaveBeenCalledWith("URL");
@@ -51,7 +51,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(fakeSuperagent.agent).toHaveBeenCalledWith(fakeAgent);
@@ -76,7 +76,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         );
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(fakeSuperagent.retry).toHaveBeenCalledWith(42, fakeShouldRetry);
@@ -101,7 +101,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         );
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(makeShouldRetrySpy).toHaveBeenCalledWith(
@@ -125,7 +125,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(fakeSuperagent.set).toHaveBeenCalledWith(
@@ -154,7 +154,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(fakeSuperagent.set).toHaveBeenCalledWith(
@@ -182,7 +182,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         );
 
         // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, "URL", fakeLogger);
+        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
 
         // Assert
         expect(fakeSuperagent.timeout).toHaveBeenCalledWith(42);

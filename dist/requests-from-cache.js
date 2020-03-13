@@ -37,13 +37,24 @@ const isFromCache = response => response[FROM_CACHE_PROP_NAME] === true;
 
 exports.isFromCache = isFromCache;
 
-const asUncachedRequest = (options, request) => request.buffer(options.buffer).then(res => {
+const asUncachedRequest = (options, request) => {
   /**
-   * There's no cache, so this is definitely not from cache.
+   * We need to ensure that what we return has the `abort` method still so
+   * that we can let things like JSDOM call abort on promises.
    */
-  res[FROM_CACHE_PROP_NAME] = false;
-  return res;
-});
+  const superagentRequest = request.buffer(options.buffer);
+  const abortFn = superagentRequest.abort;
+  const responsePromise = superagentRequest.then(res => {
+    /**
+     * There's no cache, so this is definitely not from cache.
+     */
+    res[FROM_CACHE_PROP_NAME] = false;
+    return res;
+  });
+  const abortableResponse = responsePromise;
+  abortableResponse.abort = abortFn;
+  return abortableResponse;
+};
 /**
  * Turn unbuffered, uncached request into cached request with or without buffer.
  *
@@ -75,7 +86,12 @@ const asCachedRequest = (options, request) => {
   }
 
   const FRESHLY_PRUNED = "PRUNED";
-  return request.use(cachePlugin).expiration(getExpiration === null || getExpiration === void 0 ? void 0 : getExpiration(request.url)).prune((response, gutResponse) => {
+  /**
+   * We need to ensure that what we return has the `abort` method still so
+   * that we can let things like JSDOM call abort on promises.
+   */
+
+  const superagentRequest = request.use(cachePlugin).expiration(getExpiration === null || getExpiration === void 0 ? void 0 : getExpiration(request.url)).prune((response, gutResponse) => {
     /**
      * This is called to prune a response before it goes into the
      * cache.
@@ -89,7 +105,9 @@ const asCachedRequest = (options, request) => {
     const guttedResponse = gutResponse(response);
     guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED;
     return guttedResponse;
-  }).buffer(buffer).then(res => {
+  }).buffer(buffer);
+  const abortFn = superagentRequest.abort;
+  const responsePromise = superagentRequest.then(res => {
     /**
      * Set the FROM_CACHE_PROP_NAME property to a boolean value.
      *
@@ -112,6 +130,9 @@ const asCachedRequest = (options, request) => {
     res[FROM_CACHE_PROP_NAME] = res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
     return res;
   });
+  const abortableResponse = responsePromise;
+  abortableResponse.abort = abortFn;
+  return abortableResponse;
 };
 
 exports.asCachedRequest = asCachedRequest;

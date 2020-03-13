@@ -19,13 +19,13 @@ describe("#makeRequest", () => {
         );
 
         // Act
-        makeRequest(fakeRequestOptions, "URL", fakeLogger);
+        makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
         // Assert
         expect(makeUnbufferedNoCacheRequestSpy).toHaveBeenCalledWith(
             fakeRequestOptions,
-            "URL",
             fakeLogger,
+            "URL",
         );
     });
 
@@ -46,7 +46,7 @@ describe("#makeRequest", () => {
             jest.spyOn(RequestsFromCache, "asUncachedRequest");
 
             // Act
-            makeRequest(fakeRequestOptions, "URL", fakeLogger);
+            makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
             // Assert
             expect(isCacheableSpy).toHaveBeenCalledWith(
@@ -74,7 +74,7 @@ describe("#makeRequest", () => {
                 );
 
                 // Act
-                makeRequest(fakeRequestOptions, "URL", fakeLogger);
+                makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
                 // Assert
                 expect(asCachedRequestSpy).toHaveBeenCalledWith(
@@ -103,8 +103,8 @@ describe("#makeRequest", () => {
                 // Act
                 const result = makeRequest(
                     fakeRequestOptions,
-                    "URL",
                     fakeLogger,
+                    "URL",
                 );
 
                 // Assert
@@ -131,7 +131,7 @@ describe("#makeRequest", () => {
                 );
 
                 // Act
-                makeRequest(fakeRequestOptions, "URL", fakeLogger);
+                makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
                 // Assert
                 expect(asUncachedRequestSpy).toHaveBeenCalledWith(
@@ -160,8 +160,8 @@ describe("#makeRequest", () => {
                 // Act
                 const result = makeRequest(
                     fakeRequestOptions,
-                    "URL",
                     fakeLogger,
+                    "URL",
                 );
 
                 // Assert
@@ -186,7 +186,7 @@ describe("#makeRequest", () => {
             );
 
             // Act
-            makeRequest(fakeRequestOptions, "URL", fakeLogger);
+            makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
             // Assert
             expect(asUncachedRequestSpy).toHaveBeenCalledWith(
@@ -209,7 +209,7 @@ describe("#makeRequest", () => {
             );
 
             // Act
-            const result = makeRequest(fakeRequestOptions, "URL", fakeLogger);
+            const result = makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
             // Assert
             expect(result).toBe(fakeUncachedRequest);
