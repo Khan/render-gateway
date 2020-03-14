@@ -41,12 +41,15 @@ const runServer = async options => {
   } = options,
         remainingOptions = _objectWithoutProperties(options, ["authentication", "requests"]);
 
+  const {
+    version
+  } = (0, _index.getGatewayInfo)();
   const app = (0, _express.default)().use(
   /**
    * This sets up the /_api/ route handlers that are used by the KA
    * deployment system.
    */
-  (0, _index2.makeCommonServiceRouter)(process.env.GAE_VERSION || "fake-dev-version"))
+  (0, _index2.makeCommonServiceRouter)(version))
   /**
    * This adds a check that requests below this point are coming from
    * a known source.

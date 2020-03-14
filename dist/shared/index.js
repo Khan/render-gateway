@@ -9,6 +9,12 @@ Object.defineProperty(exports, "createLogger", {
     return _createLogger.createLogger;
   }
 });
+Object.defineProperty(exports, "getGatewayInfo", {
+  enumerable: true,
+  get: function () {
+    return _getGatewayInfo.getGatewayInfo;
+  }
+});
 Object.defineProperty(exports, "getRequestLogger", {
   enumerable: true,
   get: function () {
@@ -41,6 +47,8 @@ Object.defineProperty(exports, "extractErrorString", {
 });
 
 var _createLogger = require("./create-logger.js");
+
+var _getGatewayInfo = require("./get-gateway-info.js");
 
 var _getRequestLogger = require("./get-request-logger.js");
 
