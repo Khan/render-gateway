@@ -8,13 +8,25 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(Object.keys(result).sort()).toEqual(
-            [
-                "getGCloudSecrets",
-                "getLogger",
-                "makeCommonServiceRouter",
-                "trace",
-            ].sort(),
-        );
+        expect(result).toContainAllKeys([
+            "getGCloudSecrets",
+            "getLogger",
+            "makeCommonServiceRouter",
+            "trace",
+        ]);
+    });
+
+    it("should not export trace agent setup or things it uses", async () => {
+        // Arrange
+        const importedModule = import("../index.js");
+
+        // Act
+        const result = await importedModule;
+
+        // Assert
+        expect(result).not.toContainAnyKeys([
+            "getRuntimeMode",
+            "startTraceAgent",
+        ]);
     });
 });

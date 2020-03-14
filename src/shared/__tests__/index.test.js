@@ -8,16 +8,14 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(Object.keys(result).sort()).toEqual(
-            [
-                "createLogger",
-                "extractErrorString",
-                "getGatewayInfo",
-                "getRequestLogger",
-                "getRuntimeMode",
-                "startGateway",
-                "trace",
-            ].sort(),
-        );
+        expect(result).toContainAllKeys([
+            "createLogger",
+            "extractErrorString",
+            "getGatewayInfo",
+            "getRequestLogger",
+            "getRuntimeMode",
+            "startGateway",
+            "trace",
+        ]);
     });
 });
