@@ -12,6 +12,7 @@ describe("index.js", () => {
             [
                 "createLogger",
                 "extractErrorString",
+                "getGatewayInfo",
                 "getRequestLogger",
                 "getRuntimeMode",
                 "startGateway",

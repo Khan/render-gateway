@@ -5,7 +5,7 @@ import type {Tracer} from "@google-cloud/trace-agent";
 import {getRuntimeMode} from "./get-runtime-mode.js";
 
 /**
- * Starts the GAE trace agent.
+ * Starts the Google Cloud Trace agent.
  *
  * This should be imported and executed before any other imports.
  */

@@ -1,21 +1,16 @@
 // @flow
 import * as Superagent from "superagent";
 import * as MakeShouldRetry from "../make-should-retry.js";
+import * as Shared from "../shared/index.js";
 
 import {makeUnbufferedNoCacheRequest} from "../make-unbuffered-no-cache-request.js";
 
 jest.mock("superagent");
+jest.mock("../shared/index.js");
 jest.mock("../make-agent.js");
 jest.mock("../make-should-retry.js");
 
 describe("#makeUnbufferedNoCacheRequest", () => {
-    const GAE_SERVICE = process.env.GAE_SERVICE;
-    const GAE_VERSION = process.env.GAE_VERSION;
-    afterEach(() => {
-        process.env.GAE_SERVICE = GAE_SERVICE;
-        process.env.GAE_VERSION = GAE_VERSION;
-    });
-
     it("should get the URL", () => {
         // Arrange
         const fakeSuperagent = {
@@ -29,6 +24,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const getSpy = jest
             .spyOn(Superagent, "get")
             .mockReturnValue(fakeSuperagent);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
@@ -49,6 +45,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const fakeOptions: any = {agent: fakeAgent};
         const fakeLogger: any = {};
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
@@ -74,6 +71,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
         );
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
@@ -99,6 +97,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             MakeShouldRetry,
             "makeShouldRetry",
         );
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
@@ -110,10 +109,12 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         );
     });
 
-    it("should set the User-Agent header with GAE_SERVICE and GAE_VERSION", () => {
+    it("should set the User-Agent header with gateway info", () => {
         // Arrange
-        process.env.GAE_SERVICE = "TEST_GAE_SERVICE";
-        process.env.GAE_VERSION = "TEST_GAE_VERSION";
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({
+            name: "TEST_GAE_SERVICE",
+            version: "TEST_GAE_VERSION",
+        });
         const fakeSuperagent = {
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
@@ -134,35 +135,6 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         );
     });
 
-    it("should set the User-Agent header with placeholder name and UNKNOWN if GAE env vars not set", () => {
-        // Arrange
-        /**
-         * We have to delete the env vars.
-         * If we just set them to `undefined` they actually get set to the
-         * string "undefined", which is not what we want at all.
-         */
-        delete process.env.GAE_SERVICE;
-        delete process.env.GAE_VERSION;
-        const fakeSuperagent = {
-            agent: jest.fn().mockReturnThis(),
-            retry: jest.fn().mockReturnThis(),
-            set: jest.fn().mockReturnThis(),
-            timeout: jest.fn().mockReturnThis(),
-        };
-        const fakeOptions: any = {};
-        const fakeLogger: any = {};
-        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
-
-        // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
-
-        // Assert
-        expect(fakeSuperagent.set).toHaveBeenCalledWith(
-            "User-Agent",
-            "unnamed-render-gateway (UNKNOWN)",
-        );
-    });
-
     it("should set timeout from options", () => {
         // Arrange
         const fakeSuperagent = {
@@ -180,6 +152,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
         );
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
 
         // Act
         makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
