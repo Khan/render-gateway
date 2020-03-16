@@ -16,6 +16,16 @@ export async function startGateway<
 >(options: GatewayOptions, app: $Application<TReq, TRes>): Promise<void> {
     const {logger, port, name, mode} = options;
 
+    /**
+     * Make sure GAE_SERVICE has a value.
+     *
+     * If it isn't set at this point, we're not running in GAE, so we can
+     * set it ourselves.
+     */
+    if (process.env.GAE_SERVICE == null) {
+        process.env.GAE_SERVICE = name;
+    }
+
     // Set up stackdriver integrations.
     await setupStackdriver(mode);
 

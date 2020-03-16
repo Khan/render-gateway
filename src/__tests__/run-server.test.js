@@ -25,6 +25,7 @@ describe("#runServer", () => {
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
@@ -45,6 +46,7 @@ describe("#runServer", () => {
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
@@ -68,6 +70,7 @@ describe("#runServer", () => {
         const pretendAuthOptions = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
@@ -96,6 +99,7 @@ describe("#runServer", () => {
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
@@ -130,6 +134,7 @@ describe("#runServer", () => {
         const pretendLogger = ({}: any);
         jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),

@@ -5,6 +5,59 @@ import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
 describe("#start-gateway", () => {
+    const GAE_SERVICE = process.env.GAE_SERVICE;
+    afterEach(() => {
+        process.env.GAE_SERVICE = GAE_SERVICE;
+    });
+
+    it("should set GAE_SERVICE if it is not set", () => {
+        // Arrange
+        delete process.env.GAE_SERVICE;
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const pretendApp = ({
+            listen: jest.fn(),
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+
+        // Act
+        startGateway(options, pretendApp);
+
+        // Assert
+        expect(process.env.GAE_SERVICE).toBe("TEST_GATEWAY");
+    });
+
+    it("should not set GAE_SERVICE if it is already set", () => {
+        // Arrange
+        process.env.GAE_SERVICE = "GAE_SERVICE_NAME";
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const pretendApp = ({
+            listen: jest.fn(),
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+
+        // Act
+        startGateway(options, pretendApp);
+
+        // Assert
+        expect(process.env.GAE_SERVICE).toBe("GAE_SERVICE_NAME");
+    });
+
     it("should setup stackdriver", async () => {
         // Arrange
         const options = {

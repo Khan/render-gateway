@@ -16,7 +16,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 // Start logging agent for Cloud Trace (https://cloud.google.com/trace/).
 
 /**
- * Starts the GAE trace agent.
+ * Starts the Google Cloud Trace agent.
  *
  * This should be imported and executed before any other imports.
  */

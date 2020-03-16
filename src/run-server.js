@@ -1,7 +1,7 @@
 // @flow
 import express from "express";
 import asyncHandler from "express-async-handler";
-import {startGateway} from "./shared/index.js";
+import {startGateway, getGatewayInfo} from "./shared/index.js";
 import type {RenderGatewayOptions, Request, Response} from "./types.js";
 import type {GatewayOptions} from "./shared/index.js";
 import {getLogger, makeCommonServiceRouter} from "./ka-shared/index.js";
@@ -16,6 +16,7 @@ export const runServer = async (
     options: RenderGatewayOptions,
 ): Promise<void> => {
     const {authentication, requests: _, ...remainingOptions} = options;
+    const {version} = getGatewayInfo();
 
     const app = express<Request, Response>()
         .use(
@@ -23,9 +24,7 @@ export const runServer = async (
              * This sets up the /_api/ route handlers that are used by the KA
              * deployment system.
              */
-            makeCommonServiceRouter(
-                process.env.GAE_VERSION || "fake-dev-version",
-            ),
+            makeCommonServiceRouter(version),
         )
         /**
          * This adds a check that requests below this point are coming from
