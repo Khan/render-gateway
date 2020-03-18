@@ -38,11 +38,28 @@ export type GatewayInfo = {
 };
 
 /**
+ * Represents an error and associated stack.
+ */
+export type SimplifiedError = {
+    /**
+     * A string representing the error that occurred.
+     * In some circumstances, this will match the stack property.
+     */
+    +error: ?string,
+
+    /**
+     * The error's stack, if it has one.
+     */
+    +stack?: string,
+};
+
+/**
  * Represents an error when we don't really know how it is structured.
  *
- * Use extractErrorString to turn this into a string.
+ * Use extractError to turn this into a SimplifiedError representation.
  */
 export type AmbiguousError =
+    | SimplifiedError
     | string
     | {
           error?: AmbiguousError,

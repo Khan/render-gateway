@@ -14,6 +14,13 @@ async function main() {
     runServer({
         name: "DEV_LOCAL",
         port: 8080,
+        // TODO(somewhatabstract): Implement something more complete for testing.
+        renderFn: () =>
+            Promise.resolve({
+                body: "THIS IS A RENDERED PAGE",
+                status: 200,
+                headers: {},
+            }),
     });
 }
 

@@ -7,15 +7,19 @@ import type {GatewayOptions} from "./shared/index.js";
 import {getLogger, makeCommonServiceRouter} from "./ka-shared/index.js";
 import {getRuntimeMode} from "./ka-shared/get-runtime-mode.js";
 import {makeCheckSecretMiddleware} from "./middleware/make-check-secret-middleware.js";
-import {renderHandler} from "./handlers/render-handler.js";
+import {makeRenderHandler} from "./handlers/make-render-handler.js";
 
 /**
  * Run the render-gateway server using the provided options.
+ *
+ * @param {RenderGatewayOptions} options The options that define how the
+ * render gateway will operate.
+ * @returns {Promise<void>} The promise of working.
  */
 export const runServer = async (
     options: RenderGatewayOptions,
 ): Promise<void> => {
-    const {authentication, requests: _, ...remainingOptions} = options;
+    const {authentication, renderFn, ...remainingOptions} = options;
     const {version} = getGatewayInfo();
 
     const app = express<Request, Response>()
@@ -35,7 +39,7 @@ export const runServer = async (
          * This is our render route. This will handle all remaining gets as
          * render requests and response accordingly.
          */
-        .get("/*", asyncHandler(renderHandler));
+        .get("/*", asyncHandler(makeRenderHandler(renderFn)));
 
     // Start the gateway.
     const gatewayOptions: GatewayOptions = {

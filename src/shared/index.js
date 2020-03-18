@@ -14,4 +14,4 @@ export {getRequestLogger} from "./get-request-logger.js";
 export {getRuntimeMode} from "./get-runtime-mode.js";
 export {startGateway} from "./start-gateway.js";
 export {trace} from "./trace.js";
-export {extractErrorString} from "./extract-error-string.js";
+export {extractError} from "./extract-error.js";
