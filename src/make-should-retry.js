@@ -1,7 +1,7 @@
 // @flow
 import type {Response as SuperAgentResponse, CallbackHandler} from "superagent";
 import type {Logger, AmbiguousError} from "./shared/index.js";
-import {extractErrorString} from "./shared/index.js";
+import {extractError} from "./shared/index.js";
 
 /**
  * Create a shouldRetry callback for use with superagent's retry() method.
@@ -18,7 +18,7 @@ export const makeShouldRetry = (
 ): CallbackHandler => {
     return (err: AmbiguousError, res: SuperAgentResponse): ?boolean => {
         logger.warn("Request failed. Might retry.", {
-            error: extractErrorString(err),
+            ...extractError(err),
             status: res.status,
         });
 

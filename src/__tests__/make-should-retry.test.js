@@ -19,29 +19,26 @@ describe("#makeShouldRetry", () => {
     describe("returned function", () => {
         it("should extract the error string from the error", () => {
             // Arrange
-            const fakeError: any = {};
+            const fakeError: any = "FAKE_ERROR";
             const fakeLogger: any = {warn: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
-            const extractErrorStringSpy = jest.spyOn(
-                Shared,
-                "extractErrorString",
-            );
+            const extractErrorSpy = jest.spyOn(Shared, "extractError");
             const shouldRetry = makeShouldRetry(fakeLogger);
 
             // Act
             shouldRetry(fakeError, fakeResponse);
 
             // Assert
-            expect(extractErrorStringSpy).toHaveBeenCalledWith(fakeError);
+            expect(extractErrorSpy).toHaveBeenCalledWith(fakeError);
         });
 
         it("should log the error and status code to the logger it was created with", () => {
             // Arrange
             const fakeLogger: any = {warn: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
-            jest.spyOn(Shared, "extractErrorString").mockImplementation(
-                (e) => e,
-            );
+            jest.spyOn(Shared, "extractError").mockImplementation((e) => ({
+                error: e,
+            }));
             const shouldRetry = makeShouldRetry(fakeLogger);
 
             // Act
