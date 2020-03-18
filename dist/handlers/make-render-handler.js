@@ -25,18 +25,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * This is expected to be wrapped with express-async-handler.
  */
 async function renderHandler(renderFn, req, res) {
-  const logger = (0, _index2.getLogger)(req); // TODO(somewhatabstract): Actually track headers and build vary header.
-  //                         Encapsulate in other code to make it easily
-  //                         tested.
+  const logger = (0, _index2.getLogger)(req);
+  /**
+   * TODO(somewhatabstract, WEB-1108): Actually track headers and build vary
+   * header.
+   * Encapsulate in other code to make it easily tested.
+   */
 
   const trackHeaderLookup = name => {
     return req.header(name);
-  }; // TODO(somewhatabstract): Hook in tracing (make sure that we don't leave
-  // trace sessions open on rejection (or otherwise)).
+  };
+  /**
+   * TODO(somewhatabstract, WEB-2057): Hook in tracing (make sure that we
+   * don't leave trace sessions open on rejection (or otherwise)).
+   */
 
   /**
-   * TODO(somewhatabstract): Currently passing the entire URL, but we
-   * want to be more specific here and define the render route better as
+   * TODO(somewhatabstract, WEB-1856): Currently passing the entire URL, but
+   * we want to be more specific here and define the render route better as
    * we'll really want an absolute URL.
    */
 
@@ -50,15 +56,19 @@ async function renderHandler(renderFn, req, res) {
     const {
       body,
       status
-    } = await renderFn(renderURL, trackHeaderLookup); // TODO(somewhatabstract): Validate the status with the headers
-    // There are a couple where we know we need certain things to match
-    // 1. If a Vary header is included, we should error to indicate that
-    //    is not allowed
-    // 2. For 301/302 status, we need a `Location` header.
-    //
-    // validateStatusAndHeaders(status, headers);
-    // TODO(somewhatabstract): Add headers;
-    // TODO(somewhatabstract): Add Vary header.
+    } = await renderFn(renderURL, trackHeaderLookup);
+    /**
+     * TODO(somewhatabstract, WEB-1108): Validate the status with the
+     * headers.
+     * There are a couple where we know we need certain things to match
+     * 1. If a Vary header is included, we should error to indicate that
+     *    is not allowed
+     * 2. For 301/302 status, we need a `Location` header.
+     *
+     * validateStatusAndHeaders(status, headers);
+     */
+    // TODO(somewhatabstract, WEB-1108): Add headers.
+    // TODO(somewhatabstract, WEB-1108): Add Vary header.
 
     res.status(status);
     res.send(body);
