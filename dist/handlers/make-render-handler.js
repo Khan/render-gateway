@@ -50,17 +50,17 @@ async function renderHandler(renderFn, req, res) {
     const {
       body,
       status
-    } = await renderFn(renderURL, trackHeaderLookup);
-    /**
-     * If the status is a redirect, we need to set the redirect header/
-     */
+    } = await renderFn(renderURL, trackHeaderLookup); // TODO(somewhatabstract): Validate the status with the headers
+    // There are a couple where we know we need certain things to match
+    // 1. If a Vary header is included, we should error to indicate that
+    //    is not allowed
+    // 2. For 301/302 status, we need a `Location` header.
+    //
+    // validateStatusAndHeaders(status, headers);
+    // TODO(somewhatabstract): Add headers;
+    // TODO(somewhatabstract): Add Vary header.
 
-    if (status.code === 301 || status.code === 302) {
-      res.header("Location", status.targetURL);
-    } // TODO(somewhatabstract): Add Vary header.
-
-
-    res.status(status.code);
+    res.status(status);
     res.send(body);
   } catch (e) {
     /**
