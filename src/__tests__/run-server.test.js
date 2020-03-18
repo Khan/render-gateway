@@ -35,7 +35,7 @@ describe("#runServer", () => {
             .mockReturnValue(pretendApp);
 
         // Act
-        await runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42, renderFn: jest.fn()});
 
         // Assert
         expect(expressSpy).toHaveBeenCalledTimes(1);
@@ -58,7 +58,7 @@ describe("#runServer", () => {
         );
 
         // Act
-        await runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42, renderFn: jest.fn()});
 
         // Assert
         expect(pretendApp.use).toHaveBeenCalledWith(pretendCommonServiceRouter);
@@ -86,6 +86,7 @@ describe("#runServer", () => {
             name: "MY_TEST",
             port: 42,
             authentication: pretendAuthOptions,
+            renderFn: jest.fn(),
         });
 
         // Assert
@@ -120,7 +121,7 @@ describe("#runServer", () => {
         );
 
         // Act
-        await runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42, renderFn: jest.fn()});
 
         // Assert
         expect(pretendApp.get).toHaveBeenCalledWith(
@@ -143,7 +144,7 @@ describe("#runServer", () => {
         const startGatewaySpy = jest.spyOn(Shared, "startGateway");
 
         // Act
-        await runServer({name: "MY_TEST", port: 42});
+        await runServer({name: "MY_TEST", port: 42, renderFn: jest.fn()});
 
         // Assert
         expect(startGatewaySpy).toHaveBeenCalledWith(
