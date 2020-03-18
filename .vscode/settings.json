@@ -13,5 +13,9 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": true
     },
-    "jestTestExplorer.pathToJestConfig": "./jest.config.js"
+    "jestTestExplorer.pathToJestConfig": "./jest.config.js",
+    "todo-tree.filtering.excludeGlobs": [
+        "**/dist/**",
+        "**/flow-typed/**"
+    ]
 }
