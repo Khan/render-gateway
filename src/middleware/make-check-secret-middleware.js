@@ -13,9 +13,9 @@ async function makeProductionMiddleware<Req: $Request, Res: $Response>(
      * that if the secret changes, the server needs to be
      * restarted/refreshed somehow.
      *
-     * TODO(somewhatabstract): Add ability to trigger refresh of server -
-     * likely just a killswitch to kill an instace so that GAE spins up new
-     * ones.
+     * TODO(somewhatabstract, WEB-1410): Add ability to trigger refresh of
+     * server - likely just a killswitch to kill an instance so that GAE spins
+     * up new ones.
      */
     const {secretKey, headerName, cryptoKeyPath} = options;
     const secrets = await getSecrets(cryptoKeyPath);

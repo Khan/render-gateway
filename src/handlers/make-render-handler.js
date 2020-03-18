@@ -20,18 +20,22 @@ async function renderHandler(
 ): Promise<void> {
     const logger = getLogger(req);
 
-    // TODO(somewhatabstract): Actually track headers and build vary header.
-    //                         Encapsulate in other code to make it easily
-    //                         tested.
+    /**
+     * TODO(somewhatabstract, WEB-1108): Actually track headers and build vary
+     * header.
+     * Encapsulate in other code to make it easily tested.
+     */
     const trackHeaderLookup = (name: string): ?string => {
         return req.header(name);
     };
-    // TODO(somewhatabstract): Hook in tracing (make sure that we don't leave
-    // trace sessions open on rejection (or otherwise)).
+    /**
+     * TODO(somewhatabstract, WEB-2057): Hook in tracing (make sure that we
+     * don't leave trace sessions open on rejection (or otherwise)).
+     */
 
     /**
-     * TODO(somewhatabstract): Currently passing the entire URL, but we
-     * want to be more specific here and define the render route better as
+     * TODO(somewhatabstract, WEB-1856): Currently passing the entire URL, but
+     * we want to be more specific here and define the render route better as
      * we'll really want an absolute URL.
      */
     const renderURL = req.url;
@@ -41,16 +45,19 @@ async function renderHandler(
          */
         const {body, status} = await renderFn(renderURL, trackHeaderLookup);
 
-        // TODO(somewhatabstract): Validate the status with the headers
-        // There are a couple where we know we need certain things to match
-        // 1. If a Vary header is included, we should error to indicate that
-        //    is not allowed
-        // 2. For 301/302 status, we need a `Location` header.
-        //
-        // validateStatusAndHeaders(status, headers);
+        /**
+         * TODO(somewhatabstract, WEB-1108): Validate the status with the
+         * headers.
+         * There are a couple where we know we need certain things to match
+         * 1. If a Vary header is included, we should error to indicate that
+         *    is not allowed
+         * 2. For 301/302 status, we need a `Location` header.
+         *
+         * validateStatusAndHeaders(status, headers);
+         */
 
-        // TODO(somewhatabstract): Add headers;
-        // TODO(somewhatabstract): Add Vary header.
+        // TODO(somewhatabstract, WEB-1108): Add headers.
+        // TODO(somewhatabstract, WEB-1108): Add Vary header.
         res.status(status);
         res.send(body);
     } catch (e) {
