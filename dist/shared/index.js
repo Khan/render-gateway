@@ -39,10 +39,10 @@ Object.defineProperty(exports, "trace", {
     return _trace.trace;
   }
 });
-Object.defineProperty(exports, "extractErrorString", {
+Object.defineProperty(exports, "extractError", {
   enumerable: true,
   get: function () {
-    return _extractErrorString.extractErrorString;
+    return _extractError.extractError;
   }
 });
 
@@ -58,5 +58,5 @@ var _startGateway = require("./start-gateway.js");
 
 var _trace = require("./trace.js");
 
-var _extractErrorString = require("./extract-error-string.js");
+var _extractError = require("./extract-error.js");
 //# sourceMappingURL=index.js.map

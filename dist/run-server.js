@@ -17,7 +17,7 @@ var _getRuntimeMode = require("./ka-shared/get-runtime-mode.js");
 
 var _makeCheckSecretMiddleware = require("./middleware/make-check-secret-middleware.js");
 
-var _renderHandler = require("./handlers/render-handler.js");
+var _makeRenderHandler = require("./handlers/make-render-handler.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,13 +33,17 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 /**
  * Run the render-gateway server using the provided options.
+ *
+ * @param {RenderGatewayOptions} options The options that define how the
+ * render gateway will operate.
+ * @returns {Promise<void>} The promise of working.
  */
 const runServer = async options => {
   const {
     authentication,
-    requests: _
+    renderFn
   } = options,
-        remainingOptions = _objectWithoutProperties(options, ["authentication", "requests"]);
+        remainingOptions = _objectWithoutProperties(options, ["authentication", "renderFn"]);
 
   const {
     version
@@ -59,7 +63,7 @@ const runServer = async options => {
    * This is our render route. This will handle all remaining gets as
    * render requests and response accordingly.
    */
-  .get("/*", (0, _expressAsyncHandler.default)(_renderHandler.renderHandler)); // Start the gateway.
+  .get("/*", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderFn))); // Start the gateway.
 
   const gatewayOptions = _objectSpread({
     mode: (0, _getRuntimeMode.getRuntimeMode)(),
