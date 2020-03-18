@@ -175,31 +175,12 @@ export type RequestsOptions = {
 export type GetHeaderCallback = (name: string) => ?string;
 
 /**
- * The 404 Not Found HTTP status code.
+ * Header names and their values for attaching to a response from the gateway.
  */
-export type NotFoundStatus = {
-    +code: 404,
+export type ResponseHeaders = {
+    +[name: string]: string,
+    ...,
 };
-
-/**
- * A 301 Moved Permanently or 302 Found/Moved Temporarily HTTP status code.
- */
-export type RedirectStatus = {
-    +code: 301 | 302,
-    +targetURL: string,
-};
-
-/**
- * The 200 OK status code.
- */
-export type OKStatus = {
-    +code: 200,
-};
-
-/**
- * HTTP status values.
- */
-export type Status = NotFoundStatus | RedirectStatus | OKStatus;
 
 /**
  * The result of a render operation.
@@ -211,9 +192,17 @@ export type RenderResult = {
     +body: string,
 
     /**
-     * The HTTP status information for the response.
+     * The HTTP status code.
      */
-    +status: Status,
+    +status: number,
+
+    /**
+     * Headers to be attached to the response.
+     *
+     * NOTE: If a Vary header is included in this list, it will result in an
+     * error as they Vary header is managed by the gateway.
+     */
+    +headers: ResponseHeaders,
 };
 
 /**

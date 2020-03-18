@@ -8,17 +8,17 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys(["runServer", "StatusCodes"]);
+        expect(result).toContainAllKeys(["runServer"]);
     });
 
-    it("should export status codes we expect", async () => {
-        // Arrange
-        const importedModule = await import("../index.js");
+    // it("should export status codes we expect", async () => {
+    //     // Arrange
+    //     const importedModule = await import("../index.js");
 
-        // Act
-        const result = importedModule.StatusCodes;
+    //     // Act
+    //     const result = importedModule.StatusCodes;
 
-        // Assert
-        expect(result).toContainAllKeys(["ok", "redirect", "notFound"]);
-    });
+    //     // Assert
+    //     expect(result).toContainAllKeys(["ok", "redirect", "notFound"]);
+    // });
 });

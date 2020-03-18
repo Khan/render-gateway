@@ -30,7 +30,8 @@ describe("#makeRenderHandler", () => {
             };
             const renderResult = {
                 body: "BODY",
-                status: {code: 200},
+                status: 200,
+                headers: {},
             };
             const fakeRenderFn = jest
                 .fn()
@@ -62,7 +63,8 @@ describe("#makeRenderHandler", () => {
             };
             const renderResult = {
                 body: "BODY",
-                status: {code: 200},
+                status: 200,
+                headers: {},
             };
             const fakeRenderFn = jest
                 .fn()
@@ -86,6 +88,9 @@ describe("#makeRenderHandler", () => {
         });
 
         describe("when render callback resolves", () => {
+            it.todo("should attach the headers to the response");
+            it.todo("should validate the status and headers");
+            it.todo("should response with 500 error if validation fails");
             it.todo("should build Vary header from tracked header accesses");
 
             it("should set status of response from render result", async () => {
@@ -99,7 +104,8 @@ describe("#makeRenderHandler", () => {
                 };
                 const renderResult = {
                     body: "BODY",
-                    status: {code: 200},
+                    status: 200,
+                    headers: {},
                 };
                 const fakeRenderFn = jest
                     .fn()
@@ -130,7 +136,8 @@ describe("#makeRenderHandler", () => {
                 };
                 const renderResult = {
                     body: "BODY",
-                    status: {code: 200},
+                    status: 200,
+                    headers: {},
                 };
                 const fakeRenderFn = jest
                     .fn()
@@ -149,44 +156,6 @@ describe("#makeRenderHandler", () => {
                 // Assert
                 expect(fakeResponse.send).toHaveBeenCalledWith("BODY");
             });
-
-            it.each([301, 302])(
-                "should set response Location header for %s redirect status",
-                async (statusCode) => {
-                    // Arrange
-                    const fakeResponse: any = {
-                        send: jest.fn().mockReturnThis(),
-                        status: jest.fn().mockReturnThis(),
-                        header: jest.fn().mockReturnThis(),
-                    };
-                    const fakeRequest: any = {
-                        url: "THE_URL",
-                    };
-                    const renderResult = {
-                        body: "BODY",
-                        status: {code: statusCode, targetURL: "REDIRECT_URL"},
-                    };
-                    const fakeRenderFn = jest
-                        .fn()
-                        .mockReturnValue(Promise.resolve(renderResult));
-                    const handler = makeRenderHandler(fakeRenderFn);
-
-                    // Act
-                    /**
-                     * Middleware<Request, Response> can mean two different call
-                     * signatures, and sadly, they both have completely different
-                     * argument type ordering, which totally confused flow here.
-                     * $FlowIgnore
-                     */
-                    await handler(fakeRequest, fakeResponse);
-
-                    // Assert
-                    expect(fakeResponse.header).toHaveBeenCalledWith(
-                        "Location",
-                        "REDIRECT_URL",
-                    );
-                },
-            );
         });
 
         describe("when the render callback rejects", () => {

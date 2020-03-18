@@ -8,7 +8,7 @@
  * NOTE: We import everyting from index.js to ensure we're testing the public
  * interface of this package.
  */
-const {runServer, StatusCodes} = require("./src/index.js");
+const {runServer} = require("./src/index.js");
 
 async function main() {
     runServer({
@@ -18,7 +18,8 @@ async function main() {
         renderFn: () =>
             Promise.resolve({
                 body: "THIS IS A RENDERED PAGE",
-                status: StatusCodes.ok(),
+                status: 200,
+                headers: {},
             }),
     });
 }
