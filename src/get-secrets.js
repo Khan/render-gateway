@@ -1,6 +1,5 @@
 // @flow
-import {getGCloudSecrets} from "./ka-shared/index.js";
-import {getRuntimeMode} from "./ka-shared/get-runtime-mode.js";
+import {getRuntimeMode, getGCloudSecrets} from "./ka-shared/index.js";
 
 import type {Secrets} from "./ka-shared/index.js";
 

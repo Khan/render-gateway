@@ -1,16 +1,14 @@
 // @flow
-import * as GetRuntimeMode from "../ka-shared/get-runtime-mode.js";
 import * as KAShared from "../ka-shared/index.js";
 import {getSecrets} from "../get-secrets.js";
 
-jest.mock("../ka-shared/get-runtime-mode.js");
 jest.mock("../ka-shared/index.js");
 
 describe("#getSecrets", () => {
     describe("in production", () => {
         it("should lookup secrets with crypto key path", () => {
             // Arrange
-            jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue(
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
                 "production",
             );
             const getGCloudSecretsSpy = jest.spyOn(
@@ -31,7 +29,7 @@ describe("#getSecrets", () => {
     describe("not in production", () => {
         it("should lookup secrets with render-gateway root path", () => {
             // Arrange
-            jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue(
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
                 "development",
             );
             const getGCloudSecretsSpy = jest.spyOn(
@@ -51,7 +49,7 @@ describe("#getSecrets", () => {
 
         it("should lookup secrets with lookupFn that returns null", async () => {
             // Arrange
-            jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue(
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
                 "development",
             );
             const getGCloudSecretsSpy = jest.spyOn(

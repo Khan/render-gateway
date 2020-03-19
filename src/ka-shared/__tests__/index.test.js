@@ -11,12 +11,13 @@ describe("index.js", () => {
         expect(result).toContainAllKeys([
             "getGCloudSecrets",
             "getLogger",
+            "getRuntimeMode",
             "makeCommonServiceRouter",
             "trace",
         ]);
     });
 
-    it("should not export trace agent setup or things it uses", async () => {
+    it("should not export trace agent setup", async () => {
         // Arrange
         const importedModule = import("../index.js");
 
@@ -24,9 +25,6 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(result).not.toContainAnyKeys([
-            "getRuntimeMode",
-            "startTraceAgent",
-        ]);
+        expect(result).not.toContainAnyKeys(["startTraceAgent"]);
     });
 });

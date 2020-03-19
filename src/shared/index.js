@@ -1,4 +1,13 @@
 // @flow
+/**
+ * These are other files that this "package" makes available for direct
+ * import besides this index.js. This list is used to ensure we export flow
+ * types for these if they get directly imported.
+ *
+ * @additional-exports [
+ *      "./get-runtime-mode.js",
+ * ]
+ */
 export type {
     Runtime,
     LogLevel,
