@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeRenderHandler = void 0;
 
-var _index = require("../shared/index.js");
+var _index = require("../../shared/index.js");
 
-var _index2 = require("../ka-shared/index.js");
+var _index2 = require("../../ka-shared/index.js");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 

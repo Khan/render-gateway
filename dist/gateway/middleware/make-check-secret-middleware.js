@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeCheckSecretMiddleware = makeCheckSecretMiddleware;
 
-var _getRuntimeMode = require("../ka-shared/get-runtime-mode.js");
+var _index = require("../../ka-shared/index.js");
 
 var _getSecrets = require("../get-secrets.js");
 
@@ -63,7 +63,7 @@ function makeDevelopmentMiddleware() {
 
 
 function makeCheckSecretMiddleware(authenticationOptions) {
-  if (authenticationOptions != null && (0, _getRuntimeMode.getRuntimeMode)() === "production") {
+  if (authenticationOptions != null && (0, _index.getRuntimeMode)() === "production") {
     return makeProductionMiddleware(authenticationOptions);
   }
 

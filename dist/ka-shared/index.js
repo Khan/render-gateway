@@ -27,6 +27,12 @@ Object.defineProperty(exports, "trace", {
     return _trace.trace;
   }
 });
+Object.defineProperty(exports, "getRuntimeMode", {
+  enumerable: true,
+  get: function () {
+    return _getRuntimeMode.getRuntimeMode;
+  }
+});
 
 var _getLogger = require("./get-logger.js");
 
@@ -35,4 +41,6 @@ var _makeCommonServiceRouter = require("./routes/make-common-service-router.js")
 var _getGcloudSecrets = require("./get-gcloud-secrets.js");
 
 var _trace = require("./trace.js");
+
+var _getRuntimeMode = require("./get-runtime-mode.js");
 //# sourceMappingURL=index.js.map
