@@ -121,16 +121,13 @@ const outputFlowTypesForDist = async () /*: Promise<void>*/ => {
      * We only care about packages in our distribution.
      */
     const packages = fs.readdirSync(distDir);
+    console.log(`Building flow files for ${packages.join(", ")}`);
     for (const pkg of packages) {
-        console.log(`Building flow files list for ${pkg}`);
-
         const pkgSrcDir = path.join(srcDir, pkg);
         const pkgDistDir = path.join(distDir, pkg);
 
         const srcIndexJSPath = path.join(pkgSrcDir, "index.js");
         const filesThatNeedTypes = await getExportsFrom(srcIndexJSPath);
-
-        console.info(`Generating flow files for ${pkg}`);
         for (const file of filesThatNeedTypes) {
             const fileInSrc = path.normalize(path.join(pkgSrcDir, file));
             const fileInDist = path.normalize(path.join(pkgDistDir, file));

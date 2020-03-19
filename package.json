@@ -18,7 +18,8 @@
     "lint": "eslint --report-unused-disable-directives --config .eslintrc.js \"{run_local.js,src,bin,__{tests,mocks}__}/**/*.js\"",
     "flow:ci": "flow check",
     "build:noclean": "babel src --out-dir dist --source-maps --config-file ./.babelrc.js --ignore \"**/__tests__/**/*.js\",\"**/__mocks__/**/*.js\"",
-    "build": "yarn clean && yarn build:noclean",
+    "build:flowdist": "node tools/build-flow-types.js",
+    "build": "yarn clean && yarn build:noclean && yarn build:flowdist",
     "pretty": "pretty-quick"
   },
   "devDependencies": {
