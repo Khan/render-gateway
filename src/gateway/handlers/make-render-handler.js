@@ -1,8 +1,8 @@
 // @flow
 import type {Middleware} from "express";
 import type {Request, Response, RenderCallback} from "../types.js";
-import {extractError} from "../shared/index.js";
-import {getLogger} from "../ka-shared/index.js";
+import {extractError} from "../../shared/index.js";
+import {getLogger} from "../../ka-shared/index.js";
 
 /**
  * Handle a request as a render.

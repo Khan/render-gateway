@@ -1,8 +1,8 @@
 // @flow
 import * as Express from "express";
 import * as ExpressAsyncHandler from "express-async-handler";
-import * as KAShared from "../ka-shared/index.js";
-import * as Shared from "../shared/index.js";
+import * as KAShared from "../../ka-shared/index.js";
+import * as Shared from "../../shared/index.js";
 import * as MakeRenderHandler from "../handlers/make-render-handler.js";
 import * as MakeCheckSecretMiddleware from "../middleware/make-check-secret-middleware.js";
 
@@ -10,8 +10,8 @@ import {runServer} from "../run-server.js";
 
 jest.mock("express");
 jest.mock("express-async-handler");
-jest.mock("../ka-shared/index.js");
-jest.mock("../shared/index.js");
+jest.mock("../../ka-shared/index.js");
+jest.mock("../../shared/index.js");
 jest.mock("../handlers/make-render-handler.js");
 jest.mock("../middleware/make-check-secret-middleware.js");
 

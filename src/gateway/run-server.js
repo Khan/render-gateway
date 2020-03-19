@@ -1,14 +1,14 @@
 // @flow
 import express from "express";
 import asyncHandler from "express-async-handler";
-import {startGateway, getGatewayInfo} from "./shared/index.js";
+import {startGateway, getGatewayInfo} from "../shared/index.js";
 import type {RenderGatewayOptions, Request, Response} from "./types.js";
-import type {GatewayOptions} from "./shared/index.js";
+import type {GatewayOptions} from "../shared/index.js";
 import {
     getRuntimeMode,
     getLogger,
     makeCommonServiceRouter,
-} from "./ka-shared/index.js";
+} from "../ka-shared/index.js";
 import {makeCheckSecretMiddleware} from "./middleware/make-check-secret-middleware.js";
 import {makeRenderHandler} from "./handlers/make-render-handler.js";
 

@@ -1,7 +1,7 @@
 // @flow
 import type {Response as SuperAgentResponse, CallbackHandler} from "superagent";
-import type {Logger, AmbiguousError} from "./shared/index.js";
-import {extractError} from "./shared/index.js";
+import type {Logger, AmbiguousError} from "../shared/index.js";
+import {extractError} from "../shared/index.js";
 
 /**
  * Create a shouldRetry callback for use with superagent's retry() method.

@@ -6,7 +6,7 @@ import type {
     Plugin,
     Response as SuperAgentResponse,
 } from "superagent";
-import type {RequestWithLog} from "./shared/index.js";
+import type {RequestWithLog} from "../shared/index.js";
 
 /**
  * Used to track inflight requests.

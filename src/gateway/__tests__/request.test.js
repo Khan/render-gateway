@@ -1,10 +1,10 @@
 // @flow
-import * as KAShared from "../ka-shared/index.js";
+import * as KAShared from "../../ka-shared/index.js";
 import * as MakeRequest from "../make-request.js";
 import * as RequestsFromCache from "../requests-from-cache.js";
 import {request, abortInFlightRequests} from "../request.js";
 
-jest.mock("../ka-shared/index.js");
+jest.mock("../../ka-shared/index.js");
 jest.mock("../make-request.js");
 jest.mock("../requests-from-cache.js");
 

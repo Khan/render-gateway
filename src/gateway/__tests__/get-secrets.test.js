@@ -1,8 +1,8 @@
 // @flow
-import * as KAShared from "../ka-shared/index.js";
+import * as KAShared from "../../ka-shared/index.js";
 import {getSecrets} from "../get-secrets.js";
 
-jest.mock("../ka-shared/index.js");
+jest.mock("../../ka-shared/index.js");
 
 describe("#getSecrets", () => {
     describe("in production", () => {

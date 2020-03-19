@@ -1,10 +1,10 @@
 // @flow
-import * as Shared from "../../shared/index.js";
-import * as KAShared from "../../ka-shared/index.js";
+import * as Shared from "../../../shared/index.js";
+import * as KAShared from "../../../ka-shared/index.js";
 import {makeRenderHandler} from "../make-render-handler.js";
 
-jest.mock("../../shared/index.js");
-jest.mock("../../ka-shared/index.js");
+jest.mock("../../../shared/index.js");
+jest.mock("../../../ka-shared/index.js");
 
 describe("#makeRenderHandler", () => {
     it("should return a function", () => {

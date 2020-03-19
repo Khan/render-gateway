@@ -5,10 +5,10 @@ import type {
     RequestOptions,
     AbortablePromise,
 } from "./types.js";
-import type {Logger} from "./shared/types.js";
+import type {Logger} from "../shared/types.js";
 import {makeRequest} from "./make-request.js";
 import {isFromCache} from "./requests-from-cache.js";
-import {trace} from "./ka-shared/index.js";
+import {trace} from "../ka-shared/index.js";
 
 /**
  * This tracks our inflight requests.

@@ -1,12 +1,12 @@
 // @flow
 import * as Superagent from "superagent";
 import * as MakeShouldRetry from "../make-should-retry.js";
-import * as Shared from "../shared/index.js";
+import * as Shared from "../../shared/index.js";
 
 import {makeUnbufferedNoCacheRequest} from "../make-unbuffered-no-cache-request.js";
 
 jest.mock("superagent");
-jest.mock("../shared/index.js");
+jest.mock("../../shared/index.js");
 jest.mock("../make-agent.js");
 jest.mock("../make-should-retry.js");
 

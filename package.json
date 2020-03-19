@@ -2,7 +2,7 @@
   "name": "render-gateway",
   "version": "0.0.2",
   "description": "The core implementation for a render server",
-  "main": "dist/index.js",
+  "main": "dist/gateway/index.js",
   "repository": "git@github.com:Khan/render-gateway.git",
   "author": "Jeff Yates <jeff@khanacademy.org>",
   "license": "MIT",

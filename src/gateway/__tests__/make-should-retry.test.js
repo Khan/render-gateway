@@ -1,8 +1,8 @@
 // @flow
-import * as Shared from "../shared/index.js";
+import * as Shared from "../../shared/index.js";
 import {makeShouldRetry} from "../make-should-retry.js";
 
-jest.mock("../shared/index.js");
+jest.mock("../../shared/index.js");
 
 describe("#makeShouldRetry", () => {
     it("should return a function", () => {

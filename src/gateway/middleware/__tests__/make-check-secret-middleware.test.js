@@ -1,9 +1,9 @@
 // @flow
-import * as GetRuntimeMode from "../../ka-shared/get-runtime-mode.js";
+import * as KAShared from "../../../ka-shared/index.js";
 import * as GetSecrets from "../../get-secrets.js";
 import {makeCheckSecretMiddleware} from "../make-check-secret-middleware.js";
 
-jest.mock("../../ka-shared/get-runtime-mode.js");
+jest.mock("../../../ka-shared/index.js");
 jest.mock("../../get-secrets.js");
 
 describe("#makeCheckSecretMiddleware", () => {
@@ -26,7 +26,7 @@ describe("#makeCheckSecretMiddleware", () => {
             // Arrange
             const fakeAuthOptions = ({}: any);
             const fakeNext = jest.fn();
-            jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue(
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
                 "development",
             );
             const result: Function = await makeCheckSecretMiddleware(
@@ -43,7 +43,7 @@ describe("#makeCheckSecretMiddleware", () => {
 
     describe("when in production", () => {
         beforeEach(() => {
-            jest.spyOn(GetRuntimeMode, "getRuntimeMode").mockReturnValue(
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
                 "production",
             );
         });

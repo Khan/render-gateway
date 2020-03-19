@@ -2,7 +2,7 @@
 import type {Response as SuperAgentResponse} from "superagent";
 import type {RequestOptions, AbortablePromise} from "./types.js";
 import {isCacheable} from "./is-cacheable.js";
-import type {Logger} from "./shared/index.js";
+import type {Logger} from "../shared/index.js";
 import {makeUnbufferedNoCacheRequest} from "./make-unbuffered-no-cache-request.js";
 import {asCachedRequest, asUncachedRequest} from "./requests-from-cache.js";
 

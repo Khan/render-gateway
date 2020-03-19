@@ -3,8 +3,8 @@ import superagent from "superagent";
 import type {Request} from "superagent";
 import type {RequestOptions} from "./types.js";
 import {makeShouldRetry} from "./make-should-retry.js";
-import {getGatewayInfo} from "./shared/index.js";
-import type {Logger} from "./shared/index.js";
+import {getGatewayInfo} from "../shared/index.js";
+import type {Logger} from "../shared/index.js";
 
 /**
  * Make a request for a given URL without buffering or caching.
