@@ -19,5 +19,7 @@ comment:
   require_head: yes
 
 ignore:
-  - "**/dist/index.js"
+  - "dist"
   - "**/types.js"
+  - "tools"
+  - "run_local.js"
