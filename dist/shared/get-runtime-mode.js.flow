@@ -1,0 +1,2 @@
+// @flow
+export * from "../../src/shared/get-runtime-mode.js";
