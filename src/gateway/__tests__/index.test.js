@@ -8,6 +8,17 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys(["runServer"]);
+        expect(result).toContainAllKeys(["runServer", "Requests"]);
+    });
+
+    it("should export Requests API", async () => {
+        // Arrange
+        const importedModule = import("../index.js");
+
+        // Act
+        const {Requests: result} = await importedModule;
+
+        // Assert
+        expect(result).toContainAllKeys(["request", "abortInFlightRequests"]);
     });
 });
