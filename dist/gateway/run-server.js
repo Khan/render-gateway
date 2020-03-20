@@ -58,10 +58,10 @@ const runServer = async options => {
    */
   .use((await (0, _makeCheckSecretMiddleware.makeCheckSecretMiddleware)(authentication)))
   /**
-   * This is our render route. This will handle all remaining gets as
-   * render requests and response accordingly.
+   * This is our render route. See the handler to learn how the magic
+   * happens.
    */
-  .get("/*", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderFn))); // Start the gateway.
+  .get("/render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderFn))); // Start the gateway.
 
   const gatewayOptions = _objectSpread({
     mode: (0, _index2.getRuntimeMode)(),
