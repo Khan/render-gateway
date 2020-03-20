@@ -15,6 +15,8 @@ export type {
     GatewayOptions,
     RequestWithLog,
     AmbiguousError,
+    TraceSessionInfo,
+    ITraceSession,
 } from "./types.js";
 
 export {createLogger} from "./create-logger.js";
