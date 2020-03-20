@@ -8,7 +8,7 @@
  * NOTE: We import everyting from index.js to ensure we're testing the public
  * interface of this package.
  */
-const {runServer} = require("./src/index.js");
+const {runServer} = require("./src/gateway/index.js");
 
 async function main() {
     runServer({

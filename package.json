@@ -2,7 +2,7 @@
   "name": "render-gateway",
   "version": "0.0.2",
   "description": "The core implementation for a render server",
-  "main": "dist/index.js",
+  "main": "dist/gateway/index.js",
   "repository": "git@github.com:Khan/render-gateway.git",
   "author": "Jeff Yates <jeff@khanacademy.org>",
   "license": "MIT",
@@ -18,7 +18,8 @@
     "lint": "eslint --report-unused-disable-directives --config .eslintrc.js \"{run_local.js,src,bin,__{tests,mocks}__}/**/*.js\"",
     "flow:ci": "flow check",
     "build:noclean": "babel src --out-dir dist --source-maps --config-file ./.babelrc.js --ignore \"**/__tests__/**/*.js\",\"**/__mocks__/**/*.js\"",
-    "build": "yarn clean && yarn build:noclean",
+    "build:flowdist": "node tools/build-flow-types.js",
+    "build": "yarn clean && yarn build:noclean && yarn build:flowdist",
     "pretty": "pretty-quick"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@babel/preset-env": "^7.8.7",
     "@babel/preset-flow": "^7.8.3",
     "@khanacademy/eslint-config": "^0.0.5",
+    "ancesdir": "^2.0.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.1.0",
     "babel-watch": "^7.0.0",
