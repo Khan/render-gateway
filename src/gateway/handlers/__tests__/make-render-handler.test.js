@@ -26,7 +26,9 @@ describe("#makeRenderHandler", () => {
                 status: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
-                url: "THE_URL",
+                query: {
+                    url: "THE_URL",
+                },
             };
             const renderResult = {
                 body: "BODY",
@@ -52,6 +54,76 @@ describe("#makeRenderHandler", () => {
             expect(getLoggerSpy).toHaveBeenCalledWith(fakeRequest);
         });
 
+        it("should throw if the request url param is missing", async () => {
+            // Arrange
+            const fakeResponse: any = {
+                send: jest.fn().mockReturnThis(),
+                status: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {},
+            };
+            const renderResult = {
+                body: "BODY",
+                status: 200,
+                headers: {},
+            };
+            const fakeRenderFn = jest
+                .fn()
+                .mockReturnValue(Promise.resolve(renderResult));
+            const handler = makeRenderHandler(fakeRenderFn);
+
+            // Act
+            /**
+             * Middleware<Request, Response> can mean two different call
+             * signatures, and sadly, they both have completely different
+             * argument type ordering, which totally confused flow here.
+             * $FlowIgnore
+             */
+            const underTest = handler(fakeRequest, fakeResponse);
+
+            // Assert
+            expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
+                `"Missing url query param"`,
+            );
+        });
+
+        it("should throw if there are multiple url params", async () => {
+            // Arrange
+            const fakeResponse: any = {
+                send: jest.fn().mockReturnThis(),
+                status: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {
+                    url: ["URL1", "URL2"],
+                },
+            };
+            const renderResult = {
+                body: "BODY",
+                status: 200,
+                headers: {},
+            };
+            const fakeRenderFn = jest
+                .fn()
+                .mockReturnValue(Promise.resolve(renderResult));
+            const handler = makeRenderHandler(fakeRenderFn);
+
+            // Act
+            /**
+             * Middleware<Request, Response> can mean two different call
+             * signatures, and sadly, they both have completely different
+             * argument type ordering, which totally confused flow here.
+             * $FlowIgnore
+             */
+            const underTest = handler(fakeRequest, fakeResponse);
+
+            // Assert
+            expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
+                `"More than one url query param given"`,
+            );
+        });
+
         it("should invoke given render function with url and API", async () => {
             // Arrange
             const fakeResponse: any = {
@@ -59,7 +131,9 @@ describe("#makeRenderHandler", () => {
                 status: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
-                url: "THE_URL",
+                query: {
+                    url: "THE_URL",
+                },
             };
             const renderResult = {
                 body: "BODY",
@@ -103,7 +177,9 @@ describe("#makeRenderHandler", () => {
                     status: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
-                    url: "THE_URL",
+                    query: {
+                        url: "THE_URL",
+                    },
                 };
                 const renderResult = {
                     body: "BODY",
@@ -135,7 +211,9 @@ describe("#makeRenderHandler", () => {
                     status: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
-                    url: "THE_URL",
+                    query: {
+                        url: "THE_URL",
+                    },
                 };
                 const renderResult = {
                     body: "BODY",
@@ -169,7 +247,9 @@ describe("#makeRenderHandler", () => {
                     status: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
-                    url: "THE_URL",
+                    query: {
+                        url: "THE_URL",
+                    },
                 };
                 const fakeRenderFn = jest
                     .fn()
@@ -201,7 +281,9 @@ describe("#makeRenderHandler", () => {
                     status: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
-                    url: "THE_URL",
+                    query: {
+                        url: "THE_URL",
+                    },
                 };
                 const fakeRenderFn = jest
                     .fn()
@@ -241,7 +323,9 @@ describe("#makeRenderHandler", () => {
                     status: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
-                    url: "THE_URL",
+                    query: {
+                        url: "THE_URL",
+                    },
                 };
                 const fakeRenderFn = jest
                     .fn()
@@ -272,7 +356,9 @@ describe("#makeRenderHandler", () => {
                     status: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
-                    url: "THE_URL",
+                    query: {
+                        url: "THE_URL",
+                    },
                 };
                 const fakeRenderFn = jest
                     .fn()
