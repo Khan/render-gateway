@@ -65,7 +65,8 @@ async function renderHandler(renderFn, req, res) {
      */
     const renderAPI = {
       getHeader: trackHeaderLookup,
-      trace: traceFn
+      trace: traceFn,
+      logger
     };
     /**
      * Defer this bit to the render callback.
