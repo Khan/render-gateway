@@ -5,11 +5,13 @@
  */
 // eslint-disable-next-line import/no-unassigned-import
 import "../ka-shared/start-trace-agent.js";
+
 import * as RequestAPI from "./request.js";
 
 export type {
     RenderGatewayOptions,
     RequestOptions,
+    RequestsOptions,
     AbortablePromise,
     RenderCallback,
     TraceCallback,

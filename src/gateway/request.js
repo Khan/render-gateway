@@ -10,6 +10,8 @@ import {makeRequest} from "./make-request.js";
 import {isFromCache} from "./requests-from-cache.js";
 import {trace} from "../ka-shared/index.js";
 
+export {createRequestOptions} from "./create-request-options.js";
+
 /**
  * This tracks our inflight requests.
  */
