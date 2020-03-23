@@ -5,7 +5,7 @@ import {makeRequestMiddleware} from "../make-request-middleware.js";
 
 jest.mock("express-winston");
 jest.mock("@google-cloud/logging-winston", () => ({
-    LoggingWinston: function() {
+    LoggingWinston: function () {
         const localWinston = jest.requireActual("winston");
         /**
          * The full LoggingWinston type will cause tests to hang weirdly, so we

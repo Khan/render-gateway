@@ -20,7 +20,7 @@
     "build:noclean": "babel src --out-dir dist --source-maps --config-file ./.babelrc.js --ignore \"**/__tests__/**/*.js\",\"**/__mocks__/**/*.js\"",
     "build:flowdist": "node tools/build-flow-types.js",
     "build": "yarn clean && yarn build:noclean && yarn build:flowdist",
-    "pretty": "pretty-quick"
+    "pretty": "prettier --config .prettierrc.js --ignore-path .prettierignore --write"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -51,8 +51,7 @@
     "jest": "^25.1.0",
     "jest-extended": "^0.11.5",
     "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1"
+    "prettier": "^2.0.1"
   },
   "husky": {
     "hooks": {
