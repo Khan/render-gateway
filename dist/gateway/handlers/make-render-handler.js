@@ -49,7 +49,7 @@ async function renderHandler(renderFn, req, res) {
    */
 
 
-  const renderURL = req.query["url"];
+  const renderURL = req.query.url;
 
   if (typeof renderURL !== "string") {
     if (renderURL == null) {
