@@ -6,7 +6,7 @@ import type {
     Plugin,
     Response as SuperAgentResponse,
 } from "superagent";
-import type {RequestWithLog} from "../shared/index.js";
+import type {RequestWithLog, ITraceSession, Logger} from "../shared/index.js";
 
 /**
  * Used to track inflight requests.
@@ -175,6 +175,15 @@ export type RequestsOptions = {
 export type GetHeaderCallback = (name: string) => ?string;
 
 /**
+ * Callback to begin a trace session.
+ *
+ * @param {string} name The name of the traced action.
+ * @returns {ITraceSession} A trace session that the caller should use to
+ * indicate when the session is finished.
+ */
+export type TraceCallback = (name: string) => ITraceSession;
+
+/**
  * Header names and their values for attaching to a response from the gateway.
  */
 export type ResponseHeaders = {
@@ -206,6 +215,33 @@ export type RenderResult = {
 };
 
 /**
+ * The API exposed for use during a render operation.
+ */
+export type RenderAPI = {
+    /**
+     * Callback to request the value of a header in the request.
+     *
+     * This can be used to determine additional context about the render
+     * operation. For example, depending on your specific setup, they may
+     * contain version information to help determine what the render package
+     * should contain. It is provided as a callback so that the gateway
+     * implementation can track which headers influence a render, which can then
+     * be reported back as a Vary header in the gateway response.
+     */
+    +getHeader: GetHeaderCallback,
+
+    /**
+     * Callback to start a trace session for tracing an operation.
+     */
+    +trace: TraceCallback,
+
+    /**
+     * A logger to use for logging during the render operation.
+     */
+    +logger: Logger,
+};
+
+/**
 /**
  * Callback to request a render.
  *
@@ -227,7 +263,7 @@ export type RenderResult = {
  */
 export type RenderCallback = (
     url: string,
-    getHeaderFn: GetHeaderCallback,
+    renderAPI: RenderAPI,
 ) => Promise<RenderResult>;
 
 /**

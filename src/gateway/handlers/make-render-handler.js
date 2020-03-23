@@ -1,8 +1,9 @@
 // @flow
 import type {Middleware} from "express";
-import type {Request, Response, RenderCallback} from "../types.js";
 import {extractError} from "../../shared/index.js";
-import {getLogger} from "../../ka-shared/index.js";
+import {getLogger, trace} from "../../ka-shared/index.js";
+import type {ITraceSession} from "../../shared/index.js";
+import type {Request, Response, RenderCallback, RenderAPI} from "../types.js";
 
 /**
  * Handle a request as a render.
@@ -28,22 +29,39 @@ async function renderHandler(
     const trackHeaderLookup = (name: string): ?string => {
         return req.header(name);
     };
+
     /**
      * TODO(somewhatabstract, WEB-2057): Hook in tracing (make sure that we
      * don't leave trace sessions open on rejection (or otherwise)).
+     *
+     * For now, we'll assume callers will tidy up.
      */
+    const traceFn = (name: string): ITraceSession => trace(name, req);
 
     /**
-     * TODO(somewhatabstract, WEB-1856): Currently passing the entire URL, but
-     * we want to be more specific here and define the render route better as
-     * we'll really want an absolute URL.
+     * The URL being rendered is given in a query param named, url.
      */
-    const renderURL = req.url;
+    const renderURL = req.query.url;
+    if (typeof renderURL !== "string") {
+        if (renderURL == null) {
+            throw new Error(`Missing url query param`);
+        }
+        throw new Error(`More than one url query param given`);
+    }
     try {
+        /**
+         * Put together the API we make available when rendering.
+         */
+        const renderAPI: RenderAPI = {
+            getHeader: trackHeaderLookup,
+            trace: traceFn,
+            logger,
+        };
+
         /**
          * Defer this bit to the render callback.
          */
-        const {body, status} = await renderFn(renderURL, trackHeaderLookup);
+        const {body, status} = await renderFn(renderURL, renderAPI);
 
         /**
          * TODO(somewhatabstract, WEB-1108): Validate the status with the

@@ -3,6 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+Object.defineProperty(exports, "createRequestOptions", {
+  enumerable: true,
+  get: function () {
+    return _createRequestOptions.createRequestOptions;
+  }
+});
 exports.request = exports.abortInFlightRequests = void 0;
 
 var _makeRequest = require("./make-request.js");
@@ -10,6 +16,8 @@ var _makeRequest = require("./make-request.js");
 var _requestsFromCache = require("./requests-from-cache.js");
 
 var _index = require("../ka-shared/index.js");
+
+var _createRequestOptions = require("./create-request-options.js");
 
 /**
  * This tracks our inflight requests.
