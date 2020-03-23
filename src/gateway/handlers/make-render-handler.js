@@ -55,6 +55,7 @@ async function renderHandler(
         const renderAPI: RenderAPI = {
             getHeader: trackHeaderLookup,
             trace: traceFn,
+            logger,
         };
 
         /**

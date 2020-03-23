@@ -6,7 +6,7 @@ import type {
     Plugin,
     Response as SuperAgentResponse,
 } from "superagent";
-import type {RequestWithLog, ITraceSession} from "../shared/index.js";
+import type {RequestWithLog, ITraceSession, Logger} from "../shared/index.js";
 
 /**
  * Used to track inflight requests.
@@ -234,6 +234,11 @@ export type RenderAPI = {
      * Callback to start a trace session for tracing an operation.
      */
     +trace: TraceCallback,
+
+    /**
+     * A logger to use for logging during the render operation.
+     */
+    +logger: Logger,
 };
 
 /**
