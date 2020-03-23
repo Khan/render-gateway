@@ -45,8 +45,9 @@ export async function startGateway<
     const gateway = appWithMiddleware.listen(port, (err: ?Error) => {
         if (gateway == null || err != null) {
             logger.error(
-                `${name} appears not to have started: ${(err && err.message) ||
-                    "Unknown error"}`,
+                `${name} appears not to have started: ${
+                    (err && err.message) || "Unknown error"
+                }`,
             );
             return;
         }

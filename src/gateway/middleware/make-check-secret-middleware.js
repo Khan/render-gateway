@@ -24,7 +24,7 @@ async function makeProductionMiddleware<Req: $Request, Res: $Response>(
         throw new Error("Unable to load secret");
     }
 
-    return function(req: Req, res: Res, next: NextFunction): void {
+    return function (req: Req, res: Res, next: NextFunction): void {
         const requestSecret = req.header(headerName);
         if (requestSecret !== secret) {
             res.status(401).send({error: "Missing or invalid secret"});
@@ -41,7 +41,7 @@ function makeDevelopmentMiddleware<Req: $Request, Res: $Response>(): Promise<
     /**
      * The secrets middleware is a noop when not in production.
      */
-    return Promise.resolve(function(
+    return Promise.resolve(function (
         req: Req,
         res: Res,
         next: NextFunction,
