@@ -9,15 +9,19 @@
  * interface of this package.
  */
 const {runServer} = require("./src/gateway/index.js");
+/*:: import type {RenderAPI, RenderResult} from "./src/gateway/index.js"; */
 
 async function main() {
     runServer({
         name: "DEV_LOCAL",
         port: 8080,
         // TODO(somewhatabstract): Implement something more complete for testing.
-        renderFn: () =>
+        renderFn: (
+            url /*: string*/,
+            renderAPI /*: RenderAPI*/,
+        ) /*: Promise<RenderResult>*/ =>
             Promise.resolve({
-                body: "THIS IS A RENDERED PAGE",
+                body: `THIS IS A RENDERED PAGE: ${url}`,
                 status: 200,
                 headers: {},
             }),

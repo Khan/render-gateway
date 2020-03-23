@@ -1,8 +1,9 @@
 // @flow
 import type {Middleware} from "express";
-import type {Request, Response, RenderCallback} from "../types.js";
+import type {Request, Response, RenderCallback, RenderAPI} from "../types.js";
 import {extractError} from "../../shared/index.js";
-import {getLogger} from "../../ka-shared/index.js";
+import {getLogger, trace} from "../../ka-shared/index.js";
+import type {ITraceSession} from "../../shared/index.js";
 
 /**
  * Handle a request as a render.
@@ -28,10 +29,14 @@ async function renderHandler(
     const trackHeaderLookup = (name: string): ?string => {
         return req.header(name);
     };
+
     /**
      * TODO(somewhatabstract, WEB-2057): Hook in tracing (make sure that we
      * don't leave trace sessions open on rejection (or otherwise)).
+     *
+     * For now, we'll assume callers will tidy up.
      */
+    const traceFn = (name: string): ITraceSession => trace(name, req);
 
     /**
      * TODO(somewhatabstract, WEB-1856): Currently passing the entire URL, but
@@ -41,9 +46,17 @@ async function renderHandler(
     const renderURL = req.url;
     try {
         /**
+         * Put together the API we make available when rendering.
+         */
+        const renderAPI: RenderAPI = {
+            getHeader: trackHeaderLookup,
+            trace: traceFn,
+        };
+
+        /**
          * Defer this bit to the render callback.
          */
-        const {body, status} = await renderFn(renderURL, trackHeaderLookup);
+        const {body, status} = await renderFn(renderURL, renderAPI);
 
         /**
          * TODO(somewhatabstract, WEB-1108): Validate the status with the

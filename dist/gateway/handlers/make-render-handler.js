@@ -38,8 +38,12 @@ async function renderHandler(renderFn, req, res) {
   /**
    * TODO(somewhatabstract, WEB-2057): Hook in tracing (make sure that we
    * don't leave trace sessions open on rejection (or otherwise)).
+   *
+   * For now, we'll assume callers will tidy up.
    */
 
+
+  const traceFn = name => (0, _index2.trace)(name, req);
   /**
    * TODO(somewhatabstract, WEB-1856): Currently passing the entire URL, but
    * we want to be more specific here and define the render route better as
@@ -51,12 +55,20 @@ async function renderHandler(renderFn, req, res) {
 
   try {
     /**
+     * Put together the API we make available when rendering.
+     */
+    const renderAPI = {
+      getHeader: trackHeaderLookup,
+      trace: traceFn
+    };
+    /**
      * Defer this bit to the render callback.
      */
+
     const {
       body,
       status
-    } = await renderFn(renderURL, trackHeaderLookup);
+    } = await renderFn(renderURL, renderAPI);
     /**
      * TODO(somewhatabstract, WEB-1108): Validate the status with the
      * headers.

@@ -11,6 +11,11 @@ export type {
     RenderGatewayOptions,
     RequestOptions,
     AbortablePromise,
+    RenderCallback,
+    TraceCallback,
+    GetHeaderCallback,
+    RenderAPI,
+    RenderResult,
 } from "./types.js";
 
 export {runServer} from "./run-server.js";

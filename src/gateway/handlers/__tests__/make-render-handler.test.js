@@ -52,7 +52,7 @@ describe("#makeRenderHandler", () => {
             expect(getLoggerSpy).toHaveBeenCalledWith(fakeRequest);
         });
 
-        it("should invoke given render function", async () => {
+        it("should invoke given render function with url and API", async () => {
             // Arrange
             const fakeResponse: any = {
                 send: jest.fn().mockReturnThis(),
@@ -83,7 +83,10 @@ describe("#makeRenderHandler", () => {
             // Assert
             expect(fakeRenderFn).toHaveBeenCalledWith(
                 "THE_URL",
-                expect.any(Function),
+                expect.objectContaining({
+                    getHeader: expect.any(Function),
+                    trace: expect.any(Function),
+                }),
             );
         });
 
