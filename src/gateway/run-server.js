@@ -39,10 +39,10 @@ export const runServer = async (
          */
         .use(await makeCheckSecretMiddleware(authentication))
         /**
-         * This is our render route. This will handle all remaining gets as
-         * render requests and response accordingly.
+         * This is our render route. See the handler to learn how the magic
+         * happens.
          */
-        .get("/*", asyncHandler(makeRenderHandler(renderFn)));
+        .get("/render", asyncHandler(makeRenderHandler(renderFn)));
 
     // Start the gateway.
     const gatewayOptions: GatewayOptions = {

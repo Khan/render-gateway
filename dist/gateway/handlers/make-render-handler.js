@@ -45,13 +45,19 @@ async function renderHandler(renderFn, req, res) {
 
   const traceFn = name => (0, _index2.trace)(name, req);
   /**
-   * TODO(somewhatabstract, WEB-1856): Currently passing the entire URL, but
-   * we want to be more specific here and define the render route better as
-   * we'll really want an absolute URL.
+   * The URL being rendered is given in a query param named, url.
    */
 
 
-  const renderURL = req.url;
+  const renderURL = req.query.url;
+
+  if (typeof renderURL !== "string") {
+    if (renderURL == null) {
+      throw new Error(`Missing url query param`);
+    }
+
+    throw new Error(`More than one url query param given`);
+  }
 
   try {
     /**
