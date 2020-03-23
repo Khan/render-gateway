@@ -41,7 +41,7 @@ async function renderHandler(
     /**
      * The URL being rendered is given in a query param named, url.
      */
-    const renderURL = req.query["url"];
+    const renderURL = req.query.url;
     if (typeof renderURL !== "string") {
         if (renderURL == null) {
             throw new Error(`Missing url query param`);
