@@ -5,7 +5,7 @@ import * as cookiejar from "cookiejar";
 
 declare type superagent$CallbackHandler = (
     err: any,
-    res: superagent$Response,
+    res: ?superagent$Response,
 ) => ?boolean;
 
 declare type superagent$Serializer = (obj: any) => string;

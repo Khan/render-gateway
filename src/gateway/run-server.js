@@ -44,6 +44,8 @@ export const runServer = async (
          */
         .get("/render", asyncHandler(makeRenderHandler(renderFn)));
 
+    app.set("trust proxy", true);
+
     // Start the gateway.
     const gatewayOptions: GatewayOptions = {
         mode: getRuntimeMode(),

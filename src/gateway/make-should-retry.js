@@ -16,10 +16,10 @@ export const makeShouldRetry = (
     logger: Logger,
     override: ?CallbackHandler,
 ): CallbackHandler => {
-    return (err: AmbiguousError, res: SuperAgentResponse): ?boolean => {
+    return (err: AmbiguousError, res: ?SuperAgentResponse): ?boolean => {
         logger.warn("Request failed. Might retry.", {
             ...extractError(err),
-            status: res.status,
+            status: res?.status,
         });
 
         /**
