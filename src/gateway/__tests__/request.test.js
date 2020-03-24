@@ -27,7 +27,7 @@ describe("#abortInFlightRequests", () => {
             finally: jest.fn().mockReturnThis(),
         };
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
-        request(fakeOptions, fakeLogger, "URL");
+        request(fakeLogger, "URL", fakeOptions);
 
         // Act
         abortInFlightRequests();
@@ -53,11 +53,11 @@ describe("#abortInFlightRequests", () => {
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(fakeRequest)
             .mockReturnValue(fakeRequest2);
-        request(fakeOptions, fakeLogger, "URL");
+        request(fakeLogger, "URL", fakeOptions);
 
         // Act
         abortInFlightRequests();
-        const result = request(fakeOptions, fakeLogger, "URL");
+        const result = request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(result).toBe(fakeRequest2);
@@ -86,15 +86,17 @@ describe("#request", () => {
         const traceSpy = jest.spyOn(KAShared, "trace");
 
         // Act
-        request(fakeOptions, fakeLogger, "URL");
+        request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(traceSpy).toHaveBeenCalledWith("REQ: URL", fakeLogger);
     });
 
-    it("should make a request", () => {
+    it("should make a request including default options", () => {
         // Arrange
-        const fakeOptions: any = "FAKE_OPTIONS";
+        const fakeOptions: any = {
+            opt: "FAKE_OPTIONS",
+        };
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
             abort: jest.fn().mockReturnThis(),
@@ -106,11 +108,16 @@ describe("#request", () => {
             .mockReturnValue(fakeRequest);
 
         // Act
-        request(fakeOptions, fakeLogger, "URL");
+        request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(makeRequestSpy).toHaveBeenCalledWith(
-            fakeOptions,
+            expect.objectContaining({
+                buffer: true,
+                timeout: 60000,
+                retries: 2,
+                opt: "FAKE_OPTIONS",
+            }),
             fakeLogger,
             "URL",
         );
@@ -135,7 +142,7 @@ describe("#request", () => {
         });
 
         // Act
-        request(fakeOptions, fakeLogger, "URL");
+        request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(callOrder).toStrictEqual(["trace", "makeRequest"]);
@@ -153,7 +160,7 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
 
         // Act
-        const result = request(fakeOptions, fakeLogger, "URL");
+        const result = request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(result).toBe(fakeRequest);
@@ -171,8 +178,8 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValueOnce(fakeRequest);
 
         // Act
-        request(fakeOptions, fakeLogger, "URL");
-        const result = request(fakeOptions, fakeLogger, "URL");
+        request(fakeLogger, "URL", fakeOptions);
+        const result = request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(result).toBe(fakeRequest);
@@ -200,10 +207,10 @@ describe("#request", () => {
         // Act
         let result;
         try {
-            await request(fakeOptions, fakeLogger, "URL");
+            await request(fakeLogger, "URL", fakeOptions);
         } catch (e) {
             expect(e).toBe("OOPS!");
-            result = request(fakeOptions, fakeLogger, "URL");
+            result = request(fakeLogger, "URL", fakeOptions);
         }
 
         // Assert
@@ -230,8 +237,8 @@ describe("#request", () => {
         jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
 
         // Act
-        await request(fakeOptions, fakeLogger, "URL");
-        const result = request(fakeOptions, fakeLogger, "URL");
+        await request(fakeLogger, "URL", fakeOptions);
+        const result = request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(result).toBe(fakeRequest);
@@ -258,7 +265,7 @@ describe("#request", () => {
 
         // Act
         try {
-            await request(fakeOptions, fakeLogger, "URL");
+            await request(fakeLogger, "URL", fakeOptions);
         } catch (e) {
             expect(e).toBe("OOPS!");
         }
@@ -290,7 +297,7 @@ describe("#request", () => {
         );
 
         // Act
-        await request(fakeOptions, fakeLogger, "URL");
+        await request(fakeLogger, "URL", fakeOptions);
 
         // Assert
         expect(fakeTraceSession.end).toHaveBeenCalledWith({

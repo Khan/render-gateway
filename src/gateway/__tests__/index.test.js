@@ -20,9 +20,9 @@ describe("index.js", () => {
 
         // Assert
         expect(result).toContainAllKeys([
-            "createRequestOptions",
             "request",
             "abortInFlightRequests",
+            "DefaultRequestOptions",
         ]);
     });
 });
