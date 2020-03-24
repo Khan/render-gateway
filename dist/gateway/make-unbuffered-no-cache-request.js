@@ -28,7 +28,7 @@ const makeUnbufferedNoCacheRequest = (options, logger, url) => {
     name,
     version
   } = (0, _index.getGatewayInfo)();
-  return _superagent.default.get(url).agent(options.agent)
+  return _superagent.default.get(url).http2(options.http2).agent(options.agent)
   /**
    * Configure retries since superagent can handle this for us.
    * We give it a callback so we can log the retry and, if we so choose

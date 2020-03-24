@@ -3,13 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "createRequestOptions", {
-  enumerable: true,
-  get: function () {
-    return _createRequestOptions.createRequestOptions;
-  }
-});
-exports.request = exports.abortInFlightRequests = void 0;
+exports.request = exports.DefaultRequestOptions = exports.abortInFlightRequests = void 0;
 
 var _makeRequest = require("./make-request.js");
 
@@ -17,7 +11,11 @@ var _requestsFromCache = require("./requests-from-cache.js");
 
 var _index = require("../ka-shared/index.js");
 
-var _createRequestOptions = require("./create-request-options.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * This tracks our inflight requests.
@@ -35,6 +33,17 @@ const abortInFlightRequests = () => {
   }
 };
 /**
+ * The defaults used for request options.
+ */
+
+
+exports.abortInFlightRequests = abortInFlightRequests;
+const DefaultRequestOptions = {
+  buffer: true,
+  retries: 2,
+  timeout: 60000
+};
+/**
  * Request a URL.
  *
  * Unlike makeRequest, which makes a new request, this will track inflight
@@ -46,14 +55,16 @@ const abortInFlightRequests = () => {
  * have the abort function. Therefore, you'll need to readd it.
  */
 
+exports.DefaultRequestOptions = DefaultRequestOptions;
 
-exports.abortInFlightRequests = abortInFlightRequests;
-
-const request = (options, logger, url) => {
+const request = (logger, url, options) => {
+  const optionsToUse = _objectSpread({}, DefaultRequestOptions, {}, options);
   /**
    * Something may have already started this request. If it is already
    * "in flight", let's use it rather than making a whole new one.
    */
+
+
   const inFlight = inFlightRequests[url];
 
   if (inFlight != null) {
@@ -70,7 +81,7 @@ const request = (options, logger, url) => {
 
 
   const traceSession = (0, _index.trace)(`REQ: ${url}`, logger);
-  const abortableRequest = (0, _makeRequest.makeRequest)(options, logger, url);
+  const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, logger, url);
   const abortFn = abortableRequest.abort;
   /**
    * Now, let's do the infrastructure bits for tracing this request with
