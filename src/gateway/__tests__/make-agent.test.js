@@ -15,7 +15,7 @@ describe("#makeAgent", () => {
             maxFreeSockets: 255,
             maxSockets: 128,
         };
-        const agentKeepAliveSpy = jest.spyOn(AgentKeepAlive, "default");
+        const agentKeepAliveSpy = jest.spyOn(AgentKeepAlive, "HttpsAgent");
 
         // Act
         makeAgent(options);
@@ -33,7 +33,7 @@ describe("#makeAgent", () => {
     it("should return agentkeepalive", () => {
         // Arrange
         const fakeAgent = {};
-        jest.spyOn(AgentKeepAlive, "default").mockReturnValue(fakeAgent);
+        jest.spyOn(AgentKeepAlive, "HttpsAgent").mockReturnValue(fakeAgent);
 
         // Act
         const result = makeAgent();
