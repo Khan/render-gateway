@@ -25,7 +25,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 const makeShouldRetry = (logger, override) => {
   return (err, res) => {
     logger.warn("Request failed. Might retry.", _objectSpread({}, (0, _index.extractError)(err), {
-      status: res.status
+      status: res === null || res === void 0 ? void 0 : res.status
     }));
     /**
      * According to https://github.com/visionmedia/superagent/blob/0de12b299d5d5b5ec05cc43e18e853a95bffb25a/src/request-base.js#L181-L206
