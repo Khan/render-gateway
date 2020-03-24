@@ -35,7 +35,6 @@ declare type superagent$MultipartValue =
 
 declare interface superagent$SuperAgentRequest extends superagent$Request {
     agent(agent?: http.Agent): superagent$SuperAgentRequest;
-    http2(enabled?: boolean): superagent$SuperAgentRequest;
 }
 
 declare interface superagent$SuperAgentStatic extends stream.Stream {

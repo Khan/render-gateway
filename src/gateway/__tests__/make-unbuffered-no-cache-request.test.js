@@ -13,7 +13,6 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should get the URL", () => {
         // Arrange
         const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
@@ -33,31 +32,9 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         expect(getSpy).toHaveBeenCalledWith("URL");
     });
 
-    it("should enable or disable http2 on the request", () => {
-        // Arrange
-        const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
-            agent: jest.fn().mockReturnThis(),
-            retry: jest.fn().mockReturnThis(),
-            set: jest.fn().mockReturnThis(),
-            timeout: jest.fn().mockReturnThis(),
-        };
-        const fakeOptions: any = {http2: true};
-        const fakeLogger: any = {};
-        jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
-        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
-
-        // Act
-        makeUnbufferedNoCacheRequest(fakeOptions, fakeLogger, "URL");
-
-        // Assert
-        expect(fakeSuperagent.http2).toHaveBeenCalledWith(true);
-    });
-
     it("should apply the agent to the request", () => {
         // Arrange
         const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
@@ -79,7 +56,6 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should use retries count from options", () => {
         // Arrange
         const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
@@ -106,7 +82,6 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should make shouldRetry with override from options and logger", () => {
         // Arrange
         const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
@@ -140,7 +115,6 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             version: "TEST_GAE_VERSION",
         });
         const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),
@@ -163,7 +137,6 @@ describe("#makeUnbufferedNoCacheRequest", () => {
     it("should set timeout from options", () => {
         // Arrange
         const fakeSuperagent = {
-            http2: jest.fn().mockReturnThis(),
             agent: jest.fn().mockReturnThis(),
             retry: jest.fn().mockReturnThis(),
             set: jest.fn().mockReturnThis(),

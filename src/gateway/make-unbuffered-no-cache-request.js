@@ -26,7 +26,6 @@ export const makeUnbufferedNoCacheRequest = (
     return (
         superagent
             .get(url)
-            .http2(options.http2)
             .agent(options.agent)
             /**
              * Configure retries since superagent can handle this for us.
