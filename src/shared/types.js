@@ -146,7 +146,10 @@ export type GatewayOptions = {
      * Optional value in milliseconds for keepalive timeout of the server.
      * For running in Google Cloud, this should be higher than the load
      * balancer's own keepalive timeout value, which at time of writing was
-     * 80000ms.
+     * indicated to be 80000ms [1].
+     *
+     * [1] https://khanacademy.slack.com/archives/CJSE4TMQX/p1573252787333500
+     *
      * Defaults to 90000.
      */
     +keepAliveTimeout?: number,
