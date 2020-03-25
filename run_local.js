@@ -21,7 +21,7 @@ async function main() {
             renderAPI /*: RenderAPI*/,
         ) /*: Promise<RenderResult>*/ =>
             Promise.resolve({
-                body: `THIS IS A RENDERED PAGE: ${url}`,
+                body: `You asked us to render ${url}`,
                 status: 200,
                 headers: {},
             }),

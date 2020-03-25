@@ -10,8 +10,6 @@ import {makeRequest} from "./make-request.js";
 import {isFromCache} from "./requests-from-cache.js";
 import {trace} from "../ka-shared/index.js";
 
-export {createRequestOptions} from "./create-request-options.js";
-
 /**
  * This tracks our inflight requests.
  */
@@ -29,6 +27,15 @@ export const abortInFlightRequests = (): void => {
 };
 
 /**
+ * The defaults used for request options.
+ */
+export const DefaultRequestOptions: RequestOptions = {
+    buffer: true,
+    retries: 2,
+    timeout: 60000,
+};
+
+/**
  * Request a URL.
  *
  * Unlike makeRequest, which makes a new request, this will track inflight
@@ -40,10 +47,15 @@ export const abortInFlightRequests = (): void => {
  * have the abort function. Therefore, you'll need to readd it.
  */
 export const request = (
-    options: RequestOptions,
     logger: Logger,
     url: string,
+    options?: RequestOptions,
 ): AbortablePromise<Response> => {
+    const optionsToUse = {
+        ...DefaultRequestOptions,
+        ...options,
+    };
+
     /**
      * Something may have already started this request. If it is already
      * "in flight", let's use it rather than making a whole new one.
@@ -62,7 +74,7 @@ export const request = (
      * Then we capture the abort function so we can reattach it later.
      */
     const traceSession = trace(`REQ: ${url}`, logger);
-    const abortableRequest = makeRequest(options, logger, url);
+    const abortableRequest = makeRequest(optionsToUse, logger, url);
     const abortFn = abortableRequest.abort;
 
     /**

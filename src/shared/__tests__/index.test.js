@@ -16,6 +16,7 @@ describe("index.js", () => {
             "getRuntimeMode",
             "startGateway",
             "trace",
+            "getAgentForURL",
         ]);
     });
 });

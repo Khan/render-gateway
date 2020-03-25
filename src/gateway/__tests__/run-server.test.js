@@ -26,6 +26,7 @@ describe("#runServer", () => {
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
+            set: jest.fn(),
         }: any);
         const expressSpy = jest
             .spyOn(Express, "default")
@@ -52,6 +53,7 @@ describe("#runServer", () => {
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
+            set: jest.fn(),
         }: any);
         jest.spyOn(Express, "default").mockReturnValue(pretendApp);
         const pretendCommonServiceRouter = ({}: any);
@@ -81,6 +83,7 @@ describe("#runServer", () => {
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
+            set: jest.fn(),
         }: any);
         jest.spyOn(Express, "default").mockReturnValue(pretendApp);
         const makeCheckSecretMiddlewareSpy = jest.spyOn(
@@ -112,6 +115,7 @@ describe("#runServer", () => {
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
+            set: jest.fn(),
         }: any);
         jest.spyOn(Express, "default").mockReturnValue(pretendApp);
 
@@ -152,6 +156,7 @@ describe("#runServer", () => {
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
             get: jest.fn().mockReturnThis(),
+            set: jest.fn(),
         }: any);
         jest.spyOn(Express, "default").mockReturnValue(pretendApp);
         const startGatewaySpy = jest.spyOn(Shared, "startGateway");

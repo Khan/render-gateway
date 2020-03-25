@@ -61,7 +61,15 @@ const runServer = async options => {
    * This is our render route. See the handler to learn how the magic
    * happens.
    */
-  .get("/render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderFn))); // Start the gateway.
+  .get("/render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderFn)));
+  /**
+   * Added this to support forwarding proxies in case we need it, per the
+   * documentation:
+   *
+   * https://cloud.google.com/appengine/docs/standard/nodejs/runtime#https_and_forwarding_proxies
+   */
+
+  app.set("trust proxy", true); // Start the gateway.
 
   const gatewayOptions = _objectSpread({
     mode: (0, _index2.getRuntimeMode)(),

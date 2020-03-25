@@ -7,7 +7,6 @@ import {makeUnbufferedNoCacheRequest} from "../make-unbuffered-no-cache-request.
 
 jest.mock("superagent");
 jest.mock("../../shared/index.js");
-jest.mock("../make-agent.js");
 jest.mock("../make-should-retry.js");
 
 describe("#makeUnbufferedNoCacheRequest", () => {

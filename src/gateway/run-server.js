@@ -44,6 +44,14 @@ export const runServer = async (
          */
         .get("/render", asyncHandler(makeRenderHandler(renderFn)));
 
+    /**
+     * Added this to support forwarding proxies in case we need it, per the
+     * documentation:
+     *
+     * https://cloud.google.com/appengine/docs/standard/nodejs/runtime#https_and_forwarding_proxies
+     */
+    app.set("trust proxy", true);
+
     // Start the gateway.
     const gatewayOptions: GatewayOptions = {
         mode: getRuntimeMode(),
