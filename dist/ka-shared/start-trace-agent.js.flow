@@ -1,0 +1,2 @@
+// @flow
+export * from "../../src/ka-shared/start-trace-agent.js";
