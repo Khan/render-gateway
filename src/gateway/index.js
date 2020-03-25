@@ -11,7 +11,6 @@ import * as RequestAPI from "./request.js";
 export type {
     RenderGatewayOptions,
     RequestOptions,
-    RequestsOptions,
     AbortablePromise,
     RenderCallback,
     TraceCallback,

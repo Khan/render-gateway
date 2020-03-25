@@ -82,58 +82,6 @@ export interface AbortablePromise<T> extends Promise<T> {
 }
 
 /**
- * Options to configure the request agent that is used by the gateway
- * to make requests to external services.
- *
- * All requests go through the same request agent, whether for files or data.
- * The agent has some basic configuration. These options provide mechanisms to
- * extend that base configuration so that caching strategies and the like
- * can be defined or modified.
- */
-export type RequestsOptions = {
-    /**
-     * Options to define the caching strategy for requests.
-     */
-    +caching?: CachingStrategy,
-
-    /**
-     * The agent to be used for the request.
-     */
-    +agent?: Agent,
-
-    /**
-     * Time to wait in milliseconds before a request times out.
-     * Defaults to 60000 (1 minute).
-     */
-    +timeout?: number,
-
-    /**
-     * The number of times a request is retried if it fails from a transient
-     * error. This is in addition to the initial request. For example, if this
-     * were set to 3, then there could be a total of 4 requests.
-     * Note that for all GET requests made during server-side rendering,
-     * it is assumed they will be idempotent. Defaults to 2 (i.e. one try, and
-     * two retries - so three total requests).
-     */
-    +retries?: number,
-
-    /**
-     * Callback invoked if a retry occurs.
-     * This should return null for the default behavior to apply, true to allow
-     * the retry, and false to block further retries.
-     *
-     * Returning a non-boolean value causes superagent to do its default
-     * behavior, which is:
-     * - allow retry for all 500 errors except 501
-     * - allow retry for err.code set to any:
-     *      ['ECONNRESET', 'ETIMEDOUT', 'EADDRINFO', 'ESOCKETTIMEDOUT']
-     * - allow retry if err.timeout is truthy and err.code is 'ECONNABORTED`
-     * - allow retry if err.crossDomain is truthy
-     */
-    +shouldRetry?: CallbackHandler,
-};
-
-/**
  * Callback to retrieve the value of a header.
  *
  * @param {string} name The case insensitive name of the header,
