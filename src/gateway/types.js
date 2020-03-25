@@ -250,6 +250,15 @@ export type RenderGatewayOptions = {
     +port: number,
 
     /**
+     * Optional value in milliseconds for keepalive timeout of the server.
+     * For running in Google Cloud, this should be higher than the load
+     * balancer's own keepalive timeout value, which at time of writing was
+     * 80000ms.
+     * Defaults to 90000.
+     */
+    +keepAliveTimeout?: number,
+
+    /**
      * Options to indicate how to authenticate incoming render requests.
      * When omitted, requests are not authenticated (useful for dev and test).
      * These are strongly recommended for production.
