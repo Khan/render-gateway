@@ -16,11 +16,18 @@ export const makeShouldRetry = (
     logger: Logger,
     override: ?CallbackHandler,
 ): CallbackHandler => {
-    return (err: AmbiguousError, res: ?SuperAgentResponse): ?boolean => {
-        logger.warn("Request failed. Might retry.", {
-            ...extractError(err),
-            status: res?.status,
-        });
+    return (err: ?AmbiguousError, res: ?SuperAgentResponse): ?boolean => {
+        /**
+         * This method gets called even on successful responses; I presume in
+         * case something about the response requires retrying. So, let's not
+         * log that the request failed if we don't have an error object.
+         */
+        if (err != null) {
+            logger.warn("Request failed. Might retry.", {
+                ...extractError(err),
+                status: res?.status,
+            });
+        }
 
         /**
          * According to https://github.com/visionmedia/superagent/blob/0de12b299d5d5b5ec05cc43e18e853a95bffb25a/src/request-base.js#L181-L206
