@@ -59,7 +59,7 @@
     }
   },
   "lint-staged": {
-    "**/!(dist)/*.js": [
+    "*.js": [
       "yarn lint",
       "yarn test --findRelatedTests",
       "yarn pretty"
