@@ -24,9 +24,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  */
 const makeShouldRetry = (logger, override) => {
   return (err, res) => {
-    logger.warn("Request failed. Might retry.", _objectSpread({}, (0, _index.extractError)(err), {
-      status: res === null || res === void 0 ? void 0 : res.status
-    }));
+    /**
+     * This method gets called even on successful responses; I presume in
+     * case something about the response requires retrying. So, let's not
+     * log that the request failed if we don't have an error object.
+     */
+    if (err != null) {
+      logger.warn("Request failed. Might retry.", _objectSpread({}, (0, _index.extractError)(err), {
+        status: res === null || res === void 0 ? void 0 : res.status
+      }));
+    }
     /**
      * According to https://github.com/visionmedia/superagent/blob/0de12b299d5d5b5ec05cc43e18e853a95bffb25a/src/request-base.js#L181-L206
      *
@@ -38,6 +45,7 @@ const makeShouldRetry = (logger, override) => {
      * - allow retry if err.timeout is truthy and err.code is 'ECONNABORTED`
      * - allow retry if err.crossDomain is truthy
      */
+
 
     return override === null || override === void 0 ? void 0 : override(err, res);
   };
