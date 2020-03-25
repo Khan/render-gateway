@@ -45,6 +45,12 @@ Object.defineProperty(exports, "extractError", {
     return _extractError.extractError;
   }
 });
+Object.defineProperty(exports, "getAgentForURL", {
+  enumerable: true,
+  get: function () {
+    return _getAgentForUrl.getAgentForURL;
+  }
+});
 
 var _createLogger = require("./create-logger.js");
 
@@ -59,4 +65,6 @@ var _startGateway = require("./start-gateway.js");
 var _trace = require("./trace.js");
 
 var _extractError = require("./extract-error.js");
+
+var _getAgentForUrl = require("./get-agent-for-url.js");
 //# sourceMappingURL=index.js.map
