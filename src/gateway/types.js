@@ -294,9 +294,4 @@ export type RequestOptions = {
      * - allow retry if err.crossDomain is truthy
      */
     +shouldRetry?: CallbackHandler,
-
-    /**
-     * Use HTTP/2 for the request.
-     */
-    +http2?: boolean,
 };
