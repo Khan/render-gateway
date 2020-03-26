@@ -10,6 +10,9 @@ import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
  * over. The traced event will be logged and also written to the Google Cloud
  * StackDriver Trace agent.
  *
+ * Trace logs include metadata about the trace such as duration and memory
+ * usage.
+ *
  * @param {Logger} logger A logger to use for documention and timing the
  * traced action.
  * @param {string} name The name of the traced action.
@@ -44,6 +47,7 @@ export const trace = (
      * Now we start the profiling timer.
      */
     const profiler = logger.startTimer();
+    const beforeMemory = process.memoryUsage();
 
     /**
      * Next, if we were given a tracer, we start a trace section for this so
@@ -60,6 +64,8 @@ export const trace = (
      * It can then be used to end and record the trace session.
      */
     const end = (info?: TraceSessionInfo): void => {
+        const afterMemory = process.memoryUsage();
+
         /**
          * Let's mark our profile as done.
          *
@@ -70,6 +76,8 @@ export const trace = (
             ...info,
             message: `TRACED: ${name}`,
             level: info?.level || "debug",
+            memoryBefore: beforeMemory,
+            memoryAfter: afterMemory,
         });
 
         /**
