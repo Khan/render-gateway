@@ -129,6 +129,9 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
+                jest.spyOn(process, "memoryUsage")
+                    .mockReturnValueOnce("BEFORE")
+                    .mockReturnValueOnce("AFTER");
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -138,6 +141,8 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED: SESSION_NAME",
                     level: "debug",
+                    memoryAfter: "AFTER",
+                    memoryBefore: "BEFORE",
                 });
             });
 
@@ -150,6 +155,9 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
+                jest.spyOn(process, "memoryUsage")
+                    .mockReturnValueOnce("BEFORE")
+                    .mockReturnValueOnce("AFTER");
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -159,6 +167,8 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED: SESSION_NAME",
                     level: "silly",
+                    memoryAfter: "AFTER",
+                    memoryBefore: "BEFORE",
                 });
             });
 
@@ -171,6 +181,9 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
+                jest.spyOn(process, "memoryUsage")
+                    .mockReturnValueOnce("BEFORE")
+                    .mockReturnValueOnce("AFTER");
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -187,6 +200,8 @@ describe("#trace", () => {
                     cached: true,
                     size: 56,
                     someotherrubbish: "blahblahblah",
+                    memoryAfter: "AFTER",
+                    memoryBefore: "BEFORE",
                 });
             });
 
@@ -199,6 +214,9 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
+                jest.spyOn(process, "memoryUsage")
+                    .mockReturnValueOnce("BEFORE")
+                    .mockReturnValueOnce("AFTER");
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -210,6 +228,8 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED: SESSION_NAME",
                     level: "debug",
+                    memoryAfter: "AFTER",
+                    memoryBefore: "BEFORE",
                 });
             });
 

@@ -19,6 +19,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * over. The traced event will be logged and also written to the Google Cloud
  * StackDriver Trace agent.
  *
+ * Trace logs include metadata about the trace such as duration and memory
+ * usage.
+ *
  * @param {Logger} logger A logger to use for documention and timing the
  * traced action.
  * @param {string} name The name of the traced action.
@@ -50,6 +53,7 @@ const trace = (logger, name, tracer) => {
    */
 
   const profiler = logger.startTimer();
+  const beforeMemory = process.memoryUsage();
   /**
    * Next, if we were given a tracer, we start a trace section for this so
    * trace session so that it will appear in Stackdriver Trace.
@@ -68,15 +72,19 @@ const trace = (logger, name, tracer) => {
    */
 
   const end = info => {
+    const afterMemory = process.memoryUsage();
     /**
      * Let's mark our profile as done.
      *
      * We include the session info object, but make sure to set the level
      * and message ourselves.
      */
+
     profiler.done(_objectSpread({}, info, {
       message: `TRACED: ${name}`,
-      level: (info === null || info === void 0 ? void 0 : info.level) || "debug"
+      level: (info === null || info === void 0 ? void 0 : info.level) || "debug",
+      memoryBefore: beforeMemory,
+      memoryAfter: afterMemory
     }));
     /**
      * If we started a tracer span, let's end it.
