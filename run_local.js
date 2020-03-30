@@ -5,7 +5,7 @@
  */
 
 /**
- * NOTE: We import everyting from index.js to ensure we're testing the public
+ * NOTE: We import everything from index.js to ensure we're testing the public
  * interface of this package.
  */
 const {runServer} = require("./src/gateway/index.js");
