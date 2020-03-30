@@ -159,6 +159,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
          * rendering hooks so that we can make a render happen.
          */
         /**
+         * TODO(somewhatabstract): All the things
          * 1. Need to setup the JSDOM VM
          *    - see createRenderContext for RRS
          *    - call the afterEnvSetup and attach anything it returns to the
@@ -171,7 +172,6 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
          *
          * 4. Finally, close the JSDOM environment.
          */
-        // TODO(somewhatabstract): All the things
 
         return Promise.resolve({
             body: "NOTHING",
