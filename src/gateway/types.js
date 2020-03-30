@@ -284,20 +284,13 @@ export type RequestOptions = {
  */
 export interface IRenderEnvironment {
     /**
-     * Callback to request a render.
-     *
+     * Generate a render result for the given url.
      *
      * @param {string} url The URL that is to be rendered. This is always
      * relative to the host and so does not contain protocol, hostname, nor port
      * information.
-     * @param {GetHeaderCallback} getHeaderFn A callback to request the value
-     * of a specific header included with the request.
-     * This can be used to determine additional context about the render
-     * operation. For example, depending on your specific setup, they may
-     * contain version information to help determine what the render package
-     * should contain. It is provided as a callback so that the gateway
-     * implementation can track which headers influence a render, which can then
-     * be reported back as a Vary header in the gateway response.
+     * @param {RenderAPI} renderAPI An API of utilities for assisting with the
+     * render operation.
      * @returns {Promise<RenderResult>} The result of the render that is to be
      * returned by the gateway service as the response to the render request.
      * This includes the body of the response and the status code information.
