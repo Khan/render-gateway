@@ -92,14 +92,16 @@ export interface AbortablePromise<T> extends Promise<T> {
  */
 export type GetHeaderCallback = (name: string) => ?string;
 
-/**
- * Callback to begin a trace session.
- *
- * @param {string} name The name of the traced action.
- * @returns {ITraceSession} A trace session that the caller should use to
- * indicate when the session is finished.
- */
-export type TraceCallback = (name: string) => ITraceSession;
+export interface TraceCallback {
+    /**
+     * Begin a trace session.
+     *
+     * @param {string} name The name of the traced action.
+     * @returns {ITraceSession} A trace session that the caller should use to
+     * indicate when the session is finished.
+     */
+    (name: string): ITraceSession;
+}
 
 /**
  * Header names and their values for attaching to a response from the gateway.

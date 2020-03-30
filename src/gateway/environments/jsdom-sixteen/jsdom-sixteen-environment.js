@@ -3,7 +3,7 @@ import type {ResourceLoader} from "jsdom";
 
 import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 
-import type {IRenderEnvironment, RenderAPI, RenderResult} from "../types.js";
+import type {IRenderEnvironment, RenderAPI, RenderResult} from "../../types.js";
 
 interface GetResourceLoaderFn {
     /**
@@ -90,6 +90,51 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         applyAbortablePromisesPatch();
     }
 
+    _retrieveTargetFiles = async (
+        url: string,
+        renderAPI: RenderAPI,
+    ): Promise<Array<string>> => {
+        const traceSession = renderAPI.trace("Retrieving target files");
+        try {
+            /**
+             * First, we need to know what files to execute so that we can produce
+             * a render result, and we need a resource loader so that we can
+             * retrieve those files as well as support retrieving additional files
+             * within our JSDOM environment.
+             */
+            const files = await this._getFileListFn(url, renderAPI);
+            const resourceLoader = this._getResourceLoaderFn(url, renderAPI);
+
+            /**
+             * Now let's use the resource loader to get the files.
+             * We ignore the `FetchOptions` param of resourceLoader.fetch as we
+             * have nothing to pass there.
+             */
+            return await Promise.all(
+                files.map((f) => {
+                    const fetchResult = resourceLoader.fetch(f);
+                    /**
+                     * Resource loader's fetch can return null. It shouldn't for
+                     * any of these files though, so if it does, let's raise an
+                     * error!
+                     */
+                    if (fetchResult == null) {
+                        throw new Error(
+                            `Unable to retrieve ${f}. ResourceLoader returned null.`,
+                        );
+                    }
+                    /**
+                     * No need to reconnect the abort() in this case since we
+                     * won't be calling it.
+                     */
+                    return fetchResult.then((b) => b.toString());
+                }),
+            );
+        } finally {
+            traceSession.end();
+        }
+    };
+
     /**
      * Generate a render result for the given url.
      *
@@ -106,43 +151,8 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         url: string,
         renderAPI: RenderAPI,
     ): Promise<RenderResult> => {
-        // TODO: Trace the setup time.
-
-        /**
-         * First, we need to know what files to execute so that we can produce
-         * a render result, and we need a resource loader so that we can
-         * retrieve those files as well as support retrieving additional files
-         * within our JSDOM environment.
-         */
-        const files = await this._getFileListFn(url, renderAPI);
-        const resourceLoader = this._getResourceLoaderFn(url, renderAPI);
-
-        /**
-         * Now let's use the resource loader to get the files.
-         * We ignore the `FetchOptions` param of resourceLoader.fetch as we
-         * have nothing to pass there.
-         */
         // eslint-disable-next-line no-unused-vars
-        const packages = await Promise.all(
-            files.map((f) => {
-                const fetchResult = resourceLoader.fetch(f);
-                /**
-                 * Resource loader's fetch can return null. It shouldn't for
-                 * any of these files though, so if it does, let's raise an
-                 * error!
-                 */
-                if (fetchResult == null) {
-                    throw new Error(
-                        `Unable to retrieve ${f}. ResourceLoader returned null.`,
-                    );
-                }
-                /**
-                 * No need to reconnect the abort() in this case since we
-                 * won't be calling it.
-                 */
-                return fetchResult.then((b) => b.toString());
-            }),
-        );
+        const files = await this._retrieveTargetFiles(url, renderAPI);
 
         /**
          * Right, we have the files. Now we need the JSDOM environment and the
@@ -151,6 +161,8 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         /**
          * 1. Need to setup the JSDOM VM
          *    - see createRenderContext for RRS
+         *    - call the afterEnvSetup and attach anything it returns to the
+         *      vm context
          *
          * 2. Need to setup the environment with render registration callbacks
          *    - see the render function in render.js of RRS

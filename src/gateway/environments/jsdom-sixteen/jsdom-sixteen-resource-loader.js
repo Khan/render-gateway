@@ -2,9 +2,9 @@
 import {URL} from "url";
 import {ResourceLoader} from "jsdom";
 import type {FetchOptions} from "jsdom";
-import type {RequestOptions, RenderAPI} from "../types.js";
-import {getAgentForURL} from "../../shared/index.js";
-import {DefaultRequestOptions, request} from "../request.js";
+import type {RequestOptions, RenderAPI} from "../../types.js";
+import {getAgentForURL} from "../../../shared/index.js";
+import {DefaultRequestOptions, request} from "../../request.js";
 
 /**
  * Handy little regex we'll use across all instances.

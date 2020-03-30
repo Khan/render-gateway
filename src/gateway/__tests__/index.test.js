@@ -29,18 +29,4 @@ describe("index.js", () => {
             "DefaultRequestOptions",
         ]);
     });
-
-    it("should export Environments", async () => {
-        // Arrange
-        const importedModule = import("../index.js");
-
-        // Act
-        const {Environments: result} = await importedModule;
-
-        // Assert
-        expect(result).toContainAllKeys([
-            "JSDOMSixteenEnvironment",
-            "JSDOMSixteenResourceLoader",
-        ]);
-    });
 });
