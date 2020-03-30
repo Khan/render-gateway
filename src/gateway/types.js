@@ -1,5 +1,6 @@
 // @flow
-import type {Agent} from "http";
+import type {Agent as HttpAgent} from "http";
+import type {Agent as HttpsAgent} from "https";
 import type {$Request, $Response} from "express";
 import type {
     CallbackHandler,
@@ -233,7 +234,7 @@ export type RequestOptions = {
     /**
      * The agent to be used for the request.
      */
-    +agent?: Agent,
+    +agent?: HttpAgent | HttpsAgent,
 
     /**
      * The superagent-cache-plugin instance that will be used.

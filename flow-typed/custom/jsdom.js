@@ -308,7 +308,7 @@ declare interface jsdom$ResourceLoaderConstructorOptions {
 
 declare class jsdom$ResourceLoader {
     constructor(obj?: jsdom$ResourceLoaderConstructorOptions): this;
-    fetch(url: string, options: jsdom$FetchOptions): ?Promise<Buffer>;
+    fetch(url: string, options?: jsdom$FetchOptions): ?Promise<Buffer>;
 }
 
 declare module "jsdom" {

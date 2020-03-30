@@ -38,6 +38,9 @@ describe("index.js", () => {
         const {Environments: result} = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys(["JSDOMSixteenEnvironment"]);
+        expect(result).toContainAllKeys([
+            "JSDOMSixteenEnvironment",
+            "JSDOMSixteenResourceLoader",
+        ]);
     });
 });
