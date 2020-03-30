@@ -82,5 +82,8 @@
   "resolutions": {
     "**/**/braces": "^2.3.1",
     "**/**/minimist": "^1.2.1"
+  },
+  "peerDependencies": {
+    "jsdom": "^16.2.2"
   }
 }
