@@ -12,7 +12,7 @@ export type {
     RenderGatewayOptions,
     RequestOptions,
     AbortablePromise,
-    RenderCallback,
+    IRenderEnvironment,
     TraceCallback,
     GetHeaderCallback,
     RenderAPI,

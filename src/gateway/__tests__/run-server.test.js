@@ -19,7 +19,9 @@ describe("#runServer", () => {
     it("should create an express app", async () => {
         // Arrange
         const pretendLogger = ({}: any);
-        const fakeRenderFn = jest.fn();
+        const fakeRenderEnvironment: any = {
+            render: jest.fn(),
+        };
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
@@ -36,7 +38,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
-            renderFn: fakeRenderFn,
+            renderEnvironment: fakeRenderEnvironment,
         });
 
         // Assert
@@ -46,7 +48,9 @@ describe("#runServer", () => {
     it("should setup the common service routes", async () => {
         // Arrange
         const pretendLogger = ({}: any);
-        const fakeRenderFn = jest.fn();
+        const fakeRenderEnvironment: any = {
+            render: jest.fn(),
+        };
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
@@ -65,7 +69,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
-            renderFn: fakeRenderFn,
+            renderEnvironment: fakeRenderEnvironment,
         });
 
         // Assert
@@ -75,7 +79,9 @@ describe("#runServer", () => {
     it("should add check secret middleware", async () => {
         // Arrange
         const pretendLogger = ({}: any);
-        const fakeRenderFn = jest.fn();
+        const fakeRenderEnvironment: any = {
+            render: jest.fn(),
+        };
         const pretendAuthOptions = ({}: any);
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
@@ -95,7 +101,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
-            renderFn: fakeRenderFn,
+            renderEnvironment: fakeRenderEnvironment,
             authentication: pretendAuthOptions,
         });
 
@@ -108,7 +114,9 @@ describe("#runServer", () => {
     it("should add the render handler wrapped by express-async-handler", async () => {
         // Arrange
         const pretendLogger = ({}: any);
-        const fakeRenderFn = jest.fn();
+        const fakeRenderEnvironment: any = {
+            render: jest.fn(),
+        };
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
@@ -136,7 +144,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
-            renderFn: fakeRenderFn,
+            renderEnvironment: fakeRenderEnvironment,
         });
 
         // Assert
@@ -149,7 +157,7 @@ describe("#runServer", () => {
     it("should start the gateway", async () => {
         // Arrange
         const pretendLogger = ({}: any);
-        const fakeRenderFn = jest.fn();
+        const fakeRenderEnvironment: any = {render: jest.fn()};
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
         jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
@@ -165,7 +173,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
-            renderFn: fakeRenderFn,
+            renderEnvironment: fakeRenderEnvironment,
         });
 
         // Assert

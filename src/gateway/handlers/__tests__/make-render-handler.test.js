@@ -9,10 +9,12 @@ jest.mock("../../../ka-shared/index.js");
 describe("#makeRenderHandler", () => {
     it("should return a function", () => {
         // Arrange
-        const fakeRenderFn = jest.fn();
+        const fakeRenderEnvironment: any = {
+            render: jest.fn(),
+        };
 
         // Act
-        const result = makeRenderHandler(fakeRenderFn);
+        const result = makeRenderHandler(fakeRenderEnvironment);
 
         // Assert
         expect(result).toBeFunction();
@@ -35,11 +37,13 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
-            const fakeRenderFn = jest
-                .fn()
-                .mockReturnValue(Promise.resolve(renderResult));
+            const fakeRenderEnvironment: any = {
+                render: jest
+                    .fn()
+                    .mockReturnValue(Promise.resolve(renderResult)),
+            };
             const getLoggerSpy = jest.spyOn(KAShared, "getLogger");
-            const handler = makeRenderHandler(fakeRenderFn);
+            const handler = makeRenderHandler(fakeRenderEnvironment);
 
             // Act
             /**
@@ -68,10 +72,12 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
-            const fakeRenderFn = jest
-                .fn()
-                .mockReturnValue(Promise.resolve(renderResult));
-            const handler = makeRenderHandler(fakeRenderFn);
+            const fakeRenderEnvironment: any = {
+                render: jest
+                    .fn()
+                    .mockReturnValue(Promise.resolve(renderResult)),
+            };
+            const handler = makeRenderHandler(fakeRenderEnvironment);
 
             // Act
             /**
@@ -104,10 +110,12 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
-            const fakeRenderFn = jest
-                .fn()
-                .mockReturnValue(Promise.resolve(renderResult));
-            const handler = makeRenderHandler(fakeRenderFn);
+            const fakeRenderEnvironment: any = {
+                render: jest
+                    .fn()
+                    .mockReturnValue(Promise.resolve(renderResult)),
+            };
+            const handler = makeRenderHandler(fakeRenderEnvironment);
 
             // Act
             /**
@@ -140,10 +148,12 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
-            const fakeRenderFn = jest
-                .fn()
-                .mockReturnValue(Promise.resolve(renderResult));
-            const handler = makeRenderHandler(fakeRenderFn);
+            const fakeRenderEnvironment: any = {
+                render: jest
+                    .fn()
+                    .mockReturnValue(Promise.resolve(renderResult)),
+            };
+            const handler = makeRenderHandler(fakeRenderEnvironment);
 
             // Act
             /**
@@ -155,7 +165,7 @@ describe("#makeRenderHandler", () => {
             await handler(fakeRequest, fakeResponse);
 
             // Assert
-            expect(fakeRenderFn).toHaveBeenCalledWith(
+            expect(fakeRenderEnvironment.render).toHaveBeenCalledWith(
                 "THE_URL",
                 expect.objectContaining({
                     getHeader: expect.any(Function),
@@ -186,10 +196,12 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
-                const fakeRenderFn = jest
-                    .fn()
-                    .mockReturnValue(Promise.resolve(renderResult));
-                const handler = makeRenderHandler(fakeRenderFn);
+                const fakeRenderEnvironment: any = {
+                    render: jest
+                        .fn()
+                        .mockReturnValue(Promise.resolve(renderResult)),
+                };
+                const handler = makeRenderHandler(fakeRenderEnvironment);
 
                 // Act
                 /**
@@ -220,10 +232,12 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
-                const fakeRenderFn = jest
-                    .fn()
-                    .mockReturnValue(Promise.resolve(renderResult));
-                const handler = makeRenderHandler(fakeRenderFn);
+                const fakeRenderEnvironment: any = {
+                    render: jest
+                        .fn()
+                        .mockReturnValue(Promise.resolve(renderResult)),
+                };
+                const handler = makeRenderHandler(fakeRenderEnvironment);
 
                 // Act
                 /**
@@ -251,14 +265,14 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
-                const fakeRenderFn = jest
-                    .fn()
-                    .mockReturnValue(Promise.reject("ERROR!"));
+                const fakeRenderEnvironment: any = {
+                    render: jest.fn().mockReturnValue(Promise.reject("ERROR!")),
+                };
                 const fakeLogger = {
                     error: jest.fn(),
                 };
                 jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderFn);
+                const handler = makeRenderHandler(fakeRenderEnvironment);
                 const extractErrorSpy = jest.spyOn(Shared, "extractError");
 
                 // Act
@@ -285,9 +299,9 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
-                const fakeRenderFn = jest
-                    .fn()
-                    .mockReturnValue(Promise.reject());
+                const fakeRenderEnvironment: any = {
+                    render: jest.fn().mockReturnValue(Promise.reject()),
+                };
                 const simplifiedError = {
                     error: "EXTRACTED_ERROR",
                 };
@@ -298,7 +312,7 @@ describe("#makeRenderHandler", () => {
                     error: jest.fn(),
                 };
                 jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderFn);
+                const handler = makeRenderHandler(fakeRenderEnvironment);
 
                 // Act
                 /**
@@ -327,14 +341,14 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
-                const fakeRenderFn = jest
-                    .fn()
-                    .mockReturnValue(Promise.reject());
+                const fakeRenderEnvironment: any = {
+                    render: jest.fn().mockReturnValue(Promise.reject()),
+                };
                 const fakeLogger = {
                     error: jest.fn(),
                 };
                 jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderFn);
+                const handler = makeRenderHandler(fakeRenderEnvironment);
 
                 // Act
                 /**
@@ -360,9 +374,9 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
-                const fakeRenderFn = jest
-                    .fn()
-                    .mockReturnValue(Promise.reject());
+                const fakeRenderEnvironment: any = {
+                    render: jest.fn().mockReturnValue(Promise.reject()),
+                };
                 const simplifiedError = {
                     error: "EXTRACTED_ERROR",
                 };
@@ -373,7 +387,7 @@ describe("#makeRenderHandler", () => {
                     error: jest.fn(),
                 };
                 jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderFn);
+                const handler = makeRenderHandler(fakeRenderEnvironment);
 
                 // Act
                 /**

@@ -12,11 +12,9 @@ const {runServer} = require("./src/gateway/index.js");
 /*:: import type {RenderAPI, RenderResult} from "./src/gateway/index.js"; */
 
 async function main() {
-    runServer({
-        name: "DEV_LOCAL",
-        port: 8080,
+    const renderEnvironment = {
         // TODO(somewhatabstract): Implement something more complete for testing.
-        renderFn: (
+        render: (
             url /*: string*/,
             renderAPI /*: RenderAPI*/,
         ) /*: Promise<RenderResult>*/ =>
@@ -25,6 +23,13 @@ async function main() {
                 status: 200,
                 headers: {},
             }),
+    };
+
+    runServer({
+        name: "DEV_LOCAL",
+        port: 8080,
+
+        renderEnvironment,
     });
 }
 

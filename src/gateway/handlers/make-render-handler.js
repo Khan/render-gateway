@@ -3,7 +3,12 @@ import type {Middleware} from "express";
 import {extractError} from "../../shared/index.js";
 import {getLogger, trace} from "../../ka-shared/index.js";
 import type {ITraceSession} from "../../shared/index.js";
-import type {Request, Response, RenderCallback, RenderAPI} from "../types.js";
+import type {
+    Request,
+    Response,
+    IRenderEnvironment,
+    RenderAPI,
+} from "../types.js";
 
 /**
  * Handle a request as a render.
@@ -15,7 +20,7 @@ import type {Request, Response, RenderCallback, RenderAPI} from "../types.js";
  * This is expected to be wrapped with express-async-handler.
  */
 async function renderHandler(
-    renderFn: RenderCallback,
+    renderEnvironment: IRenderEnvironment,
     req: Request,
     res: Response,
 ): Promise<void> {
@@ -61,7 +66,10 @@ async function renderHandler(
         /**
          * Defer this bit to the render callback.
          */
-        const {body, status} = await renderFn(renderURL, renderAPI);
+        const {body, status} = await renderEnvironment.render(
+            renderURL,
+            renderAPI,
+        );
 
         /**
          * TODO(somewhatabstract, WEB-1108): Validate the status with the
@@ -93,15 +101,15 @@ async function renderHandler(
  * Create a render handler.
  *
  * This creates a handler for use with express. The created handler manages
- * executing the render process, a part of which involves invoking the given
- * render function.
+ * executing the render process, a part of which involves invoking a render
+ * within the given render environment.
  *
- * @param {RenderCallback} renderFn The function that is responsible for
- * performing the render operation.
+ * @param {IRenderEnvironment} renderEnvironment The environment responsible for
+ * performing renders.
  */
 export const makeRenderHandler = (
-    renderFn: RenderCallback,
+    renderEnvironment: IRenderEnvironment,
 ): Middleware<Request, Response> => (
     req: Request,
     res: Response,
-): Promise<void> => renderHandler(renderFn, req, res);
+): Promise<void> => renderHandler(renderEnvironment, req, res);
