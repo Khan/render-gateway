@@ -8,7 +8,11 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys(["runServer", "Requests"]);
+        expect(result).toContainAllKeys([
+            "Environments",
+            "runServer",
+            "Requests",
+        ]);
     });
 
     it("should export Requests API", async () => {
@@ -24,5 +28,16 @@ describe("index.js", () => {
             "abortInFlightRequests",
             "DefaultRequestOptions",
         ]);
+    });
+
+    it("should export Environments", async () => {
+        // Arrange
+        const importedModule = import("../index.js");
+
+        // Act
+        const {Environments: result} = await importedModule;
+
+        // Assert
+        expect(result).toContainAllKeys(["JSDOMSixteenEnvironment"]);
     });
 });

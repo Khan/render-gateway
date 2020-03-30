@@ -7,6 +7,7 @@
 import "../ka-shared/start-trace-agent.js";
 
 import * as RequestAPI from "./request.js";
+import {JSDOMSixteenEnvironment} from "./environments/jsdom-sixteen.js";
 
 export type {
     RenderGatewayOptions,
@@ -21,3 +22,6 @@ export type {
 
 export {runServer} from "./run-server.js";
 export const Requests = RequestAPI;
+export const Environments = {
+    JSDOMSixteenEnvironment,
+};
