@@ -1,5 +1,8 @@
 // @flow
 import type {ResourceLoader} from "jsdom";
+
+import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
+
 import type {IRenderEnvironment, RenderAPI, RenderResult} from "../types.js";
 
 interface getResourceLoader {
@@ -65,6 +68,8 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         }
         this._getFileListFn = getFileListFn;
         this._getResourceLoaderFn = getResourceLoaderFn;
+
+        applyAbortablePromisesPatch();
     }
 
     /**
