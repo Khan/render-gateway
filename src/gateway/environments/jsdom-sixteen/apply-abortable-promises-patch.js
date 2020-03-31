@@ -1,4 +1,6 @@
 // @flow
+const patchedMarker = "__patched__";
+
 /**
  * JSDOM assumes that all fetchs are abortable. However, this is not always
  * the case, due to how some can be regular promises.
@@ -21,7 +23,7 @@ export const applyAbortablePromisesPatch = (force?: boolean = false): void => {
         // $FlowIgnore
         Promise.prototype.abort &&
         // $FlowIgnore
-        Promise.prototype.abort.__rrs_patched__
+        Promise.prototype.abort[patchedMarker]
     ) {
         return;
     }
@@ -34,7 +36,7 @@ export const applyAbortablePromisesPatch = (force?: boolean = false): void => {
      * patching more than once).
      */
     const ourAbort = () => {};
-    ourAbort.__rrs_patched__ = true;
+    ourAbort[patchedMarker] = true;
 
     /**
      * We still know that this doesn't exist on the promise type.
