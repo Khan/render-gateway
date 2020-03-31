@@ -9,6 +9,12 @@ Object.defineProperty(exports, "runServer", {
     return _runServer.runServer;
   }
 });
+Object.defineProperty(exports, "Environments", {
+  enumerable: true,
+  get: function () {
+    return _index.Environments;
+  }
+});
 exports.Requests = void 0;
 
 require("../ka-shared/start-trace-agent.js");
@@ -16,6 +22,8 @@ require("../ka-shared/start-trace-agent.js");
 var RequestAPI = _interopRequireWildcard(require("./request.js"));
 
 var _runServer = require("./run-server.js");
+
+var _index = require("./environments/index.js");
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
