@@ -1,4 +1,5 @@
 // @flow
+import type {ResourceLoader} from "jsdom";
 import type {IJSDOMSixteenConfiguration} from "./index.js";
 import type {IRenderEnvironment, RenderAPI, RenderResult} from "../../types.js";
 
@@ -24,6 +25,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
     _retrieveTargetFiles = async (
         url: string,
         renderAPI: RenderAPI,
+        resourceLoader: ResourceLoader,
     ): Promise<Array<string>> => {
         const traceSession = renderAPI.trace("Retrieving target files");
         try {
@@ -34,10 +36,6 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * within our JSDOM environment.
              */
             const files = await this._configuration.getFileList(url, renderAPI);
-            const resourceLoader = this._configuration.getResourceLoader(
-                url,
-                renderAPI,
-            );
 
             /**
              * Now let's use the resource loader to get the files.
@@ -85,8 +83,21 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         url: string,
         renderAPI: RenderAPI,
     ): Promise<RenderResult> => {
+        /**
+         * We are going to need a resource loader so that we can obtain files
+         * both inside and outside the JSDOM VM.
+         */
+        const resourceLoader = this._configuration.getResourceLoader(
+            url,
+            renderAPI,
+        );
+
         // eslint-disable-next-line no-unused-vars
-        const files = await this._retrieveTargetFiles(url, renderAPI);
+        const files = await this._retrieveTargetFiles(
+            url,
+            renderAPI,
+            resourceLoader,
+        );
 
         /**
          * Right, we have the files. Now we need the JSDOM environment and the
