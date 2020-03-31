@@ -11,17 +11,23 @@
  * instance and we can guarantee that all truly abortable requests are actually
  * aborted.
  */
-export const applyAbortablePromisesPatch = (): void => {
+export const applyAbortablePromisesPatch = (force?: boolean = false): void => {
     /**
-     * We know that this doesn't exist on the promise type.
-     * But we're getting rid of it if it does and it is not ours.
-     * Other things can replace it if they so choose.
-     * $FlowIgnore
+     * We know that this doesn't exist on the promise type, but it does if
+     * we already patched it.
      */
-    if (Promise.prototype.abort && !Promise.prototype.abort.__rrs_patched__) {
+    if (
+        !force &&
         // $FlowIgnore
-        delete Promise.prototype.abort;
+        Promise.prototype.abort &&
+        // $FlowIgnore
+        Promise.prototype.abort.__rrs_patched__
+    ) {
+        return;
     }
+
+    // $FlowIgnore
+    delete Promise.prototype.abort;
 
     /**
      * Make a noop and tag it as our patched version (that way we prevent

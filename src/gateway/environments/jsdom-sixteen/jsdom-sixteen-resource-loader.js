@@ -4,12 +4,12 @@ import {ResourceLoader} from "jsdom";
 import type {FetchOptions} from "jsdom";
 import type {RequestOptions, RenderAPI} from "../../types.js";
 import {getAgentForURL} from "../../../shared/index.js";
-import {DefaultRequestOptions, request} from "../../request.js";
-
-/**
- * Handy little regex we'll use across all instances.
- */
-const JSFileRegex = /^.*\.js(?:\?.*)?/g;
+import {
+    DefaultRequestOptions,
+    request,
+    abortInFlightRequests,
+} from "../../request.js";
+import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 
 /**
  * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
@@ -41,6 +41,9 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
         renderAPI: RenderAPI,
         requestOptions?: RequestOptions = DefaultRequestOptions,
     ) {
+        // Patch before super to make sure promises get an abort.
+        applyAbortablePromisesPatch();
+
         super();
 
         if (renderAPI == null) {
@@ -52,8 +55,13 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
         this._requestOptions = requestOptions;
     }
 
+    get isActive(): boolean {
+        return this._active;
+    }
+
     close(): void {
         this._active = false;
+        abortInFlightRequests();
     }
 
     fetch(url: string, options?: FetchOptions): ?Promise<Buffer> {
@@ -89,6 +97,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
          * If this request is not a JavaScript file, we are going to return an
          * empty response as we don't care about non-JS resources.
          */
+        const JSFileRegex = /^.*\.js(?:\?.*)?/g;
         if (!JSFileRegex.test(url)) {
             logger.silly(`EMPTY: ${readableURLForLogging}`);
 
