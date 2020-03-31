@@ -49,6 +49,7 @@ interface AfterEnvSetupFn {
 export class JSDOMSixteenEnvironment implements IRenderEnvironment {
     _getFileListFn: GetFileListFn;
     _getResourceLoaderFn: GetResourceLoaderFn;
+    _afterEnvSetupFn: AfterEnvSetupFn;
 
     /**
      * Create a new instance of this environment.
@@ -83,6 +84,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         }
         this._getFileListFn = getFileListFn;
         this._getResourceLoaderFn = getResourceLoaderFn;
+        this._afterEnvSetupFn = afterEnvSetup || (() => null);
     }
 
     _retrieveTargetFiles = async (
