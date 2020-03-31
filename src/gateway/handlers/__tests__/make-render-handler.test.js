@@ -143,6 +143,8 @@ describe("#makeRenderHandler", () => {
                     url: "THE_URL",
                 },
             };
+            const fakeLogger = "FAKE_LOGGER";
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
             const renderResult = {
                 body: "BODY",
                 status: 200,
@@ -167,11 +169,107 @@ describe("#makeRenderHandler", () => {
             // Assert
             expect(fakeRenderEnvironment.render).toHaveBeenCalledWith(
                 "THE_URL",
-                expect.objectContaining({
+                {
+                    logger: fakeLogger,
                     getHeader: expect.any(Function),
                     trace: expect.any(Function),
-                }),
+                },
             );
+        });
+
+        describe("provided render API", () => {
+            describe("#getHeader", () => {
+                it("should return the value of the requested header", async () => {
+                    // Arrange
+                    const fakeResponse: any = {
+                        send: jest.fn().mockReturnThis(),
+                        status: jest.fn().mockReturnThis(),
+                    };
+                    const fakeRequest: any = {
+                        query: {
+                            url: "THE_URL",
+                        },
+                        header: jest.fn().mockReturnValue("HEADER_VALUE"),
+                    };
+                    const renderResult = {
+                        body: "BODY",
+                        status: 200,
+                        headers: {},
+                    };
+                    const fakeRenderEnvironment: any = {
+                        render: jest
+                            .fn()
+                            .mockReturnValue(Promise.resolve(renderResult)),
+                    };
+                    const handler = makeRenderHandler(fakeRenderEnvironment);
+                    /**
+                     * Middleware<Request, Response> can mean two different call
+                     * signatures, and sadly, they both have completely different
+                     * argument type ordering, which totally confused flow here.
+                     * $FlowIgnore
+                     */
+                    await handler(fakeRequest, fakeResponse);
+                    const underTest =
+                        fakeRenderEnvironment.render.mock.calls[0][1].getHeader;
+
+                    // Act
+                    const result = underTest("HEADER_NAME");
+
+                    //Assert
+                    expect(result).toBe("HEADER_VALUE");
+                    expect(fakeRequest.header).toHaveBeenCalledWith(
+                        "HEADER_NAME",
+                    );
+                });
+            });
+
+            describe("#trace", () => {
+                it("should call trace", async () => {
+                    // Arrange
+                    const fakeResponse: any = {
+                        send: jest.fn().mockReturnThis(),
+                        status: jest.fn().mockReturnThis(),
+                    };
+                    const fakeRequest: any = {
+                        query: {
+                            url: "THE_URL",
+                        },
+                    };
+                    const renderResult = {
+                        body: "BODY",
+                        status: 200,
+                        headers: {},
+                    };
+                    const fakeRenderEnvironment: any = {
+                        render: jest
+                            .fn()
+                            .mockReturnValue(Promise.resolve(renderResult)),
+                    };
+                    const traceSpy = jest
+                        .spyOn(KAShared, "trace")
+                        .mockReturnValue("FAKE_TRACE_SESSION");
+                    const handler = makeRenderHandler(fakeRenderEnvironment);
+                    /**
+                     * Middleware<Request, Response> can mean two different call
+                     * signatures, and sadly, they both have completely different
+                     * argument type ordering, which totally confused flow here.
+                     * $FlowIgnore
+                     */
+                    await handler(fakeRequest, fakeResponse);
+                    const underTest =
+                        fakeRenderEnvironment.render.mock.calls[0][1].trace;
+
+                    // Act
+                    const result = underTest("TRACE_NAME");
+
+                    //Assert
+                    expect(traceSpy).toHaveBeenCalledWith(
+                        "TRACE_NAME",
+                        fakeRequest,
+                    );
+                    expect(result).toBe("FAKE_TRACE_SESSION");
+                });
+            });
         });
 
         describe("when render callback resolves", () => {

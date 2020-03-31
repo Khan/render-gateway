@@ -1,90 +1,24 @@
 // @flow
-import type {ResourceLoader} from "jsdom";
+import type {IJSDOMSixteenConfiguration} from "./index.js";
 import type {IRenderEnvironment, RenderAPI, RenderResult} from "../../types.js";
-
-interface GetResourceLoaderFn {
-    /**
-     * Get a JSDOM resource loader for the given render request.
-     *
-     * @param {string} url The URL that is to be rendered.
-     * @param {RenderAPI} renderAPI An API of utilities for assisting with the
-     * render operation.
-     * @returns {ResourceLoader} A ResourceLoader instance for use with JSDOM.
-     */
-    (url: string, renderAPI: RenderAPI): ResourceLoader;
-}
-
-interface GetFileListFn {
-    /**
-     * Get the list of file URLs to retrieve and execute for the given request.
-     *
-     * @param {string} url The URL that is to be rendered.
-     * @param {RenderAPI} renderAPI An API of utilities for assisting with the
-     * render operation.
-     * @returns {Promise<Array<string>>} An ordered array of absolute URLs for
-     * the JavaScript files that are to be executed. These are exectued in the
-     * same order as the array.
-     */
-    (url: string, renderAPI: RenderAPI): Promise<Array<string>>;
-}
-
-interface AfterEnvSetupFn {
-    /**
-     * Perform any additional environment setup.
-     *
-     * @param {string} url The URL that is to be rendered.
-     * @param {RenderAPI} renderAPI An API of utilities for assisting with the
-     * render operation.
-     * @returns {?Promise<mixed>} The promise of an object with additional
-     * fields to be copied to the global of the render enviroment. These
-     * values will be therefore available to any code that runs inside the
-     * environment when the render occuras.
-     */
-    (url: string, renderAPI: RenderAPI): ?Promise<mixed>;
-}
 
 /**
  * A render environment built to support the JSDOM 16.x API.
  */
 export class JSDOMSixteenEnvironment implements IRenderEnvironment {
-    _getFileListFn: GetFileListFn;
-    _getResourceLoaderFn: GetResourceLoaderFn;
-    _afterEnvSetupFn: AfterEnvSetupFn;
+    _configuration: IJSDOMSixteenConfiguration;
 
     /**
      * Create a new instance of this environment.
      *
-     * @param {GetFileListFn} getFileListFn
-     * Callback that should return a promise for the list of JavaScript files
-     * the environment must execute in order to produce a result for the given
-     * render request.
-     * @param {GetResourceLoaderFn} getResourceLoaderFn
-     * Callback that should return a JSDOM resource loader for the given
-     * request. We must call this per render so that logging is appropriately
-     * channeled for the request being made.
-     * @param {AfterEnvSetupFn} [afterEnvSetup]
-     * Callback to perform additional environment setup before the render
-     * occurs. This can optionally return an object that can add extra fields
-     * to the environment context for rendering code to access. This is useful
-     * if your render server wants to add some specific configuration, such
-     * as setting up some versions of Apollo for server-side rendering.
+     * @param {IJSDOMSixteenConfiguration} configuration
+     * Configuration for the environment.
      */
-    constructor(
-        getFileListFn: GetFileListFn,
-        getResourceLoaderFn: GetResourceLoaderFn,
-        afterEnvSetup?: AfterEnvSetupFn,
-    ) {
-        if (getFileListFn == null) {
-            throw new Error("Must provide callback for obtaining file list");
+    constructor(configuration: IJSDOMSixteenConfiguration) {
+        if (configuration == null) {
+            throw new Error("Must provide environment configuration");
         }
-        if (getResourceLoaderFn == null) {
-            throw new Error(
-                "Must provide callback for obtaining resource loader",
-            );
-        }
-        this._getFileListFn = getFileListFn;
-        this._getResourceLoaderFn = getResourceLoaderFn;
-        this._afterEnvSetupFn = afterEnvSetup || (() => null);
+        this._configuration = configuration;
     }
 
     _retrieveTargetFiles = async (
@@ -99,8 +33,11 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * retrieve those files as well as support retrieving additional files
              * within our JSDOM environment.
              */
-            const files = await this._getFileListFn(url, renderAPI);
-            const resourceLoader = this._getResourceLoaderFn(url, renderAPI);
+            const files = await this._configuration.getFileList(url, renderAPI);
+            const resourceLoader = this._configuration.getResourceLoader(
+                url,
+                renderAPI,
+            );
 
             /**
              * Now let's use the resource loader to get the files.

@@ -18,6 +18,7 @@ export type {
     RenderAPI,
     RenderResult,
 } from "./types.js";
+export type * from "./environments/index.js";
 
 export {runServer} from "./run-server.js";
 export const Requests = RequestAPI;
