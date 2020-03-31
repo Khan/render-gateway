@@ -1,8 +1,5 @@
 // @flow
-
 import {JSDOMSixteenEnvironment} from "../jsdom-sixteen-environment.js";
-
-// TODO(somewhatabstract): Add tests for the JSDOMSixteenEnvironment.
 
 describe("JSDOMSixteenEnvironment", () => {
     describe("#constructor", () => {
