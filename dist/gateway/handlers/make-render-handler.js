@@ -24,7 +24,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  *
  * This is expected to be wrapped with express-async-handler.
  */
-async function renderHandler(renderFn, req, res) {
+async function renderHandler(renderEnvironment, req, res) {
   const logger = (0, _index2.getLogger)(req);
   /**
    * TODO(somewhatabstract, WEB-1108): Actually track headers and build vary
@@ -75,7 +75,7 @@ async function renderHandler(renderFn, req, res) {
     const {
       body,
       status
-    } = await renderFn(renderURL, renderAPI);
+    } = await renderEnvironment.render(renderURL, renderAPI);
     /**
      * TODO(somewhatabstract, WEB-1108): Validate the status with the
      * headers.
@@ -106,15 +106,15 @@ async function renderHandler(renderFn, req, res) {
  * Create a render handler.
  *
  * This creates a handler for use with express. The created handler manages
- * executing the render process, a part of which involves invoking the given
- * render function.
+ * executing the render process, a part of which involves invoking a render
+ * within the given render environment.
  *
- * @param {RenderCallback} renderFn The function that is responsible for
- * performing the render operation.
+ * @param {IRenderEnvironment} renderEnvironment The environment responsible for
+ * performing renders.
  */
 
 
-const makeRenderHandler = renderFn => (req, res) => renderHandler(renderFn, req, res);
+const makeRenderHandler = renderEnvironment => (req, res) => renderHandler(renderEnvironment, req, res);
 
 exports.makeRenderHandler = makeRenderHandler;
 //# sourceMappingURL=make-render-handler.js.map

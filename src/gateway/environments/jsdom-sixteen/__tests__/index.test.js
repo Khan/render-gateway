@@ -8,25 +8,21 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys([
-            "Environments",
-            "runServer",
-            "Requests",
-        ]);
+        expect(result).toContainAllKeys(["JSDOMSixteen"]);
     });
 
-    it("should export Requests API", async () => {
+    it("should export JSDOMSixteen pieces", async () => {
         // Arrange
         const importedModule = import("../index.js");
 
         // Act
-        const {Requests: result} = await importedModule;
+        const {JSDOMSixteen: result} = await importedModule;
 
         // Assert
         expect(result).toContainAllKeys([
-            "request",
-            "abortInFlightRequests",
-            "DefaultRequestOptions",
+            "Configuration",
+            "Environment",
+            "ResourceLoader",
         ]);
     });
 });

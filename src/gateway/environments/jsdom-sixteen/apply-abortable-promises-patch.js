@@ -1,0 +1,46 @@
+// @flow
+const patchedMarker = "__patched__";
+
+/**
+ * JSDOM assumes that all fetchs are abortable. However, this is not always
+ * the case, due to how some can be regular promises.
+ *
+ * Though we try to mitigate this in our various request implementations, this
+ * is our last chance catch all that ensures the promise prototype has an abort
+ * call.
+ *
+ * By making sure this exists, JSDOM does not throw when closing down an
+ * instance and we can guarantee that all truly abortable requests are actually
+ * aborted.
+ */
+export const applyAbortablePromisesPatch = (force?: boolean = false): void => {
+    /**
+     * We know that this doesn't exist on the promise type, but it does if
+     * we already patched it.
+     */
+    if (
+        !force &&
+        // $FlowIgnore
+        Promise.prototype.abort &&
+        // $FlowIgnore
+        Promise.prototype.abort[patchedMarker]
+    ) {
+        return;
+    }
+
+    // $FlowIgnore
+    delete Promise.prototype.abort;
+
+    /**
+     * Make a noop and tag it as our patched version (that way we prevent
+     * patching more than once).
+     */
+    const ourAbort = () => {};
+    ourAbort[patchedMarker] = true;
+
+    /**
+     * We still know that this doesn't exist on the promise type.
+     * $FlowIgnore
+     */
+    Promise.prototype.abort = ourAbort;
+};

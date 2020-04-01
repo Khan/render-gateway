@@ -1,5 +1,6 @@
 // @flow
-import type {Agent} from "http";
+import type {Agent as HttpAgent} from "http";
+import type {Agent as HttpsAgent} from "https";
 import type {$Request, $Response} from "express";
 import type {
     CallbackHandler,
@@ -91,14 +92,16 @@ export interface AbortablePromise<T> extends Promise<T> {
  */
 export type GetHeaderCallback = (name: string) => ?string;
 
-/**
- * Callback to begin a trace session.
- *
- * @param {string} name The name of the traced action.
- * @returns {ITraceSession} A trace session that the caller should use to
- * indicate when the session is finished.
- */
-export type TraceCallback = (name: string) => ITraceSession;
+export interface TraceCallback {
+    /**
+     * Begin a trace session.
+     *
+     * @param {string} name The name of the traced action.
+     * @returns {ITraceSession} A trace session that the caller should use to
+     * indicate when the session is finished.
+     */
+    (name: string): ITraceSession;
+}
 
 /**
  * Header names and their values for attaching to a response from the gateway.
@@ -159,31 +162,6 @@ export type RenderAPI = {
 };
 
 /**
-/**
- * Callback to request a render.
- *
- *
- * @param {string} url The URL that is to be rendered. This is always
- * relative to the host and so does not contain protocol, hostname, nor port
- * information.
- * @param {GetHeaderCallback} getHeaderFn A callback to request the value
- * of a specific header included with the request.
- * This can be used to determine additional context about the render
- * operation. For example, depending on your specific setup, they may
- * contain version information to help determine what the render package
- * should contain. It is provided as a callback so that the gateway
- * implementation can track which headers influence a render, which can then
- * be reported back as a Vary header in the gateway response.
- * @returns {Promise<RenderResult>} The result of the render that is to be
- * returned by the gateway service as the response to the render request.
- * This includes the body of the response and the status code information.
- */
-export type RenderCallback = (
-    url: string,
-    renderAPI: RenderAPI,
-) => Promise<RenderResult>;
-
-/**
  * Options for configuring the gateway.
  */
 export type RenderGatewayOptions = {
@@ -217,9 +195,9 @@ export type RenderGatewayOptions = {
     +authentication?: AuthenticationOptions,
 
     /**
-     * Callback to perform a render.
+     * The environment that will handle rendering.
      */
-    +renderFn: RenderCallback,
+    +renderEnvironment: IRenderEnvironment,
 };
 
 /**
@@ -258,7 +236,7 @@ export type RequestOptions = {
     /**
      * The agent to be used for the request.
      */
-    +agent?: Agent,
+    +agent?: HttpAgent | HttpsAgent,
 
     /**
      * The superagent-cache-plugin instance that will be used.
@@ -298,3 +276,27 @@ export type RequestOptions = {
      */
     +shouldRetry?: CallbackHandler,
 };
+
+/**
+ * Represents an environment that can perform renders.
+ *
+ * This allows for simple rendering strategies where each render is completely
+ * standalong (as per the old react-render-server), or more complex rendering
+ * strategies where some amount of the rendering environment state is shared
+ * across renders.
+ */
+export interface IRenderEnvironment {
+    /**
+     * Generate a render result for the given url.
+     *
+     * @param {string} url The URL that is to be rendered. This is always
+     * relative to the host and so does not contain protocol, hostname, nor port
+     * information.
+     * @param {RenderAPI} renderAPI An API of utilities for assisting with the
+     * render operation.
+     * @returns {Promise<RenderResult>} The result of the render that is to be
+     * returned by the gateway service as the response to the render request.
+     * This includes the body of the response and the status code information.
+     */
+    render(url: string, renderAPI: RenderAPI): Promise<RenderResult>;
+}
