@@ -21,7 +21,7 @@ class JSDOMSixteenEnvironment {
     _defineProperty(this, "_configuration", void 0);
 
     _defineProperty(this, "_retrieveTargetFiles", async (url, renderAPI, resourceLoader) => {
-      const traceSession = renderAPI.trace("Retrieving target files");
+      const traceSession = renderAPI.trace("_retrieveTargetFiles");
 
       try {
         /**
@@ -31,6 +31,7 @@ class JSDOMSixteenEnvironment {
          * within our JSDOM environment.
          */
         const files = await this._configuration.getFileList(url, renderAPI);
+        traceSession.addLabel("fileCount", files.length);
         /**
          * Now let's use the resource loader to get the files.
          * We ignore the `FetchOptions` param of resourceLoader.fetch as we
