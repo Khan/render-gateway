@@ -80,7 +80,7 @@ const request = (logger, url, options) => {
    */
 
 
-  const traceSession = (0, _index.trace)(`request`, logger);
+  const traceSession = (0, _index.trace)(`request`, url, logger);
   traceSession.addLabel("url", url);
   const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, logger, url);
   const abortFn = abortableRequest.abort;

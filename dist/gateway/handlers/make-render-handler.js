@@ -43,7 +43,7 @@ async function renderHandler(renderEnvironment, req, res) {
    */
 
 
-  const traceFn = name => (0, _index2.trace)(name, req);
+  const traceFn = (action, message) => (0, _index2.trace)(action, message, req);
   /**
    * The URL being rendered is given in a query param named, url.
    */
