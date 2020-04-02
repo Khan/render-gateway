@@ -1,5 +1,8 @@
 // @flow
+import * as GetGatewayInfo from "../get-gateway-info.js";
 import {trace} from "../trace.js";
+
+jest.mock("../get-gateway-info.js");
 
 describe("#trace", () => {
     it.each([[""], [null], [undefined]])(
@@ -7,6 +10,10 @@ describe("#trace", () => {
         (testPoint) => {
             // Arrange
             const fakeLogger = ({}: any);
+            jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                name: "GATEWAY_NAME",
+                version: "GATEWAY_VERSION",
+            });
 
             // Act
             const underTest = () => trace(fakeLogger, testPoint);
@@ -22,6 +29,10 @@ describe("#trace", () => {
             silly: jest.fn(),
             startTimer: jest.fn(),
         }: any);
+        jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+            name: "GATEWAY_NAME",
+            version: "GATEWAY_VERSION",
+        });
 
         // Act
         trace(fakeLogger, "SESSION_NAME");
@@ -36,6 +47,10 @@ describe("#trace", () => {
             silly: jest.fn(),
             startTimer: jest.fn(),
         }: any);
+        jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+            name: "GATEWAY_NAME",
+            version: "GATEWAY_VERSION",
+        });
 
         // Act
         trace(fakeLogger, "SESSION_NAME");
@@ -53,13 +68,17 @@ describe("#trace", () => {
         const fakeTracer: any = {
             createChildSpan: jest.fn(),
         };
+        jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+            name: "GATEWAY_NAME",
+            version: "GATEWAY_VERSION",
+        });
 
         // Act
         trace(fakeLogger, "SESSION_NAME", fakeTracer);
 
         // Assert
         expect(fakeTracer.createChildSpan).toHaveBeenCalledWith({
-            name: "TRACE: SESSION_NAME",
+            name: "GATEWAY_NAME.SESSION_NAME",
         });
     });
 
@@ -69,6 +88,10 @@ describe("#trace", () => {
             silly: jest.fn(),
             startTimer: jest.fn(),
         };
+        jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+            name: "GATEWAY_NAME",
+            version: "GATEWAY_VERSION",
+        });
 
         // Act
         const result = trace(fakeLogger, "SESSION_NAME");
@@ -85,6 +108,10 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn(),
                 };
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -100,6 +127,10 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn(),
                 };
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -119,6 +150,10 @@ describe("#trace", () => {
             });
         });
 
+        describe("#addLabel", () => {
+            it("should add the label to the span", () => {});
+        });
+
         describe("#end", () => {
             it("should stop the profile timer", () => {
                 // Arrange
@@ -132,6 +167,10 @@ describe("#trace", () => {
                 jest.spyOn(process, "memoryUsage")
                     .mockReturnValueOnce("BEFORE")
                     .mockReturnValueOnce("AFTER");
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -158,6 +197,10 @@ describe("#trace", () => {
                 jest.spyOn(process, "memoryUsage")
                     .mockReturnValueOnce("BEFORE")
                     .mockReturnValueOnce("AFTER");
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -169,6 +212,40 @@ describe("#trace", () => {
                     level: "silly",
                     memoryAfter: "AFTER",
                     memoryBefore: "BEFORE",
+                });
+            });
+
+            it("should add labels to metadata", () => {
+                // Arrange
+                const fakeTimer = {
+                    done: jest.fn(),
+                };
+                const fakeLogger: any = {
+                    silly: jest.fn(),
+                    startTimer: jest.fn().mockReturnValue(fakeTimer),
+                };
+                jest.spyOn(process, "memoryUsage")
+                    .mockReturnValueOnce("BEFORE")
+                    .mockReturnValueOnce("AFTER");
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
+                const session = trace(fakeLogger, "SESSION_NAME");
+                session.addLabel("LABEL_A", "label_a");
+                session.addLabel("/label/b", "label_b");
+
+                // Act
+                session.end();
+
+                // Assert
+                expect(fakeTimer.done).toHaveBeenCalledWith({
+                    message: "TRACED: SESSION_NAME",
+                    level: "debug",
+                    memoryAfter: "AFTER",
+                    memoryBefore: "BEFORE",
+                    LABEL_A: "label_a",
+                    "/label/b": "label_b",
                 });
             });
 
@@ -184,6 +261,10 @@ describe("#trace", () => {
                 jest.spyOn(process, "memoryUsage")
                     .mockReturnValueOnce("BEFORE")
                     .mockReturnValueOnce("AFTER");
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -205,6 +286,46 @@ describe("#trace", () => {
                 });
             });
 
+            it("should override labels with metadata", () => {
+                // Arrange
+                const fakeTimer = {
+                    done: jest.fn(),
+                };
+                const fakeLogger: any = {
+                    silly: jest.fn(),
+                    startTimer: jest.fn().mockReturnValue(fakeTimer),
+                };
+                jest.spyOn(process, "memoryUsage")
+                    .mockReturnValueOnce("BEFORE")
+                    .mockReturnValueOnce("AFTER");
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
+                const session = trace(fakeLogger, "SESSION_NAME");
+                session.addLabel("cached", false);
+                session.addLabel("/label/b", "label_b");
+
+                // Act
+                session.end({
+                    cached: true,
+                    size: 56,
+                    someotherrubbish: "blahblahblah",
+                });
+
+                // Assert
+                expect(fakeTimer.done).toHaveBeenCalledWith({
+                    message: "TRACED: SESSION_NAME",
+                    level: "debug",
+                    cached: true,
+                    size: 56,
+                    someotherrubbish: "blahblahblah",
+                    memoryAfter: "AFTER",
+                    memoryBefore: "BEFORE",
+                    "/label/b": "label_b",
+                });
+            });
+
             it("should not allow message to be overridden", () => {
                 // Arrange
                 const fakeTimer = {
@@ -217,6 +338,10 @@ describe("#trace", () => {
                 jest.spyOn(process, "memoryUsage")
                     .mockReturnValueOnce("BEFORE")
                     .mockReturnValueOnce("AFTER");
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME");
 
                 // Act
@@ -236,6 +361,7 @@ describe("#trace", () => {
             it("should end the trace span", () => {
                 // Arrange
                 const fakeTraceSpan = {
+                    addLabel: jest.fn(),
                     endSpan: jest.fn(),
                 };
                 const fakeTracer: any = {
@@ -248,6 +374,10 @@ describe("#trace", () => {
                     silly: jest.fn(),
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
+                jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
+                    name: "GATEWAY_NAME",
+                    version: "GATEWAY_VERSION",
+                });
                 const session = trace(fakeLogger, "SESSION_NAME", fakeTracer);
 
                 // Act

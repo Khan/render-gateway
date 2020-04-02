@@ -3,6 +3,13 @@
  */
 declare interface traceagent$Span {
     /**
+     * Adds a key-value pair as a label to the trace span. The value will be
+     * converted to a string if it is not already, and both the key and value
+     * may be truncated according to the user's configuration.
+     */
+    addLabel(key: string, value: any): void;
+
+    /**
      * Ends the span. This method should only be called once.
      * @param timestamp A custom span end time; defaults to the time when endSpan
      * was called if not provided.

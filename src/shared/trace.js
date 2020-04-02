@@ -1,5 +1,6 @@
 // @flow
 import type {Tracer} from "@google-cloud/trace-agent";
+import {getGatewayInfo} from "./get-gateway-info.js";
 import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
 
 /**
@@ -15,7 +16,10 @@ import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
  *
  * @param {Logger} logger A logger to use for documention and timing the
  * traced action.
- * @param {string} name The name of the traced action.
+ * @param {string} name The name of the traced action. Keep it short. This
+ * should be the name of an action rather than a specific URL, for example. Use
+ * addLabel on the returned session or the session info when ending the session
+ * to add additional details about the trace.
  * @param {Tracer} [tracer] A Google Cloud trace agent tracer which
  * can be used to record the traced action.
  * @returns {ITraceSession} A trace session that the caller should use to
@@ -48,16 +52,34 @@ export const trace = (
      */
     const profiler = logger.startTimer();
     const beforeMemory = process.memoryUsage();
+    const {name: gatewayName} = getGatewayInfo();
 
     /**
      * Next, if we were given a tracer, we start a trace section for this so
      * trace session so that it will appear in Stackdriver Trace.
      *
-     * We annotate the span with "TRACE:" so that it is clear in the trace
-     * which spans were created by this API and which were inserted by other
-     * means.
+     * We annotate the span with the gateway name so that it is clear in the
+     * trace which spans were created by this API and which were inserted by
+     * other means.
      */
-    const span = tracer?.createChildSpan({name: `TRACE: ${name}`});
+    const span = tracer?.createChildSpan({name: `${gatewayName}.${name}`});
+
+    const profileLabels = {};
+    const addLabel = <T>(name: string, value: T): void => {
+        /**
+         * Track this so we can also include it in our logging info.
+         */
+        profileLabels[name] = value;
+
+        /**
+         * Send this label on to the trace span.
+         *
+         * We disable this lint rule as the linter does not appear to
+         * understand the optional chaining.
+         */
+        // eslint-disable-next-line flowtype/no-unused-expressions
+        span?.addLabel(name, value);
+    };
 
     /**
      * This is the function that we will return to our caller.
@@ -67,18 +89,30 @@ export const trace = (
         const afterMemory = process.memoryUsage();
 
         /**
+         * Add some session information to the span as labels.
+         */
+        addLabel("memoryBefore", beforeMemory);
+        addLabel("memoryAfter", afterMemory);
+
+        /**
+         * We need to build the metadata that we will be logging.
+         * This is a combination of the given info, some custom things we add,
+         * and any profile labels that were added.
+         */
+        const metadata = {
+            ...profileLabels,
+            ...info,
+            message: `TRACED: ${name}`,
+            level: info?.level || "debug",
+        };
+
+        /**
          * Let's mark our profile as done.
          *
          * We include the session info object, but make sure to set the level
          * and message ourselves.
          */
-        profiler.done({
-            ...info,
-            message: `TRACED: ${name}`,
-            level: info?.level || "debug",
-            memoryBefore: beforeMemory,
-            memoryAfter: afterMemory,
-        });
+        profiler.done(metadata);
 
         /**
          * If we started a tracer span, let's end it.
@@ -94,6 +128,7 @@ export const trace = (
         get name() {
             return name;
         },
+        addLabel,
         end,
     };
 };
