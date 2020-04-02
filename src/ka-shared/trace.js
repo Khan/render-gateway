@@ -19,14 +19,16 @@ interface ITrace {
      * Note that if startTraceAgent was never called, this will still log but the
      * StackDriver trace span creation will not actually happen.
      *
-     * @param {string} name The name of the event being traced.
+     * @param {string} action The name of the action being traced.
+     * @param {string} message A message to be logged along side the action
      * @param {TReq: RequestWithLog<$Request>} [request] The request being
      * fulfilled. This is used to determine if a request-scoped logger can be used.
      * @returns {ITraceSession} The new trace session that was created and is to be
      * used to end the session.
      */
     <TReq: RequestWithLog<$Request>>(
-        name: string,
+        action: string,
+        message: string,
         request?: TReq,
     ): ITraceSession;
 
@@ -41,16 +43,18 @@ interface ITrace {
      * Note that if startTraceAgent was never called, this will still log but the
      * StackDriver trace span creation will not actually happen.
      *
-     * @param {string} name The name of the event being traced.
+     * @param {string} action The name of the action being traced.
+     * @param {string} message A message to be logged along side the action
      * @param {Logger} logger The logger to be used for the trace.
      * @returns {ITraceSession} The new trace session that was created and is to be
      * used to end the session.
      */
-    (name: string, logger: Logger): ITraceSession;
+    (action: string, message: string, logger: Logger): ITraceSession;
 }
 
 export const trace: ITrace = (
-    name: string,
+    action: string,
+    message: string,
     requestOrLogger: any,
 ): ITraceSession => {
     const tracer = traceAgent.get();
@@ -59,7 +63,7 @@ export const trace: ITrace = (
         Object.prototype.hasOwnProperty.call(requestOrLogger, "url")
     ) {
         const logger = getLogger(requestOrLogger);
-        return traceImpl(logger, name, tracer);
+        return traceImpl(logger, action, message, tracer);
     }
-    return traceImpl(requestOrLogger, name, tracer);
+    return traceImpl(requestOrLogger, action, message, tracer);
 };

@@ -80,7 +80,8 @@ export type TraceSessionInfo = {
     +level?: LogLevel,
 
     /**
-     * Additional metadata about the session.
+     * Additional metadata about the session. Unlike using `addLabel` on the
+     * trace session, this will only go to logging and not the trace as well.
      */
     +[datum: string]: mixed,
     ...
@@ -91,9 +92,19 @@ export type TraceSessionInfo = {
  */
 export interface ITraceSession {
     /**
-     * The name of the session as provided when it was started.
+     * The name of the action being traced as provided when it was started.
      */
-    get name(): string;
+    get action(): string;
+
+    /**
+     * Add a label to the trace session.
+     *
+     * Adds a key-value pair as a label to the trace span and metadata to the
+     * logged output. Both the name and value may be truncated in the trace
+     * according to hosting configuration. The value will be coerced to a
+     * string in tracing if it isn't one already.
+     */
+    addLabel<T>(name: string, value: T): void;
 
     /**
      * End the trace session.

@@ -96,11 +96,12 @@ export interface TraceCallback {
     /**
      * Begin a trace session.
      *
-     * @param {string} name The name of the traced action.
+     * @param {string} action A terse name of the traced action.
+     * @param {string} message A message to be logged for this trace.
      * @returns {ITraceSession} A trace session that the caller should use to
      * indicate when the session is finished.
      */
-    (name: string): ITraceSession;
+    (action: string, message: string): ITraceSession;
 }
 
 /**

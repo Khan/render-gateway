@@ -80,7 +80,8 @@ const request = (logger, url, options) => {
    */
 
 
-  const traceSession = (0, _index.trace)(`REQ: ${url}`, logger);
+  const traceSession = (0, _index.trace)(`request`, url, logger);
+  traceSession.addLabel("url", url);
   const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, logger, url);
   const abortFn = abortableRequest.abort;
   /**
@@ -89,14 +90,13 @@ const request = (logger, url, options) => {
    * in flight list.
    */
 
-  const traceInfo = {};
   const finalizedPromise = abortableRequest.then(res => {
-    traceInfo.fromCache = (0, _requestsFromCache.isFromCache)(res);
-    traceInfo.successful = true;
+    traceSession.addLabel("fromCache", (0, _requestsFromCache.isFromCache)(res));
+    traceSession.addLabel("successful", true);
     return res;
   }).finally(() => {
     delete inFlightRequests[url];
-    traceSession.end(traceInfo);
+    traceSession.end();
   });
   /**
    * Finally, we need to turn the promise back into an abortable and add it
