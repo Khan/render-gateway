@@ -27,7 +27,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         renderAPI: RenderAPI,
         resourceLoader: ResourceLoader,
     ): Promise<Array<string>> => {
-        const traceSession = renderAPI.trace("Retrieving target files");
+        const traceSession = renderAPI.trace("_retrieveTargetFiles");
         try {
             /**
              * First, we need to know what files to execute so that we can produce
@@ -36,6 +36,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * within our JSDOM environment.
              */
             const files = await this._configuration.getFileList(url, renderAPI);
+            traceSession.addLabel("fileCount", files.length);
 
             /**
              * Now let's use the resource loader to get the files.

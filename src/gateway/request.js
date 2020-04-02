@@ -73,7 +73,8 @@ export const request = (
      * Then we make the request.
      * Then we capture the abort function so we can reattach it later.
      */
-    const traceSession = trace(`REQ: ${url}`, logger);
+    const traceSession = trace(`request`, logger);
+    traceSession.addLabel("url", url);
     const abortableRequest = makeRequest(optionsToUse, logger, url);
     const abortFn = abortableRequest.abort;
 
@@ -82,16 +83,15 @@ export const request = (
      * some useful logging data and removing completed requests from our
      * in flight list.
      */
-    const traceInfo = {};
     const finalizedPromise = abortableRequest
         .then((res) => {
-            traceInfo.fromCache = isFromCache(res);
-            traceInfo.successful = true;
+            traceSession.addLabel("fromCache", isFromCache(res));
+            traceSession.addLabel("successful", true);
             return res;
         })
         .finally(() => {
             delete inFlightRequests[url];
-            traceSession.end(traceInfo);
+            traceSession.end();
         });
 
     /**

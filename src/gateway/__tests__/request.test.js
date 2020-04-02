@@ -26,6 +26,11 @@ describe("#abortInFlightRequests", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
         request(fakeLogger, "URL", fakeOptions);
 
@@ -50,6 +55,11 @@ describe("#abortInFlightRequests", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(fakeRequest)
             .mockReturnValue(fakeRequest2);
@@ -82,6 +92,11 @@ describe("#request", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
         const traceSpy = jest.spyOn(KAShared, "trace");
 
@@ -89,7 +104,7 @@ describe("#request", () => {
         request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(traceSpy).toHaveBeenCalledWith("REQ: URL", fakeLogger);
+        expect(traceSpy).toHaveBeenCalledWith("request", fakeLogger);
     });
 
     it("should make a request including default options", () => {
@@ -103,6 +118,11 @@ describe("#request", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
         const makeRequestSpy = jest
             .spyOn(MakeRequest, "makeRequest")
             .mockReturnValue(fakeRequest);
@@ -132,20 +152,22 @@ describe("#request", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
-        const callOrder = [];
-        jest.spyOn(KAShared, "trace").mockImplementation(() =>
-            callOrder.push("trace"),
-        );
-        jest.spyOn(MakeRequest, "makeRequest").mockImplementation(() => {
-            callOrder.push("makeRequest");
-            return fakeRequest;
-        });
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        const traceSpy = jest
+            .spyOn(KAShared, "trace")
+            .mockReturnValue(fakeTraceSession);
+        const makeRequestSpy = jest
+            .spyOn(MakeRequest, "makeRequest")
+            .mockReturnValue(fakeRequest);
 
         // Act
         request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(callOrder).toStrictEqual(["trace", "makeRequest"]);
+        expect(traceSpy).toHaveBeenCalledBefore(makeRequestSpy);
     });
 
     it("should return the new request", () => {
@@ -157,6 +179,11 @@ describe("#request", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
 
         // Act
@@ -175,6 +202,11 @@ describe("#request", () => {
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValueOnce(fakeRequest);
 
         // Act
@@ -195,6 +227,7 @@ describe("#request", () => {
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
+            addLabel: jest.fn(),
             end: jest.fn(),
         };
         const rejectedRequest: any = Promise.reject("OOPS!");
@@ -227,6 +260,7 @@ describe("#request", () => {
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
+            addLabel: jest.fn(),
             end: jest.fn(),
         };
         const resolvedRequest: any = Promise.resolve("YAY!");
@@ -254,6 +288,7 @@ describe("#request", () => {
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
+            addLabel: jest.fn(),
             end: jest.fn(),
         };
         const rejectedRequest: any = Promise.reject("OOPS!");
@@ -271,10 +306,10 @@ describe("#request", () => {
         }
 
         // Assert
-        expect(fakeTraceSession.end).toHaveBeenCalledWith({});
+        expect(fakeTraceSession.end).toHaveBeenCalled();
     });
 
-    it("should end the trace session when the request resolves", async () => {
+    it("should add cache and success info to the trace session when the request resolves", async () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
@@ -284,6 +319,7 @@ describe("#request", () => {
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
+            addLabel: jest.fn(),
             end: jest.fn(),
         };
         const resolvedRequest: any = Promise.resolve("YAY!");
@@ -300,9 +336,43 @@ describe("#request", () => {
         await request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(fakeTraceSession.end).toHaveBeenCalledWith({
-            fromCache: "FAKE_FROM_CACHE",
-            successful: true,
-        });
+        expect(fakeTraceSession.addLabel).toHaveBeenCalledWith(
+            "fromCache",
+            "FAKE_FROM_CACHE",
+        );
+        expect(fakeTraceSession.addLabel).toHaveBeenCalledWith(
+            "successful",
+            true,
+        );
+    });
+
+    it("should end the trace session when the request resolves", async () => {
+        // Arrange
+        const fakeOptions: any = "FAKE_OPTIONS";
+        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeRequest: any = {
+            abort: jest.fn().mockReturnThis(),
+            then: jest.fn().mockReturnThis(),
+            finally: jest.fn().mockReturnThis(),
+        };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        const resolvedRequest: any = Promise.resolve("YAY!");
+        resolvedRequest.abort = jest.fn();
+        jest.spyOn(MakeRequest, "makeRequest")
+            .mockReturnValueOnce(resolvedRequest)
+            .mockReturnValueOnce(fakeRequest);
+        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(RequestsFromCache, "isFromCache").mockReturnValue(
+            "FAKE_FROM_CACHE",
+        );
+
+        // Act
+        await request(fakeLogger, "URL", fakeOptions);
+
+        // Assert
+        expect(fakeTraceSession.end).toHaveBeenCalled();
     });
 });

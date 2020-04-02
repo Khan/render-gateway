@@ -20,8 +20,12 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should get a resource loader", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue({end: jest.fn()}),
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
@@ -45,8 +49,12 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should retrieve the list of files to be downloaded", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue({end: jest.fn()}),
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
@@ -70,8 +78,12 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should trace the file acquisition phase", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue({end: jest.fn()}),
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
@@ -94,8 +106,12 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should fetch the files via the resource loader", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue({end: jest.fn()}),
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
@@ -131,8 +147,12 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should throw if file fetch returns null", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue({end: jest.fn()}),
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
@@ -162,7 +182,10 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should end the trace session if file acquisition throws", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
-            const fakeTraceSession = {end: jest.fn()};
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
@@ -194,7 +217,10 @@ describe("JSDOMSixteenEnvironment", () => {
         it("should end the trace session if file acquisition succeeds", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
-            const fakeTraceSession = {end: jest.fn()};
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
                 getHeader: jest.fn(),
