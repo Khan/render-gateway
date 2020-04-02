@@ -24,7 +24,7 @@ describe("#trace", () => {
                 .mockReturnValue(fakeLogger);
 
             // Act
-            trace("TRACE_THIS!", fakeRequest);
+            trace("TRACE_THIS!", "MESSAGE", fakeRequest);
 
             // Assert
             expect(getLoggerSpy).toHaveBeenCalledWith(fakeRequest);
@@ -42,12 +42,13 @@ describe("#trace", () => {
             const traceImplSpy = jest.spyOn(Shared, "trace");
 
             // Act
-            trace("TRACE_THIS!", fakeRequest);
+            trace("TRACE_THIS!", "MESSAGE", fakeRequest);
 
             // Assert
             expect(traceImplSpy).toHaveBeenCalledWith(
                 fakeLogger,
                 "TRACE_THIS!",
+                "MESSAGE",
                 fakeTracer,
             );
         });
@@ -65,7 +66,7 @@ describe("#trace", () => {
             jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
 
             // Act
-            const result = trace("TRACE_THIS!", fakeRequest);
+            const result = trace("TRACE_THIS!", "MESSAGE", fakeRequest);
 
             // Assert
             expect(result).toBe(fakeTraceSession);
@@ -82,12 +83,13 @@ describe("#trace", () => {
             const traceImplSpy = jest.spyOn(Shared, "trace");
 
             // Act
-            trace("TRACE_THIS!");
+            trace("TRACE_THIS!", "MESSAGE");
 
             // Assert
             expect(traceImplSpy).toHaveBeenCalledWith(
                 fakeLogger,
                 "TRACE_THIS!",
+                "MESSAGE",
                 fakeTracer,
             );
         });
@@ -102,7 +104,7 @@ describe("#trace", () => {
             jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
 
             // Act
-            const result = trace("TRACE_THIS!");
+            const result = trace("TRACE_THIS!", "MESSAGE");
 
             // Assert
             expect(result).toBe(fakeTraceSession);
@@ -118,12 +120,13 @@ describe("#trace", () => {
             const traceImplSpy = jest.spyOn(Shared, "trace");
 
             // Act
-            trace("TRACE_THIS!", fakeLogger);
+            trace("TRACE_THIS!", "MESSAGE", fakeLogger);
 
             // Assert
             expect(traceImplSpy).toHaveBeenCalledWith(
                 fakeLogger,
                 "TRACE_THIS!",
+                "MESSAGE",
                 fakeTracer,
             );
         });
@@ -137,7 +140,7 @@ describe("#trace", () => {
             jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
 
             // Act
-            const result = trace("TRACE_THIS!", fakeLogger);
+            const result = trace("TRACE_THIS!", "MESSAGE", fakeLogger);
 
             // Assert
             expect(result).toBe(fakeTraceSession);

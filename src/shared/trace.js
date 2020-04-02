@@ -16,10 +16,12 @@ import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
  *
  * @param {Logger} logger A logger to use for documention and timing the
  * traced action.
- * @param {string} name The name of the traced action. Keep it short. This
+ * @param {string} action The name of the traced action. Keep it short. This
  * should be the name of an action rather than a specific URL, for example. Use
  * addLabel on the returned session or the session info when ending the session
  * to add additional details about the trace.
+ * @param {string} message A message that will be logged. This is not included
+ * in the traces.
  * @param {Tracer} [tracer] A Google Cloud trace agent tracer which
  * can be used to record the traced action.
  * @returns {ITraceSession} A trace session that the caller should use to
@@ -27,12 +29,14 @@ import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
  */
 export const trace = (
     logger: Logger,
-    name: string,
+    action: string,
+    message: string,
     tracer?: Tracer,
 ): ITraceSession => {
-    if (!name) {
-        throw new Error("Must provide a name for the trace session.");
+    if (!action) {
+        throw new Error("Must provide an action for the trace session.");
     }
+    const logMessage = `${action}${message ? `: ${message}` : ""}`;
 
     /**
      * We are going to use the logger's profiling API (provided by winston).
@@ -45,7 +49,7 @@ export const trace = (
      * Since this is noise in most situations, we will log this at the lowest
      * level of silly.
      */
-    logger.silly(`TRACE: ${name}`);
+    logger.silly(`TRACE ${logMessage}`);
 
     /**
      * Now we start the profiling timer.
@@ -62,7 +66,7 @@ export const trace = (
      * trace which spans were created by this API and which were inserted by
      * other means.
      */
-    const span = tracer?.createChildSpan({name: `${gatewayName}.${name}`});
+    const span = tracer?.createChildSpan({name: `${gatewayName}.${action}`});
 
     const profileLabels = {};
     const addLabel = <T>(name: string, value: T): void => {
@@ -102,7 +106,7 @@ export const trace = (
         const metadata = {
             ...profileLabels,
             ...info,
-            message: `TRACED: ${name}`,
+            message: `TRACED ${logMessage}`,
             level: info?.level || "debug",
         };
 
@@ -125,8 +129,8 @@ export const trace = (
     };
 
     return {
-        get name() {
-            return name;
+        get action() {
+            return action;
         },
         addLabel,
         end,

@@ -41,7 +41,8 @@ async function renderHandler(
      *
      * For now, we'll assume callers will tidy up.
      */
-    const traceFn = (name: string): ITraceSession => trace(name, req);
+    const traceFn = (action: string, message: string): ITraceSession =>
+        trace(action, message, req);
 
     /**
      * The URL being rendered is given in a query param named, url.

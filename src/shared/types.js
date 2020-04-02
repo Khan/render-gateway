@@ -92,9 +92,9 @@ export type TraceSessionInfo = {
  */
 export interface ITraceSession {
     /**
-     * The name of the session as provided when it was started.
+     * The name of the action being traced as provided when it was started.
      */
-    get name(): string;
+    get action(): string;
 
     /**
      * Add a label to the trace session.

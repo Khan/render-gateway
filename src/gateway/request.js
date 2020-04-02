@@ -73,7 +73,7 @@ export const request = (
      * Then we make the request.
      * Then we capture the abort function so we can reattach it later.
      */
-    const traceSession = trace(`request`, logger);
+    const traceSession = trace(`request`, url, logger);
     traceSession.addLabel("url", url);
     const abortableRequest = makeRequest(optionsToUse, logger, url);
     const abortFn = abortableRequest.abort;

@@ -104,7 +104,7 @@ describe("#request", () => {
         request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(traceSpy).toHaveBeenCalledWith("request", fakeLogger);
+        expect(traceSpy).toHaveBeenCalledWith("request", "URL", fakeLogger);
     });
 
     it("should make a request including default options", () => {

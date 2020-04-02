@@ -260,11 +260,12 @@ describe("#makeRenderHandler", () => {
                         fakeRenderEnvironment.render.mock.calls[0][1].trace;
 
                     // Act
-                    const result = underTest("TRACE_NAME");
+                    const result = underTest("TRACE_ACTION", "MESSAGE");
 
                     //Assert
                     expect(traceSpy).toHaveBeenCalledWith(
-                        "TRACE_NAME",
+                        "TRACE_ACTION",
+                        "MESSAGE",
                         fakeRequest,
                     );
                     expect(result).toBe("FAKE_TRACE_SESSION");

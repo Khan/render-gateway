@@ -6,7 +6,7 @@ jest.mock("../get-gateway-info.js");
 
 describe("#trace", () => {
     it.each([[""], [null], [undefined]])(
-        "should throw if the name is empty/falsy",
+        "should throw if the action is empty/falsy",
         (testPoint) => {
             // Arrange
             const fakeLogger = ({}: any);
@@ -16,7 +16,7 @@ describe("#trace", () => {
             });
 
             // Act
-            const underTest = () => trace(fakeLogger, testPoint);
+            const underTest = () => trace(fakeLogger, testPoint, "MESSAGE");
 
             // Assert
             expect(underTest).toThrowErrorMatchingSnapshot();
@@ -35,10 +35,10 @@ describe("#trace", () => {
         });
 
         // Act
-        trace(fakeLogger, "SESSION_NAME");
+        trace(fakeLogger, "ACTION", "MESSAGE");
 
         // Assert
-        expect(fakeLogger.silly).toHaveBeenCalledWith("TRACE: SESSION_NAME");
+        expect(fakeLogger.silly).toHaveBeenCalledWith("TRACE ACTION: MESSAGE");
     });
 
     it("should start a timer", () => {
@@ -53,7 +53,7 @@ describe("#trace", () => {
         });
 
         // Act
-        trace(fakeLogger, "SESSION_NAME");
+        trace(fakeLogger, "ACTION", "MESSAGE");
 
         // Assert
         expect(fakeLogger.startTimer).toHaveBeenCalled();
@@ -74,11 +74,11 @@ describe("#trace", () => {
         });
 
         // Act
-        trace(fakeLogger, "SESSION_NAME", fakeTracer);
+        trace(fakeLogger, "ACTION", "MESSAGE", fakeTracer);
 
         // Assert
         expect(fakeTracer.createChildSpan).toHaveBeenCalledWith({
-            name: "GATEWAY_NAME.SESSION_NAME",
+            name: "GATEWAY_NAME.ACTION",
         });
     });
 
@@ -94,15 +94,15 @@ describe("#trace", () => {
         });
 
         // Act
-        const result = trace(fakeLogger, "SESSION_NAME");
+        const result = trace(fakeLogger, "ACTION", "MESSAGE");
 
         // Assert
         expect(result).toBeDefined();
     });
 
     describe("trace session", () => {
-        describe("#name", () => {
-            it("should give name of the trace", () => {
+        describe("#action", () => {
+            it("should give action of the trace", () => {
                 // Arrange
                 const fakeLogger: any = {
                     silly: jest.fn(),
@@ -112,13 +112,13 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
 
                 // Act
-                const result = session.name;
+                const result = session.action;
 
                 // Assert
-                expect(result).toBe("SESSION_NAME");
+                expect(result).toBe("ACTION");
             });
 
             it("should be read-only", () => {
@@ -131,7 +131,7 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
 
                 // Act
                 /**
@@ -141,11 +141,11 @@ describe("#trace", () => {
                  * that folks don't edit out this specific behavior.
                  * $ExpectError
                  */
-                const underTest = () => (session.name = "NEW_NAME!");
+                const underTest = () => (session.action = "NEW_ACTION!");
 
                 // Assert
                 expect(underTest).toThrowErrorMatchingInlineSnapshot(
-                    `"Cannot set property name of #<Object> which has only a getter"`,
+                    `"Cannot set property action of #<Object> which has only a getter"`,
                 );
             });
         });
@@ -171,14 +171,14 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
 
                 // Act
                 session.end();
 
                 // Assert
                 expect(fakeTimer.done).toHaveBeenCalledWith({
-                    message: "TRACED: SESSION_NAME",
+                    message: "TRACED ACTION: MESSAGE",
                     level: "debug",
                     memoryAfter: "AFTER",
                     memoryBefore: "BEFORE",
@@ -201,14 +201,14 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
 
                 // Act
                 session.end({level: "silly"});
 
                 // Assert
                 expect(fakeTimer.done).toHaveBeenCalledWith({
-                    message: "TRACED: SESSION_NAME",
+                    message: "TRACED ACTION: MESSAGE",
                     level: "silly",
                     memoryAfter: "AFTER",
                     memoryBefore: "BEFORE",
@@ -231,7 +231,7 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
                 session.addLabel("LABEL_A", "label_a");
                 session.addLabel("/label/b", "label_b");
 
@@ -240,7 +240,7 @@ describe("#trace", () => {
 
                 // Assert
                 expect(fakeTimer.done).toHaveBeenCalledWith({
-                    message: "TRACED: SESSION_NAME",
+                    message: "TRACED ACTION: MESSAGE",
                     level: "debug",
                     memoryAfter: "AFTER",
                     memoryBefore: "BEFORE",
@@ -265,7 +265,7 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
 
                 // Act
                 session.end({
@@ -276,7 +276,7 @@ describe("#trace", () => {
 
                 // Assert
                 expect(fakeTimer.done).toHaveBeenCalledWith({
-                    message: "TRACED: SESSION_NAME",
+                    message: "TRACED ACTION: MESSAGE",
                     level: "debug",
                     cached: true,
                     size: 56,
@@ -302,7 +302,7 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
                 session.addLabel("cached", false);
                 session.addLabel("/label/b", "label_b");
 
@@ -315,7 +315,7 @@ describe("#trace", () => {
 
                 // Assert
                 expect(fakeTimer.done).toHaveBeenCalledWith({
-                    message: "TRACED: SESSION_NAME",
+                    message: "TRACED ACTION: MESSAGE",
                     level: "debug",
                     cached: true,
                     size: 56,
@@ -342,7 +342,7 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME");
+                const session = trace(fakeLogger, "ACTION", "MESSAGE");
 
                 // Act
                 session.end({
@@ -351,7 +351,7 @@ describe("#trace", () => {
 
                 // Assert
                 expect(fakeTimer.done).toHaveBeenCalledWith({
-                    message: "TRACED: SESSION_NAME",
+                    message: "TRACED ACTION: MESSAGE",
                     level: "debug",
                     memoryAfter: "AFTER",
                     memoryBefore: "BEFORE",
@@ -378,7 +378,12 @@ describe("#trace", () => {
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
                 });
-                const session = trace(fakeLogger, "SESSION_NAME", fakeTracer);
+                const session = trace(
+                    fakeLogger,
+                    "ACTION",
+                    "MESSAGE",
+                    fakeTracer,
+                );
 
                 // Act
                 session.end();

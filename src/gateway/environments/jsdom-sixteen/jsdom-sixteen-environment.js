@@ -27,7 +27,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         renderAPI: RenderAPI,
         resourceLoader: ResourceLoader,
     ): Promise<Array<string>> => {
-        const traceSession = renderAPI.trace("_retrieveTargetFiles");
+        const traceSession = renderAPI.trace(
+            "_retrieveTargetFiles",
+            `JSDOMSixteenEnvironment setup`,
+        );
         try {
             /**
              * First, we need to know what files to execute so that we can produce
