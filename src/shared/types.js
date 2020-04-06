@@ -68,7 +68,8 @@ export type AmbiguousError =
           },
           stack?: string,
           ...
-      };
+      }
+    | Error;
 
 /**
  * Information to attach to a trace session.

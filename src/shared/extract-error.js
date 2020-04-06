@@ -15,7 +15,7 @@ export function extractError(error: AmbiguousError): SimplifiedError {
         return {error};
     }
 
-    if (error.response && error.response.error) {
+    if (error.response && typeof error.response.error === "string") {
         return {
             error: error.response.error,
             stack: error.stack,
@@ -23,7 +23,7 @@ export function extractError(error: AmbiguousError): SimplifiedError {
     }
 
     if (error.error && error !== error.error) {
-        return extractError(error.error);
+        return extractError((error.error: any));
     }
 
     const errorString = error.toString();
