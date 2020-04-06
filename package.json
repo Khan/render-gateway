@@ -46,13 +46,13 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.19.0",
-    "flow-bin": "^0.121.0",
+    "flow-bin": "^0.122.0",
     "flow-typed": "^3.1.0",
     "husky": "^4.2.3",
-    "jest": "^25.2.6",
+    "jest": "^25.2.7",
     "jest-extended": "^0.11.5",
-    "lint-staged": "^10.1.1",
-    "prettier": "^2.0.2"
+    "lint-staged": "^10.1.2",
+    "prettier": "^2.0.4"
   },
   "husky": {
     "hooks": {
