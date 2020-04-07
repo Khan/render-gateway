@@ -42,6 +42,10 @@ describe("#makeRenderHandler", () => {
                     .fn()
                     .mockReturnValue(Promise.resolve(renderResult)),
             };
+            jest.spyOn(KAShared, "trace").mockReturnValue({
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            });
             const getLoggerSpy = jest.spyOn(KAShared, "getLogger");
             const handler = makeRenderHandler(fakeRenderEnvironment);
 
@@ -72,6 +76,10 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
+            jest.spyOn(KAShared, "trace").mockReturnValue({
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            });
             const fakeRenderEnvironment: any = {
                 render: jest
                     .fn()
@@ -110,6 +118,10 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
+            jest.spyOn(KAShared, "trace").mockReturnValue({
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            });
             const fakeRenderEnvironment: any = {
                 render: jest
                     .fn()
@@ -143,6 +155,10 @@ describe("#makeRenderHandler", () => {
                     url: "THE_URL",
                 },
             };
+            jest.spyOn(KAShared, "trace").mockReturnValue({
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            });
             const fakeLogger = "FAKE_LOGGER";
             jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
             const renderResult = {
@@ -196,6 +212,10 @@ describe("#makeRenderHandler", () => {
                         status: 200,
                         headers: {},
                     };
+                    jest.spyOn(KAShared, "trace").mockReturnValue({
+                        end: jest.fn(),
+                        addLabel: jest.fn(),
+                    });
                     const fakeRenderEnvironment: any = {
                         render: jest
                             .fn()
@@ -247,7 +267,10 @@ describe("#makeRenderHandler", () => {
                     };
                     const traceSpy = jest
                         .spyOn(KAShared, "trace")
-                        .mockReturnValue("FAKE_TRACE_SESSION");
+                        .mockReturnValue({
+                            end: jest.fn(),
+                            addLabel: jest.fn(),
+                        });
                     const handler = makeRenderHandler(fakeRenderEnvironment);
                     /**
                      * Middleware<Request, Response> can mean two different call
@@ -260,7 +283,7 @@ describe("#makeRenderHandler", () => {
                         fakeRenderEnvironment.render.mock.calls[0][1].trace;
 
                     // Act
-                    const result = underTest("TRACE_ACTION", "MESSAGE");
+                    underTest("TRACE_ACTION", "MESSAGE");
 
                     //Assert
                     expect(traceSpy).toHaveBeenCalledWith(
@@ -268,7 +291,6 @@ describe("#makeRenderHandler", () => {
                         "MESSAGE",
                         fakeRequest,
                     );
-                    expect(result).toBe("FAKE_TRACE_SESSION");
                 });
             });
         });
@@ -295,6 +317,10 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
                 const fakeRenderEnvironment: any = {
                     render: jest
                         .fn()
@@ -331,6 +357,10 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
                 const fakeRenderEnvironment: any = {
                     render: jest
                         .fn()
@@ -364,6 +394,10 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
                 const fakeRenderEnvironment: any = {
                     render: jest.fn().mockReturnValue(Promise.reject("ERROR!")),
                 };
@@ -398,6 +432,10 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
                 const fakeRenderEnvironment: any = {
                     render: jest.fn().mockReturnValue(Promise.reject()),
                 };
@@ -440,6 +478,10 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
                 const fakeRenderEnvironment: any = {
                     render: jest.fn().mockReturnValue(Promise.reject()),
                 };
@@ -473,6 +515,10 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
                 const fakeRenderEnvironment: any = {
                     render: jest.fn().mockReturnValue(Promise.reject()),
                 };

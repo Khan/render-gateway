@@ -6,6 +6,7 @@ import type {IJSDOMSixteenConfiguration} from "./types.js";
  * environment.
  */
 export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
+    +registrationCallbackName: string;
     +getFileList: $PropertyType<IJSDOMSixteenConfiguration, "getFileList">;
     +getResourceLoader: $PropertyType<
         IJSDOMSixteenConfiguration,
@@ -30,6 +31,11 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
      * to the environment context for rendering code to access. This is useful
      * if your render server wants to add some specific configuration, such
      * as setting up some versions of Apollo for server-side rendering.
+     * Be careful; any functions you attach can be executed by the rendering
+     * code.
+     * @param {string} [registrationCallbackName] The name of the function
+     * that the environment should expose for client code to register for
+     * rendering. This defaults to `__jsdom_env_register`.
      */
     constructor(
         getFileList: $PropertyType<IJSDOMSixteenConfiguration, "getFileList">,
@@ -41,6 +47,7 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
             IJSDOMSixteenConfiguration,
             "afterEnvSetup",
         >,
+        registrationCallbackName?: string = "__jsdom_env_register",
     ) {
         if (typeof getFileList !== "function") {
             throw new Error(
@@ -58,6 +65,7 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
             );
         }
 
+        this.registrationCallbackName = registrationCallbackName;
         this.getFileList = getFileList;
         this.getResourceLoader = getResourceLoader;
         this.afterEnvSetup = afterEnvSetup || (() => null);
