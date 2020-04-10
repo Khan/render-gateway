@@ -36,7 +36,7 @@ async function renderHandler(
     };
 
     /**
-     * TODO(somewhatabstract, WEB-2057): Mmake sure that we don't leave trace
+     * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
      * sessions open on rejection (or otherwise).
      *
      * For now, we'll assume callers will tidy up.
