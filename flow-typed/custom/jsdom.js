@@ -34,11 +34,11 @@ declare export class jsdom$JSDOM {
 
     /**
      * The built-in vm module of Node.js allows you to create Script instances,
-     * which can be compiled ahead of time and then run multiple times on a given "VM context".
-     * Behind the scenes, a jsdom Window is indeed a VM context.
-     * To get access to this ability, use the runVMScript() method.
+     * which can be compiled ahead of time and then run multiple times on a
+     * given "VM context".
+     * To get access to this ability, use the getInternalVMContext() method.
      */
-    runVMScript(script: vm$Script): any;
+    getInternalVMContext(): vm$Context;
     reconfigure(settings: jsdom$ReconfigureSettings): void;
 }
 

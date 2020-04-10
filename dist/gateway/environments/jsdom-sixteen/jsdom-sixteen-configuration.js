@@ -29,8 +29,15 @@ class JSDOMSixteenConfiguration {
    * to the environment context for rendering code to access. This is useful
    * if your render server wants to add some specific configuration, such
    * as setting up some versions of Apollo for server-side rendering.
+   * Be careful; any functions you attach can be executed by the rendering
+   * code.
+   * @param {string} [registrationCallbackName] The name of the function
+   * that the environment should expose for client code to register for
+   * rendering. This defaults to `__jsdom_env_register`.
    */
-  constructor(getFileList, getResourceLoader, afterEnvSetup) {
+  constructor(getFileList, getResourceLoader, afterEnvSetup, registrationCallbackName = "__jsdom_env_register") {
+    _defineProperty(this, "registrationCallbackName", void 0);
+
     _defineProperty(this, "getFileList", void 0);
 
     _defineProperty(this, "getResourceLoader", void 0);
@@ -49,6 +56,7 @@ class JSDOMSixteenConfiguration {
       throw new Error("Must provide valid callback for after env setup or null");
     }
 
+    this.registrationCallbackName = registrationCallbackName;
     this.getFileList = getFileList;
     this.getResourceLoader = getResourceLoader;
 

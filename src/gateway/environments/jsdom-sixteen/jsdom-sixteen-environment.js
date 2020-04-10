@@ -1,7 +1,42 @@
 // @flow
-import type {ResourceLoader} from "jsdom";
-import type {IJSDOMSixteenConfiguration} from "./index.js";
+import {Script} from "vm";
+import {JSDOM} from "jsdom";
+import {createVirtualConsole} from "./create-virtual-console.js";
+import {patchAgainstDanglingTimers} from "./patch-against-dangling-timers.js";
+import type {
+    IJSDOMSixteenConfiguration,
+    CloseableResourceLoader,
+    IGate,
+    ICloseable,
+} from "./types.js";
 import type {IRenderEnvironment, RenderAPI, RenderResult} from "../../types.js";
+
+interface RenderCallbackFn {
+    /**
+     * Method invoked to create a render result.
+     */
+    (
+        getHeader: $PropertyType<RenderAPI, "getHeader">,
+        trace: $PropertyType<RenderAPI, "trace">,
+    ): Promise<RenderResult>;
+}
+
+/**
+ * A JS file.
+ */
+type JavaScriptFile = {
+    /**
+     * The content of the file.
+     */
+    content: string,
+
+    /**
+     * The URL of the file.
+     */
+    url: string,
+};
+
+const MinimalPage = "<!DOCTYPE html><html><head></head><body></body></html>";
 
 /**
  * A render environment built to support the JSDOM 16.x API.
@@ -25,18 +60,18 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
     _retrieveTargetFiles = async (
         url: string,
         renderAPI: RenderAPI,
-        resourceLoader: ResourceLoader,
-    ): Promise<Array<string>> => {
+        resourceLoader: CloseableResourceLoader,
+    ): Promise<Array<JavaScriptFile>> => {
         const traceSession = renderAPI.trace(
-            "_retrieveTargetFiles",
-            `JSDOMSixteenEnvironment setup`,
+            "JSDOM16._retrieveTargetFiles",
+            `JSDOMSixteenEnvironment retrieving files`,
         );
         try {
             /**
-             * First, we need to know what files to execute so that we can produce
-             * a render result, and we need a resource loader so that we can
-             * retrieve those files as well as support retrieving additional files
-             * within our JSDOM environment.
+             * First, we need to know what files to execute so that we can
+             * produce a render result, and we need a resource loader so that
+             * we can retrieve those files as well as support retrieving
+             * additional files within our JSDOM environment.
              */
             const files = await this._configuration.getFileList(url, renderAPI);
             traceSession.addLabel("fileCount", files.length);
@@ -63,7 +98,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                      * No need to reconnect the abort() in this case since we
                      * won't be calling it.
                      */
-                    return fetchResult.then((b) => b.toString());
+                    return fetchResult.then((b) => ({
+                        content: b.toString(),
+                        url: f,
+                    }));
                 }),
             );
         } finally {
@@ -88,44 +126,171 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         renderAPI: RenderAPI,
     ): Promise<RenderResult> => {
         /**
-         * We are going to need a resource loader so that we can obtain files
-         * both inside and outside the JSDOM VM.
+         * We want to tidy up nicely if there's a problem and also if the render
+         * context is closed, so let's handle that by putting closeable things
+         * into a handy list and providing a way to close them all.
          */
-        const resourceLoader = this._configuration.getResourceLoader(
-            url,
-            renderAPI,
-        );
+        const closeables: Array<ICloseable> = [];
+        const closeAll = () => {
+            for (const closeable of closeables) {
+                // eslint-disable-next-line flowtype/no-unused-expressions
+                closeable?.close?.();
+            }
+        };
 
-        // eslint-disable-next-line no-unused-vars
-        const files = await this._retrieveTargetFiles(
-            url,
-            renderAPI,
-            resourceLoader,
-        );
+        try {
+            /**
+             * We are going to need a resource loader so that we can obtain files
+             * both inside and outside the JSDOM VM.
+             */
+            const resourceLoader = this._configuration.getResourceLoader(
+                url,
+                renderAPI,
+            );
 
-        /**
-         * Right, we have the files. Now we need the JSDOM environment and the
-         * rendering hooks so that we can make a render happen.
-         */
-        /**
-         * TODO(somewhatabstract): All the things
-         * 1. Need to setup the JSDOM VM
-         *    - see createRenderContext for RRS
-         *    - call the afterEnvSetup and attach anything it returns to the
-         *      vm context
-         *
-         * 2. Need to setup the environment with render registration callbacks
-         *    - see the render function in render.js of RRS
-         *
-         * 3. Invoke the render and return its result.
-         *
-         * 4. Finally, close the JSDOM environment.
-         */
+            // Let's get those files!
+            const files = await this._retrieveTargetFiles(
+                url,
+                renderAPI,
+                resourceLoader,
+            );
 
-        return Promise.resolve({
-            body: "NOTHING",
-            headers: {},
-            status: 200,
-        });
+            /**
+             * We want a JSDOM instance for the url we want to render. This is
+             * where we setup custom resource loading and our virtual console
+             * too.
+             */
+            const jsdomInstance = new JSDOM(MinimalPage, {
+                url,
+                runScripts: "dangerously",
+                resources: (resourceLoader: any),
+                pretendToBeVisual: true,
+                virtualConsole: createVirtualConsole(renderAPI.logger),
+            });
+            closeables.push(jsdomInstance.window);
+
+            /**
+             * OK, we know this is a JSDOM instance but we want to expose a nice
+             * wrapper. As part of that wrapper, we want to make it easier to
+             * run scripts (like our rendering JS code) within the VM context.
+             * So, let's create a helper for that.
+             *
+             * We cast the context to any, because otherwise it is typed as an
+             * empty object, which makes life annoying.
+             */
+            const vmContext: any = jsdomInstance.getInternalVMContext();
+            const runScript = (
+                script: string,
+                options?: vm$ScriptOptions,
+            ): any => {
+                const realScript = new Script(script, options);
+                return realScript.runInContext(vmContext);
+            };
+
+            /**
+             * Next, we want to patch timers so we can make sure they don't
+             * fire after we are done (and so we can catch dangling timers if
+             * necessary). To do this, we are going to hang the timer API off
+             * the vmContext and then execute it from inside the context.
+             * Super magic.
+             */
+            const tmpFnName = "__tmp_patchTimers";
+            vmContext[tmpFnName] = patchAgainstDanglingTimers;
+            const timerGateAPI: IGate = runScript(`${tmpFnName}(window);`);
+            delete vmContext[tmpFnName];
+            closeables.push(timerGateAPI);
+
+            /**
+             * At this point, we give our configuration an opportunity to
+             * modify the render context a little.
+             */
+            const setupObj = await this._configuration.afterEnvSetup(
+                url,
+                renderAPI,
+            );
+            if (setupObj != null) {
+                for (const [key, value] of Object.entries(setupObj)) {
+                    vmContext[key] = value;
+                }
+            }
+
+            /**
+             * At this point, before loading the files for rendering, we must
+             * configure the registration point in our render context.
+             */
+            const {registrationCallbackName} = this._configuration;
+            const registeredCbName = "__registeredCallback";
+            vmContext[registrationCallbackName] = (
+                cb: RenderCallbackFn,
+            ): void => {
+                vmContext[registrationCallbackName][registeredCbName] = cb;
+            };
+
+            /**
+             * The context is configured. Now we need to load the files into it
+             * which should cause our registration callback to be invoked.
+             * We pass the filename here so we can get some nicer stack traces.
+             */
+            for (const {content, url} of files) {
+                runScript(content, {filename: url});
+            }
+
+            /**
+             * With the files all loaded, we should have a registered callback.
+             * Let's assert that and then invoke the render process.
+             */
+            if (
+                typeof vmContext[registrationCallbackName][registeredCbName] !==
+                "function"
+            ) {
+                throw new Error("No render callback was registered.");
+            }
+
+            /**
+             * We are finally ready. Before we can invoke the render, we need
+             * to make sure our render API pieces are made available to the
+             * render callback, so we attach them in the vm context.
+             */
+            const renderAPIName = "__renderAPI";
+            (vmContext: any)[registrationCallbackName][renderAPIName] = {
+                trace: renderAPI.trace,
+                getHeader: renderAPI.getHeader,
+            };
+            /**
+             * And now we run the registered callback inside the VM, passing
+             * the render API pieces we just provided.
+             */
+            const result: RenderResult = await runScript(`
+    const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
+    const {trace, getHeader} = window["${registrationCallbackName}"]["${renderAPIName}"];
+    cb(getHeader, trace);`);
+
+            /**
+             * Let's make sure that the rendered function returned something
+             * resembling a render result.
+             */
+            if (
+                result == null ||
+                !Object.prototype.hasOwnProperty.call(result, "body") ||
+                !Object.prototype.hasOwnProperty.call(result, "status") ||
+                !Object.prototype.hasOwnProperty.call(result, "headers")
+            ) {
+                throw new Error(
+                    `Malformed render result: ${JSON.stringify(result)}`,
+                );
+            }
+
+            /**
+             * After all that, we should have a result, so let's return it and
+             * let our finally tidy up all the render context we built.
+             */
+            return result;
+        } finally {
+            /**
+             * We need to make sure that whatever happens, we tidy everything
+             * up.
+             */
+            closeAll();
+        }
     };
 }

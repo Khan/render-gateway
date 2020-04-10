@@ -1,5 +1,14 @@
+/* eslint-disable max-lines */
 // @flow
+import vm from "vm";
+import * as JSDOM from "jsdom";
+import * as CreateVirtualConsole from "../create-virtual-console.js";
+import * as PatchAgainstDanglingTimers from "../patch-against-dangling-timers.js";
 import {JSDOMSixteenEnvironment} from "../jsdom-sixteen-environment.js";
+
+jest.mock("jsdom");
+jest.mock("../create-virtual-console.js");
+jest.mock("../patch-against-dangling-timers.js");
 
 describe("JSDOMSixteenEnvironment", () => {
     describe("#constructor", () => {
@@ -30,14 +39,21 @@ describe("JSDOMSixteenEnvironment", () => {
                 logger: fakeLogger,
             };
             const fakeConfiguration = {
-                getFileList: jest.fn().mockReturnValue(Promise.resolve([])),
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
                 getResourceLoader: jest.fn(),
                 afterEnvSetup: jest.fn(),
             };
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
 
             // Act
-            await underTest.render("URL", fakeRenderAPI);
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
 
             // Assert
             expect(fakeConfiguration.getResourceLoader).toHaveBeenCalledWith(
@@ -59,14 +75,21 @@ describe("JSDOMSixteenEnvironment", () => {
                 logger: fakeLogger,
             };
             const fakeConfiguration = {
-                getFileList: jest.fn().mockReturnValue(Promise.resolve([])),
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
                 getResourceLoader: jest.fn(),
                 afterEnvSetup: jest.fn(),
             };
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
 
             // Act
-            await underTest.render("URL", fakeRenderAPI);
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
 
             // Assert
             expect(fakeConfiguration.getFileList).toHaveBeenCalledWith(
@@ -88,14 +111,21 @@ describe("JSDOMSixteenEnvironment", () => {
                 logger: fakeLogger,
             };
             const fakeConfiguration = {
-                getFileList: jest.fn().mockReturnValue(Promise.resolve([])),
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
                 getResourceLoader: jest.fn(),
                 afterEnvSetup: jest.fn(),
             };
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
 
             // Act
-            await underTest.render("URL", fakeRenderAPI);
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
 
             // Assert
             expect(fakeRenderAPI.trace).toHaveBeenCalledBefore(
@@ -123,11 +153,10 @@ describe("JSDOMSixteenEnvironment", () => {
                     ),
             };
             const fakeConfiguration = {
+                registrationCallbackName: "__register__",
                 getFileList: jest
                     .fn()
-                    .mockReturnValue(
-                        Promise.resolve(["filea", "fileb", "filec"]),
-                    ),
+                    .mockResolvedValue(["filea", "fileb", "filec"]),
                 getResourceLoader: jest
                     .fn()
                     .mockReturnValue(fakeResourceLoader),
@@ -136,7 +165,13 @@ describe("JSDOMSixteenEnvironment", () => {
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
 
             // Act
-            await underTest.render("URL", fakeRenderAPI);
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
 
             // Assert
             expect(fakeResourceLoader.fetch).toHaveBeenCalledWith("filea");
@@ -160,9 +195,8 @@ describe("JSDOMSixteenEnvironment", () => {
                 fetch: jest.fn().mockReturnValue(null),
             };
             const fakeConfiguration = {
-                getFileList: jest
-                    .fn()
-                    .mockReturnValue(Promise.resolve(["BAD_FILE"])),
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["BAD_FILE"]),
                 getResourceLoader: jest
                     .fn()
                     .mockReturnValue(fakeResourceLoader),
@@ -192,12 +226,11 @@ describe("JSDOMSixteenEnvironment", () => {
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
-                fetch: jest.fn().mockReturnValue(Promise.resolve(null)),
+                fetch: jest.fn().mockResolvedValue(null),
             };
             const fakeConfiguration = {
-                getFileList: jest
-                    .fn()
-                    .mockReturnValue(Promise.resolve(["BAD_FILE"])),
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["BAD_FILE"]),
                 getResourceLoader: jest
                     .fn()
                     .mockReturnValue(fakeResourceLoader),
@@ -234,11 +267,10 @@ describe("JSDOMSixteenEnvironment", () => {
                     ),
             };
             const fakeConfiguration = {
+                registrationCallbackName: "__register__",
                 getFileList: jest
                     .fn()
-                    .mockReturnValue(
-                        Promise.resolve(["filea", "fileb", "filec"]),
-                    ),
+                    .mockResolvedValue(["filea", "fileb", "filec"]),
                 getResourceLoader: jest
                     .fn()
                     .mockReturnValue(fakeResourceLoader),
@@ -247,18 +279,739 @@ describe("JSDOMSixteenEnvironment", () => {
             const env = new JSDOMSixteenEnvironment(fakeConfiguration);
 
             // Act
-            await env.render("URL", fakeRenderAPI);
+            try {
+                await env.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
 
             // Assert
             expect(fakeTraceSession.end).toHaveBeenCalled();
         });
 
-        it.todo("should setup the JSDOM VM environment");
+        it("should create JSDOM instance for render location", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {};
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const jsdomSpy = jest.spyOn(JSDOM, "JSDOM");
+            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
 
-        it.todo("should apply afterEnvSetup");
+            // Act
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
 
-        it.todo("should invoke the render");
+            // Assert
+            expect(jsdomSpy).toHaveBeenCalledWith(
+                "<!DOCTYPE html><html><head></head><body></body></html>",
+                {
+                    url: "URL",
+                    runScripts: "dangerously",
+                    resources: fakeResourceLoader,
+                    pretendToBeVisual: true,
+                    virtualConsole: "FAKE_CONSOLE",
+                },
+            );
+        });
 
-        it.todo("should return the render result");
+        it("should close JSDOM window on rejection", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {};
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {
+                close: jest.fn(),
+            };
+            const fakeJSDOM = {
+                window: fakeWindow,
+                getInternalVMContext: jest.fn().mockReturnValue(fakeWindow),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            const underTest = environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            await expect(underTest).rejects.toThrowError();
+            expect(fakeJSDOM.window.close).toHaveBeenCalled();
+        });
+
+        it("should patch the JSDOM instance against dangling timers", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {};
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const patchSpy = jest.spyOn(
+                PatchAgainstDanglingTimers,
+                "patchAgainstDanglingTimers",
+            );
+            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
+
+            // Assert
+            expect(patchSpy).toHaveBeenCalledWith(fakeWindow);
+        });
+
+        it("should close the dangling timer gate on rejection", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {};
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const fakeGate = {
+                close: jest.fn(),
+            };
+            jest.spyOn(
+                PatchAgainstDanglingTimers,
+                "patchAgainstDanglingTimers",
+            ).mockReturnValue(fakeGate);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            const underTest = environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            await expect(underTest).rejects.toThrowError();
+            expect(fakeGate.close).toHaveBeenCalled();
+        });
+
+        it("should apply afterEnvSetup", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const afterEnvSetupResult = {
+                one: "one",
+                two: {
+                    something: "complex",
+                },
+                three: () => "A FUNCTION",
+            };
+            const fakeResourceLoader: any = {};
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn().mockResolvedValue(afterEnvSetupResult),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
+
+            // Assert
+            expect(fakeWindow).toMatchObject(afterEnvSetupResult);
+        });
+
+        it("should setup registration callback on window", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {};
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
+
+            // Assert
+            expect(fakeWindow).toHaveProperty(
+                fakeConfiguration.registrationCallbackName,
+            );
+        });
+
+        describe("registration callback", () => {
+            it("should capture the callback", async () => {
+                // Arrange
+                const fakeLogger: any = "FAKE_LOGGER";
+                const fakeTraceSession: any = {
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                };
+                const fakeRenderAPI: any = {
+                    trace: jest.fn().mockReturnValue(fakeTraceSession),
+                    getHeader: jest.fn(),
+                    logger: fakeLogger,
+                };
+                const fakeResourceLoader: any = {};
+                const fakeConfiguration = {
+                    registrationCallbackName: "__register__",
+                    getFileList: jest.fn().mockResolvedValue([]),
+                    getResourceLoader: jest
+                        .fn()
+                        .mockReturnValue(fakeResourceLoader),
+                    afterEnvSetup: jest.fn(),
+                };
+                jest.spyOn(
+                    CreateVirtualConsole,
+                    "createVirtualConsole",
+                ).mockReturnValue("FAKE_CONSOLE");
+                const fakeWindow = {};
+                fakeWindow.window = fakeWindow;
+                const fakeJSDOM = {
+                    window: vm.createContext(fakeWindow),
+                    getInternalVMContext: jest
+                        .fn()
+                        .mockImplementation(function () {
+                            return this.window;
+                        }),
+                };
+                jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+                const environment = new JSDOMSixteenEnvironment(
+                    fakeConfiguration,
+                );
+
+                // Act
+                try {
+                    await environment.render("URL", fakeRenderAPI);
+                } catch (e) {
+                    /**
+                     * We care about the expectation below.
+                     */
+                }
+                const registrationCallback =
+                    fakeWindow[fakeConfiguration.registrationCallbackName];
+                registrationCallback("FAKE_CALLBACK");
+
+                // Assert
+                expect(
+                    fakeWindow[fakeConfiguration.registrationCallbackName],
+                ).toHaveProperty("__registeredCallback", "FAKE_CALLBACK");
+            });
+        });
+
+        it("should execute the downloaded files in order in the JSDOM VM context", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockImplementation((f) => {
+                    switch (f) {
+                        case "filea":
+                            return Promise.resolve(`window["gubbins"] = 42;`);
+
+                        case "fileb":
+                            return Promise.resolve(
+                                `window["gubbins"] = 2 * window["gubbins"];`,
+                            );
+                    }
+                    throw new Error(`Unexpected file: ${f}`);
+                }),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["filea", "fileb"]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            try {
+                await environment.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
+
+            // Assert
+            expect(fakeWindow).toMatchObject({
+                gubbins: 84,
+            });
+        });
+
+        it("should throw if no callback is registered", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockImplementation((f) => {
+                    switch (f) {
+                        case "filea":
+                            return Promise.resolve(`window["gubbins"] = 42;`);
+
+                        case "fileb":
+                            return Promise.resolve(
+                                `window["gubbins"] = 2 * window["gubbins"];`,
+                            );
+                    }
+                    throw new Error(`Unexpected file: ${f}`);
+                }),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["filea", "fileb"]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            const underTest = environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            await expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
+                `"No render callback was registered."`,
+            );
+        });
+
+        it("should invoke the registered render method and return the result", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockResolvedValue(`
+function fakeRender() {
+    return {
+        body: "THIS IS A RENDER!",
+        status: 200,
+        headers: {},
+    };
+}
+
+window["__register__"](fakeRender);
+`),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["filea"]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            const result = await environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            expect(result).toEqual({
+                body: "THIS IS A RENDER!",
+                status: 200,
+                headers: {},
+            });
+        });
+
+        it.each([
+            undefined,
+            null,
+            "THIS IS NOT CORRECT",
+            {status: 200, headers: {}},
+            {body: "NEED MORE THAN THIS"},
+            {body: "THIS HELPS BUT WHERE ARE THE HEADERS", status: 200},
+        ])("should reject if result is malformed", async (testResult) => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockResolvedValue(`
+function fakeRender() {
+    return ${JSON.stringify(testResult)};
+}
+
+window["__register__"](fakeRender);
+`),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["filea"]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            const underTest = environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            await expect(underTest).rejects.toThrowErrorMatchingSnapshot();
+        });
+
+        it("should provide API call for trace to render callback", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockResolvedValue(`
+function fakeRender(getHeader, trace) {
+    const traceSession = trace("DOING_THINGS", "I am doing things!");
+    try {
+        return {
+            body: "THIS IS A RENDER!",
+            status: 200,
+            headers: {},
+        };
+    } finally {
+        traceSession.end();
+    }
+}
+
+window["__register__"](fakeRender);
+`),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["filea"]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            await environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            expect(fakeRenderAPI.trace).toHaveBeenCalledWith(
+                "DOING_THINGS",
+                "I am doing things!",
+            );
+        });
+
+        it("should provide API call for getting headers to render callback", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockResolvedValue(`
+    function fakeRender(getHeader) {
+        return {
+            body: "THIS IS A RENDER!",
+            status: 200,
+            headers: {
+                SOME_HEADER: getHeader("HEADER_NAME"),
+            },
+        };
+    }
+
+    window["__register__"](fakeRender);
+    `),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue(["filea"]),
+                getResourceLoader: jest
+                    .fn()
+                    .mockReturnValue(fakeResourceLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            jest.spyOn(
+                CreateVirtualConsole,
+                "createVirtualConsole",
+            ).mockReturnValue("FAKE_CONSOLE");
+            const fakeWindow = {};
+            fakeWindow.window = fakeWindow;
+            const fakeJSDOM = {
+                window: vm.createContext(fakeWindow),
+                getInternalVMContext: jest.fn().mockImplementation(function () {
+                    return this.window;
+                }),
+            };
+            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
+            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+
+            // Act
+            await environment.render("URL", fakeRenderAPI);
+
+            // Assert
+            expect(fakeRenderAPI.getHeader).toHaveBeenCalledWith("HEADER_NAME");
+        });
     });
 });

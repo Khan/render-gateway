@@ -21,7 +21,7 @@ function extractError(error) {
     };
   }
 
-  if (error.response && error.response.error) {
+  if (error.response && typeof error.response.error === "string") {
     return {
       error: error.response.error,
       stack: error.stack

@@ -36,8 +36,8 @@ async function renderHandler(
     };
 
     /**
-     * TODO(somewhatabstract, WEB-2057): Hook in tracing (make sure that we
-     * don't leave trace sessions open on rejection (or otherwise)).
+     * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
+     * sessions open on rejection (or otherwise).
      *
      * For now, we'll assume callers will tidy up.
      */
@@ -54,6 +54,7 @@ async function renderHandler(
         }
         throw new Error(`More than one url query param given`);
     }
+    const traceSession = traceFn("render", `Rendering ${renderURL}`);
     try {
         /**
          * Put together the API we make available when rendering.
@@ -67,10 +68,12 @@ async function renderHandler(
         /**
          * Defer this bit to the render callback.
          */
-        const {body, status} = await renderEnvironment.render(
+        const {body, status, headers} = await renderEnvironment.render(
             renderURL,
             renderAPI,
         );
+        traceSession.addLabel("/result/status", status);
+        traceSession.addLabel("/result/headers", headers);
 
         /**
          * TODO(somewhatabstract, WEB-1108): Validate the status with the
@@ -95,6 +98,8 @@ async function renderHandler(
 
         logger.error("Render failed", {...error, renderURL});
         res.status(500).json(error);
+    } finally {
+        traceSession.end();
     }
 }
 
