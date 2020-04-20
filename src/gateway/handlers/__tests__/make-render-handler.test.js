@@ -26,6 +26,7 @@ describe("#makeRenderHandler", () => {
             const fakeResponse: any = {
                 send: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {
@@ -67,6 +68,7 @@ describe("#makeRenderHandler", () => {
             const fakeResponse: any = {
                 send: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {},
@@ -107,6 +109,7 @@ describe("#makeRenderHandler", () => {
             const fakeResponse: any = {
                 send: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {
@@ -149,6 +152,7 @@ describe("#makeRenderHandler", () => {
             const fakeResponse: any = {
                 send: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {
@@ -189,6 +193,7 @@ describe("#makeRenderHandler", () => {
                     logger: fakeLogger,
                     getHeader: expect.any(Function),
                     trace: expect.any(Function),
+                    getTrackedHeaders: expect.any(Function),
                 },
             );
         });
@@ -200,6 +205,7 @@ describe("#makeRenderHandler", () => {
                     const fakeResponse: any = {
                         send: jest.fn().mockReturnThis(),
                         status: jest.fn().mockReturnThis(),
+                        header: jest.fn().mockReturnThis(),
                     };
                     const fakeRequest: any = {
                         query: {
@@ -243,12 +249,75 @@ describe("#makeRenderHandler", () => {
                 });
             });
 
+            describe("#getTrackedHeaders", () => {
+                it("should return headers that were accessed via getHeader and existed in the request", async () => {
+                    // Arrange
+                    const fakeResponse: any = {
+                        send: jest.fn().mockReturnThis(),
+                        status: jest.fn().mockReturnThis(),
+                        header: jest.fn().mockReturnThis(),
+                    };
+                    const fakeRequest: any = {
+                        query: {
+                            url: "THE_URL",
+                        },
+                        header: jest
+                            .fn()
+                            .mockReturnValueOnce("HEADER_VALUE1")
+                            .mockReturnValueOnce("HEADER_VALUE2")
+                            .mockReturnValueOnce("HEADER_VALUE3"),
+                    };
+                    const renderResult = {
+                        body: "BODY",
+                        status: 200,
+                        headers: {},
+                    };
+                    jest.spyOn(KAShared, "trace").mockReturnValue({
+                        end: jest.fn(),
+                        addLabel: jest.fn(),
+                    });
+                    const fakeRenderEnvironment: any = {
+                        render: jest
+                            .fn()
+                            .mockReturnValue(Promise.resolve(renderResult)),
+                    };
+                    const handler = makeRenderHandler(fakeRenderEnvironment);
+                    /**
+                     * Middleware<Request, Response> can mean two different call
+                     * signatures, and sadly, they both have completely different
+                     * argument type ordering, which totally confused flow here.
+                     * $FlowIgnore
+                     */
+                    await handler(fakeRequest, fakeResponse);
+                    const getHeader =
+                        fakeRenderEnvironment.render.mock.calls[0][1].getHeader;
+                    const getTrackedHeaders =
+                        fakeRenderEnvironment.render.mock.calls[0][1]
+                            .getTrackedHeaders;
+
+                    // Act
+                    getHeader("HEADER1");
+                    getHeader("HEADER2");
+                    getHeader("HEADER3");
+                    getHeader("HEADER4");
+                    const result = getTrackedHeaders();
+
+                    //Assert
+                    expect(result).toStrictEqual({
+                        HEADER1: "HEADER_VALUE1",
+                        HEADER2: "HEADER_VALUE2",
+                        HEADER3: "HEADER_VALUE3",
+                    });
+                });
+            });
+
             describe("#trace", () => {
                 it("should call trace", async () => {
                     // Arrange
                     const fakeResponse: any = {
                         send: jest.fn().mockReturnThis(),
                         status: jest.fn().mockReturnThis(),
+                        header: jest.fn().mockReturnThis(),
                     };
                     const fakeRequest: any = {
                         query: {
@@ -296,16 +365,173 @@ describe("#makeRenderHandler", () => {
         });
 
         describe("when render callback resolves", () => {
-            it.todo("should attach the headers to the response");
-            it.todo("should validate the status and headers");
-            it.todo("should response with 500 error if validation fails");
-            it.todo("should build Vary header from tracked header accesses");
+            it("should attach the headers to the response", async () => {
+                // Arrange
+                const fakeResponse: any = {
+                    send: jest.fn().mockReturnThis(),
+                    status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest: any = {
+                    query: {
+                        url: "THE_URL",
+                    },
+                };
+                const renderResult = {
+                    body: "BODY",
+                    status: 200,
+                    headers: {
+                        NAME1: "VALUE1",
+                        NAME2: "VALUE2",
+                    },
+                };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
+                const fakeRenderEnvironment: any = {
+                    render: jest
+                        .fn()
+                        .mockReturnValue(Promise.resolve(renderResult)),
+                };
+                const handler = makeRenderHandler(fakeRenderEnvironment);
+
+                // Act
+                /**
+                 * Middleware<Request, Response> can mean two different call
+                 * signatures, and sadly, they both have completely different
+                 * argument type ordering, which totally confused flow here.
+                 * $FlowIgnore
+                 */
+                await handler(fakeRequest, fakeResponse);
+
+                // Assert
+                expect(fakeResponse.header).toHaveBeenCalledWith({
+                    NAME1: "VALUE1",
+                    NAME2: "VALUE2",
+                });
+            });
+
+            it.each([301, 302, 306, 307])(
+                "should set status to 500 if status was %s redirect but Location header is missing",
+                async (redirectStatus) => {
+                    // Arrange
+                    const fakeResponse: any = {
+                        json: jest.fn().mockReturnThis(),
+                        status: jest.fn().mockReturnThis(),
+                        header: jest.fn().mockReturnThis(),
+                    };
+                    const fakeRequest: any = {
+                        query: {
+                            url: "THE_URL",
+                        },
+                    };
+                    const renderResult = {
+                        body: "BODY",
+                        status: redirectStatus,
+                        headers: {
+                            NAME1: "VALUE1",
+                            NAME2: "VALUE2",
+                        },
+                    };
+                    jest.spyOn(KAShared, "trace").mockReturnValue({
+                        end: jest.fn(),
+                        addLabel: jest.fn(),
+                    });
+                    const fakeRenderEnvironment: any = {
+                        render: jest
+                            .fn()
+                            .mockReturnValue(Promise.resolve(renderResult)),
+                    };
+                    const fakeLogger = {
+                        error: jest.fn(),
+                    };
+                    jest.spyOn(KAShared, "getLogger").mockReturnValue(
+                        fakeLogger,
+                    );
+                    const handler = makeRenderHandler(fakeRenderEnvironment);
+
+                    // Act
+                    /**
+                     * Middleware<Request, Response> can mean two different call
+                     * signatures, and sadly, they both have completely different
+                     * argument type ordering, which totally confused flow here.
+                     * $FlowIgnore
+                     */
+                    await handler(fakeRequest, fakeResponse);
+
+                    // Assert
+                    expect(fakeResponse.status).toHaveBeenCalledWith(500);
+                },
+            );
+
+            it.each([301, 302, 306, 307])(
+                "should return error message if status was %s redirect but Location header is missing",
+                async (redirectStatus) => {
+                    // Arrange
+                    const fakeResponse: any = {
+                        json: jest.fn().mockReturnThis(),
+                        status: jest.fn().mockReturnThis(),
+                        header: jest.fn().mockReturnThis(),
+                    };
+                    const fakeRequest: any = {
+                        query: {
+                            url: "THE_URL",
+                        },
+                    };
+                    const renderResult = {
+                        body: "BODY",
+                        status: redirectStatus,
+                        headers: {
+                            NAME1: "VALUE1",
+                            NAME2: "VALUE2",
+                        },
+                    };
+                    jest.spyOn(KAShared, "trace").mockReturnValue({
+                        end: jest.fn(),
+                        addLabel: jest.fn(),
+                    });
+                    const fakeRenderEnvironment: any = {
+                        render: jest
+                            .fn()
+                            .mockReturnValue(Promise.resolve(renderResult)),
+                    };
+                    const simplifiedError = {
+                        error: "EXTRACTED_ERROR",
+                    };
+                    jest.spyOn(Shared, "extractError").mockReturnValue(
+                        simplifiedError,
+                    );
+                    const fakeLogger = {
+                        error: jest.fn(),
+                    };
+                    jest.spyOn(KAShared, "getLogger").mockReturnValue(
+                        fakeLogger,
+                    );
+                    const handler = makeRenderHandler(fakeRenderEnvironment);
+
+                    // Act
+                    /**
+                     * Middleware<Request, Response> can mean two different call
+                     * signatures, and sadly, they both have completely different
+                     * argument type ordering, which totally confused flow here.
+                     * $FlowIgnore
+                     */
+                    await handler(fakeRequest, fakeResponse);
+
+                    // Assert
+                    expect(fakeResponse.json).toHaveBeenCalledWith(
+                        simplifiedError,
+                    );
+                },
+            );
 
             it("should set status of response from render result", async () => {
                 // Arrange
                 const fakeResponse: any = {
                     send: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
                     query: {
@@ -346,6 +572,7 @@ describe("#makeRenderHandler", () => {
                 const fakeResponse: any = {
                     send: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
                     query: {
@@ -388,6 +615,7 @@ describe("#makeRenderHandler", () => {
                 const fakeResponse: any = {
                     json: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
                     query: {
@@ -426,6 +654,7 @@ describe("#makeRenderHandler", () => {
                 const fakeResponse: any = {
                     json: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
                     query: {
@@ -472,6 +701,7 @@ describe("#makeRenderHandler", () => {
                 const fakeResponse: any = {
                     json: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
                     query: {
@@ -509,6 +739,7 @@ describe("#makeRenderHandler", () => {
                 const fakeResponse: any = {
                     json: jest.fn().mockReturnThis(),
                     status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
                     query: {
