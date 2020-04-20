@@ -14,7 +14,7 @@ import type {RequestWithLog, ITraceSession, Logger} from "../shared/index.js";
  */
 export type InFlightRequests = {
     [url: string]: AbortablePromise<SuperAgentResponse>,
-    ...,
+    ...
 };
 
 /**
@@ -104,12 +104,19 @@ export interface TraceCallback {
     (action: string, message: string): ITraceSession;
 }
 
+export interface GetTrackedHeadersCallback {
+    /**
+     * Get the headers that have been tracked and their values.
+     */
+    (): $ReadOnly<{[header: string]: string, ...}>;
+}
+
 /**
  * Header names and their values for attaching to a response from the gateway.
  */
 export type ResponseHeaders = {
-    +[name: string]: string,
-    ...,
+    [name: string]: string,
+    ...
 };
 
 /**
@@ -150,6 +157,12 @@ export type RenderAPI = {
      * be reported back as a Vary header in the gateway response.
      */
     +getHeader: GetHeaderCallback,
+
+    /**
+     * Callback to retrieve a map of the request headers that have been accessed
+     * and their values.
+     */
+    +getTrackedHeaders: GetTrackedHeadersCallback,
 
     /**
      * Callback to start a trace session for tracing an operation.

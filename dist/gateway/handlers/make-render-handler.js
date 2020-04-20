@@ -27,14 +27,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 async function renderHandler(renderEnvironment, req, res) {
   const logger = (0, _index2.getLogger)(req);
   /**
-   * TODO(somewhatabstract, WEB-1108): Actually track headers and build vary
-   * header.
-   * Encapsulate in other code to make it easily tested.
+   * We track header access and provide an API to find out which headers were
+   * accessed. This allows service implementations and their rendering code
+   * to properly generate a Vary header or work out what data a page should
+   * embed so that they can implement effective caching and hydration
+   * strategies.
    */
 
+  const trackedHeaders = {};
+
   const trackHeaderLookup = name => {
-    return req.header(name);
+    const headerValue = req.header(name);
+
+    if (headerValue != null) {
+      trackedHeaders[name] = headerValue;
+    }
+
+    return headerValue;
   };
+
+  const getTrackedHeaders = () => Object.assign({}, trackedHeaders);
   /**
    * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
    * sessions open on rejection (or otherwise).
@@ -68,6 +80,7 @@ async function renderHandler(renderEnvironment, req, res) {
     const renderAPI = {
       getHeader: trackHeaderLookup,
       trace: traceFn,
+      getTrackedHeaders,
       logger
     };
     /**
@@ -82,18 +95,32 @@ async function renderHandler(renderEnvironment, req, res) {
     traceSession.addLabel("/result/status", status);
     traceSession.addLabel("/result/headers", headers);
     /**
-     * TODO(somewhatabstract, WEB-1108): Validate the status with the
-     * headers.
-     * There are a couple where we know we need certain things to match
-     * 1. If a Vary header is included, we should error to indicate that
-     *    is not allowed
-     * 2. For 301/302 status, we need a `Location` header.
-     *
-     * validateStatusAndHeaders(status, headers);
+     * We don't do anything to the response headers other than validate
+     * that redirect-type statuses include a Location header.
+     * 3xx headers that MUST have a Location header are:
+     * - 301
+     * - 302
+     * - 307
+     * - 308
      */
-    // TODO(somewhatabstract, WEB-1108): Add headers.
-    // TODO(somewhatabstract, WEB-1108): Add Vary header.
 
+    if ([301, 302, 307, 308].includes(status) && headers["Location"] == null) {
+      throw new Error("Render resulted in redirection status without required Location header");
+    }
+    /**
+     * TODO(somewhatabstract): Since we have access to the tracked
+     * headers, we could generate a Vary header for the response when one
+     * is not already included. This would ensure it does the right thing
+     * out-of-the-box while also providing means to support more complex
+     * implementations. This is super low priority though.
+     */
+
+    /**
+     * Finally, we set the headers, status and send the response body.
+     */
+
+
+    res.header(headers);
     res.status(status);
     res.send(body);
   } catch (e) {
