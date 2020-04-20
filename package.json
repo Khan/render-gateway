@@ -70,7 +70,7 @@
     "@google-cloud/debug-agent": "^4.2.2",
     "@google-cloud/kms": "^2.0.0",
     "@google-cloud/logging-winston": "^3.0.6",
-    "@google-cloud/profiler": "^3.0.1",
+    "@google-cloud/profiler": "^4.0.0",
     "@google-cloud/trace-agent": "^4.2.5",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
