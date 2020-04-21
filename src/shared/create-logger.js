@@ -14,7 +14,13 @@ import type {Runtime, Logger, LogLevel, Info} from "./types.js";
  * if we have the profiling API from react-render-server, we could include
  * the duration metadata.
  */
-const devFormatter = ({level, message}: Info): string => `${level}: ${message}`;
+const devFormatter = ({level, message, ...metadata}: Info): string => {
+    const metadataString =
+        metadata == null || Object.keys(metadata).length === 0
+            ? ""
+            : ` ${JSON.stringify(metadata, null, 4)}`;
+    return `${level}: ${message}${metadataString}`;
+};
 
 /**
  * Build the formatters to give us some nice dev output.
@@ -22,11 +28,16 @@ const devFormatter = ({level, message}: Info): string => `${level}: ${message}`;
 const getFormatters = (mode: Runtime): Format => {
     const formatters: Array<Format> = [
         winston.format.splat(), // Allows for %s style substitutions
-        winston.format.printf((info: any) => devFormatter(info)),
     ];
     if (mode === "development") {
         formatters.push(winston.format.cli({level: true}));
     }
+
+    /**
+     * This must be added after the cli formatter if it is to be used in
+     * the dev output.
+     */
+    formatters.push(winston.format.printf((info: any) => devFormatter(info)));
     return winston.format.combine(...formatters);
 };
 
