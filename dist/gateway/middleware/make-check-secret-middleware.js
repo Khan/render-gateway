@@ -45,11 +45,33 @@ async function makeProductionMiddleware(options) {
   };
 }
 
-function makeDevelopmentMiddleware() {
+function makeDevelopmentMiddleware(options) {
   /**
    * The secrets middleware is a noop when not in production.
    */
   return Promise.resolve(function (req, res, next) {
+    const logger = (0, _index.getLogger)(req);
+    /**
+     * If authentication options were given, let's log a message if the
+     * expected header is omitted. This is a valid thing to do in dev since
+     * we don't authenticate dev requests, but it is also useful to know
+     * during testing if the header is missing.
+     */
+
+    if (options != null) {
+      if (req.header(options.headerName) == null) {
+        logger.warn("Authentication header was not included in request.", {
+          header: options.headerName
+        });
+      } else {
+        logger.debug("Authentication header present but ignored in current runtime mode", {
+          header: options.headerName
+        });
+      }
+    } else {
+      logger.info("Authentication is not configured for this service.");
+    }
+
     next();
   });
 }
@@ -67,6 +89,6 @@ function makeCheckSecretMiddleware(authenticationOptions) {
     return makeProductionMiddleware(authenticationOptions);
   }
 
-  return makeDevelopmentMiddleware();
+  return makeDevelopmentMiddleware(authenticationOptions);
 }
 //# sourceMappingURL=make-check-secret-middleware.js.map
