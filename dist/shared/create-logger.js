@@ -17,6 +17,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 /**
  * This is how the log message gets formatted.
  *
@@ -24,25 +28,37 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * if we have the profiling API from react-render-server, we could include
  * the duration metadata.
  */
-const devFormatter = ({
-  level,
-  message
-}) => `${level}: ${message}`;
+const devFormatter = (_ref) => {
+  let {
+    level,
+    message
+  } = _ref,
+      metadata = _objectWithoutProperties(_ref, ["level", "message"]);
+
+  const metadataString = metadata == null || Object.keys(metadata).length === 0 ? "" : ` ${JSON.stringify(metadata, null, 4)}`;
+  return `${level}: ${message}${metadataString}`;
+};
 /**
  * Build the formatters to give us some nice dev output.
  */
 
 
 const getFormatters = mode => {
-  const formatters = [_winston.default.format.splat(), // Allows for %s style substitutions
-  _winston.default.format.printf(info => devFormatter(info))];
+  const formatters = [_winston.default.format.splat() // Allows for %s style substitutions
+  ];
 
   if (mode === "development") {
     formatters.push(_winston.default.format.cli({
       level: true
     }));
   }
+  /**
+   * This must be added after the cli formatter if it is to be used in
+   * the dev output.
+   */
 
+
+  formatters.push(_winston.default.format.printf(info => devFormatter(info)));
   return _winston.default.format.combine(...formatters);
 };
 /**
