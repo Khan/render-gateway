@@ -11,13 +11,36 @@ describe("#makeCheckSecretMiddleware", () => {
         it("should create noop middleware", async () => {
             // Arrange
             const fakeNext = jest.fn();
+            const fakeLogger = {
+                info: jest.fn(),
+            };
             const result: Function = await makeCheckSecretMiddleware();
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(null, null, fakeNext);
 
             // Assert
             expect(fakeNext).toHaveBeenCalledTimes(1);
+        });
+
+        it("should log that authentication is omitted", async () => {
+            // Arrange
+            const fakeNext = jest.fn();
+            const fakeLogger = {
+                info: jest.fn(),
+            };
+            const result: Function = await makeCheckSecretMiddleware();
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+
+            // Act
+            result(null, null, fakeNext);
+
+            // Assert
+            expect(fakeLogger.info).toHaveBeenCalledTimes(1);
+            expect(fakeLogger.info.mock.calls[0][0]).toMatchInlineSnapshot(
+                `"Authentication is not configured for this service."`,
+            );
         });
     });
 
@@ -29,15 +52,82 @@ describe("#makeCheckSecretMiddleware", () => {
             jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
                 "development",
             );
+            const fakeRequest = {
+                header: () => "SECRET_VALUE",
+            };
+            const fakeLogger = {
+                debug: jest.fn(),
+            };
             const result: Function = await makeCheckSecretMiddleware(
                 fakeAuthOptions,
             );
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
-            result(null, null, fakeNext);
+            result(fakeRequest, null, fakeNext);
 
             // Assert
             expect(fakeNext).toHaveBeenCalledTimes(1);
+        });
+
+        it("should log if authentication header is omitted from request", async () => {
+            // Arrange
+            const fakeAuthOptions = ({
+                headerName: "SECRET_HEADER",
+            }: any);
+            const fakeNext = jest.fn();
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
+                "development",
+            );
+            const fakeRequest = {
+                header: () => null,
+            };
+            const fakeLogger = {
+                warn: jest.fn(),
+            };
+            const result: Function = await makeCheckSecretMiddleware(
+                fakeAuthOptions,
+            );
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+
+            // Act
+            result(fakeRequest, null, fakeNext);
+
+            // Assert
+            expect(fakeLogger.warn).toHaveBeenCalledTimes(1);
+            expect(fakeLogger.warn.mock.calls[0][0]).toMatchInlineSnapshot(
+                `"Authentication header was not included in request."`,
+            );
+        });
+
+        it("should log when authentication header is present but ignored", async () => {
+            // Arrange
+            const fakeAuthOptions = ({
+                headerName: "SECRET_HEADER",
+            }: any);
+            const fakeNext = jest.fn();
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
+                "development",
+            );
+            const fakeRequest = {
+                header: () => "SECRET_VALUE",
+            };
+            const fakeLogger = {
+                debug: jest.fn(),
+            };
+            const result: Function = await makeCheckSecretMiddleware(
+                fakeAuthOptions,
+            );
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+
+            // Act
+            result(fakeRequest, null, fakeNext);
+
+            // Assert
+            expect(fakeLogger.debug).toHaveBeenCalledTimes(1);
+            expect(fakeLogger.debug.mock.calls[0][0]).toMatchInlineSnapshot(
+                `"Authentication header present but ignored in current runtime mode"`,
+            );
         });
     });
 

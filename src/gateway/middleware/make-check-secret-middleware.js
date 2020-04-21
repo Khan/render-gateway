@@ -1,11 +1,11 @@
 // @flow
-import type {Middleware, $Request, $Response, NextFunction} from "express";
-import {getRuntimeMode} from "../../ka-shared/index.js";
+import type {Middleware, $Response, NextFunction} from "express";
+import {getRuntimeMode, getLogger} from "../../ka-shared/index.js";
 import {getSecrets} from "../get-secrets.js";
 
-import type {AuthenticationOptions} from "../types.js";
+import type {AuthenticationOptions, Request} from "../types.js";
 
-async function makeProductionMiddleware<Req: $Request, Res: $Response>(
+async function makeProductionMiddleware<Req: Request, Res: $Response>(
     options: AuthenticationOptions,
 ): Promise<Middleware<Req, Res>> {
     /**
@@ -35,9 +35,9 @@ async function makeProductionMiddleware<Req: $Request, Res: $Response>(
     };
 }
 
-function makeDevelopmentMiddleware<Req: $Request, Res: $Response>(): Promise<
-    Middleware<Req, Res>,
-> {
+function makeDevelopmentMiddleware<Req: Request, Res: $Response>(
+    options: ?AuthenticationOptions,
+): Promise<Middleware<Req, Res>> {
     /**
      * The secrets middleware is a noop when not in production.
      */
@@ -46,6 +46,32 @@ function makeDevelopmentMiddleware<Req: $Request, Res: $Response>(): Promise<
         res: Res,
         next: NextFunction,
     ): void {
+        const logger = getLogger(req);
+        /**
+         * If authentication options were given, let's log a message if the
+         * expected header is omitted. This is a valid thing to do in dev since
+         * we don't authenticate dev requests, but it is also useful to know
+         * during testing if the header is missing.
+         */
+        if (options != null) {
+            if (req.header(options.headerName) == null) {
+                logger.warn(
+                    "Authentication header was not included in request.",
+                    {
+                        header: options.headerName,
+                    },
+                );
+            } else {
+                logger.debug(
+                    "Authentication header present but ignored in current runtime mode",
+                    {
+                        header: options.headerName,
+                    },
+                );
+            }
+        } else {
+            logger.info("Authentication is not configured for this service.");
+        }
         next();
     });
 }
@@ -57,12 +83,12 @@ function makeDevelopmentMiddleware<Req: $Request, Res: $Response>(): Promise<
  * secret as identified by the options and then uses the configured header name
  * to identify the request header that it is to be matched against.
  */
-export function makeCheckSecretMiddleware<Req: $Request, Res: $Response>(
+export function makeCheckSecretMiddleware<Req: Request, Res: $Response>(
     authenticationOptions?: AuthenticationOptions,
 ): Promise<Middleware<Req, Res>> {
     if (authenticationOptions != null && getRuntimeMode() === "production") {
         return makeProductionMiddleware(authenticationOptions);
     }
 
-    return makeDevelopmentMiddleware();
+    return makeDevelopmentMiddleware(authenticationOptions);
 }
