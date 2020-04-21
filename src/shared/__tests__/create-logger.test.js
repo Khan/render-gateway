@@ -30,6 +30,33 @@ describe("#createLogger", () => {
             // Assert
             expect(transports).toBeInstanceOf(winston.transports.Stream);
         });
+
+        it("should format log messages to include metadata", () => {
+            // Arrange
+            jest.spyOn(winston, "createLogger");
+            const fakePrintF = jest.fn();
+            jest.spyOn(winston.format, "combine", "get").mockReturnValue(
+                jest.fn(),
+            );
+            jest.spyOn(winston.format, "printf", "get").mockReturnValue(
+                fakePrintF,
+            );
+
+            // Act
+            createLogger("test", "silly");
+            const result = fakePrintF.mock.calls[0][0]({
+                level: "debug",
+                message: "MESSAGE",
+                other: "metadata",
+            });
+
+            // Assert
+            expect(result).toMatchInlineSnapshot(`
+                "debug: MESSAGE {
+                    \\"other\\": \\"metadata\\"
+                }"
+            `);
+        });
     });
 
     describe("unrecognised runtime mode", () => {
@@ -57,6 +84,33 @@ describe("#createLogger", () => {
 
             // Assert
             expect(transports).toBeInstanceOf(winston.transports.Console);
+        });
+
+        it("should format log messages to include metadata", () => {
+            // Arrange
+            jest.spyOn(winston, "createLogger");
+            const fakePrintF = jest.fn();
+            jest.spyOn(winston.format, "combine", "get").mockReturnValue(
+                jest.fn(),
+            );
+            jest.spyOn(winston.format, "printf", "get").mockReturnValue(
+                fakePrintF,
+            );
+
+            // Act
+            createLogger("development", "silly");
+            const result = fakePrintF.mock.calls[0][0]({
+                level: "debug",
+                message: "MESSAGE",
+                other: "metadata",
+            });
+
+            // Assert
+            expect(result).toMatchInlineSnapshot(`
+                "debug: MESSAGE {
+                    \\"other\\": \\"metadata\\"
+                }"
+            `);
         });
     });
 
