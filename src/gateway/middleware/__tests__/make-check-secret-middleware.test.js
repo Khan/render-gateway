@@ -54,6 +54,7 @@ describe("#makeCheckSecretMiddleware", () => {
             );
             const fakeRequest = {
                 header: () => "SECRET_VALUE",
+                headers: [],
             };
             const fakeLogger = {
                 debug: jest.fn(),
@@ -81,6 +82,7 @@ describe("#makeCheckSecretMiddleware", () => {
             );
             const fakeRequest = {
                 header: () => null,
+                headers: [],
             };
             const fakeLogger = {
                 warn: jest.fn(),
@@ -111,6 +113,7 @@ describe("#makeCheckSecretMiddleware", () => {
             );
             const fakeRequest = {
                 header: () => "SECRET_VALUE",
+                headers: [],
             };
             const fakeLogger = {
                 debug: jest.fn(),
@@ -128,6 +131,36 @@ describe("#makeCheckSecretMiddleware", () => {
             expect(fakeLogger.debug.mock.calls[0][0]).toMatchInlineSnapshot(
                 `"Authentication header present but ignored in current runtime mode"`,
             );
+        });
+
+        it("should delete header when present", async () => {
+            // Arrange
+            const fakeAuthOptions = ({
+                headerName: "SECRET_HEADER",
+            }: any);
+            const fakeNext = jest.fn();
+            jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue(
+                "development",
+            );
+            const fakeRequest = {
+                header: () => "SECRET_VALUE",
+                headers: {
+                    SECRET_HEADER: "SECRET_VALUE",
+                },
+            };
+            const fakeLogger = {
+                debug: jest.fn(),
+            };
+            const result: Function = await makeCheckSecretMiddleware(
+                fakeAuthOptions,
+            );
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+
+            // Act
+            result(fakeRequest, null, fakeNext);
+
+            // Assert
+            expect(fakeRequest.headers).not.toHaveProperty("SECRET_HEADER");
         });
     });
 
@@ -192,6 +225,7 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Arrange
                     const fakeRequest = {
                         header: () => "SECRET_VALUE",
+                        headers: [],
                     };
                     const fakeNext = jest.fn();
                     const authenticationOptions = {
@@ -209,6 +243,33 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Assert
                     expect(fakeNext).toHaveBeenCalledTimes(1);
                 });
+
+                it("should delete the auth header", async () => {
+                    // Arrange
+                    const fakeRequest = {
+                        header: () => "SECRET_VALUE",
+                        headers: {
+                            HEADER_NAME: "SECRET_VALUE",
+                        },
+                    };
+                    const fakeNext = jest.fn();
+                    const authenticationOptions = {
+                        cryptoKeyPath: "CRYPTO_KEY_PATH",
+                        secretKey: "SECRET_KEY",
+                        headerName: "HEADER_NAME",
+                    };
+                    const middleware: Function = await makeCheckSecretMiddleware(
+                        authenticationOptions,
+                    );
+
+                    // Act
+                    middleware(fakeRequest, null, fakeNext);
+
+                    // Assert
+                    expect(fakeRequest.headers).not.toHaveProperty(
+                        "HEADER_NAME",
+                    );
+                });
             });
 
             describe("upon request with invalid secret header value", () => {
@@ -216,6 +277,7 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Arrange
                     const fakeRequest = {
                         header: () => "WRONG_SECRET_VALUE",
+                        headers: [],
                     };
                     const fakeResponse = {
                         status: jest.fn().mockReturnThis(),
@@ -241,6 +303,7 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Arrange
                     const fakeRequest = {
                         header: () => "WRONG_SECRET_VALUE",
+                        headers: [],
                     };
                     const fakeResponse = {
                         status: jest.fn().mockReturnThis(),
@@ -275,6 +338,7 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Arrange
                     const fakeRequest = {
                         header: () => undefined,
+                        headers: [],
                     };
                     const fakeResponse = {
                         status: jest.fn().mockReturnThis(),
@@ -300,6 +364,7 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Arrange
                     const fakeRequest = {
                         header: () => undefined,
+                        headers: [],
                     };
                     const fakeResponse = {
                         status: jest.fn().mockReturnThis(),

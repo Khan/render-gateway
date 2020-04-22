@@ -26,6 +26,10 @@ async function makeProductionMiddleware<Req: Request, Res: $Response>(
 
     return function (req: Req, res: Res, next: NextFunction): void {
         const requestSecret = req.header(headerName);
+        /**
+         * We delete the header because we don't want it getting logged.
+         */
+        delete req.headers[options.headerName];
         if (requestSecret !== secret) {
             res.status(401).send({error: "Missing or invalid secret"});
             return;
@@ -62,6 +66,10 @@ function makeDevelopmentMiddleware<Req: Request, Res: $Response>(
                     },
                 );
             } else {
+                /**
+                 * We delete the header because we don't want it getting logged.
+                 */
+                delete req.headers[options.headerName];
                 logger.debug(
                     "Authentication header present but ignored in current runtime mode",
                     {
