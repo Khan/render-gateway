@@ -39,7 +39,6 @@ export const asUncachedRequest = (
      * that we can let things like JSDOM call abort on promises.
      */
     const superagentRequest = request.buffer(options.buffer);
-    const abortFn = superagentRequest.abort;
     const responsePromise = superagentRequest.then((res) => {
         /**
          * There's no cache, so this is definitely not from cache.
@@ -49,7 +48,7 @@ export const asUncachedRequest = (
     });
 
     const abortableResponse: AbortablePromise<Response> = (responsePromise: any);
-    abortableResponse.abort = abortFn;
+    abortableResponse.abort = () => superagentRequest.abort();
     return abortableResponse;
 };
 
@@ -103,8 +102,6 @@ export const asCachedRequest = (
         })
         .buffer(buffer);
 
-    const abortFn = superagentRequest.abort;
-
     const responsePromise = superagentRequest.then((res) => {
         /**
          * Set the FROM_CACHE_PROP_NAME property to a boolean value.
@@ -131,6 +128,6 @@ export const asCachedRequest = (
     });
 
     const abortableResponse: AbortablePromise<Response> = (responsePromise: any);
-    abortableResponse.abort = abortFn;
+    abortableResponse.abort = () => superagentRequest.abort();
     return abortableResponse;
 };

@@ -79,6 +79,25 @@ describe("#asUncachedRequest", () => {
         // Assert
         expect(result).toHaveProperty(FROM_CACHE_PROP_NAME, false);
     });
+
+    it("should have an abort call that invokes the original superagent request with correct this context", () => {
+        // Arrange
+        const fakeResponse = {};
+        const fakeRequest: any = Promise.resolve(fakeResponse);
+        fakeRequest._abort = jest.fn();
+        fakeRequest.abort = function () {
+            this._abort();
+        };
+        const fakeOptions: any = {};
+        fakeRequest.buffer = jest.fn().mockReturnThis();
+
+        // Act
+        const wrappedRequest = asUncachedRequest(fakeOptions, fakeRequest);
+        wrappedRequest.abort();
+
+        // Assert
+        expect(fakeRequest._abort).toHaveBeenCalled();
+    });
 });
 
 describe("#asCachedRequest", () => {
@@ -206,6 +225,38 @@ describe("#asCachedRequest", () => {
 
         // Assert
         expect(fakeRequest.prune).toHaveBeenCalledWith(expect.any(Function));
+    });
+
+    it("should have an abort call that invokes the original superagent request with correct this context", () => {
+        // Arrange
+        /**
+         * If the function works, the then will return this fake result
+         * and then the abort function will be added to it that invokes the
+         * abort of the original fakeRequest.
+         */
+        const fakeResult: any = {};
+        const fakeRequest: any = {
+            buffer: jest.fn().mockReturnThis(),
+            expiration: jest.fn().mockReturnThis(),
+            prune: jest.fn().mockReturnThis(),
+            use: jest.fn().mockReturnThis(),
+            then: jest.fn().mockReturnValue(fakeResult),
+            _abort: jest.fn(),
+            abort: function () {
+                this._abort();
+            },
+        };
+        const fakeOptions: any = {
+            cachePlugin: "FAKE_PLUGIN",
+        };
+        fakeRequest.buffer = jest.fn().mockReturnThis();
+
+        // Act
+        const wrappedRequest = asCachedRequest(fakeOptions, fakeRequest);
+        wrappedRequest.abort();
+
+        // Assert
+        expect(fakeRequest._abort).toHaveBeenCalled();
     });
 
     describe("prune operation", () => {
