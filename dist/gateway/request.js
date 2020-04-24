@@ -83,7 +83,6 @@ const request = (logger, url, options) => {
   const traceSession = (0, _index.trace)(`request`, url, logger);
   traceSession.addLabel("url", url);
   const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, logger, url);
-  const abortFn = abortableRequest.abort;
   /**
    * Now, let's do the infrastructure bits for tracing this request with
    * some useful logging data and removing completed requests from our
@@ -104,7 +103,16 @@ const request = (logger, url, options) => {
    */
 
   const finalizedRequest = finalizedPromise;
-  finalizedRequest.abort = abortFn;
+  /**
+   * In tests, we might mock the promise API to return the same mock, so
+   * to avoid cyclic abort calls, we only add abort if we're not the same
+   * object.
+   */
+
+  if (finalizedRequest !== abortableRequest) {
+    finalizedRequest.abort = () => abortableRequest.abort();
+  }
+
   inFlightRequests[url] = finalizedRequest;
   return finalizedRequest;
 };
