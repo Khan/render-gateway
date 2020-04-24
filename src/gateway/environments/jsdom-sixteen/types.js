@@ -94,13 +94,18 @@ export interface IJSDOMSixteenConfiguration {
     /**
      * Perform any additional environment setup.
      *
+     * This method gets access to the actual environment in which code will
+     * execute. Be careful what you do.
+     *
      * @param {string} url The URL that is to be rendered.
      * @param {RenderAPI} renderAPI An API of utilities for assisting with the
      * render operation.
-     * @returns {?Promise<mixed>} The promise of an object with additional
-     * fields to be copied to the global of the render enviroment. These
-     * values will be therefore available to any code that runs inside the
-     * environment when the render occuras.
+     * @param {any} vmContext The actual environment that is being setup.
+     * @returns {?Promise<void>} A promise that the additional setup is done.
      */
-    afterEnvSetup(url: string, renderAPI: RenderAPI): ?Promise<mixed>;
+    afterEnvSetup(
+        url: string,
+        renderAPI: RenderAPI,
+        vmContext: any,
+    ): ?Promise<void>;
 }

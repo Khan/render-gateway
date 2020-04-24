@@ -202,17 +202,9 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
 
             /**
              * At this point, we give our configuration an opportunity to
-             * modify the render context a little.
+             * modify the render context.
              */
-            const setupObj = await this._configuration.afterEnvSetup(
-                url,
-                renderAPI,
-            );
-            if (setupObj != null) {
-                for (const [key, value] of Object.entries(setupObj)) {
-                    vmContext[key] = value;
-                }
-            }
+            await this._configuration.afterEnvSetup(url, renderAPI, vmContext);
 
             /**
              * At this point, before loading the files for rendering, we must

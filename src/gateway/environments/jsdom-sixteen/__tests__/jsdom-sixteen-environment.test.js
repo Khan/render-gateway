@@ -488,7 +488,7 @@ describe("JSDOMSixteenEnvironment", () => {
             expect(fakeGate.close).toHaveBeenCalled();
         });
 
-        it("should apply afterEnvSetup", async () => {
+        it("should call afterEnvSetup", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
             const fakeTraceSession: any = {
@@ -500,13 +500,6 @@ describe("JSDOMSixteenEnvironment", () => {
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
-            const afterEnvSetupResult = {
-                one: "one",
-                two: {
-                    something: "complex",
-                },
-                three: () => "A FUNCTION",
-            };
             const fakeResourceLoader: any = {};
             const fakeConfiguration = {
                 registrationCallbackName: "__register__",
@@ -514,7 +507,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 getResourceLoader: jest
                     .fn()
                     .mockReturnValue(fakeResourceLoader),
-                afterEnvSetup: jest.fn().mockResolvedValue(afterEnvSetupResult),
+                afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
                 CreateVirtualConsole,
@@ -541,7 +534,11 @@ describe("JSDOMSixteenEnvironment", () => {
             }
 
             // Assert
-            expect(fakeWindow).toMatchObject(afterEnvSetupResult);
+            expect(fakeConfiguration.afterEnvSetup).toHaveBeenCalledWith(
+                "URL",
+                fakeRenderAPI,
+                fakeJSDOM.window,
+            );
         });
 
         it("should setup registration callback on window", async () => {
