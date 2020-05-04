@@ -17,6 +17,8 @@ export type {
     GetHeaderCallback,
     RenderAPI,
     RenderResult,
+    ErrorResult,
+    CustomErrorHandlerFn,
 } from "./types.js";
 export type * from "./environments/index.js";
 
