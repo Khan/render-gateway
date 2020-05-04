@@ -47,7 +47,7 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
 
   const requestURL = typeof req.query.url === "string" ? req.query.url : "";
   /**
-   * Before we return the basic 500 error, let's give our configuration
+   * Before we return the basic 500 error, let's give our configuration a
    * chance to make a nicer error page.
    */
 
@@ -55,22 +55,29 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
     const overriddenResponse = errorHandler === null || errorHandler === void 0 ? void 0 : errorHandler(requestURL, req.headers, simplifiedError);
 
     if (overriddenResponse != null) {
+      const {
+        body,
+        headers
+      } = overriddenResponse;
       logger.error(`${overallProblem}; custom error response generated`, _objectSpread({}, simplifiedError, {
         requestURL
       }));
-      res.send(overriddenResponse);
+      res.send(body);
+      res.header(headers);
       return;
     }
-  } catch (e2) {
+  } catch (customHandlerError) {
     /**
      * Oh no, our configuration threw too!
      * Ouch. We should report this.
      */
-    const innerError = (0, _index.extractError)(e2);
+    const innerError = (0, _index.extractError)(customHandlerError);
     logger.error(`${overallProblem}; custom handler failed`, _objectSpread({}, innerError, {
       originalError: simplifiedError,
       requestURL
-    }));
+    })); // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
+    // for errors that reach this point.
+
     res.json(_objectSpread({}, innerError, {
       originalError: simplifiedError
     }));
@@ -84,7 +91,9 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
 
   logger.error(`${overallProblem}; uncaught error`, _objectSpread({}, simplifiedError, {
     requestURL
-  }));
+  })); // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
+  // for errors that reach this point.
+
   res.json(simplifiedError);
 };
 
