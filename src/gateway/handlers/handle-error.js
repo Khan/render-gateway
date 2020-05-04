@@ -42,7 +42,7 @@ export const handleError = (
     const requestURL = typeof req.query.url === "string" ? req.query.url : "";
 
     /**
-     * Before we return the basic 500 error, let's give our configuration
+     * Before we return the basic 500 error, let's give our configuration a
      * chance to make a nicer error page.
      */
     try {
@@ -52,24 +52,28 @@ export const handleError = (
             simplifiedError,
         );
         if (overriddenResponse != null) {
+            const {body, headers} = overriddenResponse;
             logger.error(`${overallProblem}; custom error response generated`, {
                 ...simplifiedError,
                 requestURL,
             });
-            res.send(overriddenResponse);
+            res.send(body);
+            res.header(headers);
             return;
         }
-    } catch (e2) {
+    } catch (customHandlerError) {
         /**
          * Oh no, our configuration threw too!
          * Ouch. We should report this.
          */
-        const innerError = extractError(e2);
+        const innerError = extractError(customHandlerError);
         logger.error(`${overallProblem}; custom handler failed`, {
             ...innerError,
             originalError: simplifiedError,
             requestURL,
         });
+        // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
+        // for errors that reach this point.
         res.json({
             ...innerError,
             originalError: simplifiedError,
@@ -85,5 +89,7 @@ export const handleError = (
         ...simplifiedError,
         requestURL,
     });
+    // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
+    // for errors that reach this point.
     res.json(simplifiedError);
 };

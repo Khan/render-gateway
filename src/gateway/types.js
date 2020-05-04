@@ -116,16 +116,31 @@ export interface GetTrackedHeadersCallback {
     (): $ReadOnly<{[header: string]: string, ...}>;
 }
 
+/**
+ * The result of an error handling operation.
+ */
+export type ErrorResult = {
+    /**
+     * The body of the response that is to be sent back from the gateway.
+     */
+    +body: string,
+
+    /**
+     * Headers to be attached to the response.
+     */
+    +headers: ResponseHeaders,
+};
+
 export interface CustomErrorHandlerFn {
     /**
      * Provide a response body for the given error.
      *
      * @param {string} url The URL that we were trying to render.
      * @param {SimplifiedError} error The error to be handled.
-     * @returns {?string} A string to return in the response or, `null` if the
-     * standard error is to be return.
+     * @returns {?ErrorResult} An error result to be returned for the error,
+     * or, `null` if the original error is to be given.
      */
-    (url: string, headers: any, error: SimplifiedError): ?string;
+    (url: string, headers: any, error: SimplifiedError): ?ErrorResult;
 }
 
 /**
@@ -152,9 +167,6 @@ export type RenderResult = {
 
     /**
      * Headers to be attached to the response.
-     *
-     * NOTE: If a Vary header is included in this list, it will result in an
-     * error as they Vary header is managed by the gateway.
      */
     +headers: ResponseHeaders,
 };

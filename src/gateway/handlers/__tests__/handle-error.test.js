@@ -375,7 +375,8 @@ describe("#handleError", () => {
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -387,9 +388,13 @@ describe("#handleError", () => {
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
             jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-            const customHandler = jest
-                .fn()
-                .mockReturnValue("My custom response");
+            const customHandler = jest.fn().mockReturnValue({
+                body: "My custom response",
+                headers: {
+                    "X-HEADER-1": "VALUE",
+                    "X-HEADER-2": "VALUE2",
+                },
+            });
 
             // Act
             handleError(
@@ -419,6 +424,7 @@ describe("#handleError", () => {
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
                 send: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -430,9 +436,13 @@ describe("#handleError", () => {
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
             jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-            const customHandler = jest
-                .fn()
-                .mockReturnValue("My custom response");
+            const customHandler = jest.fn().mockReturnValue({
+                body: "My custom response",
+                headers: {
+                    "X-HEADER-1": "VALUE",
+                    "X-HEADER-2": "VALUE2",
+                },
+            });
 
             // Act
             handleError(
@@ -447,6 +457,50 @@ describe("#handleError", () => {
             expect(fakeResponse.send).toHaveBeenCalledWith(
                 "My custom response",
             );
+        });
+
+        it("should send custom response headers in response", () => {
+            // Arrange
+            const fakeLogger: any = {
+                error: jest.fn(),
+            };
+            const fakeResponse: any = {
+                status: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {url: "THE URL"},
+                headers: {"X-HEADER": "VALUE"},
+            };
+            const simplifiedError: SimplifiedError = {
+                error: "ERROR",
+                stack: "STACK",
+            };
+            jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            const customHandler = jest.fn().mockReturnValue({
+                body: "My custom response",
+                headers: {
+                    "X-HEADER-1": "VALUE",
+                    "X-HEADER-2": "VALUE2",
+                },
+            });
+
+            // Act
+            handleError(
+                "TEST",
+                customHandler,
+                fakeRequest,
+                fakeResponse,
+                new Error("Error!"),
+            );
+
+            // Assert
+            expect(fakeResponse.header).toHaveBeenCalledWith({
+                "X-HEADER-1": "VALUE",
+                "X-HEADER-2": "VALUE2",
+            });
         });
     });
 });
