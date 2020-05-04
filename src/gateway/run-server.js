@@ -22,7 +22,12 @@ import {makeRenderHandler} from "./handlers/make-render-handler.js";
 export const runServer = async (
     options: RenderGatewayOptions,
 ): Promise<void> => {
-    const {authentication, renderEnvironment, ...remainingOptions} = options;
+    const {
+        authentication,
+        renderEnvironment,
+        uncaughtRenderErrorHandler,
+        ...remainingOptions
+    } = options;
     const {version} = getGatewayInfo();
 
     const app = express<Request, Response>()
@@ -42,7 +47,15 @@ export const runServer = async (
          * This is our render route. See the handler to learn how the magic
          * happens.
          */
-        .get("/render", asyncHandler(makeRenderHandler(renderEnvironment)));
+        .get(
+            "/render",
+            asyncHandler(
+                makeRenderHandler(
+                    renderEnvironment,
+                    uncaughtRenderErrorHandler,
+                ),
+            ),
+        );
 
     /**
      * Added this to support forwarding proxies in case we need it, per the

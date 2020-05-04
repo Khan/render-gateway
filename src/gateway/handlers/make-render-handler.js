@@ -1,7 +1,7 @@
 // @flow
 import type {Middleware} from "express";
-import {extractError} from "../../shared/index.js";
 import {getLogger, trace} from "../../ka-shared/index.js";
+import {handleError} from "./handle-error.js";
 import type {ITraceSession} from "../../shared/index.js";
 import type {
     Request,
@@ -9,6 +9,7 @@ import type {
     IRenderEnvironment,
     RenderAPI,
     GetTrackedHeadersCallback,
+    CustomErrorHandlerFn,
 } from "../types.js";
 
 /**
@@ -22,6 +23,7 @@ import type {
  */
 async function renderHandler(
     renderEnvironment: IRenderEnvironment,
+    errorHandler: ?CustomErrorHandlerFn,
     req: Request,
     res: Response,
 ): Promise<void> {
@@ -118,13 +120,7 @@ async function renderHandler(
         res.status(status);
         res.send(body);
     } catch (e) {
-        /**
-         * Something went wrong. Let's report it!
-         */
-        const error = extractError(e);
-
-        logger.error("Render failed", {...error, renderURL});
-        res.status(500).json(error);
+        handleError("Render failed", errorHandler, req, res, e);
     } finally {
         traceSession.end();
     }
@@ -142,7 +138,8 @@ async function renderHandler(
  */
 export const makeRenderHandler = (
     renderEnvironment: IRenderEnvironment,
+    errorHandler: ?CustomErrorHandlerFn,
 ): Middleware<Request, Response> => (
     req: Request,
     res: Response,
-): Promise<void> => renderHandler(renderEnvironment, req, res);
+): Promise<void> => renderHandler(renderEnvironment, errorHandler, req, res);

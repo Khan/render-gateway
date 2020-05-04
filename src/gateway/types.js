@@ -7,7 +7,12 @@ import type {
     Plugin,
     Response as SuperAgentResponse,
 } from "superagent";
-import type {RequestWithLog, ITraceSession, Logger} from "../shared/index.js";
+import type {
+    RequestWithLog,
+    ITraceSession,
+    Logger,
+    SimplifiedError,
+} from "../shared/index.js";
 
 /**
  * Used to track inflight requests.
@@ -111,6 +116,18 @@ export interface GetTrackedHeadersCallback {
     (): $ReadOnly<{[header: string]: string, ...}>;
 }
 
+export interface CustomErrorHandlerFn {
+    /**
+     * Provide a response body for the given error.
+     *
+     * @param {string} url The URL that we were trying to render.
+     * @param {SimplifiedError} error The error to be handled.
+     * @returns {?string} A string to return in the response or, `null` if the
+     * standard error is to be return.
+     */
+    (url: string, headers: any, error: SimplifiedError): ?string;
+}
+
 /**
  * Header names and their values for attaching to a response from the gateway.
  */
@@ -212,6 +229,14 @@ export type RenderGatewayOptions = {
      * The environment that will handle rendering.
      */
     +renderEnvironment: IRenderEnvironment,
+
+    /**
+     * Handler that will be invoked if a render request causes an exception.
+     *
+     * This provides the running server with an opportunity to override the
+     * default uncaught error response and provide a more friendly message.
+     */
+    +uncaughtRenderErrorHandler?: CustomErrorHandlerFn,
 };
 
 /**

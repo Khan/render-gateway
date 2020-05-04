@@ -1,10 +1,10 @@
 // @flow
-import * as Shared from "../../../shared/index.js";
 import * as KAShared from "../../../ka-shared/index.js";
+import * as HandleError from "../handle-error.js";
 import {makeRenderHandler} from "../make-render-handler.js";
 
-jest.mock("../../../shared/index.js");
 jest.mock("../../../ka-shared/index.js");
+jest.mock("../handle-error.js");
 
 describe("#makeRenderHandler", () => {
     it("should return a function", () => {
@@ -412,8 +412,8 @@ describe("#makeRenderHandler", () => {
                 });
             });
 
-            it.each([301, 302, 306, 307])(
-                "should set status to 500 if status was %s redirect but Location header is missing",
+            it.each([301, 302, 308, 307])(
+                "should error if status was %s redirect but Location header is missing",
                 async (redirectStatus) => {
                     // Arrange
                     const fakeResponse: any = {
@@ -449,64 +449,9 @@ describe("#makeRenderHandler", () => {
                     jest.spyOn(KAShared, "getLogger").mockReturnValue(
                         fakeLogger,
                     );
-                    const handler = makeRenderHandler(fakeRenderEnvironment);
-
-                    // Act
-                    /**
-                     * Middleware<Request, Response> can mean two different call
-                     * signatures, and sadly, they both have completely different
-                     * argument type ordering, which totally confused flow here.
-                     * $FlowIgnore
-                     */
-                    await handler(fakeRequest, fakeResponse);
-
-                    // Assert
-                    expect(fakeResponse.status).toHaveBeenCalledWith(500);
-                },
-            );
-
-            it.each([301, 302, 306, 307])(
-                "should return error message if status was %s redirect but Location header is missing",
-                async (redirectStatus) => {
-                    // Arrange
-                    const fakeResponse: any = {
-                        json: jest.fn().mockReturnThis(),
-                        status: jest.fn().mockReturnThis(),
-                        header: jest.fn().mockReturnThis(),
-                    };
-                    const fakeRequest: any = {
-                        query: {
-                            url: "THE_URL",
-                        },
-                    };
-                    const renderResult = {
-                        body: "BODY",
-                        status: redirectStatus,
-                        headers: {
-                            NAME1: "VALUE1",
-                            NAME2: "VALUE2",
-                        },
-                    };
-                    jest.spyOn(KAShared, "trace").mockReturnValue({
-                        end: jest.fn(),
-                        addLabel: jest.fn(),
-                    });
-                    const fakeRenderEnvironment: any = {
-                        render: jest
-                            .fn()
-                            .mockReturnValue(Promise.resolve(renderResult)),
-                    };
-                    const simplifiedError = {
-                        error: "EXTRACTED_ERROR",
-                    };
-                    jest.spyOn(Shared, "extractError").mockReturnValue(
-                        simplifiedError,
-                    );
-                    const fakeLogger = {
-                        error: jest.fn(),
-                    };
-                    jest.spyOn(KAShared, "getLogger").mockReturnValue(
-                        fakeLogger,
+                    const handleErrorSpy = jest.spyOn(
+                        HandleError,
+                        "handleError",
                     );
                     const handler = makeRenderHandler(fakeRenderEnvironment);
 
@@ -520,8 +465,15 @@ describe("#makeRenderHandler", () => {
                     await handler(fakeRequest, fakeResponse);
 
                     // Assert
-                    expect(fakeResponse.json).toHaveBeenCalledWith(
-                        simplifiedError,
+                    expect(handleErrorSpy).toHaveBeenCalledWith(
+                        "Render failed",
+                        undefined,
+                        fakeRequest,
+                        fakeResponse,
+                        expect.objectContaining({
+                            message:
+                                "Render resulted in redirection status without required Location header",
+                        }),
                     );
                 },
             );
@@ -609,174 +561,51 @@ describe("#makeRenderHandler", () => {
             });
         });
 
-        describe("when the render callback rejects", () => {
-            it("should use extractError to get a simplified error from rejection error", async () => {
-                // Arrange
-                const fakeResponse: any = {
-                    json: jest.fn().mockReturnThis(),
-                    status: jest.fn().mockReturnThis(),
-                    header: jest.fn().mockReturnThis(),
-                };
-                const fakeRequest: any = {
-                    query: {
-                        url: "THE_URL",
-                    },
-                };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
-                    end: jest.fn(),
-                    addLabel: jest.fn(),
-                });
-                const fakeRenderEnvironment: any = {
-                    render: jest.fn().mockReturnValue(Promise.reject("ERROR!")),
-                };
-                const fakeLogger = {
-                    error: jest.fn(),
-                };
-                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderEnvironment);
-                const extractErrorSpy = jest.spyOn(Shared, "extractError");
-
-                // Act
-                /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
-                 */
-                await handler(fakeRequest, fakeResponse);
-
-                // Assert
-                expect(extractErrorSpy).toHaveBeenCalledWith("ERROR!");
+        it("should defer to handleError when the render callback", async () => {
+            // Arrange
+            const fakeResponse: any = {
+                json: jest.fn().mockReturnThis(),
+                status: jest.fn().mockReturnThis(),
+                header: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {
+                    url: "THE_URL",
+                },
+            };
+            jest.spyOn(KAShared, "trace").mockReturnValue({
+                end: jest.fn(),
+                addLabel: jest.fn(),
             });
+            const fakeRenderEnvironment: any = {
+                render: jest
+                    .fn()
+                    .mockReturnValue(Promise.reject(new Error("ERROR!"))),
+            };
+            const fakeLogger = {
+                error: jest.fn(),
+            };
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            const handler = makeRenderHandler(fakeRenderEnvironment);
+            const handleErrorSpy = jest.spyOn(HandleError, "handleError");
 
-            it("should log an error including metadata for error and rendered URL", async () => {
-                // Arrange
-                const fakeResponse: any = {
-                    json: jest.fn().mockReturnThis(),
-                    status: jest.fn().mockReturnThis(),
-                    header: jest.fn().mockReturnThis(),
-                };
-                const fakeRequest: any = {
-                    query: {
-                        url: "THE_URL",
-                    },
-                };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
-                    end: jest.fn(),
-                    addLabel: jest.fn(),
-                });
-                const fakeRenderEnvironment: any = {
-                    render: jest.fn().mockReturnValue(Promise.reject()),
-                };
-                const simplifiedError = {
-                    error: "EXTRACTED_ERROR",
-                };
-                jest.spyOn(Shared, "extractError").mockReturnValue(
-                    simplifiedError,
-                );
-                const fakeLogger = {
-                    error: jest.fn(),
-                };
-                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderEnvironment);
+            // Act
+            /**
+             * Middleware<Request, Response> can mean two different call
+             * signatures, and sadly, they both have completely different
+             * argument type ordering, which totally confused flow here.
+             * $FlowIgnore
+             */
+            await handler(fakeRequest, fakeResponse);
 
-                // Act
-                /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
-                 */
-                await handler(fakeRequest, fakeResponse);
-
-                // Assert
-                expect(fakeLogger.error).toHaveBeenCalledWith("Render failed", {
-                    ...simplifiedError,
-                    renderURL: "THE_URL",
-                });
-            });
-
-            it("should set the response status to 500", async () => {
-                // Arrange
-                const fakeResponse: any = {
-                    json: jest.fn().mockReturnThis(),
-                    status: jest.fn().mockReturnThis(),
-                    header: jest.fn().mockReturnThis(),
-                };
-                const fakeRequest: any = {
-                    query: {
-                        url: "THE_URL",
-                    },
-                };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
-                    end: jest.fn(),
-                    addLabel: jest.fn(),
-                });
-                const fakeRenderEnvironment: any = {
-                    render: jest.fn().mockReturnValue(Promise.reject()),
-                };
-                const fakeLogger = {
-                    error: jest.fn(),
-                };
-                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderEnvironment);
-
-                // Act
-                /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
-                 */
-                await handler(fakeRequest, fakeResponse);
-
-                // Assert
-                expect(fakeResponse.status).toHaveBeenCalledWith(500);
-            });
-
-            it("should send the error in the response", async () => {
-                // Arrange
-                const fakeResponse: any = {
-                    json: jest.fn().mockReturnThis(),
-                    status: jest.fn().mockReturnThis(),
-                    header: jest.fn().mockReturnThis(),
-                };
-                const fakeRequest: any = {
-                    query: {
-                        url: "THE_URL",
-                    },
-                };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
-                    end: jest.fn(),
-                    addLabel: jest.fn(),
-                });
-                const fakeRenderEnvironment: any = {
-                    render: jest.fn().mockReturnValue(Promise.reject()),
-                };
-                const simplifiedError = {
-                    error: "EXTRACTED_ERROR",
-                };
-                jest.spyOn(Shared, "extractError").mockReturnValue(
-                    simplifiedError,
-                );
-                const fakeLogger = {
-                    error: jest.fn(),
-                };
-                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-                const handler = makeRenderHandler(fakeRenderEnvironment);
-
-                // Act
-                /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
-                 */
-                await handler(fakeRequest, fakeResponse);
-
-                // Assert
-                expect(fakeResponse.json).toHaveBeenCalledWith(simplifiedError);
-            });
+            // Assert
+            expect(handleErrorSpy).toHaveBeenCalledWith(
+                "Render failed",
+                undefined,
+                fakeRequest,
+                fakeResponse,
+                expect.objectContaining({message: "ERROR!"}),
+            );
         });
     });
 });
