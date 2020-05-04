@@ -57,7 +57,7 @@ const runServer = async options => {
    * This adds a check that requests below this point are coming from
    * a known source.
    */
-  .use(await (0, _makeCheckSecretMiddleware.makeCheckSecretMiddleware)(authentication))
+  .use((await (0, _makeCheckSecretMiddleware.makeCheckSecretMiddleware)(authentication)))
   /**
    * This is our render route. See the handler to learn how the magic
    * happens.

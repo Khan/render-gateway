@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 async function useAppEngineMiddleware(app, mode, logger) {
   return (0, _express.default)() // Add the request logging middleware.
-  .use(await (0, _makeRequestMiddleware.makeRequestMiddleware)(mode, logger)) // Add requestID middleware
+  .use((await (0, _makeRequestMiddleware.makeRequestMiddleware)(mode, logger))) // Add requestID middleware
   .use((0, _makeAppEngineRequestIdMiddleware.makeAppEngineRequestIDMiddleware)(logger)) // Add the app.
   .use(app) // Add the error logging middleware.
   .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger));
