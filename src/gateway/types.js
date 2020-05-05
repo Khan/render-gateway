@@ -7,7 +7,12 @@ import type {
     Plugin,
     Response as SuperAgentResponse,
 } from "superagent";
-import type {RequestWithLog, ITraceSession, Logger} from "../shared/index.js";
+import type {
+    RequestWithLog,
+    ITraceSession,
+    Logger,
+    SimplifiedError,
+} from "../shared/index.js";
 
 /**
  * Used to track inflight requests.
@@ -112,6 +117,33 @@ export interface GetTrackedHeadersCallback {
 }
 
 /**
+ * The result of an error handling operation.
+ */
+export type ErrorResult = {
+    /**
+     * The body of the response that is to be sent back from the gateway.
+     */
+    +body: string,
+
+    /**
+     * Headers to be attached to the response.
+     */
+    +headers: ResponseHeaders,
+};
+
+export interface CustomErrorHandlerFn {
+    /**
+     * Provide a response body for the given error.
+     *
+     * @param {string} url The URL that we were trying to render.
+     * @param {SimplifiedError} error The error to be handled.
+     * @returns {?ErrorResult} An error result to be returned for the error,
+     * or, `null` if the original error is to be given.
+     */
+    (url: string, headers: any, error: SimplifiedError): ?ErrorResult;
+}
+
+/**
  * Header names and their values for attaching to a response from the gateway.
  */
 export type ResponseHeaders = {
@@ -135,9 +167,6 @@ export type RenderResult = {
 
     /**
      * Headers to be attached to the response.
-     *
-     * NOTE: If a Vary header is included in this list, it will result in an
-     * error as they Vary header is managed by the gateway.
      */
     +headers: ResponseHeaders,
 };
@@ -212,6 +241,14 @@ export type RenderGatewayOptions = {
      * The environment that will handle rendering.
      */
     +renderEnvironment: IRenderEnvironment,
+
+    /**
+     * Handler that will be invoked if a render request causes an exception.
+     *
+     * This provides the running server with an opportunity to override the
+     * default uncaught error response and provide a more friendly message.
+     */
+    +uncaughtRenderErrorHandler?: CustomErrorHandlerFn,
 };
 
 /**

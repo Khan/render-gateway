@@ -39,9 +39,10 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 const runServer = async options => {
   const {
     authentication,
-    renderEnvironment
+    renderEnvironment,
+    uncaughtRenderErrorHandler
   } = options,
-        remainingOptions = _objectWithoutProperties(options, ["authentication", "renderEnvironment"]);
+        remainingOptions = _objectWithoutProperties(options, ["authentication", "renderEnvironment", "uncaughtRenderErrorHandler"]);
 
   const {
     version
@@ -61,7 +62,7 @@ const runServer = async options => {
    * This is our render route. See the handler to learn how the magic
    * happens.
    */
-  .get("/render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderEnvironment)));
+  .get("/render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderEnvironment, uncaughtRenderErrorHandler)));
   /**
    * Added this to support forwarding proxies in case we need it, per the
    * documentation:

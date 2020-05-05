@@ -17,6 +17,7 @@ export type {
     AmbiguousError,
     TraceSessionInfo,
     ITraceSession,
+    SimplifiedError,
 } from "./types.js";
 
 export {createLogger} from "./create-logger.js";
