@@ -126,7 +126,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
      */
 
 
-    const abortableFetch = (0, _request.request)(logger, url, _objectSpread({}, this._requestOptions, {
+    const abortableFetch = (0, _request.request)(logger, url, _objectSpread(_objectSpread({}, this._requestOptions), {}, {
       agent: (0, _index.getAgentForURL)(new _url.URL(url))
     }));
     const handleInactive = abortableFetch.then(response => {
