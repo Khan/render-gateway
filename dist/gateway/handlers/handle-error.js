@@ -59,7 +59,7 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
         body,
         headers
       } = overriddenResponse;
-      logger.error(`${overallProblem}; custom error response generated`, _objectSpread({}, simplifiedError, {
+      logger.error(`${overallProblem}; custom error response generated`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
         requestURL
       }));
       res.send(body);
@@ -72,13 +72,13 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
      * Ouch. We should report this.
      */
     const innerError = (0, _index.extractError)(customHandlerError);
-    logger.error(`${overallProblem}; custom handler failed`, _objectSpread({}, innerError, {
+    logger.error(`${overallProblem}; custom handler failed`, _objectSpread(_objectSpread({}, innerError), {}, {
       originalError: simplifiedError,
       requestURL
     })); // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
     // for errors that reach this point.
 
-    res.json(_objectSpread({}, innerError, {
+    res.json(_objectSpread(_objectSpread({}, innerError), {}, {
       originalError: simplifiedError
     }));
     return;
@@ -89,7 +89,7 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
    */
 
 
-  logger.error(`${overallProblem}; uncaught error`, _objectSpread({}, simplifiedError, {
+  logger.error(`${overallProblem}; uncaught error`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
     requestURL
   })); // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
   // for errors that reach this point.

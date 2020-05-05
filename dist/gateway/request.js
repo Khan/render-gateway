@@ -58,7 +58,7 @@ const DefaultRequestOptions = {
 exports.DefaultRequestOptions = DefaultRequestOptions;
 
 const request = (logger, url, options) => {
-  const optionsToUse = _objectSpread({}, DefaultRequestOptions, {}, options);
+  const optionsToUse = _objectSpread(_objectSpread({}, DefaultRequestOptions), options);
   /**
    * Something may have already started this request. If it is already
    * "in flight", let's use it rather than making a whole new one.
