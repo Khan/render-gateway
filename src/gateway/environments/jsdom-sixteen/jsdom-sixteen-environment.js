@@ -15,10 +15,7 @@ interface RenderCallbackFn {
     /**
      * Method invoked to create a render result.
      */
-    (
-        getHeader: $PropertyType<RenderAPI, "getHeader">,
-        trace: $PropertyType<RenderAPI, "trace">,
-    ): Promise<RenderResult>;
+    (): Promise<RenderResult>;
 }
 
 /**
@@ -239,23 +236,11 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
             }
 
             /**
-             * We are finally ready. Before we can invoke the render, we need
-             * to make sure our render API pieces are made available to the
-             * render callback, so we attach them in the vm context.
-             */
-            const renderAPIName = "__renderAPI";
-            (vmContext: any)[registrationCallbackName][renderAPIName] = {
-                trace: renderAPI.trace,
-                getHeader: renderAPI.getHeader,
-            };
-            /**
-             * And now we run the registered callback inside the VM, passing
-             * the render API pieces we just provided.
+             * And now we run the registered callback inside the VM.
              */
             const result: RenderResult = await runScript(`
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
-    const {trace, getHeader} = window["${registrationCallbackName}"]["${renderAPIName}"];
-    cb(getHeader, trace);`);
+    cb();`);
 
             /**
              * Let's make sure that the rendered function returned something
