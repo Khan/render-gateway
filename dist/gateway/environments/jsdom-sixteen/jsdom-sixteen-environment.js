@@ -189,26 +189,13 @@ class JSDOMSixteenEnvironment {
           throw new Error("No render callback was registered.");
         }
         /**
-         * We are finally ready. Before we can invoke the render, we need
-         * to make sure our render API pieces are made available to the
-         * render callback, so we attach them in the vm context.
+         * And now we run the registered callback inside the VM.
          */
 
-
-        const renderAPIName = "__renderAPI";
-        vmContext[registrationCallbackName][renderAPIName] = {
-          trace: renderAPI.trace,
-          getHeader: renderAPI.getHeader
-        };
-        /**
-         * And now we run the registered callback inside the VM, passing
-         * the render API pieces we just provided.
-         */
 
         const result = await runScript(`
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
-    const {trace, getHeader} = window["${registrationCallbackName}"]["${renderAPIName}"];
-    cb(getHeader, trace);`);
+    cb();`);
         /**
          * Let's make sure that the rendered function returned something
          * resembling a render result.
