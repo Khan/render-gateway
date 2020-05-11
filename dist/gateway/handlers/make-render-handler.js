@@ -18,7 +18,7 @@ var _handleError = require("./handle-error.js");
  *
  * This is expected to be wrapped with express-async-handler.
  */
-async function renderHandler(renderEnvironment, errorHandler, req, res) {
+async function renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res) {
   const logger = (0, _index.getLogger)(req);
   /**
    * We track header access and provide an API to find out which headers were
@@ -118,7 +118,7 @@ async function renderHandler(renderEnvironment, errorHandler, req, res) {
     res.status(status);
     res.send(body);
   } catch (e) {
-    (0, _handleError.handleError)("Render failed", errorHandler, req, res, e);
+    (0, _handleError.handleError)("Render failed", errorHandler, defaultErrorResponse, req, res, e);
   } finally {
     traceSession.end();
   }
@@ -135,7 +135,7 @@ async function renderHandler(renderEnvironment, errorHandler, req, res) {
  */
 
 
-const makeRenderHandler = (renderEnvironment, errorHandler) => (req, res) => renderHandler(renderEnvironment, errorHandler, req, res);
+const makeRenderHandler = (renderEnvironment, errorHandler, defaultErrorResponse) => (req, res) => renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res);
 
 exports.makeRenderHandler = makeRenderHandler;
 //# sourceMappingURL=make-render-handler.js.map

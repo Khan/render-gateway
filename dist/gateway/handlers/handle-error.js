@@ -9,6 +9,8 @@ var _index = require("../../shared/index.js");
 
 var _index2 = require("../../ka-shared/index.js");
 
+var _formatError = require("../format-error.js");
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -28,7 +30,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * error is reported.
  * @param {AmbiguousError} error The error that is to be handled.
  */
-const handleError = (overallProblem, errorHandler, req, res, error) => {
+const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, res, error) => {
   const logger = (0, _index2.getLogger)(req);
   /**
    * Something went wrong. Let's report it!
@@ -75,12 +77,10 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
     logger.error(`${overallProblem}; custom handler failed`, _objectSpread(_objectSpread({}, innerError), {}, {
       originalError: simplifiedError,
       requestURL
-    })); // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
-    // for errors that reach this point.
-
-    res.json(_objectSpread(_objectSpread({}, innerError), {}, {
-      originalError: simplifiedError
     }));
+    res.send((0, _formatError.formatError)(defaultErrorResponse, _objectSpread(_objectSpread({}, innerError), {}, {
+      originalError: simplifiedError
+    })));
     return;
   }
   /**
@@ -91,10 +91,8 @@ const handleError = (overallProblem, errorHandler, req, res, error) => {
 
   logger.error(`${overallProblem}; uncaught error`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
     requestURL
-  })); // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
-  // for errors that reach this point.
-
-  res.json(simplifiedError);
+  }));
+  res.send((0, _formatError.formatError)(defaultErrorResponse, simplifiedError));
 };
 
 exports.handleError = handleError;
