@@ -1,6 +1,7 @@
 // @flow
 import {extractError} from "../../shared/index.js";
 import {getLogger} from "../../ka-shared/index.js";
+import {formatError} from "../format-error.js";
 import type {AmbiguousError} from "../../shared/index.js";
 import type {Request, Response, CustomErrorHandlerFn} from "../types.js";
 
@@ -20,6 +21,7 @@ import type {Request, Response, CustomErrorHandlerFn} from "../types.js";
 export const handleError = (
     overallProblem: string,
     errorHandler: ?CustomErrorHandlerFn,
+    defaultErrorResponse: ?string,
     req: Request,
     res: Response,
     error: AmbiguousError,
@@ -72,12 +74,12 @@ export const handleError = (
             originalError: simplifiedError,
             requestURL,
         });
-        // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
-        // for errors that reach this point.
-        res.json({
-            ...innerError,
-            originalError: simplifiedError,
-        });
+        res.send(
+            formatError(defaultErrorResponse, {
+                ...innerError,
+                originalError: simplifiedError,
+            }),
+        );
         return;
     }
 
@@ -89,7 +91,5 @@ export const handleError = (
         ...simplifiedError,
         requestURL,
     });
-    // TODO(somewhatabstract, WEB-2085): Part two is to add a nicer format
-    // for errors that reach this point.
-    res.json(simplifiedError);
+    res.send(formatError(defaultErrorResponse, simplifiedError));
 };
