@@ -26,6 +26,7 @@ export const runServer = async (
         authentication,
         renderEnvironment,
         uncaughtRenderErrorHandler,
+        defaultRenderErrorResponse,
         ...remainingOptions
     } = options;
     const {version} = getGatewayInfo();
@@ -53,6 +54,7 @@ export const runServer = async (
                 makeRenderHandler(
                     renderEnvironment,
                     uncaughtRenderErrorHandler,
+                    defaultRenderErrorResponse,
                 ),
             ),
         );

@@ -1,12 +1,14 @@
 // @flow
 import * as Shared from "../../../shared/index.js";
 import * as KAShared from "../../../ka-shared/index.js";
+import * as FormatError from "../../format-error.js";
 import {handleError} from "../handle-error.js";
 
 import type {SimplifiedError} from "../../../shared/index.js";
 
 jest.mock("../../../shared/index.js");
 jest.mock("../../../ka-shared/index.js");
+jest.mock("../../format-error.js");
 
 describe("#handleError", () => {
     it("should set the response status to 500", () => {
@@ -16,7 +18,7 @@ describe("#handleError", () => {
         };
         const fakeResponse: any = {
             status: jest.fn().mockReturnThis(),
-            json: jest.fn().mockReturnThis(),
+            send: jest.fn().mockReturnThis(),
         };
         const fakeRequest: any = {
             query: {url: "THE URL"},
@@ -26,6 +28,7 @@ describe("#handleError", () => {
         // Act
         handleError(
             "Test",
+            undefined,
             undefined,
             fakeRequest,
             fakeResponse,
@@ -44,7 +47,7 @@ describe("#handleError", () => {
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -59,6 +62,7 @@ describe("#handleError", () => {
             // Act
             handleError(
                 "My test error",
+                undefined,
                 undefined,
                 fakeRequest,
                 fakeResponse,
@@ -76,14 +80,14 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send JSON response with simplified error", () => {
+        it("should format the simplified error", () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -94,10 +98,14 @@ describe("#handleError", () => {
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
             jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            const formatErrorSpy = jest
+                .spyOn(FormatError, "formatError")
+                .mockReturnValue("FORMATTED ERROR");
 
             // Act
             handleError(
                 "My test error",
+                undefined,
                 undefined,
                 fakeRequest,
                 fakeResponse,
@@ -105,7 +113,46 @@ describe("#handleError", () => {
             );
 
             // Assert
-            expect(fakeResponse.json).toHaveBeenCalledWith(simplifiedError);
+            expect(formatErrorSpy).toHaveBeenCalledWith(
+                undefined,
+                simplifiedError,
+            );
+        });
+
+        it("should send the formatted response", () => {
+            // Arrange
+            const fakeLogger: any = {
+                error: jest.fn(),
+            };
+            const fakeResponse: any = {
+                status: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {url: "THE URL"},
+            };
+            const simplifiedError: SimplifiedError = {
+                error: "ERROR",
+                stack: "STACK",
+            };
+            jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(FormatError, "formatError").mockReturnValue(
+                "FORMATTED ERROR",
+            );
+
+            // Act
+            handleError(
+                "My test error",
+                undefined,
+                undefined,
+                fakeRequest,
+                fakeResponse,
+                new Error("Error!"),
+            );
+
+            // Assert
+            expect(fakeResponse.send).toHaveBeenCalledWith("FORMATTED ERROR");
         });
     });
 
@@ -117,7 +164,7 @@ describe("#handleError", () => {
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -135,6 +182,7 @@ describe("#handleError", () => {
             handleError(
                 "My test error",
                 customHandler,
+                undefined,
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
@@ -157,7 +205,7 @@ describe("#handleError", () => {
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -175,6 +223,7 @@ describe("#handleError", () => {
             handleError(
                 "My test error",
                 customHandler,
+                undefined,
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
@@ -191,18 +240,17 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send JSON response with simplified error", () => {
+        it("should format the simplified error", () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
-                headers: {"X-HEADER": "VALUE"},
             };
             const simplifiedError: SimplifiedError = {
                 error: "ERROR",
@@ -211,18 +259,62 @@ describe("#handleError", () => {
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
             jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue(null);
+            const formatErrorSpy = jest
+                .spyOn(FormatError, "formatError")
+                .mockReturnValue("FORMATTED ERROR");
 
             // Act
             handleError(
                 "My test error",
                 customHandler,
+                "FORMAT_RESPONSE",
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
             );
 
             // Assert
-            expect(fakeResponse.json).toHaveBeenCalledWith(simplifiedError);
+            expect(formatErrorSpy).toHaveBeenCalledWith(
+                "FORMAT_RESPONSE",
+                simplifiedError,
+            );
+        });
+
+        it("should send the formatted response", () => {
+            // Arrange
+            const fakeLogger: any = {
+                error: jest.fn(),
+            };
+            const fakeResponse: any = {
+                status: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {url: "THE URL"},
+            };
+            const simplifiedError: SimplifiedError = {
+                error: "ERROR",
+                stack: "STACK",
+            };
+            jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(FormatError, "formatError").mockReturnValue(
+                "FORMATTED ERROR",
+            );
+            const customHandler = jest.fn().mockReturnValue(null);
+
+            // Act
+            handleError(
+                "My test error",
+                customHandler,
+                "FORMAT_RESPONSE",
+                fakeRequest,
+                fakeResponse,
+                new Error("Error!"),
+            );
+
+            // Assert
+            expect(fakeResponse.send).toHaveBeenCalledWith("FORMATTED ERROR");
         });
     });
 
@@ -234,7 +326,7 @@ describe("#handleError", () => {
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -255,6 +347,7 @@ describe("#handleError", () => {
                 handleError(
                     "My test error",
                     customHandler,
+                    undefined,
                     fakeRequest,
                     fakeResponse,
                     new Error("Error!"),
@@ -271,7 +364,7 @@ describe("#handleError", () => {
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
@@ -297,6 +390,7 @@ describe("#handleError", () => {
             handleError(
                 "My test error",
                 customHandler,
+                undefined,
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
@@ -317,18 +411,17 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send JSON response with errors", () => {
+        it("should format the original and handler errors", () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
             };
             const fakeResponse: any = {
                 status: jest.fn().mockReturnThis(),
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
             };
             const fakeRequest: any = {
                 query: {url: "THE URL"},
-                headers: {"X-HEADER": "VALUE"},
             };
             const originalError: SimplifiedError = {
                 error: "ERROR",
@@ -345,18 +438,22 @@ describe("#handleError", () => {
             const customHandler = jest.fn().mockImplementation(() => {
                 throw new Error("CUSTOM HANDLER BOOM!");
             });
+            const formatErrorSpy = jest
+                .spyOn(FormatError, "formatError")
+                .mockReturnValue("FORMATTED ERROR");
 
             // Act
             handleError(
                 "My test error",
                 customHandler,
+                "FORMAT_RESPONSE",
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
             );
 
             // Assert
-            expect(fakeResponse.json).toHaveBeenCalledWith({
+            expect(formatErrorSpy).toHaveBeenCalledWith("FORMAT_RESPONSE", {
                 error: "INNER ERROR",
                 stack: "INNER STACK",
                 originalError: {
@@ -364,6 +461,51 @@ describe("#handleError", () => {
                     stack: "STACK",
                 },
             });
+        });
+
+        it("should send the formatted response", () => {
+            // Arrange
+            const fakeLogger: any = {
+                error: jest.fn(),
+            };
+            const fakeResponse: any = {
+                status: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
+            };
+            const fakeRequest: any = {
+                query: {url: "THE URL"},
+            };
+            const originalError: SimplifiedError = {
+                error: "ERROR",
+                stack: "STACK",
+            };
+            const handlerError: SimplifiedError = {
+                error: "INNER ERROR",
+                stack: "INNER STACK",
+            };
+            jest.spyOn(Shared, "extractError")
+                .mockReturnValueOnce(originalError)
+                .mockReturnValueOnce(handlerError);
+            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(FormatError, "formatError").mockReturnValue(
+                "FORMATTED ERROR",
+            );
+            const customHandler = jest.fn().mockImplementation(() => {
+                throw new Error("CUSTOM HANDLER BOOM!");
+            });
+
+            // Act
+            handleError(
+                "My test error",
+                customHandler,
+                "FORMAT_RESPONSE",
+                fakeRequest,
+                fakeResponse,
+                new Error("Error!"),
+            );
+
+            // Assert
+            expect(fakeResponse.send).toHaveBeenCalledWith("FORMATTED ERROR");
         });
     });
 
@@ -400,6 +542,7 @@ describe("#handleError", () => {
             handleError(
                 "TEST",
                 customHandler,
+                undefined,
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
@@ -448,6 +591,7 @@ describe("#handleError", () => {
             handleError(
                 "TEST",
                 customHandler,
+                undefined,
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),
@@ -491,6 +635,7 @@ describe("#handleError", () => {
             handleError(
                 "TEST",
                 customHandler,
+                undefined,
                 fakeRequest,
                 fakeResponse,
                 new Error("Error!"),

@@ -417,7 +417,7 @@ describe("#makeRenderHandler", () => {
                 async (redirectStatus) => {
                     // Arrange
                     const fakeResponse: any = {
-                        json: jest.fn().mockReturnThis(),
+                        send: jest.fn().mockReturnThis(),
                         status: jest.fn().mockReturnThis(),
                         header: jest.fn().mockReturnThis(),
                     };
@@ -453,7 +453,12 @@ describe("#makeRenderHandler", () => {
                         HandleError,
                         "handleError",
                     );
-                    const handler = makeRenderHandler(fakeRenderEnvironment);
+                    const customErrorHandler = jest.fn();
+                    const handler = makeRenderHandler(
+                        fakeRenderEnvironment,
+                        customErrorHandler,
+                        "ERROR_RESPONSE",
+                    );
 
                     // Act
                     /**
@@ -467,7 +472,8 @@ describe("#makeRenderHandler", () => {
                     // Assert
                     expect(handleErrorSpy).toHaveBeenCalledWith(
                         "Render failed",
-                        undefined,
+                        customErrorHandler,
+                        "ERROR_RESPONSE",
                         fakeRequest,
                         fakeResponse,
                         expect.objectContaining({
@@ -564,7 +570,7 @@ describe("#makeRenderHandler", () => {
         it("should defer to handleError when the render callback", async () => {
             // Arrange
             const fakeResponse: any = {
-                json: jest.fn().mockReturnThis(),
+                send: jest.fn().mockReturnThis(),
                 status: jest.fn().mockReturnThis(),
                 header: jest.fn().mockReturnThis(),
             };
@@ -585,8 +591,13 @@ describe("#makeRenderHandler", () => {
             const fakeLogger = {
                 error: jest.fn(),
             };
+            const customErrorHandler = jest.fn();
             jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-            const handler = makeRenderHandler(fakeRenderEnvironment);
+            const handler = makeRenderHandler(
+                fakeRenderEnvironment,
+                customErrorHandler,
+                "ERROR_RESPONSE",
+            );
             const handleErrorSpy = jest.spyOn(HandleError, "handleError");
 
             // Act
@@ -601,7 +612,8 @@ describe("#makeRenderHandler", () => {
             // Assert
             expect(handleErrorSpy).toHaveBeenCalledWith(
                 "Render failed",
-                undefined,
+                customErrorHandler,
+                "ERROR_RESPONSE",
                 fakeRequest,
                 fakeResponse,
                 expect.objectContaining({message: "ERROR!"}),
