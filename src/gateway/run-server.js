@@ -49,7 +49,7 @@ export const runServer = async (
          * happens.
          */
         .get(
-            "/render",
+            "/_render",
             asyncHandler(
                 makeRenderHandler(
                     renderEnvironment,
