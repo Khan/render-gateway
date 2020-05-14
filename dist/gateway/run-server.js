@@ -63,7 +63,7 @@ const runServer = async options => {
    * This is our render route. See the handler to learn how the magic
    * happens.
    */
-  .get("/render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderEnvironment, uncaughtRenderErrorHandler, defaultRenderErrorResponse)));
+  .get("/_render", (0, _expressAsyncHandler.default)((0, _makeRenderHandler.makeRenderHandler)(renderEnvironment, uncaughtRenderErrorHandler, defaultRenderErrorResponse)));
   /**
    * Added this to support forwarding proxies in case we need it, per the
    * documentation:

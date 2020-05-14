@@ -149,7 +149,7 @@ describe("#runServer", () => {
 
         // Assert
         expect(pretendApp.get).toHaveBeenCalledWith(
-            "/render",
+            "/_render",
             "ASYNC_HANDLER:RENDER_HANDLER",
         );
     });
