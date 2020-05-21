@@ -307,6 +307,7 @@ describe("#makeRenderHandler", () => {
                         HEADER1: "HEADER_VALUE1",
                         HEADER2: "HEADER_VALUE2",
                         HEADER3: "HEADER_VALUE3",
+                        HEADER4: undefined,
                     });
                 });
             });
