@@ -35,14 +35,13 @@ async function renderHandler(
      * accessed. This allows service implementations and their rendering code
      * to properly generate a Vary header or work out what data a page should
      * embed so that they can implement effective caching and hydration
-     * strategies.
+     * strategies. We must mark all headers as being tracked, even those that
+     * don't exist, as their non-existence is also important for Varying on.
      */
     const trackedHeaders = {};
     const trackHeaderLookup = (name: string): ?string => {
         const headerValue = req.header(name);
-        if (headerValue != null) {
-            trackedHeaders[name] = headerValue;
-        }
+        trackedHeaders[name] = headerValue;
         return headerValue;
     };
     const getTrackedHeaders: GetTrackedHeadersCallback = () =>
