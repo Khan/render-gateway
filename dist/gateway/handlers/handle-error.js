@@ -64,8 +64,8 @@ const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, re
       logger.error(`${overallProblem}; custom error response generated`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
         requestURL
       }));
-      res.send(body);
       res.header(headers);
+      res.send(body);
       return;
     }
   } catch (customHandlerError) {
