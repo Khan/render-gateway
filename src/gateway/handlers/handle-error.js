@@ -59,8 +59,8 @@ export const handleError = (
                 ...simplifiedError,
                 requestURL,
             });
-            res.send(body);
             res.header(headers);
+            res.send(body);
             return;
         }
     } catch (customHandlerError) {
