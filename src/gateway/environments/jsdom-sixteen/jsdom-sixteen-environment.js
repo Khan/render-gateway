@@ -54,7 +54,11 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         this._configuration = configuration;
     }
 
-    _retrieveTargetFiles = async (
+    _retrieveTargetFiles: (
+        url: string,
+        renderAPI: RenderAPI,
+        resourceLoader: CloseableResourceLoader,
+    ) => Promise<Array<JavaScriptFile>> = async (
         url: string,
         renderAPI: RenderAPI,
         resourceLoader: CloseableResourceLoader,
@@ -118,7 +122,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
      * returned by the gateway service as the response to the render request.
      * This includes the body of the response and the status code information.
      */
-    render = async (
+    render: (
+        url: string,
+        renderAPI: RenderAPI,
+    ) => Promise<RenderResult> = async (
         url: string,
         renderAPI: RenderAPI,
     ): Promise<RenderResult> => {
