@@ -145,6 +145,11 @@ export type GatewayOptions = {
     +port: number,
 
     /**
+     * The hostname to which the gateway should bind.
+     */
+    +host: string,
+
+    /**
      * The logger to use for logging.
      */
     +logger: Logger,
