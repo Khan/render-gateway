@@ -10,6 +10,7 @@ import {
     makeCommonServiceRouter,
 } from "../ka-shared/index.js";
 import {makeCheckSecretMiddleware} from "./middleware/make-check-secret-middleware.js";
+import {logRequestInfoMiddleware} from "./middleware/log-request-info-middleware.js";
 import {makeRenderHandler} from "./handlers/make-render-handler.js";
 
 /**
@@ -44,6 +45,12 @@ export const runServer = async (
          * a known source.
          */
         .use(await makeCheckSecretMiddleware(authentication))
+        /**
+         * After the secret check, we log info about the request. Since this
+         * is logging, it MUST go after the secret check or we might leak a
+         * secret, and we don't want that.
+         */
+        .use(logRequestInfoMiddleware)
         /**
          * This is our render route. See the handler to learn how the magic
          * happens.
