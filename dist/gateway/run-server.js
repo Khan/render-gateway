@@ -15,6 +15,8 @@ var _index2 = require("../ka-shared/index.js");
 
 var _makeCheckSecretMiddleware = require("./middleware/make-check-secret-middleware.js");
 
+var _logRequestInfoMiddleware = require("./middleware/log-request-info-middleware.js");
+
 var _makeRenderHandler = require("./handlers/make-render-handler.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -59,6 +61,12 @@ const runServer = async options => {
    * a known source.
    */
   .use(await (0, _makeCheckSecretMiddleware.makeCheckSecretMiddleware)(authentication))
+  /**
+   * After the secret check, we log info about the request. Since this
+   * is logging, it MUST go after the secret check or we might leak a
+   * secret, and we don't want that.
+   */
+  .use(_logRequestInfoMiddleware.logRequestInfoMiddleware)
   /**
    * This is our render route. See the handler to learn how the magic
    * happens.
