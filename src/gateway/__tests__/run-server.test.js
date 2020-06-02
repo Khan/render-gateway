@@ -5,6 +5,7 @@ import * as KAShared from "../../ka-shared/index.js";
 import * as Shared from "../../shared/index.js";
 import * as MakeRenderHandler from "../handlers/make-render-handler.js";
 import * as MakeCheckSecretMiddleware from "../middleware/make-check-secret-middleware.js";
+import * as LogRequestInfoMiddleware from "../middleware/log-request-info-middleware.js";
 
 import {runServer} from "../run-server.js";
 
@@ -14,6 +15,7 @@ jest.mock("../../ka-shared/index.js");
 jest.mock("../../shared/index.js");
 jest.mock("../handlers/make-render-handler.js");
 jest.mock("../middleware/make-check-secret-middleware.js");
+jest.mock("../middleware/log-request-info-middleware.js");
 
 describe("#runServer", () => {
     it("should create an express app", async () => {
@@ -111,6 +113,42 @@ describe("#runServer", () => {
         // Assert
         expect(makeCheckSecretMiddlewareSpy).toHaveBeenCalledWith(
             pretendAuthOptions,
+        );
+    });
+
+    it("should add log request info middleware after secret middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const fakeRenderEnvironment: any = {
+            render: jest.fn(),
+        };
+        const pretendAuthOptions = ({}: any);
+        jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
+        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
+        const pretendApp = ({
+            use: jest.fn().mockReturnThis(),
+            get: jest.fn().mockReturnThis(),
+            set: jest.fn(),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(pretendApp);
+        const logRequestInfoMiddlewareSpy = jest.spyOn(
+            LogRequestInfoMiddleware,
+            "logRequestInfoMiddleware",
+        );
+
+        // Act
+        await runServer({
+            name: "MY_TEST",
+            port: 42,
+            host: "127.0.0.1",
+            renderEnvironment: fakeRenderEnvironment,
+            authentication: pretendAuthOptions,
+        });
+
+        // Assert
+        expect(pretendApp.use).toHaveBeenLastCalledWith(
+            logRequestInfoMiddlewareSpy,
         );
     });
 
