@@ -141,6 +141,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
+            host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
             authentication: pretendAuthOptions,
         });
