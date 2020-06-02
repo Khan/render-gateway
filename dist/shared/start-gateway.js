@@ -18,6 +18,7 @@ var _setupStackdriver = require("./setup-stackdriver.js");
 async function startGateway(options, app) {
   const {
     logger,
+    host,
     port,
     name,
     mode,
@@ -45,7 +46,7 @@ async function startGateway(options, app) {
    * callback. Feels a bit nasty, but it works.
    */
 
-  const gateway = appWithMiddleware.listen(port, err => {
+  const gateway = appWithMiddleware.listen(port, host, err => {
     if (gateway == null || err != null) {
       logger.error(`${name} appears not to have started: ${err && err.message || "Unknown error"}`);
       return;

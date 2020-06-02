@@ -14,7 +14,7 @@ export async function startGateway<
     TReq: RequestWithLog<$Request>,
     TRes: $Response,
 >(options: GatewayOptions, app: $Application<TReq, TRes>): Promise<void> {
-    const {logger, port, name, mode, keepAliveTimeout} = options;
+    const {logger, host, port, name, mode, keepAliveTimeout} = options;
 
     /**
      * Make sure GAE_SERVICE has a value.
@@ -42,7 +42,7 @@ export async function startGateway<
      * We need the variable so we can reference it inside the error handling
      * callback. Feels a bit nasty, but it works.
      */
-    const gateway = appWithMiddleware.listen(port, (err: ?Error) => {
+    const gateway = appWithMiddleware.listen(port, host, (err: ?Error) => {
         if (gateway == null || err != null) {
             logger.error(
                 `${name} appears not to have started: ${
