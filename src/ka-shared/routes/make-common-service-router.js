@@ -10,7 +10,7 @@ import type {$Request, $Response} from "express";
  */
 export const makeCommonServiceRouter = <Req: $Request, Res: $Response>(
     version: string,
-) =>
+): express$Router<Req, Res> =>
     new Router<Req, Res>()
         .get("/_api/ping", (req: Req, res: Res) => {
             res.send("pong\n");
