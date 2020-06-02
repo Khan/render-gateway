@@ -25,6 +25,8 @@ emoji=true
 exact_by_default=true
 module.use_strict=true
 esproposal.optional_chaining=enable
+well_formed_exports=true
+types_first=true
 
 # $FlowFixMe
 # This suppression hould be used to suppress an issue that requires additional
