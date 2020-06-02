@@ -16,6 +16,7 @@ describe("#start-gateway", () => {
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
+            host: "127.0.0.1",
             logger: createLogger("test", "debug"),
             mode: "test",
         };
@@ -40,6 +41,7 @@ describe("#start-gateway", () => {
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
+            host: "127.0.0.1",
             logger: createLogger("test", "debug"),
             mode: "test",
         };
@@ -63,6 +65,7 @@ describe("#start-gateway", () => {
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
+            host: "127.0.0.1",
             logger: createLogger("test", "debug"),
             mode: "test",
         };
@@ -89,6 +92,7 @@ describe("#start-gateway", () => {
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
+            host: "127.0.0.1",
             logger: createLogger("test", "debug"),
             mode: "test",
         };
@@ -115,6 +119,7 @@ describe("#start-gateway", () => {
         const options = {
             name: "TEST_GATEWAY",
             port: 42,
+            host: "127.0.0.1",
             logger: createLogger("test", "debug"),
             mode: "test",
         };
@@ -132,6 +137,7 @@ describe("#start-gateway", () => {
         // Assert
         expect(pretendApp.listen).toHaveBeenCalledWith(
             42,
+            "127.0.0.1",
             expect.any(Function),
         );
     });
@@ -142,6 +148,7 @@ describe("#start-gateway", () => {
             const options = {
                 name: "TEST_GATEWAY",
                 port: 42,
+                host: "127.0.0.1",
                 logger: createLogger("test", "debug"),
                 mode: "test",
             };
@@ -155,7 +162,7 @@ describe("#start-gateway", () => {
             ).mockReturnValue(Promise.resolve(pretendApp));
             await startGateway(options, pretendApp);
             const errorSpy = jest.spyOn(options.logger, "error");
-            const listenCallback = listenMock.mock.calls[0][1];
+            const listenCallback = listenMock.mock.calls[0][2];
 
             // Act
             listenCallback();
@@ -171,6 +178,7 @@ describe("#start-gateway", () => {
             const options = {
                 name: "TEST_GATEWAY",
                 port: 42,
+                host: "127.0.0.1",
                 logger: createLogger("test", "debug"),
                 mode: "test",
             };
@@ -184,7 +192,7 @@ describe("#start-gateway", () => {
             ).mockReturnValue(Promise.resolve(pretendApp));
             await startGateway(options, pretendApp);
             const errorSpy = jest.spyOn(options.logger, "error");
-            const listenCallback = listenMock.mock.calls[0][1];
+            const listenCallback = listenMock.mock.calls[0][2];
 
             // Act
             listenCallback(new Error("BOOM 🧨"));
@@ -202,6 +210,7 @@ describe("#start-gateway", () => {
                 const options = {
                     name: "TEST_GATEWAY",
                     port: 42,
+                    host: "127.0.0.1",
                     logger: createLogger("test", "debug"),
                     mode: "test",
                 };
@@ -218,7 +227,7 @@ describe("#start-gateway", () => {
                 ).mockReturnValue(Promise.resolve(pretendApp));
                 await startGateway(options, pretendApp);
                 const warnSpy = jest.spyOn(options.logger, "warn");
-                const listenCallback = listenMock.mock.calls[0][1];
+                const listenCallback = listenMock.mock.calls[0][2];
 
                 // Act
                 listenCallback();
@@ -235,6 +244,7 @@ describe("#start-gateway", () => {
             const options = {
                 name: "TEST_GATEWAY",
                 port: 42,
+                host: "127.0.0.1",
                 logger: createLogger("test", "debug"),
                 mode: "test",
             };
@@ -254,7 +264,7 @@ describe("#start-gateway", () => {
             ).mockReturnValue(Promise.resolve(pretendApp));
             await startGateway(options, pretendApp);
             const infoSpy = jest.spyOn(options.logger, "info");
-            const listenCallback = listenMock.mock.calls[0][1];
+            const listenCallback = listenMock.mock.calls[0][2];
 
             // Act
             listenCallback();

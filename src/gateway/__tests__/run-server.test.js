@@ -40,6 +40,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
+            host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
         });
 
@@ -71,6 +72,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
+            host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
         });
 
@@ -103,6 +105,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
+            host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
             authentication: pretendAuthOptions,
         });
@@ -181,6 +184,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
+            host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
         });
 
@@ -210,6 +214,7 @@ describe("#runServer", () => {
         await runServer({
             name: "MY_TEST",
             port: 42,
+            host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
         });
 
@@ -218,6 +223,7 @@ describe("#runServer", () => {
             {
                 name: "MY_TEST",
                 port: 42,
+                host: "127.0.0.1",
                 logger: pretendLogger,
                 mode: "test",
             },

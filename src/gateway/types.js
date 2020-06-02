@@ -219,6 +219,11 @@ export type RenderGatewayOptions = {
     +port: number,
 
     /**
+     * The hostname to which the gateway service should bind.
+     */
+    +host: string,
+
+    /**
      * Optional value in milliseconds for keepalive timeout of the server.
      * For running in Google Cloud, this should be higher than the load
      * balancer's own keepalive timeout value, which at time of writing was
