@@ -9,6 +9,20 @@ var _index = require("../../ka-shared/index.js");
 
 var _getSecrets = require("../get-secrets.js");
 
+const redactSecretHeader = (req, headerName) => {
+  /**
+   * We delete the header because we don't want it getting logged.
+   */
+  delete req.headers[headerName.toLowerCase()];
+  /**
+   * Let's make sure that secret is gone.
+   */
+
+  if (req.header(headerName) != null) {
+    throw new Error("Secret header could not be redacted!");
+  }
+};
+
 async function makeProductionMiddleware(options) {
   /**
    * We look up the secret when the middleware is created. That means
@@ -39,7 +53,7 @@ async function makeProductionMiddleware(options) {
      * delete it - headers are all lowercase in the express object.
      */
 
-    delete req.headers[options.headerName.toLowerCase()];
+    redactSecretHeader(req, headerName);
 
     if (requestSecret !== secret) {
       res.status(401).send({
@@ -74,7 +88,7 @@ function makeDevelopmentMiddleware(options) {
         /**
          * We delete the header because we don't want it getting logged.
          */
-        delete req.headers[options.headerName];
+        redactSecretHeader(req, options.headerName);
         logger.debug("Authentication header present but ignored in current runtime mode", {
           header: options.headerName
         });
