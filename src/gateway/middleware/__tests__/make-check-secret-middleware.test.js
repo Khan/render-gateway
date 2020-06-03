@@ -170,7 +170,7 @@ describe("#makeCheckSecretMiddleware", () => {
             result(fakeRequest, null, fakeNext);
 
             // Assert
-            expect(fakeRequest.headers).not.toHaveProperty("SECRET_HEADER");
+            expect(fakeRequest.headers).not.toHaveProperty("secret_header");
         });
 
         it("should throw if header deletion failed", async () => {
@@ -324,7 +324,45 @@ describe("#makeCheckSecretMiddleware", () => {
 
                     // Assert
                     expect(fakeRequest.headers).not.toHaveProperty(
-                        "HEADER_NAME",
+                        "header_name",
+                    );
+                });
+
+                it("should throw if header deletion failed", async () => {
+                    // Arrange
+                    const headers = {
+                        HEADER_NAME: "SECRET_VALUE",
+                    };
+                    const fakeRequest = {
+                        header: (name: string) =>
+                            /**
+                             * We look up without using toLowerCase to mimic finding
+                             * a header value both before and after deletion. This is
+                             * to check that the right exception gets thrown when a
+                             * deletion fails. This was added to catch if our code
+                             * tries to delete a header using the wrong casing, which
+                             * was a bug prior to this change.
+                             */
+                            headers[name],
+                        headers,
+                    };
+                    const fakeNext = jest.fn();
+                    const authenticationOptions = {
+                        cryptoKeyPath: "CRYPTO_KEY_PATH",
+                        secretKey: "SECRET_KEY",
+                        headerName: "HEADER_NAME",
+                    };
+                    const middleware: Function = await makeCheckSecretMiddleware(
+                        authenticationOptions,
+                    );
+
+                    // Act
+                    const underTest = () =>
+                        middleware(fakeRequest, null, fakeNext);
+
+                    // Assert
+                    expect(underTest).toThrowErrorMatchingInlineSnapshot(
+                        `"Secret header could not be redacted!"`,
                     );
                 });
             });
@@ -393,6 +431,76 @@ describe("#makeCheckSecretMiddleware", () => {
                     expect(
                         fakeResponse.send.mock.calls[0][0].error,
                     ).toMatchInlineSnapshot(`"Missing or invalid secret"`);
+                });
+
+                it("should delete the auth header", async () => {
+                    // Arrange
+                    const headers = {
+                        header_name: "WRONG_SECRET_VALUE",
+                    };
+                    const fakeRequest = {
+                        header: (name: string) => headers[name.toLowerCase()],
+                        headers,
+                    };
+                    const fakeResponse = {
+                        status: jest.fn().mockReturnThis(),
+                        send: jest.fn().mockReturnThis(),
+                    };
+                    const fakeNext = jest.fn();
+                    const authenticationOptions = {
+                        cryptoKeyPath: "CRYPTO_KEY_PATH",
+                        secretKey: "SECRET_KEY",
+                        headerName: "HEADER_NAME",
+                    };
+                    const middleware: Function = await makeCheckSecretMiddleware(
+                        authenticationOptions,
+                    );
+
+                    // Act
+                    middleware(fakeRequest, fakeResponse, fakeNext);
+
+                    // Assert
+                    expect(fakeRequest.headers).not.toHaveProperty(
+                        "header_name",
+                    );
+                });
+
+                it("should throw if header deletion failed", async () => {
+                    // Arrange
+                    const headers = {
+                        HEADER_NAME: "WRONG_SECRET_VALUE",
+                    };
+                    const fakeRequest = {
+                        header: (name: string) =>
+                            /**
+                             * We look up without using toLowerCase to mimic finding
+                             * a header value both before and after deletion. This is
+                             * to check that the right exception gets thrown when a
+                             * deletion fails. This was added to catch if our code
+                             * tries to delete a header using the wrong casing, which
+                             * was a bug prior to this change.
+                             */
+                            headers[name],
+                        headers,
+                    };
+                    const fakeNext = jest.fn();
+                    const authenticationOptions = {
+                        cryptoKeyPath: "CRYPTO_KEY_PATH",
+                        secretKey: "SECRET_KEY",
+                        headerName: "HEADER_NAME",
+                    };
+                    const middleware: Function = await makeCheckSecretMiddleware(
+                        authenticationOptions,
+                    );
+
+                    // Act
+                    const underTest = () =>
+                        middleware(fakeRequest, null, fakeNext);
+
+                    // Assert
+                    expect(underTest).toThrowErrorMatchingInlineSnapshot(
+                        `"Secret header could not be redacted!"`,
+                    );
                 });
             });
 
