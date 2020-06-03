@@ -5,6 +5,19 @@ import {getSecrets} from "../get-secrets.js";
 
 import type {AuthenticationOptions, Request} from "../types.js";
 
+const redactSecretHeader = <Req: Request>(req: Req, headerName: string) => {
+    /**
+     * We delete the header because we don't want it getting logged.
+     */
+    delete req.headers[headerName.toLowerCase()];
+    /**
+     * Let's make sure that secret is gone.
+     */
+    if (req.header(headerName) != null) {
+        throw new Error("Secret header could not be redacted!");
+    }
+};
+
 async function makeProductionMiddleware<Req: Request, Res: $Response>(
     options: AuthenticationOptions,
 ): Promise<Middleware<Req, Res>> {
@@ -26,10 +39,12 @@ async function makeProductionMiddleware<Req: Request, Res: $Response>(
 
     return function (req: Req, res: Res, next: NextFunction): void {
         const requestSecret = req.header(headerName);
+
         /**
          * We delete the header because we don't want it getting logged.
          */
-        delete req.headers[options.headerName];
+        redactSecretHeader(req, headerName);
+
         if (requestSecret !== secret) {
             res.status(401).send({error: "Missing or invalid secret"});
             return;
@@ -69,7 +84,8 @@ function makeDevelopmentMiddleware<Req: Request, Res: $Response>(
                 /**
                  * We delete the header because we don't want it getting logged.
                  */
-                delete req.headers[options.headerName];
+                redactSecretHeader(req, options.headerName);
+
                 logger.debug(
                     "Authentication header present but ignored in current runtime mode",
                     {
