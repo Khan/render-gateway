@@ -10,6 +10,10 @@ jest.mock("../create-virtual-console.js");
 jest.mock("../patch-against-dangling-timers.js");
 
 describe("JSDOMSixteenEnvironment", () => {
+    beforeEach(() => {
+        jest.useRealTimers();
+    });
+
     describe("#constructor", () => {
         it("should throw if configuration is not provided", () => {
             // Arrange

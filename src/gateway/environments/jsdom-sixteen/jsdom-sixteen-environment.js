@@ -146,16 +146,24 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
          * into a handy list and providing a way to close them all.
          */
         const closeables: Array<ICloseable> = [];
-        const closeAll = () => {
-            /**
-             * We want to close things in reverse, just to be sure we tidy up
-             * in the same order that we put things together.
-             */
-            for (let i = closeables.length - 1; i >= 0; i--) {
-                // eslint-disable-next-line flowtype/no-unused-expressions
-                closeables[i]?.close?.();
-            }
-        };
+        const closeAll = () =>
+            new Promise((resolve) => {
+                /**
+                 * We wrap this in a timeout to hopefully mitigate any changes
+                 * of https://github.com/jsdom/jsdom/issues/1682
+                 */
+                setTimeout(() => {
+                    /**
+                     * We want to close things in reverse, just to be sure we
+                     * tidy up in the same order that we put things together.
+                     */
+                    for (let i = closeables.length - 1; i >= 0; i--) {
+                        // eslint-disable-next-line flowtype/no-unused-expressions
+                        closeables[i]?.close?.();
+                    }
+                    resolve();
+                });
+            });
 
         try {
             /**
@@ -296,7 +304,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * We need to make sure that whatever happens, we tidy everything
              * up.
              */
-            closeAll();
+            await closeAll();
         }
     };
 }
