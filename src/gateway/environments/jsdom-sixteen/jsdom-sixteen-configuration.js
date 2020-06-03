@@ -68,6 +68,6 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
         this.registrationCallbackName = registrationCallbackName;
         this.getFileList = getFileList;
         this.getResourceLoader = getResourceLoader;
-        this.afterEnvSetup = afterEnvSetup || (() => null);
+        this.afterEnvSetup = afterEnvSetup || (() => Promise.resolve(null));
     }
 }

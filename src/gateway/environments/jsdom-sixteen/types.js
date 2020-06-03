@@ -108,5 +108,5 @@ export interface IJSDOMSixteenConfiguration {
         fileURLs: $ReadOnlyArray<string>,
         renderAPI: RenderAPI,
         vmContext: any,
-    ): ?Promise<void>;
+    ): Promise<?ICloseable>;
 }

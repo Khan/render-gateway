@@ -147,9 +147,13 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
          */
         const closeables: Array<ICloseable> = [];
         const closeAll = () => {
-            for (const closeable of closeables) {
+            /**
+             * We want to close things in reverse, just to be sure we tidy up
+             * in the same order that we put things together.
+             */
+            for (let i = closeables.length - 1; i >= 0; i--) {
                 // eslint-disable-next-line flowtype/no-unused-expressions
-                closeable?.close?.();
+                closeables[i]?.close?.();
             }
         };
 
@@ -217,14 +221,16 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
 
             /**
              * At this point, we give our configuration an opportunity to
-             * modify the render context.
+             * modify the render context and capture the return result, which
+             * can be used to tidy up after we're done.
              */
-            await this._configuration.afterEnvSetup(
+            const afterRenderTidyUp = await this._configuration.afterEnvSetup(
                 url,
                 files.urls,
                 renderAPI,
                 vmContext,
             );
+            closeables.push(afterRenderTidyUp);
 
             /**
              * At this point, before loading the files for rendering, we must
