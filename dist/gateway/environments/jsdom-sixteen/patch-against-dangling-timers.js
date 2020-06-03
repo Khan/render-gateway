@@ -6,16 +6,37 @@ Object.defineProperty(exports, "__esModule", {
 exports.patchAgainstDanglingTimers = void 0;
 
 /**
- * Patch the timer API to protect against dangling timers.
- *
- * @returns {IGate} A gate API to control when timers should be allowed to run
- * (gate is open), or when we should prevent them running and report dangling
- * timers (gate is closed).
+ * Make a gate that can be open and closed.
+ * Default open.
  */
-const patchAgainstDanglingTimers = objToPatch => {
-  let warned = false;
+const makeGate = () => {
+  let gateOpen = true;
+  return {
+    open: () => {
+      gateOpen = true;
+    },
+    close: () => {
+      gateOpen = false;
+    },
 
-  const patchCallbackFnWithGate = (obj, fnName, gate) => {
+    get isOpen() {
+      return gateOpen;
+    }
+
+  };
+};
+/**
+ * Return a function that patches timeout functions with shared warning.
+ *
+ * This returns a call that, when used to patch setTimeout, setInterval, etc.
+ * will only warn once if any of the patched functions invokes a callback
+ * after the given gate is closed.
+ */
+
+
+const makeSingleWarningPatchFn = () => {
+  let warned = false;
+  return (obj, fnName, gate) => {
     const old = obj[fnName];
     delete obj[fnName];
 
@@ -42,26 +63,30 @@ const patchAgainstDanglingTimers = objToPatch => {
       return old(gatedCallback, ...args);
     };
   };
+};
+/**
+ * Patch the timer API to protect against dangling timers.
+ *
+ * @returns {IGate} A gate API to control when timers should be allowed to run
+ * (gate is open), or when we should prevent them running and report dangling
+ * timers (gate is closed).
+ */
+
+
+const patchAgainstDanglingTimers = objToPatch => {
   /**
    * Make a gate so we can control how the timers are handled.
    * The gate is default open.
    */
+  const gate = makeGate();
+  /**
+   * Get a patch function with single warning.
+   * This ensures that each of the patched functions will only warn of
+   * dangling timers if none of the others have warned already.
+   * This keeps the log a little tidier and manageable.
+   */
 
-
-  let gateOpen = true;
-  const gate = {
-    open: () => {
-      gateOpen = true;
-    },
-    close: () => {
-      gateOpen = false;
-    },
-
-    get isOpen() {
-      return gateOpen;
-    }
-
-  };
+  const patchCallbackFnWithGate = makeSingleWarningPatchFn();
   /**
    * Patch the timer functions on window so that dangling timers don't kill
    * us when we close the window.
