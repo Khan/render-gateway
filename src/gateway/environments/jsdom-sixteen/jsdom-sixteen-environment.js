@@ -161,6 +161,11 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                         // eslint-disable-next-line flowtype/no-unused-expressions
                         closeables[i]?.close?.();
                     }
+                    /**
+                     * Let's clear the array to make sure we're not holding
+                     * on to any references unnecessarily.
+                     */
+                    closeables.length = 0;
                     resolve();
                 });
             });
