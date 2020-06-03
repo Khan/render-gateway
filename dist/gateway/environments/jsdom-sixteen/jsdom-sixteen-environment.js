@@ -86,18 +86,26 @@ class JSDOMSixteenEnvironment {
        */
       const closeables = [];
 
-      const closeAll = () => {
+      const closeAll = () => new Promise(resolve => {
         /**
-         * We want to close things in reverse, just to be sure we tidy up
-         * in the same order that we put things together.
+         * We wrap this in a timeout to hopefully mitigate any changes
+         * of https://github.com/jsdom/jsdom/issues/1682
          */
-        for (let i = closeables.length - 1; i >= 0; i--) {
-          var _closeables$i, _closeables$i$close;
+        setTimeout(() => {
+          /**
+           * We want to close things in reverse, just to be sure we
+           * tidy up in the same order that we put things together.
+           */
+          for (let i = closeables.length - 1; i >= 0; i--) {
+            var _closeables$i, _closeables$i$close;
 
-          // eslint-disable-next-line flowtype/no-unused-expressions
-          (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
-        }
-      };
+            // eslint-disable-next-line flowtype/no-unused-expressions
+            (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
+          }
+
+          resolve();
+        });
+      });
 
       try {
         /**
@@ -225,7 +233,7 @@ class JSDOMSixteenEnvironment {
          * We need to make sure that whatever happens, we tidy everything
          * up.
          */
-        closeAll();
+        await closeAll();
       }
     });
 
