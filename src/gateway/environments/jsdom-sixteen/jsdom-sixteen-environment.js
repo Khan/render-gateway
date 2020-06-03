@@ -25,12 +25,17 @@ type JavaScriptFile = {
     /**
      * The content of the file.
      */
-    content: string,
+    +content: string,
 
     /**
      * The URL of the file.
      */
-    url: string,
+    +url: string,
+};
+
+type JavaScriptFiles = {
+    +files: $ReadOnlyArray<JavaScriptFile>,
+    +urls: $ReadOnlyArray<string>,
 };
 
 const MinimalPage = "<!DOCTYPE html><html><head></head><body></body></html>";
@@ -58,11 +63,11 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         url: string,
         renderAPI: RenderAPI,
         resourceLoader: CloseableResourceLoader,
-    ) => Promise<Array<JavaScriptFile>> = async (
+    ) => Promise<JavaScriptFiles> = async (
         url: string,
         renderAPI: RenderAPI,
         resourceLoader: CloseableResourceLoader,
-    ): Promise<Array<JavaScriptFile>> => {
+    ): Promise<JavaScriptFiles> => {
         const traceSession = renderAPI.trace(
             "JSDOM16._retrieveTargetFiles",
             `JSDOMSixteenEnvironment retrieving files`,
@@ -74,37 +79,43 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * we can retrieve those files as well as support retrieving
              * additional files within our JSDOM environment.
              */
-            const files = await this._configuration.getFileList(url, renderAPI);
-            traceSession.addLabel("fileCount", files.length);
+            const fileURLs = await this._configuration.getFileList(
+                url,
+                renderAPI,
+            );
+            traceSession.addLabel("fileCount", fileURLs.length);
 
             /**
              * Now let's use the resource loader to get the files.
              * We ignore the `FetchOptions` param of resourceLoader.fetch as we
              * have nothing to pass there.
              */
-            return await Promise.all(
-                files.map((f) => {
-                    const fetchResult = resourceLoader.fetch(f);
-                    /**
-                     * Resource loader's fetch can return null. It shouldn't for
-                     * any of these files though, so if it does, let's raise an
-                     * error!
-                     */
-                    if (fetchResult == null) {
-                        throw new Error(
-                            `Unable to retrieve ${f}. ResourceLoader returned null.`,
-                        );
-                    }
-                    /**
-                     * No need to reconnect the abort() in this case since we
-                     * won't be calling it.
-                     */
-                    return fetchResult.then((b) => ({
-                        content: b.toString(),
-                        url: f,
-                    }));
-                }),
-            );
+            return {
+                files: await Promise.all(
+                    fileURLs.map((f) => {
+                        const fetchResult = resourceLoader.fetch(f);
+                        /**
+                         * Resource loader's fetch can return null. It shouldn't for
+                         * any of these files though, so if it does, let's raise an
+                         * error!
+                         */
+                        if (fetchResult == null) {
+                            throw new Error(
+                                `Unable to retrieve ${f}. ResourceLoader returned null.`,
+                            );
+                        }
+                        /**
+                         * No need to reconnect the abort() in this case since we
+                         * won't be calling it.
+                         */
+                        return fetchResult.then((b) => ({
+                            content: b.toString(),
+                            url: f,
+                        }));
+                    }),
+                ),
+                urls: fileURLs,
+            };
         } finally {
             traceSession.end();
         }
@@ -135,12 +146,29 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
          * into a handy list and providing a way to close them all.
          */
         const closeables: Array<ICloseable> = [];
-        const closeAll = () => {
-            for (const closeable of closeables) {
-                // eslint-disable-next-line flowtype/no-unused-expressions
-                closeable?.close?.();
-            }
-        };
+        const closeAll = () =>
+            new Promise((resolve) => {
+                /**
+                 * We wrap this in a timeout to hopefully mitigate any chances
+                 * of https://github.com/jsdom/jsdom/issues/1682
+                 */
+                setTimeout(() => {
+                    /**
+                     * We want to close things in reverse, just to be sure we
+                     * tidy up in the same order that we put things together.
+                     */
+                    for (let i = closeables.length - 1; i >= 0; i--) {
+                        // eslint-disable-next-line flowtype/no-unused-expressions
+                        closeables[i]?.close?.();
+                    }
+                    /**
+                     * Let's clear the array to make sure we're not holding
+                     * on to any references unnecessarily.
+                     */
+                    closeables.length = 0;
+                    resolve();
+                });
+            });
 
         try {
             /**
@@ -206,9 +234,16 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
 
             /**
              * At this point, we give our configuration an opportunity to
-             * modify the render context.
+             * modify the render context and capture the return result, which
+             * can be used to tidy up after we're done.
              */
-            await this._configuration.afterEnvSetup(url, renderAPI, vmContext);
+            const afterRenderTidyUp = await this._configuration.afterEnvSetup(
+                url,
+                files.urls,
+                renderAPI,
+                vmContext,
+            );
+            closeables.push(afterRenderTidyUp);
 
             /**
              * At this point, before loading the files for rendering, we must
@@ -227,7 +262,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * which should cause our registration callback to be invoked.
              * We pass the filename here so we can get some nicer stack traces.
              */
-            for (const {content, url} of files) {
+            for (const {content, url} of files.files) {
                 runScript(content, {filename: url});
             }
 
@@ -274,7 +309,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * We need to make sure that whatever happens, we tidy everything
              * up.
              */
-            closeAll();
+            await closeAll();
         }
     };
 }

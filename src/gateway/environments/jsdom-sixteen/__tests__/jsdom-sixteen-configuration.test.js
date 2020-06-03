@@ -99,11 +99,9 @@ describe("JSDOMSixteenConfiguration", () => {
     });
 
     describe("#afterEnvSetup", () => {
-        it("should invoke method passed at construction", () => {
+        it("should invoke method passed at construction", async () => {
             // Arrange
-            const fakeAfterEnvSetup = jest
-                .fn()
-                .mockReturnValue(("SETUP_OBJECT": any));
+            const fakeAfterEnvSetup = jest.fn().mockResolvedValue(null);
             const underTest = new JSDOMSixteenConfiguration(
                 jest.fn(),
                 jest.fn(),
@@ -112,17 +110,17 @@ describe("JSDOMSixteenConfiguration", () => {
             const fakeRenderAPI: any = "FAKE_RENDER_API";
 
             // Act
-            const result = underTest.afterEnvSetup("URL", fakeRenderAPI);
+            await underTest.afterEnvSetup("URL", ["A", "B"], fakeRenderAPI);
 
             // Assert
             expect(fakeAfterEnvSetup).toHaveBeenCalledWith(
                 "URL",
+                ["A", "B"],
                 fakeRenderAPI,
             );
-            expect(result).toBe("SETUP_OBJECT");
         });
 
-        it("should return null if no method passed at construction", () => {
+        it("should resolve to null if no method passed at construction", async () => {
             // Arrange
             const underTest = new JSDOMSixteenConfiguration(
                 jest.fn(),
@@ -131,7 +129,11 @@ describe("JSDOMSixteenConfiguration", () => {
             const fakeRenderAPI: any = "FAKE_RENDER_API";
 
             // Act
-            const result = underTest.afterEnvSetup("URL", fakeRenderAPI);
+            const result = await underTest.afterEnvSetup(
+                "URL",
+                ["A", "B"],
+                fakeRenderAPI,
+            );
 
             // Assert
             expect(result).toBeNull();

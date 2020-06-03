@@ -49,6 +49,8 @@ async function makeProductionMiddleware(options) {
     const requestSecret = req.header(headerName);
     /**
      * We delete the header because we don't want it getting logged.
+     * However, we need to be aware of the case to make sure we really do
+     * delete it - headers are all lowercase in the express object.
      */
 
     redactSecretHeader(req, headerName);

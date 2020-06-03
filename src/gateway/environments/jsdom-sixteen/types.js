@@ -105,7 +105,8 @@ export interface IJSDOMSixteenConfiguration {
      */
     afterEnvSetup(
         url: string,
+        fileURLs: $ReadOnlyArray<string>,
         renderAPI: RenderAPI,
         vmContext: any,
-    ): ?Promise<void>;
+    ): Promise<?ICloseable>;
 }
