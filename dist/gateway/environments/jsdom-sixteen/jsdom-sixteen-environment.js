@@ -40,36 +40,39 @@ class JSDOMSixteenEnvironment {
          * we can retrieve those files as well as support retrieving
          * additional files within our JSDOM environment.
          */
-        const files = await this._configuration.getFileList(url, renderAPI);
-        traceSession.addLabel("fileCount", files.length);
+        const fileURLs = await this._configuration.getFileList(url, renderAPI);
+        traceSession.addLabel("fileCount", fileURLs.length);
         /**
          * Now let's use the resource loader to get the files.
          * We ignore the `FetchOptions` param of resourceLoader.fetch as we
          * have nothing to pass there.
          */
 
-        return await Promise.all(files.map(f => {
-          const fetchResult = resourceLoader.fetch(f);
-          /**
-           * Resource loader's fetch can return null. It shouldn't for
-           * any of these files though, so if it does, let's raise an
-           * error!
-           */
+        return {
+          files: await Promise.all(fileURLs.map(f => {
+            const fetchResult = resourceLoader.fetch(f);
+            /**
+             * Resource loader's fetch can return null. It shouldn't for
+             * any of these files though, so if it does, let's raise an
+             * error!
+             */
 
-          if (fetchResult == null) {
-            throw new Error(`Unable to retrieve ${f}. ResourceLoader returned null.`);
-          }
-          /**
-           * No need to reconnect the abort() in this case since we
-           * won't be calling it.
-           */
+            if (fetchResult == null) {
+              throw new Error(`Unable to retrieve ${f}. ResourceLoader returned null.`);
+            }
+            /**
+             * No need to reconnect the abort() in this case since we
+             * won't be calling it.
+             */
 
 
-          return fetchResult.then(b => ({
-            content: b.toString(),
-            url: f
-          }));
-        }));
+            return fetchResult.then(b => ({
+              content: b.toString(),
+              url: f
+            }));
+          })),
+          urls: fileURLs
+        };
       } finally {
         traceSession.end();
       }
@@ -84,11 +87,15 @@ class JSDOMSixteenEnvironment {
       const closeables = [];
 
       const closeAll = () => {
-        for (const closeable of closeables) {
-          var _closeable$close;
+        /**
+         * We want to close things in reverse, just to be sure we tidy up
+         * in the same order that we put things together.
+         */
+        for (let i = closeables.length - 1; i >= 0; i--) {
+          var _closeables$i, _closeables$i$close;
 
           // eslint-disable-next-line flowtype/no-unused-expressions
-          closeable === null || closeable === void 0 ? void 0 : (_closeable$close = closeable.close) === null || _closeable$close === void 0 ? void 0 : _closeable$close.call(closeable);
+          (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
         }
       };
 
@@ -147,10 +154,12 @@ class JSDOMSixteenEnvironment {
         closeables.push(timerGateAPI);
         /**
          * At this point, we give our configuration an opportunity to
-         * modify the render context.
+         * modify the render context and capture the return result, which
+         * can be used to tidy up after we're done.
          */
 
-        await this._configuration.afterEnvSetup(url, renderAPI, vmContext);
+        const afterRenderTidyUp = await this._configuration.afterEnvSetup(url, files.urls, renderAPI, vmContext);
+        closeables.push(afterRenderTidyUp);
         /**
          * At this point, before loading the files for rendering, we must
          * configure the registration point in our render context.
@@ -174,7 +183,7 @@ class JSDOMSixteenEnvironment {
         for (const {
           content,
           url
-        } of files) {
+        } of files.files) {
           runScript(content, {
             filename: url
           });

@@ -60,7 +60,7 @@ class JSDOMSixteenConfiguration {
     this.getFileList = getFileList;
     this.getResourceLoader = getResourceLoader;
 
-    this.afterEnvSetup = afterEnvSetup || (() => null);
+    this.afterEnvSetup = afterEnvSetup || (() => Promise.resolve(null));
   }
 
 }
