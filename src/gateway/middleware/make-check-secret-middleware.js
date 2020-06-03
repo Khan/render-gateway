@@ -29,7 +29,14 @@ async function makeProductionMiddleware<Req: Request, Res: $Response>(
         /**
          * We delete the header because we don't want it getting logged.
          */
-        delete req.headers[options.headerName];
+        delete req.headers[options.headerName.toLowerCase()];
+        /**
+         * Let's make sure that secret is gone.
+         */
+        if (req.header(headerName) != null) {
+            throw new Error("Secret header could not be redacted!");
+        }
+
         if (requestSecret !== secret) {
             res.status(401).send({error: "Missing or invalid secret"});
             return;
@@ -69,7 +76,13 @@ function makeDevelopmentMiddleware<Req: Request, Res: $Response>(
                 /**
                  * We delete the header because we don't want it getting logged.
                  */
-                delete req.headers[options.headerName];
+                delete req.headers[options.headerName.toLowerCase()];
+                /**
+                 * Let's make sure that secret is gone.
+                 */
+                if (req.header(options.headerName) != null) {
+                    throw new Error("Secret header could not be redacted!");
+                }
                 logger.debug(
                     "Authentication header present but ignored in current runtime mode",
                     {
