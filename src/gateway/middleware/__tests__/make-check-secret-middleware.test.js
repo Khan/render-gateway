@@ -249,7 +249,7 @@ describe("#makeCheckSecretMiddleware", () => {
                     const fakeRequest = {
                         header: () => "SECRET_VALUE",
                         headers: {
-                            HEADER_NAME: "SECRET_VALUE",
+                            header_name: "SECRET_VALUE",
                         },
                     };
                     const fakeNext = jest.fn();
@@ -267,7 +267,7 @@ describe("#makeCheckSecretMiddleware", () => {
 
                     // Assert
                     expect(fakeRequest.headers).not.toHaveProperty(
-                        "HEADER_NAME",
+                        "header_name",
                     );
                 });
             });
