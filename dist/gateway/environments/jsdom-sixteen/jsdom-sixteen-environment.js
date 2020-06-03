@@ -88,7 +88,7 @@ class JSDOMSixteenEnvironment {
 
       const closeAll = () => new Promise(resolve => {
         /**
-         * We wrap this in a timeout to hopefully mitigate any changes
+         * We wrap this in a timeout to hopefully mitigate any chances
          * of https://github.com/jsdom/jsdom/issues/1682
          */
         setTimeout(() => {
