@@ -499,10 +499,12 @@ describe("JSDOMSixteenEnvironment", () => {
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
-            const fakeResourceLoader: any = {};
+            const fakeResourceLoader: any = {
+                fetch: jest.fn().mockResolvedValue(Buffer.from("CONTENT")),
+            };
             const fakeConfiguration = {
                 registrationCallbackName: "__register__",
-                getFileList: jest.fn().mockResolvedValue([]),
+                getFileList: jest.fn().mockResolvedValue(["A", "B", "C"]),
                 getResourceLoader: jest
                     .fn()
                     .mockReturnValue(fakeResourceLoader),
@@ -535,6 +537,7 @@ describe("JSDOMSixteenEnvironment", () => {
             // Assert
             expect(fakeConfiguration.afterEnvSetup).toHaveBeenCalledWith(
                 "URL",
+                ["A", "B", "C"],
                 fakeRenderAPI,
                 fakeJSDOM.window,
             );

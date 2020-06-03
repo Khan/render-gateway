@@ -112,11 +112,16 @@ describe("JSDOMSixteenConfiguration", () => {
             const fakeRenderAPI: any = "FAKE_RENDER_API";
 
             // Act
-            const result = underTest.afterEnvSetup("URL", fakeRenderAPI);
+            const result = underTest.afterEnvSetup(
+                "URL",
+                ["A", "B"],
+                fakeRenderAPI,
+            );
 
             // Assert
             expect(fakeAfterEnvSetup).toHaveBeenCalledWith(
                 "URL",
+                ["A", "B"],
                 fakeRenderAPI,
             );
             expect(result).toBe("SETUP_OBJECT");
@@ -131,7 +136,11 @@ describe("JSDOMSixteenConfiguration", () => {
             const fakeRenderAPI: any = "FAKE_RENDER_API";
 
             // Act
-            const result = underTest.afterEnvSetup("URL", fakeRenderAPI);
+            const result = underTest.afterEnvSetup(
+                "URL",
+                ["A", "B"],
+                fakeRenderAPI,
+            );
 
             // Assert
             expect(result).toBeNull();
