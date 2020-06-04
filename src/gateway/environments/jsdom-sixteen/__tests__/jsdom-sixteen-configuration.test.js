@@ -63,13 +63,22 @@ describe("JSDOMSixteenConfiguration", () => {
                 fakeGetFileList,
                 jest.fn(),
             );
+            const fakeFetchFn = jest.fn();
             const fakeRenderAPI: any = "FAKE_RENDER_API";
 
             // Act
-            const result = await underTest.getFileList("URL", fakeRenderAPI);
+            const result = await underTest.getFileList(
+                "URL",
+                fakeRenderAPI,
+                fakeFetchFn,
+            );
 
             // Assert
-            expect(fakeGetFileList).toHaveBeenCalledWith("URL", fakeRenderAPI);
+            expect(fakeGetFileList).toHaveBeenCalledWith(
+                "URL",
+                fakeRenderAPI,
+                fakeFetchFn,
+            );
             expect(result).toBe("FILE_LIST");
         });
     });
