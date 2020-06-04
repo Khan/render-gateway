@@ -77,10 +77,13 @@ describe("JSDOMSixteenEnvironment", () => {
                 getHeader: jest.fn(),
                 logger: fakeLogger,
             };
+            const fakeLoader: any = {
+                fetch: jest.fn(),
+            };
             const fakeConfiguration = {
                 registrationCallbackName: "__register__",
                 getFileList: jest.fn().mockResolvedValue([]),
-                getResourceLoader: jest.fn(),
+                getResourceLoader: jest.fn().mockReturnValue(fakeLoader),
                 afterEnvSetup: jest.fn(),
             };
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -98,6 +101,7 @@ describe("JSDOMSixteenEnvironment", () => {
             expect(fakeConfiguration.getFileList).toHaveBeenCalledWith(
                 "URL",
                 fakeRenderAPI,
+                fakeLoader.fetch,
             );
         });
 

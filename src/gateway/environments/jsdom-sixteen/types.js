@@ -54,6 +54,8 @@ export interface CloseableResourceLoader extends ResourceLoader, ICloseable {
     +close?: () => void;
 }
 
+type FetchFn = $PropertyType<CloseableResourceLoader, "fetch">;
+
 /**
  * Configuration for a JSDOM Sixteen environment.
  */
@@ -85,11 +87,18 @@ export interface IJSDOMSixteenConfiguration {
      * @param {string} url The URL that is to be rendered.
      * @param {RenderAPI} renderAPI An API of utilities for assisting with the
      * render operation.
+     * @param {(url: string, options?: jsdom$FetchOptions) => ?Promise<Buffer>} fetchFn
+     * Function to fetch a URL. Using this ensures proper tidy-up of associated
+     * sockets and agents.
      * @returns {Promise<Array<string>>} An ordered array of absolute URLs for
      * the JavaScript files that are to be executed. These are exectued in the
      * same order as the array.
      */
-    getFileList(url: string, renderAPI: RenderAPI): Promise<Array<string>>;
+    getFileList(
+        url: string,
+        renderAPI: RenderAPI,
+        fetchFn: FetchFn,
+    ): Promise<Array<string>>;
 
     /**
      * Perform any additional environment setup.
