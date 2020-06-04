@@ -55,6 +55,8 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
 
     _defineProperty(this, "_requestOptions", void 0);
 
+    _defineProperty(this, "_agents", void 0);
+
     if (renderAPI == null) {
       throw new Error("Must provide render API.");
     }
@@ -62,6 +64,14 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
     this._active = true;
     this._renderAPI = renderAPI;
     this._requestOptions = requestOptions;
+    this._agents = {};
+  }
+
+  _getAgent(url) {
+    const parsedURL = new _url.URL(url);
+    const agent = this._agents[parsedURL.protocol] || (0, _index.getAgentForURL)(parsedURL);
+    this._agents[parsedURL.protocol] = agent;
+    return agent;
   }
 
   get isActive() {
@@ -71,6 +81,18 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
   close() {
     this._active = false;
     (0, _request.abortInFlightRequests)();
+    /**
+     * We need to destroy any agents we created or they may retain
+     * sockets that retain references to our JSDOM environment and cause
+     * a memory leak.
+     */
+
+    for (const agent of Object.values(this._agents)) {
+      // $FlowIgnore We know that it's there.
+      agent.destroy();
+    }
+
+    this._agents = {};
   }
 
   fetch(url, options) {
@@ -127,7 +149,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
 
 
     const abortableFetch = (0, _request.request)(logger, url, _objectSpread(_objectSpread({}, this._requestOptions), {}, {
-      agent: (0, _index.getAgentForURL)(new _url.URL(url))
+      agent: this._getAgent(url)
     }));
     const handleInactive = abortableFetch.then(response => {
       if (!this._active) {
