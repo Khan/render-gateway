@@ -81,11 +81,10 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
          * sockets that retain references to our JSDOM environment and cause
          * a memory leak.
          */
-        for (const agent of Object.values(this._agents)) {
-            // $FlowIgnore We know that it's there.
-            agent.destroy();
+        for (const key of Object.keys(this._agents)) {
+            this._agents[key].destroy();
+            delete this._agents[key];
         }
-        this._agents = {};
     }
 
     fetch(url: string, options?: FetchOptions): ?Promise<Buffer> {

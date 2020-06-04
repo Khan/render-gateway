@@ -30,7 +30,7 @@ describe("#getAgentForURL", () => {
          */
     });
 
-    it("should create new HTTP agent for first HTTP url", () => {
+    it("should create new HTTP agent", () => {
         // Arrange
         const Http = require("http");
         const {getAgentForURL} = require("../get-agent-for-url.js");
@@ -60,24 +60,7 @@ describe("#getAgentForURL", () => {
         expect(underTest).not.toThrow();
     });
 
-    it("should return the same HTTP agent for subsequent HTTP urls", () => {
-        // Arrange
-        const {getAgentForURL} = require("../get-agent-for-url.js");
-        const Http = require("http");
-        const httpSpy = jest
-            .spyOn(Http, "Agent")
-            .mockReturnValue("FAKE_HTTP_AGENT");
-
-        // Act
-        const firstCall = getAgentForURL(new URL("http://www.example.com"));
-        const secondCall = getAgentForURL(new URL("http://www.test.com"));
-
-        // Assert
-        expect(httpSpy).toHaveBeenCalledTimes(1);
-        expect(firstCall).toBe(secondCall);
-    });
-
-    it("should create new HTTPS agent for first HTTPS url", () => {
+    it("should create new HTTPS agent", () => {
         // Arrange
         const Https = require("https");
         const {getAgentForURL} = require("../get-agent-for-url.js");
@@ -105,23 +88,6 @@ describe("#getAgentForURL", () => {
 
         // Assert
         expect(underTest).not.toThrow();
-    });
-
-    it("should return the same HTTP agent for subsequent HTTP urls", () => {
-        // Arrange
-        const {getAgentForURL} = require("../get-agent-for-url.js");
-        const Https = require("https");
-        const httpsSpy = jest
-            .spyOn(Https, "Agent")
-            .mockReturnValue("FAKE_HTTPS_AGENT");
-
-        // Act
-        const firstCall = getAgentForURL(new URL("https://www.example.com"));
-        const secondCall = getAgentForURL(new URL("https://www.test.com"));
-
-        // Assert
-        expect(httpsSpy).toHaveBeenCalledTimes(1);
-        expect(firstCall).toBe(secondCall);
     });
 
     it("should throw for a protocol other than HTTP or HTTPS", () => {

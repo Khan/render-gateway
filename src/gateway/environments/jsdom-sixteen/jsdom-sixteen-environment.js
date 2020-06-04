@@ -1,8 +1,10 @@
 // @flow
 import {Script} from "vm";
 import {JSDOM} from "jsdom";
+import {extractError} from "../../../shared/index.js";
 import {createVirtualConsole} from "./create-virtual-console.js";
 import {patchAgainstDanglingTimers} from "./patch-against-dangling-timers.js";
+import type {Logger} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
     CloseableResourceLoader,
@@ -121,6 +123,41 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         }
     };
 
+    _closeAll(closeables: Array<ICloseable>, logger: Logger): Promise<void> {
+        return new Promise((resolve) => {
+            /**
+             * We wrap this in a timeout to hopefully mitigate any chances
+             * of https://github.com/jsdom/jsdom/issues/1682
+             */
+            setTimeout(() => {
+                /**
+                 * We want to close things in reverse, just to be sure we
+                 * tidy up in the same order that we put things together.
+                 */
+                for (let i = closeables.length - 1; i >= 0; i--) {
+                    try {
+                        // eslint-disable-next-line flowtype/no-unused-expressions
+                        closeables[i]?.close?.();
+                    } catch (e) {
+                        const simplifiedError = extractError(e);
+                        logger.error(
+                            `Closeable encountered an error during resource loader close: ${simplifiedError.error}`,
+                            {
+                                ...simplifiedError,
+                            },
+                        );
+                    }
+                }
+                /**
+                 * Let's clear the array to make sure we're not holding
+                 * on to any references unnecessarily.
+                 */
+                closeables.length = 0;
+                resolve();
+            });
+        });
+    }
+
     /**
      * Generate a render result for the given url.
      *
@@ -146,30 +183,6 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
          * into a handy list and providing a way to close them all.
          */
         const closeables: Array<ICloseable> = [];
-        const closeAll = () =>
-            new Promise((resolve) => {
-                /**
-                 * We wrap this in a timeout to hopefully mitigate any chances
-                 * of https://github.com/jsdom/jsdom/issues/1682
-                 */
-                setTimeout(() => {
-                    /**
-                     * We want to close things in reverse, just to be sure we
-                     * tidy up in the same order that we put things together.
-                     */
-                    for (let i = closeables.length - 1; i >= 0; i--) {
-                        // eslint-disable-next-line flowtype/no-unused-expressions
-                        closeables[i]?.close?.();
-                    }
-                    /**
-                     * Let's clear the array to make sure we're not holding
-                     * on to any references unnecessarily.
-                     */
-                    closeables.length = 0;
-                    resolve();
-                });
-            });
-
         try {
             /**
              * We are going to need a resource loader so that we can obtain files
@@ -309,7 +322,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * We need to make sure that whatever happens, we tidy everything
              * up.
              */
-            await closeAll();
+            await this._closeAll(closeables, renderAPI.logger);
         }
     };
 }
