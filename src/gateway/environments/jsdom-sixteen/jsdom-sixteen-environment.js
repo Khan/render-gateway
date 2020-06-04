@@ -161,6 +161,15 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         });
     }
 
+    _runScript(
+        vmContext: vm$Context,
+        script: string,
+        options?: vm$ScriptOptions,
+    ): any {
+        const realScript = new Script(script, options);
+        return realScript.runInContext(vmContext);
+    }
+
     /**
      * Generate a render result for the given url.
      *
@@ -227,13 +236,6 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * empty object, which makes life annoying.
              */
             const vmContext: any = jsdomInstance.getInternalVMContext();
-            const runScript = (
-                script: string,
-                options?: vm$ScriptOptions,
-            ): any => {
-                const realScript = new Script(script, options);
-                return realScript.runInContext(vmContext);
-            };
 
             /**
              * Next, we want to patch timers so we can make sure they don't
@@ -244,7 +246,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              */
             const tmpFnName = "__tmp_patchTimers";
             vmContext[tmpFnName] = patchAgainstDanglingTimers;
-            const timerGateAPI: IGate = runScript(`${tmpFnName}(window);`);
+            const timerGateAPI: IGate = this._runScript(
+                vmContext,
+                `${tmpFnName}(window);`,
+            );
             delete vmContext[tmpFnName];
             closeables.push(timerGateAPI);
 
@@ -272,6 +277,11 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
             ): void => {
                 vmContext[registrationCallbackName][registeredCbName] = cb;
             };
+            closeables.push({
+                close: () => {
+                    delete vmContext[registrationCallbackName];
+                },
+            });
 
             /**
              * The context is configured. Now we need to load the files into it
@@ -279,7 +289,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * We pass the filename here so we can get some nicer stack traces.
              */
             for (const {content, url} of files.files) {
-                runScript(content, {filename: url});
+                this._runScript(vmContext, content, {filename: url});
             }
 
             /**
@@ -296,9 +306,12 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
             /**
              * And now we run the registered callback inside the VM.
              */
-            const result: RenderResult = await runScript(`
+            const result: RenderResult = await this._runScript(
+                vmContext,
+                `
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
-    cb();`);
+    cb();`,
+            );
 
             /**
              * Let's make sure that the rendered function returned something
