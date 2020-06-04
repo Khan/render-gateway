@@ -141,7 +141,9 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                     } catch (e) {
                         const simplifiedError = extractError(e);
                         logger.error(
-                            `Closeable encountered an error during resource loader close: ${simplifiedError.error}`,
+                            `Closeable encountered an error during resource loader close: ${
+                                simplifiedError.error || ""
+                            }`,
                             {
                                 ...simplifiedError,
                             },
