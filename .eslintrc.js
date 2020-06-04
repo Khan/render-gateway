@@ -45,4 +45,12 @@ module.exports = {
         "promise/no-new-statics": "error",
         "promise/no-return-in-finally": "error",
     },
+    overrides: [
+        {
+            files: ["**/__tests__/**/*.test.js"],
+            rules: {
+                "max-lines": "off",
+            },
+        },
+    ],
 };

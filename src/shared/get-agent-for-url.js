@@ -25,34 +25,25 @@ import type {Agent as HttpsAgent} from "https";
  * For now, we do this.
  */
 
-let httpAgent;
-let httpsAgent;
-
 /**
- * Get an agent to use for a given URL.
+ * Get a new agent to use for a given URL.
  *
- * For keep-alive behavior to work, the agent must be shared across requests.
- * Therefore, the returned agent (one per protocol - http or https) will be
- * the same on repeated requests.
- *
- * Agents are created on first request.
+ * For keep-alive behavior to work, the agent must be shared across requests
+ * but this is left for the calling code to manage. We do this because once the
+ * agent isn't needed (such as at the end of a request), we want to destroy it.
+ * Otherwise, it can hang around keeping sockets open which can lead to
+ * retaining large chunks of memory and creating memory leaks.
  */
 export const getAgentForURL = (url: URL): HttpAgent | HttpsAgent => {
     const agentOptions = {keepAlive: true};
     switch (url.protocol) {
         case "http:":
-            if (httpAgent == null) {
-                const http = require("http");
-                httpAgent = new http.Agent(agentOptions);
-            }
-            return httpAgent;
+            const http = require("http");
+            return new http.Agent(agentOptions);
 
         case "https:":
-            if (httpsAgent == null) {
-                const https = require("https");
-                httpsAgent = new https.Agent(agentOptions);
-            }
-            return httpsAgent;
+            const https = require("https");
+            return new https.Agent(agentOptions);
 
         default:
             throw new Error(`Unsupported protocol: ${url.protocol}`);

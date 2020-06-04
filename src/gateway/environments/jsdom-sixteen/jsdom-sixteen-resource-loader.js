@@ -1,8 +1,9 @@
 // @flow
 import {URL} from "url";
+import type {Agent as HttpAgent} from "http";
+import type {Agent as HttpsAgent} from "https";
 import {ResourceLoader} from "jsdom";
 import type {FetchOptions} from "jsdom";
-import type {RequestOptions, RenderAPI} from "../../types.js";
 import {getAgentForURL} from "../../../shared/index.js";
 import {
     DefaultRequestOptions,
@@ -10,6 +11,8 @@ import {
     abortInFlightRequests,
 } from "../../request.js";
 import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
+
+import type {RequestOptions, RenderAPI} from "../../types.js";
 
 /**
  * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
@@ -26,6 +29,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
     _active: boolean;
     _renderAPI: RenderAPI;
     _requestOptions: RequestOptions;
+    _agents: {[protocol: string]: HttpAgent | HttpsAgent};
 
     static get EMPTY_RESPONSE(): Promise<Buffer> {
         return Promise.resolve(Buffer.from(""));
@@ -53,6 +57,15 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
         this._active = true;
         this._renderAPI = renderAPI;
         this._requestOptions = requestOptions;
+        this._agents = {};
+    }
+
+    _getAgent(url: string): HttpAgent | HttpsAgent {
+        const parsedURL = new URL(url);
+        const agent =
+            this._agents[parsedURL.protocol] || getAgentForURL(parsedURL);
+        this._agents[parsedURL.protocol] = agent;
+        return agent;
     }
 
     get isActive(): boolean {
@@ -62,6 +75,16 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
     close(): void {
         this._active = false;
         abortInFlightRequests();
+
+        /**
+         * We need to destroy any agents we created or they may retain
+         * sockets that retain references to our JSDOM environment and cause
+         * a memory leak.
+         */
+        for (const key of Object.keys(this._agents)) {
+            this._agents[key].destroy();
+            delete this._agents[key];
+        }
     }
 
     fetch(url: string, options?: FetchOptions): ?Promise<Buffer> {
@@ -116,7 +139,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
          */
         const abortableFetch = request(logger, url, {
             ...this._requestOptions,
-            agent: getAgentForURL(new URL(url)),
+            agent: this._getAgent(url),
         });
         const handleInactive = abortableFetch.then((response) => {
             if (!this._active) {

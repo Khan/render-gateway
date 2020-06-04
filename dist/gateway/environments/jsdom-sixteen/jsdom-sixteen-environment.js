@@ -9,9 +9,15 @@ var _vm = require("vm");
 
 var _jsdom = require("jsdom");
 
+var _index = require("../../../shared/index.js");
+
 var _createVirtualConsole = require("./create-virtual-console.js");
 
 var _patchAgainstDanglingTimers = require("./patch-against-dangling-timers.js");
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -85,33 +91,6 @@ class JSDOMSixteenEnvironment {
        * into a handy list and providing a way to close them all.
        */
       const closeables = [];
-
-      const closeAll = () => new Promise(resolve => {
-        /**
-         * We wrap this in a timeout to hopefully mitigate any chances
-         * of https://github.com/jsdom/jsdom/issues/1682
-         */
-        setTimeout(() => {
-          /**
-           * We want to close things in reverse, just to be sure we
-           * tidy up in the same order that we put things together.
-           */
-          for (let i = closeables.length - 1; i >= 0; i--) {
-            var _closeables$i, _closeables$i$close;
-
-            // eslint-disable-next-line flowtype/no-unused-expressions
-            (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
-          }
-          /**
-           * Let's clear the array to make sure we're not holding
-           * on to any references unnecessarily.
-           */
-
-
-          closeables.length = 0;
-          resolve();
-        });
-      });
 
       try {
         /**
@@ -239,7 +218,7 @@ class JSDOMSixteenEnvironment {
          * We need to make sure that whatever happens, we tidy everything
          * up.
          */
-        await closeAll();
+        await this._closeAll(closeables, renderAPI.logger);
       }
     });
 
@@ -249,6 +228,53 @@ class JSDOMSixteenEnvironment {
 
     this._configuration = configuration;
   }
+
+  _closeAll(closeables, logger) {
+    return new Promise(resolve => {
+      /**
+       * We wrap this in a timeout to hopefully mitigate any chances
+       * of https://github.com/jsdom/jsdom/issues/1682
+       */
+      setTimeout(() => {
+        /**
+         * We want to close things in reverse, just to be sure we
+         * tidy up in the same order that we put things together.
+         */
+        for (let i = closeables.length - 1; i >= 0; i--) {
+          try {
+            var _closeables$i, _closeables$i$close;
+
+            // eslint-disable-next-line flowtype/no-unused-expressions
+            (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
+          } catch (e) {
+            const simplifiedError = (0, _index.extractError)(e);
+            logger.error(`Closeable encountered an error during resource loader close: ${simplifiedError.error || ""}`, _objectSpread({}, simplifiedError));
+          }
+        }
+        /**
+         * Let's clear the array to make sure we're not holding
+         * on to any references unnecessarily.
+         */
+
+
+        closeables.length = 0;
+        resolve();
+      });
+    });
+  }
+  /**
+   * Generate a render result for the given url.
+   *
+   * @param {string} url The URL that is to be rendered. This is always
+   * relative to the host and so does not contain protocol, hostname, nor port
+   * information.
+   * @param {RenderAPI} renderAPI An API of utilities for assisting with the
+   * render operation.
+   * @returns {Promise<RenderResult>} The result of the render that is to be
+   * returned by the gateway service as the response to the render request.
+   * This includes the body of the response and the status code information.
+   */
+
 
 }
 

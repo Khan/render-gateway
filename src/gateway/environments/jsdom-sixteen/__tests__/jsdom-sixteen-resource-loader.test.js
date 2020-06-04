@@ -99,6 +99,30 @@ describe("JSDOMSixteenResourceLoader", () => {
             // Assert
             expect(underTest.isActive).toBeFalse();
         });
+
+        it("should destroy agents it created", () => {
+            // Arrange
+            const fakePromise = {
+                then: jest.fn().mockReturnThis(),
+            };
+            jest.spyOn(Request, "request").mockReturnValue(fakePromise);
+            const fakeLogger = "FAKE_LOGGER";
+            const fakeRenderAPI: any = {
+                logger: fakeLogger,
+            };
+            const fakeAgent = {
+                destroy: jest.fn(),
+            };
+            jest.spyOn(Shared, "getAgentForURL").mockReturnValue(fakeAgent);
+            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+            underTest.fetch("http://example.com/test.js?p=1");
+
+            // Act
+            underTest.close();
+
+            // Assert
+            expect(fakeAgent.destroy).toHaveBeenCalled();
+        });
     });
 
     describe("#fetch", () => {
@@ -150,7 +174,10 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const fakeRenderAPI: any = {
                     logger: fakeLogger,
                 };
-                jest.spyOn(Shared, "getAgentForURL").mockReturnValue("AGENT");
+                const fakeAgent = {
+                    destroy: jest.fn(),
+                };
+                jest.spyOn(Shared, "getAgentForURL").mockReturnValue(fakeAgent);
                 const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
 
                 // Act
@@ -161,7 +188,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                     "FAKE_LOGGER",
                     "http://example.com/test.js?p=1",
                     expect.objectContaining({
-                        agent: "AGENT",
+                        agent: fakeAgent,
                         ...Request.DefaultRequestOptions,
                     }),
                 );
@@ -229,6 +256,12 @@ describe("JSDOMSixteenResourceLoader", () => {
                     const fakeRenderAPI: any = {
                         logger: fakeLogger,
                     };
+                    const fakeAgent = {
+                        destroy: jest.fn(),
+                    };
+                    jest.spyOn(Shared, "getAgentForURL").mockReturnValue(
+                        fakeAgent,
+                    );
                     const underTest = new JSDOMSixteenResourceLoader(
                         fakeRenderAPI,
                     );
@@ -259,6 +292,12 @@ describe("JSDOMSixteenResourceLoader", () => {
                     const fakeRenderAPI: any = {
                         logger: fakeLogger,
                     };
+                    const fakeAgent = {
+                        destroy: jest.fn(),
+                    };
+                    jest.spyOn(Shared, "getAgentForURL").mockReturnValue(
+                        fakeAgent,
+                    );
                     const underTest = new JSDOMSixteenResourceLoader(
                         fakeRenderAPI,
                     );
