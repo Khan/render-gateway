@@ -26,18 +26,16 @@ exports.getAgentForURL = void 0;
  *
  * For now, we do this.
  */
-let httpAgent;
-let httpsAgent;
-/**
- * Get an agent to use for a given URL.
- *
- * For keep-alive behavior to work, the agent must be shared across requests.
- * Therefore, the returned agent (one per protocol - http or https) will be
- * the same on repeated requests.
- *
- * Agents are created on first request.
- */
 
+/**
+ * Get a new agent to use for a given URL.
+ *
+ * For keep-alive behavior to work, the agent must be shared across requests
+ * but this is left for the calling code to manage. We do this because once the
+ * agent isn't needed (such as at the end of a request), we want to destroy it.
+ * Otherwise, it can hang around keeping sockets open which can lead to
+ * retaining large chunks of memory and creating memory leaks.
+ */
 const getAgentForURL = url => {
   const agentOptions = {
     keepAlive: true
@@ -45,22 +43,14 @@ const getAgentForURL = url => {
 
   switch (url.protocol) {
     case "http:":
-      if (httpAgent == null) {
-        const http = require("http");
+      const http = require("http");
 
-        httpAgent = new http.Agent(agentOptions);
-      }
-
-      return httpAgent;
+      return new http.Agent(agentOptions);
 
     case "https:":
-      if (httpsAgent == null) {
-        const https = require("https");
+      const https = require("https");
 
-        httpsAgent = new https.Agent(agentOptions);
-      }
-
-      return httpsAgent;
+      return new https.Agent(agentOptions);
 
     default:
       throw new Error(`Unsupported protocol: ${url.protocol}`);

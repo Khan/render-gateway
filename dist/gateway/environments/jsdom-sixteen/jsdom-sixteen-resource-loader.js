@@ -87,12 +87,11 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
      * a memory leak.
      */
 
-    for (const agent of Object.values(this._agents)) {
-      // $FlowIgnore We know that it's there.
-      agent.destroy();
-    }
+    for (const key of Object.keys(this._agents)) {
+      this._agents[key].destroy();
 
-    this._agents = {};
+      delete this._agents[key];
+    }
   }
 
   fetch(url, options) {
