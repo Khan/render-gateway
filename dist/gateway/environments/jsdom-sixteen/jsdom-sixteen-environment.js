@@ -46,7 +46,7 @@ class JSDOMSixteenEnvironment {
          * we can retrieve those files as well as support retrieving
          * additional files within our JSDOM environment.
          */
-        const fileURLs = await this._configuration.getFileList(url, renderAPI, resourceLoader.fetch);
+        const fileURLs = await this._configuration.getFileList(url, renderAPI, (url, options) => resourceLoader.fetch(url, options));
         traceSession.addLabel("fileCount", fileURLs.length);
         /**
          * Now let's use the resource loader to get the files.

@@ -101,7 +101,7 @@ describe("JSDOMSixteenEnvironment", () => {
             expect(fakeConfiguration.getFileList).toHaveBeenCalledWith(
                 "URL",
                 fakeRenderAPI,
-                fakeLoader.fetch,
+                expect.any(Function),
             );
         });
 
