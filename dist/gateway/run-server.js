@@ -86,7 +86,7 @@ const runServer = async options => {
     logger: (0, _index2.getLogger)()
   }, remainingOptions);
 
-  (0, _index.startGateway)(gatewayOptions, app);
+  await (0, _index.startGateway)(gatewayOptions, app);
 };
 
 exports.runServer = runServer;
