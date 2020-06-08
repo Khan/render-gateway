@@ -925,20 +925,18 @@
     retry-request "^4.1.1"
     teeny-request "^6.0.3"
 
-"@google-cloud/debug-agent@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-4.2.2.tgz#6a518725bf4d24b7e2c2057486b7ed812eee80bd"
-  integrity sha512-Zx1Jf7QQ18KLFKoGQw+x2JtB5ERuXbFE0u9Qz6SiO0A/IqsD8PBU7/Rfh0/I0o1+vpvrkqx3bN/8jCNYfntEwA==
+"@google-cloud/debug-agent@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.0.0.tgz#d3039dcab1deb1eb702ab8c12227f073018abe57"
+  integrity sha512-iCBS2JmXHLGs1AGnGpfWr9IStY/iR5eNTpKaugORd5Cn2yD5tcm/rjK8dr7FKW9qh1yu4KY4eMhaUbVu8Owr1A==
   dependencies:
-    "@google-cloud/common" "^2.0.0"
-    "@sindresorhus/is" "^1.0.0"
+    "@google-cloud/common" "^3.0.0"
     acorn "^7.0.0"
     coffeescript "^2.0.0"
     console-log-level "^1.4.0"
     extend "^3.0.2"
     findit2 "^2.2.3"
-    gcp-metadata "^3.0.0"
-    lodash.pickby "^4.6.0"
+    gcp-metadata "^4.0.0"
     p-limit "^2.2.0"
     semver "^7.0.0"
     source-map "^0.6.1"
@@ -1480,11 +1478,6 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
-
-"@sindresorhus/is@^1.0.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-1.2.0.tgz#63ce3638cb85231f3704164c90a18ef816da3fb7"
-  integrity sha512-mwhXGkRV5dlvQc4EgPDxDxO6WuMBVymGFd1CA+2Y+z5dG9MNspoQ+AWjl/Ld1MnpCL8AKbosZlDVohqcIwuWsw==
 
 "@sindresorhus/is@^2.0.0":
   version "2.1.0"
@@ -5518,11 +5511,6 @@ lodash.mapvalues@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.mapvalues/-/lodash.mapvalues-4.6.0.tgz#1bafa5005de9dd6f4f26668c30ca37230cc9689c"
   integrity sha1-G6+lAF3p3W9PJmaMMMo3IwzJaJw=
-
-lodash.pickby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
-  integrity sha1-feoh2MGNdwOifHBMFdO4SmfjOv8=
 
 lodash.set@^4.3.2:
   version "4.3.2"
