@@ -101,7 +101,7 @@ describe("JSDOMSixteenEnvironment", () => {
             expect(fakeConfiguration.getFileList).toHaveBeenCalledWith(
                 "URL",
                 fakeRenderAPI,
-                fakeLoader.fetch,
+                expect.any(Function),
             );
         });
 
@@ -596,117 +596,6 @@ describe("JSDOMSixteenEnvironment", () => {
             // Assert
             await expect(underTest).rejects.toThrowError();
             expect(afterEnvCloseable.close).toHaveBeenCalled();
-        });
-
-        it("should setup registration callback on window", async () => {
-            // Arrange
-            const fakeLogger: any = "FAKE_LOGGER";
-            const fakeTraceSession: any = {
-                end: jest.fn(),
-                addLabel: jest.fn(),
-            };
-            const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
-                logger: fakeLogger,
-            };
-            const fakeResourceLoader: any = {};
-            const fakeConfiguration = {
-                registrationCallbackName: "__register__",
-                getFileList: jest.fn().mockResolvedValue([]),
-                getResourceLoader: jest
-                    .fn()
-                    .mockReturnValue(fakeResourceLoader),
-                afterEnvSetup: jest.fn(),
-            };
-            jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
-            const fakeWindow = {};
-            fakeWindow.window = fakeWindow;
-            const fakeJSDOM = {
-                window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
-            };
-            jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
-
-            // Act
-            try {
-                await underTest.render("URL", fakeRenderAPI);
-            } catch (e) {
-                /**
-                 * We care about the expectation below.
-                 */
-            }
-
-            // Assert
-            expect(fakeWindow).toHaveProperty(
-                fakeConfiguration.registrationCallbackName,
-            );
-        });
-
-        describe("registration callback", () => {
-            it("should capture the callback", async () => {
-                // Arrange
-                const fakeLogger: any = "FAKE_LOGGER";
-                const fakeTraceSession: any = {
-                    end: jest.fn(),
-                    addLabel: jest.fn(),
-                };
-                const fakeRenderAPI: any = {
-                    trace: jest.fn().mockReturnValue(fakeTraceSession),
-                    getHeader: jest.fn(),
-                    logger: fakeLogger,
-                };
-                const fakeResourceLoader: any = {};
-                const fakeConfiguration = {
-                    registrationCallbackName: "__register__",
-                    getFileList: jest.fn().mockResolvedValue([]),
-                    getResourceLoader: jest
-                        .fn()
-                        .mockReturnValue(fakeResourceLoader),
-                    afterEnvSetup: jest.fn(),
-                };
-                jest.spyOn(
-                    CreateVirtualConsole,
-                    "createVirtualConsole",
-                ).mockReturnValue("FAKE_CONSOLE");
-                const fakeWindow = {};
-                fakeWindow.window = fakeWindow;
-                const fakeJSDOM = {
-                    window: vm.createContext(fakeWindow),
-                    getInternalVMContext: jest
-                        .fn()
-                        .mockImplementation(function () {
-                            return this.window;
-                        }),
-                };
-                jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-                const environment = new JSDOMSixteenEnvironment(
-                    fakeConfiguration,
-                );
-
-                // Act
-                try {
-                    await environment.render("URL", fakeRenderAPI);
-                } catch (e) {
-                    /**
-                     * We care about the expectation below.
-                     */
-                }
-                const registrationCallback =
-                    fakeWindow[fakeConfiguration.registrationCallbackName];
-                registrationCallback("FAKE_CALLBACK");
-
-                // Assert
-                expect(
-                    fakeWindow[fakeConfiguration.registrationCallbackName],
-                ).toHaveProperty("__registeredCallback", "FAKE_CALLBACK");
-            });
         });
 
         it("should execute the downloaded files in order in the JSDOM VM context", async () => {

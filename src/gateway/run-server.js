@@ -80,5 +80,5 @@ export const runServer = async (
         logger: getLogger(),
         ...remainingOptions,
     };
-    startGateway<Request, Response>(gatewayOptions, app);
+    await startGateway<Request, Response>(gatewayOptions, app);
 };

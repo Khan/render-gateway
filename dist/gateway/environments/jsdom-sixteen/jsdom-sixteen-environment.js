@@ -46,7 +46,7 @@ class JSDOMSixteenEnvironment {
          * we can retrieve those files as well as support retrieving
          * additional files within our JSDOM environment.
          */
-        const fileURLs = await this._configuration.getFileList(url, renderAPI, resourceLoader.fetch);
+        const fileURLs = await this._configuration.getFileList(url, renderAPI, (url, options) => resourceLoader.fetch(url, options));
         traceSession.addLabel("fileCount", fileURLs.length);
         /**
          * Now let's use the resource loader to get the files.
@@ -126,11 +126,6 @@ class JSDOMSixteenEnvironment {
          */
 
         const vmContext = jsdomInstance.getInternalVMContext();
-
-        const runScript = (script, options) => {
-          const realScript = new _vm.Script(script, options);
-          return realScript.runInContext(vmContext);
-        };
         /**
          * Next, we want to patch timers so we can make sure they don't
          * fire after we are done (and so we can catch dangling timers if
@@ -139,10 +134,11 @@ class JSDOMSixteenEnvironment {
          * Super magic.
          */
 
-
         const tmpFnName = "__tmp_patchTimers";
         vmContext[tmpFnName] = _patchAgainstDanglingTimers.patchAgainstDanglingTimers;
-        const timerGateAPI = runScript(`${tmpFnName}(window);`);
+
+        const timerGateAPI = this._runScript(vmContext, `${tmpFnName}(window);`);
+
         delete vmContext[tmpFnName];
         closeables.push(timerGateAPI);
         /**
@@ -166,18 +162,23 @@ class JSDOMSixteenEnvironment {
         vmContext[registrationCallbackName] = cb => {
           vmContext[registrationCallbackName][registeredCbName] = cb;
         };
+
+        closeables.push({
+          close: () => {
+            delete vmContext[registrationCallbackName];
+          }
+        });
         /**
          * The context is configured. Now we need to load the files into it
          * which should cause our registration callback to be invoked.
          * We pass the filename here so we can get some nicer stack traces.
          */
 
-
         for (const {
           content,
           url
         } of files.files) {
-          runScript(content, {
+          this._runScript(vmContext, content, {
             filename: url
           });
         }
@@ -195,7 +196,7 @@ class JSDOMSixteenEnvironment {
          */
 
 
-        const result = await runScript(`
+        const result = await this._runScript(vmContext, `
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
     cb();`);
         /**
@@ -261,6 +262,11 @@ class JSDOMSixteenEnvironment {
         resolve();
       });
     });
+  }
+
+  _runScript(vmContext, script, options) {
+    const realScript = new _vm.Script(script, options);
+    return realScript.runInContext(vmContext);
   }
   /**
    * Generate a render result for the given url.
