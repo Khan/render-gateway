@@ -895,7 +895,7 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@google-cloud/common@^2.0.0", "@google-cloud/common@^2.2.2":
+"@google-cloud/common@^2.2.2":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@google-cloud/common/-/common-2.4.0.tgz#2783b7de8435024a31453510f2dab5a6a91a4c82"
   integrity sha512-zWFjBS35eI9leAHhjfeOYlK5Plcuj/77EzstnrJIZbKgF/nkqjcQuGiMCpzCwOfPyUbz8ZaEOYgbHa759AKbjg==
@@ -925,20 +925,18 @@
     retry-request "^4.1.1"
     teeny-request "^6.0.3"
 
-"@google-cloud/debug-agent@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-4.2.2.tgz#6a518725bf4d24b7e2c2057486b7ed812eee80bd"
-  integrity sha512-Zx1Jf7QQ18KLFKoGQw+x2JtB5ERuXbFE0u9Qz6SiO0A/IqsD8PBU7/Rfh0/I0o1+vpvrkqx3bN/8jCNYfntEwA==
+"@google-cloud/debug-agent@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.0.0.tgz#d3039dcab1deb1eb702ab8c12227f073018abe57"
+  integrity sha512-iCBS2JmXHLGs1AGnGpfWr9IStY/iR5eNTpKaugORd5Cn2yD5tcm/rjK8dr7FKW9qh1yu4KY4eMhaUbVu8Owr1A==
   dependencies:
-    "@google-cloud/common" "^2.0.0"
-    "@sindresorhus/is" "^1.0.0"
+    "@google-cloud/common" "^3.0.0"
     acorn "^7.0.0"
     coffeescript "^2.0.0"
     console-log-level "^1.4.0"
     extend "^3.0.2"
     findit2 "^2.2.3"
-    gcp-metadata "^3.0.0"
-    lodash.pickby "^4.6.0"
+    gcp-metadata "^4.0.0"
     p-limit "^2.2.0"
     semver "^7.0.0"
     source-map "^0.6.1"
@@ -1035,18 +1033,19 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-2.0.0.tgz#d69db22c18551ef8217e59430f06a59cdcd5e9db"
   integrity sha512-r0miGK77TPem+AV3jZtUXopz9DQzeSTvsgQkamfDzkTiurkbHHTmBJQ1YQqF9Z4XjqcNKlmA9n8EvFOptNX0sg==
 
-"@google-cloud/trace-agent@^4.2.5":
-  version "4.2.5"
-  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-4.2.5.tgz#443bf19f08aaceb8cf20bd7591f10efbdebf995a"
-  integrity sha512-gVx+7NC5bwVtIZ/Z7jUbnvytwFS1RhF3iWiMyPRKWDohmy5Ixs/QK0fJNgr4Ugs12nstrILG7VfC09q8FOsK4g==
+"@google-cloud/trace-agent@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-5.0.0.tgz#8f6ac105d4e00f3c3fe411a29953d4f97ae83482"
+  integrity sha512-XvszVpESpOQM4K8AU0wLK2M4T+zl6QMlObgHG6b9Qc2RMfGUdkxR2mIVOwqgOGHy5QNmLbAb4hufHtwtqA0cEQ==
   dependencies:
-    "@google-cloud/common" "^2.0.0"
-    "@opencensus/propagation-stackdriver" "0.0.19"
+    "@google-cloud/common" "^3.0.0"
+    "@opencensus/propagation-stackdriver" "0.0.21"
     builtin-modules "^3.0.0"
     console-log-level "^1.4.0"
     continuation-local-storage "^3.2.1"
     extend "^3.0.2"
-    gcp-metadata "^3.0.0"
+    gcp-metadata "^4.0.0"
+    google-auth-library "^6.0.0"
     hex2dec "^1.0.1"
     is "^3.2.0"
     methods "^1.1.1"
@@ -1054,7 +1053,7 @@
     semver "^7.0.0"
     shimmer "^1.2.0"
     source-map-support "^0.5.16"
-    uuid "^3.0.1"
+    uuid "^8.0.0"
 
 "@grpc/grpc-js@^0.6.18":
   version "0.6.18"
@@ -1388,17 +1387,6 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@opencensus/core@^0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@opencensus/core/-/core-0.0.19.tgz#058a2885179bb9f89db7fa93b366a73e51c0c8dc"
-  integrity sha512-Y5QXa7vggMU0+jveLcworfX9jNnztix7x1NraAV0uGkTp4y46HrFl0DnNcnNxUDvBu/cYeWRwlmhiWlr9+adOQ==
-  dependencies:
-    continuation-local-storage "^3.2.1"
-    log-driver "^1.2.7"
-    semver "^6.0.0"
-    shimmer "^1.2.0"
-    uuid "^3.2.1"
-
 "@opencensus/core@^0.0.20":
   version "0.0.20"
   resolved "https://registry.yarnpkg.com/@opencensus/core/-/core-0.0.20.tgz#34d8332fd609edd877b1148fab049a62ae2d1a99"
@@ -1410,13 +1398,15 @@
     shimmer "^1.2.0"
     uuid "^3.2.1"
 
-"@opencensus/propagation-stackdriver@0.0.19":
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/@opencensus/propagation-stackdriver/-/propagation-stackdriver-0.0.19.tgz#7940b7546c0d2379cb653668377aea0e850aebce"
-  integrity sha512-TTL9KIOkvTpd+DT2gj3R3JP7XqOAf69ab/wzxIwpBlFqfRiIFBkOALyC/Gy4pKooAe5DemDhXZuRtIa0PgfoZQ==
+"@opencensus/core@^0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@opencensus/core/-/core-0.0.21.tgz#5ec92548cf2b340e46d754e9f5f44302d6de8dd4"
+  integrity sha512-2AYNNS8y5aQDhssfPlFoajlUOYuhQ9E6K3JGCcx7BzD1MYTE1YEXuqJApsjbSl6yZwkwLMky3RSNZJZDclDGmQ==
   dependencies:
-    "@opencensus/core" "^0.0.19"
-    hex2dec "^1.0.1"
+    continuation-local-storage "^3.2.1"
+    log-driver "^1.2.7"
+    semver "^6.0.0"
+    shimmer "^1.2.0"
     uuid "^3.2.1"
 
 "@opencensus/propagation-stackdriver@0.0.20":
@@ -1425,6 +1415,15 @@
   integrity sha512-P8yuHSLtce+yb+2EZjtTVqG7DQ48laC+IuOWi3X9q78s1Gni5F9+hmbmyP6Nb61jb5BEvXQX1s2rtRI6bayUWA==
   dependencies:
     "@opencensus/core" "^0.0.20"
+    hex2dec "^1.0.1"
+    uuid "^3.2.1"
+
+"@opencensus/propagation-stackdriver@0.0.21":
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/@opencensus/propagation-stackdriver/-/propagation-stackdriver-0.0.21.tgz#e05d148dc9573e0ccd6285a067eed19a5dbb3a25"
+  integrity sha512-N0L1KeaP9P8gvTZCEvUU3rL1Bj/E7vpq/NOI5B3yfIIRlddQy7KaN0Ofp2WncNOi8g0y8/uWKai78N000U0HLQ==
+  dependencies:
+    "@opencensus/core" "^0.0.21"
     hex2dec "^1.0.1"
     uuid "^3.2.1"
 
@@ -1480,11 +1479,6 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
-
-"@sindresorhus/is@^1.0.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-1.2.0.tgz#63ce3638cb85231f3704164c90a18ef816da3fb7"
-  integrity sha512-mwhXGkRV5dlvQc4EgPDxDxO6WuMBVymGFd1CA+2Y+z5dG9MNspoQ+AWjl/Ld1MnpCL8AKbosZlDVohqcIwuWsw==
 
 "@sindresorhus/is@^2.0.0":
   version "2.1.0"
@@ -3878,7 +3872,7 @@ gaxios@^3.0.0:
     is-stream "^2.0.0"
     node-fetch "^2.3.0"
 
-gcp-metadata@^3.0.0, gcp-metadata@^3.1.0, gcp-metadata@^3.4.0:
+gcp-metadata@^3.1.0, gcp-metadata@^3.4.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/gcp-metadata/-/gcp-metadata-3.5.0.tgz#6d28343f65a6bbf8449886a0c0e4a71c77577055"
   integrity sha512-ZQf+DLZ5aKcRpLzYUyBS3yo3N0JSa82lNDO8rj3nMSlovLcz2riKFBsYgDzeXcv75oo5eqB2lx+B14UvPoCRnA==
@@ -5518,11 +5512,6 @@ lodash.mapvalues@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.mapvalues/-/lodash.mapvalues-4.6.0.tgz#1bafa5005de9dd6f4f26668c30ca37230cc9689c"
   integrity sha1-G6+lAF3p3W9PJmaMMMo3IwzJaJw=
-
-lodash.pickby@^4.6.0:
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/lodash.pickby/-/lodash.pickby-4.6.0.tgz#7dea21d8c18d7703a27c704c15d3b84a67e33aff"
-  integrity sha1-feoh2MGNdwOifHBMFdO4SmfjOv8=
 
 lodash.set@^4.3.2:
   version "4.3.2"
@@ -8027,15 +8016,15 @@ uuid@^3.0.1, uuid@^3.2.1, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@^7.0.0:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.2.tgz#7ff5c203467e91f5e0d85cfcbaaf7d2ebbca9be6"
-  integrity sha512-vy9V/+pKG+5ZTYKf+VcphF5Oc6EFiu3W8Nv3P3zIh0EqVI80ZxOzuPfe9EHjkFNvf8+xuTHVeei4Drydlx4zjw==
-
-uuid@^7.0.3:
+uuid@^7.0.0, uuid@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
+
+uuid@^8.0.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.1.0.tgz#6f1536eb43249f473abc6bd58ff983da1ca30d8d"
+  integrity sha512-CI18flHDznR0lq54xBycOVmphdCYnQLKn8abKn7PXUiKUGdEd+/l9LWNJmugXel4hXq7S+RMNl34ecyC9TntWg==
 
 v8-compile-cache@^2.0.3:
   version "2.1.0"
