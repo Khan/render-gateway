@@ -1,9 +1,5 @@
 // @flow
-import {Script} from "vm";
-import {JSDOM} from "jsdom";
 import {extractError} from "../../../shared/index.js";
-import {createVirtualConsole} from "./create-virtual-console.js";
-import {patchAgainstDanglingTimers} from "./patch-against-dangling-timers.js";
 import type {Logger} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
@@ -166,6 +162,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         script: string,
         options?: vm$ScriptOptions,
     ): any {
+        const {Script} = require("vm");
         const realScript = new Script(script, options);
         return realScript.runInContext(vmContext);
     }
@@ -217,6 +214,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * where we setup custom resource loading and our virtual console
              * too.
              */
+            const {JSDOM} = require("jsdom");
+            const {
+                createVirtualConsole,
+            } = require("./create-virtual-console.js");
             const jsdomInstance = new JSDOM(MinimalPage, {
                 url,
                 runScripts: "dangerously",
@@ -245,6 +246,9 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * Super magic.
              */
             const tmpFnName = "__tmp_patchTimers";
+            const {
+                patchAgainstDanglingTimers,
+            } = require("./patch-against-dangling-timers.js");
             vmContext[tmpFnName] = patchAgainstDanglingTimers;
             const timerGateAPI: IGate = this._runScript(
                 vmContext,
