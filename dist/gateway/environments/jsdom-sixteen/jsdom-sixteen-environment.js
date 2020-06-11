@@ -5,15 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.JSDOMSixteenEnvironment = void 0;
 
-var _vm = require("vm");
-
-var _jsdom = require("jsdom");
-
 var _index = require("../../../shared/index.js");
-
-var _createVirtualConsole = require("./create-virtual-console.js");
-
-var _patchAgainstDanglingTimers = require("./patch-against-dangling-timers.js");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -107,12 +99,20 @@ class JSDOMSixteenEnvironment {
          * too.
          */
 
-        const jsdomInstance = new _jsdom.JSDOM(MinimalPage, {
+        const {
+          JSDOM
+        } = require("jsdom");
+
+        const {
+          createVirtualConsole
+        } = require("./create-virtual-console.js");
+
+        const jsdomInstance = new JSDOM(MinimalPage, {
           url,
           runScripts: "dangerously",
           resources: resourceLoader,
           pretendToBeVisual: true,
-          virtualConsole: (0, _createVirtualConsole.createVirtualConsole)(renderAPI.logger)
+          virtualConsole: createVirtualConsole(renderAPI.logger)
         });
         closeables.push(jsdomInstance.window);
         /**
@@ -135,7 +135,12 @@ class JSDOMSixteenEnvironment {
          */
 
         const tmpFnName = "__tmp_patchTimers";
-        vmContext[tmpFnName] = _patchAgainstDanglingTimers.patchAgainstDanglingTimers;
+
+        const {
+          patchAgainstDanglingTimers
+        } = require("./patch-against-dangling-timers.js");
+
+        vmContext[tmpFnName] = patchAgainstDanglingTimers;
 
         const timerGateAPI = this._runScript(vmContext, `${tmpFnName}(window);`);
 
@@ -265,7 +270,11 @@ class JSDOMSixteenEnvironment {
   }
 
   _runScript(vmContext, script, options) {
-    const realScript = new _vm.Script(script, options);
+    const {
+      Script
+    } = require("vm");
+
+    const realScript = new Script(script, options);
     return realScript.runInContext(vmContext);
   }
   /**
