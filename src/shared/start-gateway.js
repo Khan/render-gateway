@@ -35,6 +35,9 @@ export async function startGateway<
         try {
             // eslint-disable-next-line import/no-unassigned-import
             require("heapdump");
+            logger.debug(
+                `Heapdumps enabled. To create a heap snapshot at any time, run "kill -USR2 ${process.pid}".`,
+            );
         } catch (e) {
             // heapdump is an optional peer dependency, so if it is absent,
             // that is perfectly fine.
