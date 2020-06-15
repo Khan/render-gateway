@@ -99,18 +99,27 @@ export async function startGateway<
 
         logger.info("SIGINT received, shutting down server.");
 
-        gateway.close((err) => {
-            if (err) {
-                logger.error(
-                    `Error shutting down server: ${
-                        (err && err.message) || "Unknown Error"
-                    }`,
-                );
-                process.exit(1);
-            } else {
-                process.exit(0);
-            }
-        });
+        try {
+            gateway.close((err) => {
+                if (err) {
+                    logger.error(
+                        `Error shutting down server: ${
+                            (err && err.message) || "Unknown Error"
+                        }`,
+                    );
+                    process.exit(1);
+                } else {
+                    process.exit(0);
+                }
+            });
+        } catch (err) {
+            logger.error(
+                `Error closing gateway: ${
+                    (err && err.message) || "Unknown Error"
+                }`,
+            );
+            process.exit(1);
+        }
     });
 
     /**

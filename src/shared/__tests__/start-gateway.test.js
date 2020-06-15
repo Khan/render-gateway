@@ -430,5 +430,49 @@ describe("#start-gateway", () => {
             expect(errorSpy).not.toHaveBeenCalled();
             expect(processExitSpy).toHaveBeenCalledWith(0);
         });
+
+        it("should handle .close() throwing an error", async () => {
+            // Arrange
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            const fakeServer = {
+                address: () => ({
+                    address: "ADDRESS",
+                    port: "PORT",
+                }),
+                close: jest.fn().mockImplementation(() => {
+                    throw new Error("CLOSE ERROR");
+                }),
+            };
+            const listenMock = jest.fn().mockReturnValue(fakeServer);
+            const pretendApp = ({
+                listen: listenMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            const processOnSpy = jest.spyOn(process, "on");
+            const processExitSpy = jest
+                .spyOn(process, "exit")
+                .mockReturnValue();
+            await startGateway(options, pretendApp);
+            const errorSpy = jest.spyOn(options.logger, "error");
+            const processCallback = processOnSpy.mock.calls[0][1];
+
+            // Act
+            processCallback();
+
+            // Assert
+            expect(errorSpy).toHaveBeenCalledWith(
+                "Error closing gateway: CLOSE ERROR",
+            );
+            expect(processExitSpy).toHaveBeenCalledWith(1);
+        });
     });
 });
