@@ -85,6 +85,7 @@
     "**/**/minimist": "^1.2.1"
   },
   "peerDependencies": {
+    "heapdump": "^0.3.15",
     "jsdom": "^16.2.2"
   }
 }

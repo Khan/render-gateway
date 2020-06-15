@@ -33,6 +33,26 @@ async function startGateway(options, app) {
 
   if (process.env.GAE_SERVICE == null) {
     process.env.GAE_SERVICE = name;
+  }
+  /**
+   * In development mode, we include the heapdump module if it exists.
+   * With this installed, `kill -USR2 <pid>` can be used to create a
+   * heapsnapshot file of the gateway's memory.
+   */
+
+
+  if (mode === "development") {
+    try {
+      /* eslint-disable import/no-unassigned-import */
+      // $FlowIgnore(May not be installed)
+      require("heapdump");
+      /* eslint-enable import/no-unassigned-import */
+
+
+      logger.debug(`Heapdumps enabled. To create a heap snapshot at any time, run "kill -USR2 ${process.pid}".`);
+    } catch (e) {// heapdump is an optional peer dependency, so if it is absent,
+      // that is perfectly fine.
+    }
   } // Set up stackdriver integrations.
 
 
