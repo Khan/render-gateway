@@ -11,11 +11,12 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "KA_LOG_LEVEL=silly NODE_ENV=development babel-watch run_local.js",
+    "start:example": "bash -c 'RUNNER=\"./examples/$0/run.js\"; KA_LOG_LEVEL=silly NODE_ENV=development babel-watch \"$RUNNER\"'",
+    "start": "yarn start:example echo-environment",
     "clean": "rm -rf dist",
-    "test": "jest --colors --config jest.config.js src",
+    "test": "jest --colors --config jest.config.js",
     "coverage": "jest --colors --config jest.config.js --coverage",
-    "lint:all": "yarn lint \"{run_local.js,src,bin,__{tests,mocks}__}/**/*.js\"",
+    "lint:all": "yarn lint \"{examples,src,bin,__{tests,mocks}__}/**/*.js\"",
     "lint": "eslint --report-unused-disable-directives --config .eslintrc.js --ignore-path .eslintignore",
     "flow:ci": "flow check",
     "build:noclean": "babel src --out-dir dist --source-maps --config-file ./.babelrc.js --ignore \"**/__tests__/**/*.js\",\"**/__mocks__/**/*.js\"",
@@ -84,6 +85,7 @@
     "**/**/minimist": "^1.2.1"
   },
   "peerDependencies": {
+    "heapdump": "^0.3.15",
     "jsdom": "^16.2.2"
   }
 }

@@ -13,8 +13,8 @@ implicit-inexact-object=error
 <PROJECT_ROOT>/bin
 
 [include]
-run_local.js
 src
+examples
 .*/__tests__/.*
 
 [libs]

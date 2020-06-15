@@ -28,7 +28,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
-      run: yarn install
+      run: yarn install --frozen-lockfile
     - name: Lint
       run: yarn lint
     - name: Flow
@@ -48,7 +48,7 @@ jobs:
       with:
         node-version: 12.x
     - name: Install dependencies
-      run: yarn install
+      run: yarn install --frozen-lockfile
     - name: Run tests with coverage
       run: yarn coverage
     - name: Upload Coverage
@@ -79,7 +79,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - name: Install dependencies
-      run: yarn install
+      run: yarn install --frozen-lockfile
     - name: Run tests
       run: yarn test
 
@@ -123,7 +123,7 @@ jobs:
       with:
         node-version: 12.x
     - name: Install dependencies
-      run: yarn install
+      run: yarn install --frozen-lockfile
     - name: Run tests
       run: yarn test
     - name: Build the distributable artifacts
@@ -135,6 +135,6 @@ jobs:
       run: |
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git config user.name "$GITHUB_ACTOR"
-        git add .
+        git add dist
         git commit -m "Updating branch with build artifacts (https://github.com/Khan/render-gateway/actions/runs/${{ github.run_id }})"
         git push

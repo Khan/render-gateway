@@ -22,4 +22,4 @@ ignore:
   - "dist"
   - "**/types.js"
   - "tools"
-  - "run_local.js"
+  - "examples"
