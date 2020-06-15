@@ -84,6 +84,45 @@ export async function startGateway<
     });
 
     /**
+     * In this server is being run using a process manager, such as PM2, we
+     * may be asked to shutdown gracefully. We do this be listening for the
+     * SIGINT signal and then close the server. This prevents new connections
+     * from coming in and waits until the existing connections complete before
+     * the callback is fired. At which point we can safely shutdown the server.
+     * If we fail to respond then the process manager may try to forcefully
+     * shutdown the server after a timeout.
+     */
+    process.on("SIGINT", () => {
+        if (!gateway) {
+            return;
+        }
+
+        logger.info("SIGINT received, shutting down server.");
+
+        try {
+            gateway.close((err) => {
+                if (err) {
+                    logger.error(
+                        `Error shutting down server: ${
+                            (err && err.message) || "Unknown Error"
+                        }`,
+                    );
+                    process.exit(1);
+                } else {
+                    process.exit(0);
+                }
+            });
+        } catch (err) {
+            logger.error(
+                `Error closing gateway: ${
+                    (err && err.message) || "Unknown Error"
+                }`,
+            );
+            process.exit(1);
+        }
+    });
+
+    /**
      * NOTE(somewhatabstract): We have seen many 502 BAD GATEWAY errors in
      * production Node services. It seems this is because the Node server
      * is closing a connection before the load balancer is expecting it to.
