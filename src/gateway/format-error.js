@@ -16,7 +16,7 @@ export const formatError = (
     errorFormat: ?string,
     errorMetadata: any,
 ): string => {
-    const formattedMetadata = JSON.stringify(errorMetadata, undefined, "4");
+    const formattedMetadata = JSON.stringify(errorMetadata, undefined, 4);
     if (errorFormat == null) {
         return formattedMetadata;
     }

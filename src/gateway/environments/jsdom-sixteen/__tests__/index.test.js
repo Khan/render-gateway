@@ -23,6 +23,7 @@ describe("index.js", () => {
             "Configuration",
             "Environment",
             "ResourceLoader",
+            "FileResourceLoader",
         ]);
     });
 });

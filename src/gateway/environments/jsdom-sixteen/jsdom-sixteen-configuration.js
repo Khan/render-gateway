@@ -25,7 +25,7 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
      * Callback that should return a JSDOM resource loader for the given
      * request. We must call this per render so that logging is appropriately
      * channeled for the request being made.
-     * @param {(url: string, renderAPI: RenderAPI) => ?Promise<mixed>} [afterEnvSetup]
+     * @param {(url: string, fileURLs: $ReadOnlyArray<string>, renderAPI: RenderAPI, vmContext: any) => ?Promise<mixed>} [afterEnvSetup]
      * Callback to perform additional environment setup before the render
      * occurs. This can optionally return an object that can add extra fields
      * to the environment context for rendering code to access. This is useful
