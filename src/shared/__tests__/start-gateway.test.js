@@ -277,7 +277,7 @@ describe("#start-gateway", () => {
     });
 
     describe("close on SIGINT", () => {
-        it("should do nothing is the gateway doesn't exist", async () => {
+        it("should do nothing if the gateway doesn't exist", async () => {
             // Arrange
             const options = {
                 name: "TEST_GATEWAY",
