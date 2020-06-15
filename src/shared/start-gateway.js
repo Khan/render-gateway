@@ -73,6 +73,10 @@ export async function startGateway<
      * shutdown the server after a timeout.
      */
     process.on("SIGINT", () => {
+        if (!gateway) {
+            return;
+        }
+
         logger.info("SIGINT received, shutting down server.");
 
         gateway.close((err) => {
