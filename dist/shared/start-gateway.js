@@ -74,6 +74,10 @@ async function startGateway(options, app) {
    */
 
   process.on("SIGINT", () => {
+    if (!gateway) {
+      return;
+    }
+
     logger.info("SIGINT received, shutting down server.");
     gateway.close(err => {
       if (err) {
