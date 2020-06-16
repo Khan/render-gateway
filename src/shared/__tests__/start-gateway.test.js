@@ -276,7 +276,157 @@ describe("#start-gateway", () => {
         });
     });
 
+    describe("shutdown on memory overage", () => {
+        const GAE_MEMORY_MB = process.env.GAE_MEMORY_MB;
+        const MIN_FREE_MB = process.env.MIN_FREE_MB;
+        afterEach(() => {
+            process.env.GAE_MEMORY_MB = GAE_MEMORY_MB;
+            process.env.MIN_FREE_MB = MIN_FREE_MB;
+        });
+
+        it("should do nothing if the memory isn't over", async () => {
+            // Arrange
+            process.env.GAE_MEMORY_MB = "1024";
+            process.env.MIN_FREE_MB = "200";
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            const listenMock = jest.fn().mockReturnValue(null);
+            const useMock = jest.fn().mockReturnValue(null);
+            const pretendApp = ({
+                listen: listenMock,
+                use: useMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            jest.spyOn(process, "on").mockReturnValue(null);
+            jest.spyOn(process, "memoryUsage").mockReturnValue({
+                rss: 100 * 1024 * 1024,
+            });
+            await startGateway(options, pretendApp);
+            const infoSpy = jest.spyOn(options.logger, "info");
+            const useCallback = useMock.mock.calls[0][0];
+
+            // Act
+            useCallback();
+
+            // Assert
+            expect(infoSpy).not.toHaveBeenCalledWith(
+                "Gracefully shutting down server.",
+            );
+        });
+
+        it("should do nothing if the gateway doesn't exist", async () => {
+            // Arrange
+            process.env.GAE_MEMORY_MB = "1024";
+            process.env.MIN_FREE_MB = "200";
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            const listenMock = jest.fn().mockReturnValue(null);
+            const useMock = jest.fn().mockReturnValue(null);
+            const pretendApp = ({
+                listen: listenMock,
+                use: useMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            jest.spyOn(process, "on").mockReturnValue(null);
+            jest.spyOn(process, "memoryUsage").mockReturnValue({
+                rss: 1025 * 1024 * 1024,
+            });
+            await startGateway(options, pretendApp);
+            const infoSpy = jest.spyOn(options.logger, "info");
+            const useCallback = useMock.mock.calls[0][0];
+
+            // Act
+            useCallback();
+
+            // Assert
+            expect(infoSpy).toHaveBeenCalledWith(
+                "Memory usage has gone over maximum. (used: 1074790400), limit: 864026624",
+            );
+            expect(infoSpy).not.toHaveBeenCalledWith(
+                "Gracefully shutting down server.",
+            );
+        });
+
+        it("should attempt to shutdown the server", async () => {
+            // Arrange
+            process.env.GAE_MEMORY_MB = "1024";
+            process.env.MIN_FREE_MB = "200";
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            const fakeServer = {
+                address: () => ({
+                    address: "ADDRESS",
+                    port: "PORT",
+                }),
+                close: jest.fn(),
+            };
+            const listenMock = jest.fn().mockReturnValue(fakeServer);
+            const useMock = jest.fn().mockReturnValue(null);
+            const pretendApp = ({
+                listen: listenMock,
+                use: useMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            jest.spyOn(process, "on").mockReturnValue(null);
+            jest.spyOn(process, "memoryUsage").mockReturnValue({
+                rss: 1025 * 1024 * 1024,
+            });
+            await startGateway(options, pretendApp);
+            const infoSpy = jest.spyOn(options.logger, "info");
+            const useCallback = useMock.mock.calls[0][0];
+
+            // Act
+            useCallback();
+
+            // Assert
+            expect(infoSpy).toHaveBeenCalledWith(
+                "Memory usage has gone over maximum. (used: 1074790400), limit: 864026624",
+            );
+            expect(infoSpy).toHaveBeenCalledWith(
+                "Gracefully shutting down server.",
+            );
+            expect(fakeServer.close).toHaveBeenCalled();
+        });
+    });
+
     describe("close on SIGINT", () => {
+        const GAE_MEMORY_MB = process.env.GAE_MEMORY_MB;
+        const MIN_FREE_MB = process.env.MIN_FREE_MB;
+
+        beforeEach(() => {
+            delete process.env.GAE_MEMORY_MB;
+            delete process.env.MIN_FREE_MB;
+        });
+
+        afterEach(() => {
+            process.env.GAE_MEMORY_MB = GAE_MEMORY_MB;
+            process.env.MIN_FREE_MB = MIN_FREE_MB;
+        });
+
         it("should do nothing if the gateway doesn't exist", async () => {
             // Arrange
             const options = {
@@ -294,7 +444,7 @@ describe("#start-gateway", () => {
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
             ).mockReturnValue(Promise.resolve(pretendApp));
-            const processSpy = jest.spyOn(process, "on");
+            const processSpy = jest.spyOn(process, "on").mockReturnValue(null);
             await startGateway(options, pretendApp);
             const infoSpy = jest.spyOn(options.logger, "info");
             const processCallback = processSpy.mock.calls[0][1];
@@ -303,7 +453,10 @@ describe("#start-gateway", () => {
             processCallback();
 
             // Assert
-            expect(infoSpy).not.toHaveBeenCalled();
+            expect(infoSpy).toHaveBeenCalledWith("SIGINT received.");
+            expect(infoSpy).not.toHaveBeenCalledWith(
+                "Gracefully shutting down server.",
+            );
         });
 
         it("should attempt to close the server on SIGINT", async () => {
@@ -330,7 +483,7 @@ describe("#start-gateway", () => {
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
             ).mockReturnValue(Promise.resolve(pretendApp));
-            const processSpy = jest.spyOn(process, "on");
+            const processSpy = jest.spyOn(process, "on").mockReturnValue(null);
             await startGateway(options, pretendApp);
             const infoSpy = jest.spyOn(options.logger, "info");
             const processCallback = processSpy.mock.calls[0][1];
@@ -339,8 +492,9 @@ describe("#start-gateway", () => {
             processCallback();
 
             // Assert
+            expect(infoSpy).toHaveBeenCalledWith("SIGINT received.");
             expect(infoSpy).toHaveBeenCalledWith(
-                "SIGINT received, shutting down server.",
+                "Gracefully shutting down server.",
             );
             expect(fakeServer.close).toHaveBeenCalled();
         });
@@ -369,7 +523,9 @@ describe("#start-gateway", () => {
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
             ).mockReturnValue(Promise.resolve(pretendApp));
-            const processOnSpy = jest.spyOn(process, "on");
+            const processOnSpy = jest
+                .spyOn(process, "on")
+                .mockReturnValue(null);
             const processExitSpy = jest
                 .spyOn(process, "exit")
                 .mockReturnValue();
@@ -413,7 +569,9 @@ describe("#start-gateway", () => {
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
             ).mockReturnValue(Promise.resolve(pretendApp));
-            const processOnSpy = jest.spyOn(process, "on");
+            const processOnSpy = jest
+                .spyOn(process, "on")
+                .mockReturnValue(null);
             const processExitSpy = jest
                 .spyOn(process, "exit")
                 .mockReturnValue();
@@ -457,7 +615,9 @@ describe("#start-gateway", () => {
                 UseAppEngineMiddleware,
                 "useAppEngineMiddleware",
             ).mockReturnValue(Promise.resolve(pretendApp));
-            const processOnSpy = jest.spyOn(process, "on");
+            const processOnSpy = jest
+                .spyOn(process, "on")
+                .mockReturnValue(null);
             const processExitSpy = jest
                 .spyOn(process, "exit")
                 .mockReturnValue();

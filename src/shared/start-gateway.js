@@ -84,20 +84,14 @@ export async function startGateway<
     });
 
     /**
-     * In this server is being run using a process manager, such as PM2, we
-     * may be asked to shutdown gracefully. We do this be listening for the
-     * SIGINT signal and then close the server. This prevents new connections
-     * from coming in and waits until the existing connections complete before
-     * the callback is fired. At which point we can safely shutdown the server.
-     * If we fail to respond then the process manager may try to forcefully
-     * shutdown the server after a timeout.
+     * Utility method for gracefully shutting down the server.
      */
-    process.on("SIGINT", () => {
+    const shutdown = () => {
         if (!gateway) {
             return;
         }
 
-        logger.info("SIGINT received, shutting down server.");
+        logger.info("Gracefully shutting down server.");
 
         try {
             gateway.close((err) => {
@@ -120,6 +114,48 @@ export async function startGateway<
             );
             process.exit(1);
         }
+    };
+
+    /**
+     * Check to see if there are ENV variables specified to limit the total
+     * memory usage of a process. We look at the GAE_MEMORY_MB and MIN_FREE_MB
+     * variables to compute out the maximum amount of memory this process
+     * should be using. Then we compare it against what is actually being used
+     * and if it's above that threshold we shutdown the server.
+     */
+    const {GAE_MEMORY_MB, MIN_FREE_MB} = process.env;
+
+    if (GAE_MEMORY_MB && MIN_FREE_MB) {
+        appWithMiddleware.use(() => {
+            const gaeMemory = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
+            const minFreeMemory = parseFloat(MIN_FREE_MB) * 1024 * 1024;
+            const maxMemory = gaeMemory - minFreeMemory;
+            const totalMemory = process.memoryUsage().rss;
+
+            // We check to see if the total memory usage for this process is
+            // higher than what's allowed and, if so, we shut it down gracefully
+            if (totalMemory >= maxMemory) {
+                logger.info(
+                    `Memory usage has gone over maximum. ` +
+                        `(used: ${totalMemory}), limit: ${maxMemory}`,
+                );
+                shutdown();
+            }
+        });
+    }
+
+    /**
+     * In this server is being run using a process manager, such as PM2, we
+     * may be asked to shutdown gracefully. We do this be listening for the
+     * SIGINT signal and then close the server. This prevents new connections
+     * from coming in and waits until the existing connections complete before
+     * the callback is fired. At which point we can safely shutdown the server.
+     * If we fail to respond then the process manager may try to forcefully
+     * shutdown the server after a timeout.
+     */
+    process.on("SIGINT", () => {
+        logger.info("SIGINT received.");
+        shutdown();
     });
 
     /**
