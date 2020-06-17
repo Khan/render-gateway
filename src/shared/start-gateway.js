@@ -58,8 +58,9 @@ export async function startGateway<
         logger,
     );
 
-    appWithMiddleware.use(() => {
+    appWithMiddleware.use((req, res, next) => {
         logger.info("BEFORE USE CATCHALL");
+        next();
     });
 
     /**
@@ -89,8 +90,9 @@ export async function startGateway<
         logger.info(`${name} running at http://${host}:${port}`);
     });
 
-    appWithMiddleware.use(() => {
+    appWithMiddleware.use((req, res, next) => {
         logger.info("AFTER USE CATCHALL");
+        next();
     });
 
     // Add in the memory monitoring middleware. We add this here so that we

@@ -25,8 +25,9 @@ export async function useAppEngineMiddleware<TReq: $Request, TRes: $Response>(
             .use(app)
             // Add the error logging middleware.
             .use(makeErrorMiddleware(logger))
-            .use(() => {
+            .use((req, res, next) => {
                 logger.info("USE CATCHALL");
+                next();
             })
     );
 }

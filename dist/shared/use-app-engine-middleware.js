@@ -23,8 +23,9 @@ async function useAppEngineMiddleware(app, mode, logger) {
   .use(await (0, _makeRequestMiddleware.makeRequestMiddleware)(mode, logger)) // Add requestID middleware
   .use((0, _makeAppEngineRequestIdMiddleware.makeAppEngineRequestIDMiddleware)(logger)) // Add the app.
   .use(app) // Add the error logging middleware.
-  .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger)).use(() => {
+  .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger)).use((req, res, next) => {
     logger.info("USE CATCHALL");
+    next();
   });
 }
 //# sourceMappingURL=use-app-engine-middleware.js.map

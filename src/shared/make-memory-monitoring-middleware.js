@@ -13,14 +13,14 @@ export const makeMemoryMonitoringMiddleware = (
     server: http$Server,
     logger: Logger,
 ) => {
-    return () => {
+    return (req, res, next) => {
         const {GAE_MEMORY_MB, MIN_FREE_MB} = process.env;
 
         logger.info(`GAE_MEMORY_MB: ${GAE_MEMORY_MB}`);
         logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
 
         if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
-            return;
+            return next();
         }
 
         logger.info("USING MIDDLEWARE");
@@ -51,5 +51,7 @@ export const makeMemoryMonitoringMiddleware = (
                     `(used: ${totalMemory}), limit: ${maxMemory}`,
             );
         }
+
+        next();
     };
 };

@@ -15,7 +15,7 @@ var _shutdown = require("./shutdown.js");
  * and if it's above that threshold we shutdown the server.
  */
 const makeMemoryMonitoringMiddleware = (server, logger) => {
-  return () => {
+  return (req, res, next) => {
     const {
       GAE_MEMORY_MB,
       MIN_FREE_MB
@@ -24,7 +24,7 @@ const makeMemoryMonitoringMiddleware = (server, logger) => {
     logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
 
     if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
-      return;
+      return next();
     }
 
     logger.info("USING MIDDLEWARE");
@@ -42,6 +42,8 @@ const makeMemoryMonitoringMiddleware = (server, logger) => {
     } else {
       logger.info(`Memory usage has NOT gone over maximum. ` + `(used: ${totalMemory}), limit: ${maxMemory}`);
     }
+
+    next();
   };
 };
 
