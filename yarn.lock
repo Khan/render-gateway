@@ -1033,13 +1033,13 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-2.0.0.tgz#d69db22c18551ef8217e59430f06a59cdcd5e9db"
   integrity sha512-r0miGK77TPem+AV3jZtUXopz9DQzeSTvsgQkamfDzkTiurkbHHTmBJQ1YQqF9Z4XjqcNKlmA9n8EvFOptNX0sg==
 
-"@google-cloud/trace-agent@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-5.0.0.tgz#8f6ac105d4e00f3c3fe411a29953d4f97ae83482"
-  integrity sha512-XvszVpESpOQM4K8AU0wLK2M4T+zl6QMlObgHG6b9Qc2RMfGUdkxR2mIVOwqgOGHy5QNmLbAb4hufHtwtqA0cEQ==
+"@google-cloud/trace-agent@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-5.1.0.tgz#589159aefb756b3adcb0f98a50693823e7e260f0"
+  integrity sha512-OPtIXET63QI1ved7Dyxmrx6o1tNJ++aX+WPm0OfNtYFCn8BPzVMBw/ZCsRmwL6nL+jY1jJ0N9teUO7abCvwpfg==
   dependencies:
     "@google-cloud/common" "^3.0.0"
-    "@opencensus/propagation-stackdriver" "0.0.21"
+    "@opencensus/propagation-stackdriver" "0.0.22"
     builtin-modules "^3.0.0"
     console-log-level "^1.4.0"
     continuation-local-storage "^3.2.1"
@@ -1398,16 +1398,16 @@
     shimmer "^1.2.0"
     uuid "^3.2.1"
 
-"@opencensus/core@^0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@opencensus/core/-/core-0.0.21.tgz#5ec92548cf2b340e46d754e9f5f44302d6de8dd4"
-  integrity sha512-2AYNNS8y5aQDhssfPlFoajlUOYuhQ9E6K3JGCcx7BzD1MYTE1YEXuqJApsjbSl6yZwkwLMky3RSNZJZDclDGmQ==
+"@opencensus/core@^0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@opencensus/core/-/core-0.0.22.tgz#dad55faf24825e7ed5e9f3d7a7795aafe15eb021"
+  integrity sha512-ErazJtivjceNoOZI1bG9giQ6cWS45J4i6iPUtlp7dLNu58OLs/v+CD0FsaPCh47XgPxAI12vbBE8Ec09ViwHNA==
   dependencies:
     continuation-local-storage "^3.2.1"
     log-driver "^1.2.7"
-    semver "^6.0.0"
+    semver "^7.0.0"
     shimmer "^1.2.0"
-    uuid "^3.2.1"
+    uuid "^8.0.0"
 
 "@opencensus/propagation-stackdriver@0.0.20":
   version "0.0.20"
@@ -1418,14 +1418,14 @@
     hex2dec "^1.0.1"
     uuid "^3.2.1"
 
-"@opencensus/propagation-stackdriver@0.0.21":
-  version "0.0.21"
-  resolved "https://registry.yarnpkg.com/@opencensus/propagation-stackdriver/-/propagation-stackdriver-0.0.21.tgz#e05d148dc9573e0ccd6285a067eed19a5dbb3a25"
-  integrity sha512-N0L1KeaP9P8gvTZCEvUU3rL1Bj/E7vpq/NOI5B3yfIIRlddQy7KaN0Ofp2WncNOi8g0y8/uWKai78N000U0HLQ==
+"@opencensus/propagation-stackdriver@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@opencensus/propagation-stackdriver/-/propagation-stackdriver-0.0.22.tgz#94f3098deac85b45f1cf827517937c465294c53e"
+  integrity sha512-eBvf/ihb1mN8Yz/ASkz8nHzuMKqygu77+VNnUeR0yEh3Nj+ykB8VVR6lK+NAFXo1Rd1cOsTmgvuXAZgDAGleQQ==
   dependencies:
-    "@opencensus/core" "^0.0.21"
+    "@opencensus/core" "^0.0.22"
     hex2dec "^1.0.1"
-    uuid "^3.2.1"
+    uuid "^8.0.0"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
