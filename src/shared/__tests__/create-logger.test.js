@@ -11,7 +11,7 @@ jest.mock("@google-cloud/logging-winston", () => ({
          * is fake.
          */
         const fakeLoggingWinston = new localWinston.transports.Console();
-        // We made this up for testing purposes. $FlowIgnore
+        // We made this up for testing purposes.
         fakeLoggingWinston.__FAKE_LOGGING_WINSTON__ = true;
         return fakeLoggingWinston;
     },

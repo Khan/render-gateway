@@ -20,15 +20,15 @@ export const applyAbortablePromisesPatch = (force?: boolean = false): void => {
      */
     if (
         !force &&
-        // $FlowIgnore
+        // $FlowIgnore[prop-missing]
         Promise.prototype.abort &&
-        // $FlowIgnore
+        // $FlowIgnore[incompatible-use]
         Promise.prototype.abort[patchedMarker]
     ) {
         return;
     }
 
-    // $FlowIgnore
+    // $FlowIgnore[prop-missing]
     delete Promise.prototype.abort;
 
     /**
@@ -39,8 +39,8 @@ export const applyAbortablePromisesPatch = (force?: boolean = false): void => {
     ourAbort[patchedMarker] = true;
 
     /**
+     * $FlowIgnore[prop-missing]
      * We still know that this doesn't exist on the promise type.
-     * $FlowIgnore
      */
     Promise.prototype.abort = ourAbort;
 };

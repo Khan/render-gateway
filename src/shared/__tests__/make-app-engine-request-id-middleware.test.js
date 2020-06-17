@@ -43,8 +43,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
@@ -68,8 +68,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
@@ -89,8 +89,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
@@ -122,8 +122,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
@@ -150,8 +150,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
@@ -180,8 +180,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
@@ -205,8 +205,8 @@ describe("#makeErrorMiddleware", () => {
 
                 // Act
                 /**
-                 * The return type of Middleware can be error or non-error
-                 * middleware and this confuses flow. $FlowIgnore
+                 * $FlowIgnore[incompatible-call] The return type of Middleware
+                 * can be error or non-error middleware and this confuses flow.
                  */
                 middleware(pretendRequest, pretendResponse, mockNext);
 
