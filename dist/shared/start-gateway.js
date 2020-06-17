@@ -63,6 +63,9 @@ async function startGateway(options, app) {
   await (0, _setupStackdriver.setupStackdriver)(mode); // Add GAE middleware.
 
   const appWithMiddleware = await (0, _useAppEngineMiddleware.useAppEngineMiddleware)(app, mode, logger);
+  appWithMiddleware.use(() => {
+    logger.info("BEFORE USE CATCHALL");
+  });
   /**
    * Start the gateway listening.
    *
@@ -86,6 +89,9 @@ async function startGateway(options, app) {
     const host = address.address;
     const port = address.port;
     logger.info(`${name} running at http://${host}:${port}`);
+  });
+  appWithMiddleware.use(() => {
+    logger.info("AFTER USE CATCHALL");
   }); // Add in the memory monitoring middleware. We add this here so that we
   // can pass in a references to the HTTP server so that it can close
   // correctly using the shutdown() method.
