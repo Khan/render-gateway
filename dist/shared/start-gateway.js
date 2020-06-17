@@ -9,6 +9,8 @@ var _useAppEngineMiddleware = require("./use-app-engine-middleware.js");
 
 var _setupStackdriver = require("./setup-stackdriver.js");
 
+var _shutdown = require("./shutdown.js");
+
 /**
  * Start a gateway application server.
  *
@@ -94,25 +96,8 @@ async function startGateway(options, app) {
    */
 
   process.on("SIGINT", () => {
-    if (!gateway) {
-      return;
-    }
-
     logger.info("SIGINT received, shutting down server.");
-
-    try {
-      gateway.close(err => {
-        if (err) {
-          logger.error(`Error shutting down server: ${err && err.message || "Unknown Error"}`);
-          process.exit(1);
-        } else {
-          process.exit(0);
-        }
-      });
-    } catch (err) {
-      logger.error(`Error closing gateway: ${err && err.message || "Unknown Error"}`);
-      process.exit(1);
-    }
+    (0, _shutdown.shutdownGateway)(logger);
   });
   /**
    * NOTE(somewhatabstract): We have seen many 502 BAD GATEWAY errors in
@@ -137,6 +122,7 @@ async function startGateway(options, app) {
    */
 
   if (gateway != null) {
+    (0, _shutdown.gatewayStarted)(gateway);
     gateway.keepAliveTimeout = keepAliveTimeout || 90000;
     /**
      * The Flow type for a Node server does not include headersTimeout.

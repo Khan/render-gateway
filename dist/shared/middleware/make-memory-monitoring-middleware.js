@@ -7,6 +7,8 @@ exports.makeMemoryMonitoringMiddleware = void 0;
 
 var _getRequestLogger = require("../get-request-logger.js");
 
+var _shutdown = require("../shutdown.js");
+
 /**
  * Check to see if there are ENV variables specified to limit the total
  * memory usage of a process. We look at the GAE_MEMORY_MB and MIN_FREE_MB
@@ -50,6 +52,7 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
         totalUsageBytes,
         maxAllowedBytes
       });
+      (0, _shutdown.shutdownGateway)(logger);
     }
 
     next();
