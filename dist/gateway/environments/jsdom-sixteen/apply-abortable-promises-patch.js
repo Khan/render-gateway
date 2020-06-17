@@ -23,11 +23,11 @@ const applyAbortablePromisesPatch = (force = false) => {
    * We know that this doesn't exist on the promise type, but it does if
    * we already patched it.
    */
-  if (!force && // $FlowIgnore
-  Promise.prototype.abort && // $FlowIgnore
+  if (!force && // $FlowIgnore[prop-missing]
+  Promise.prototype.abort && // $FlowIgnore[incompatible-use]
   Promise.prototype.abort[patchedMarker]) {
     return;
-  } // $FlowIgnore
+  } // $FlowIgnore[prop-missing]
 
 
   delete Promise.prototype.abort;
@@ -40,8 +40,8 @@ const applyAbortablePromisesPatch = (force = false) => {
 
   ourAbort[patchedMarker] = true;
   /**
+   * $FlowIgnore[prop-missing]
    * We still know that this doesn't exist on the promise type.
-   * $FlowIgnore
    */
 
   Promise.prototype.abort = ourAbort;
