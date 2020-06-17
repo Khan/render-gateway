@@ -13,13 +13,16 @@ export const makeMemoryMonitoringMiddleware = (
     server: http$Server,
     logger: Logger,
 ) => {
-    return (req, res, next) => {
-        const {GAE_MEMORY_MB, MIN_FREE_MB} = process.env;
+    const {GAE_MEMORY_MB, MIN_FREE_MB} = process.env;
 
-        logger.info(`GAE_MEMORY_MB: ${GAE_MEMORY_MB}`);
-        logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
+    logger.info(`GAE_MEMORY_MB: ${GAE_MEMORY_MB}`);
+    logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
+
+    return (req, res, next) => {
+        logger.info("INSIDE MIDDLEWARE");
 
         if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
+            logger.info("ENVs DON'T EXIST");
             return next();
         }
 

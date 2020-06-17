@@ -98,7 +98,10 @@ async function startGateway(options, app) {
   // can pass in a references to the HTTP server so that it can close
   // correctly using the shutdown() method.
 
+  logger.info("Setting up middleware...");
+
   if (gateway) {
+    logger.info("Gateway exists...");
     appWithMiddleware.use((0, _makeMemoryMonitoringMiddleware.makeMemoryMonitoringMiddleware)(gateway, logger));
   }
   /**

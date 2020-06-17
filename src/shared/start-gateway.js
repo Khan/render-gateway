@@ -98,7 +98,9 @@ export async function startGateway<
     // Add in the memory monitoring middleware. We add this here so that we
     // can pass in a references to the HTTP server so that it can close
     // correctly using the shutdown() method.
+    logger.info("Setting up middleware...");
     if (gateway) {
+        logger.info("Gateway exists...");
         appWithMiddleware.use(makeMemoryMonitoringMiddleware(gateway, logger));
     }
 

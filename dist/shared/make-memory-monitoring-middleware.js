@@ -15,15 +15,17 @@ var _shutdown = require("./shutdown.js");
  * and if it's above that threshold we shutdown the server.
  */
 const makeMemoryMonitoringMiddleware = (server, logger) => {
+  const {
+    GAE_MEMORY_MB,
+    MIN_FREE_MB
+  } = process.env;
+  logger.info(`GAE_MEMORY_MB: ${GAE_MEMORY_MB}`);
+  logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
   return (req, res, next) => {
-    const {
-      GAE_MEMORY_MB,
-      MIN_FREE_MB
-    } = process.env;
-    logger.info(`GAE_MEMORY_MB: ${GAE_MEMORY_MB}`);
-    logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
+    logger.info("INSIDE MIDDLEWARE");
 
     if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
+      logger.info("ENVs DON'T EXIST");
       return next();
     }
 
