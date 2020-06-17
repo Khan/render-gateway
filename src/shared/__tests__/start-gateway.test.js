@@ -1,12 +1,16 @@
 // @flow
+import * as Shutdown from "../shutdown.js";
 import * as UseAppEngineMiddleware from "../use-app-engine-middleware.js";
 import * as SetupStackdriver from "../setup-stackdriver.js";
 import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
+jest.mock("../shutdown.js");
+
 describe("#start-gateway", () => {
     beforeEach(() => {
         jest.spyOn(process, "on").mockImplementation(() => {});
+        jest.spyOn(Shutdown, "shutdownGateway").mockResolvedValue();
     });
 
     const GAE_SERVICE = process.env.GAE_SERVICE;
@@ -284,203 +288,43 @@ describe("#start-gateway", () => {
         });
     });
 
-    describe("close on SIGINT", () => {
-        it("should do nothing if the gateway doesn't exist", async () => {
-            // Arrange
-            const options = {
-                name: "TEST_GATEWAY",
-                port: 42,
-                host: "127.0.0.1",
-                logger: createLogger("test", "debug"),
-                mode: "test",
-            };
-            const listenMock = jest.fn().mockReturnValue(null);
-            const pretendApp = ({
-                listen: listenMock,
-            }: any);
-            jest.spyOn(
-                UseAppEngineMiddleware,
-                "useAppEngineMiddleware",
-            ).mockReturnValue(Promise.resolve(pretendApp));
-            const processSpy = jest.spyOn(process, "on");
-            await startGateway(options, pretendApp);
-            const infoSpy = jest.spyOn(options.logger, "info");
-            const processCallback = processSpy.mock.calls[0][1];
+    it("should attempt to shutdown the gateway on SIGINT", async () => {
+        // Arrange
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            host: "127.0.0.1",
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const fakeServer = {
+            address: () => ({
+                address: "ADDRESS",
+                port: "PORT",
+            }),
+            close: jest.fn(),
+        };
+        const shutdownSpy = jest.spyOn(Shutdown, "shutdownGateway");
+        const listenMock = jest.fn().mockReturnValue(fakeServer);
+        const pretendApp = ({
+            listen: listenMock,
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+        const processSpy = jest.spyOn(process, "on");
+        await startGateway(options, pretendApp);
+        const infoSpy = jest.spyOn(options.logger, "info");
+        const processCallback = processSpy.mock.calls[0][1];
 
-            // Act
-            processCallback();
+        // Act
+        processCallback();
 
-            // Assert
-            expect(infoSpy).not.toHaveBeenCalled();
-        });
-
-        it("should attempt to close the server on SIGINT", async () => {
-            // Arrange
-            const options = {
-                name: "TEST_GATEWAY",
-                port: 42,
-                host: "127.0.0.1",
-                logger: createLogger("test", "debug"),
-                mode: "test",
-            };
-            const fakeServer = {
-                address: () => ({
-                    address: "ADDRESS",
-                    port: "PORT",
-                }),
-                close: jest.fn(),
-            };
-            const listenMock = jest.fn().mockReturnValue(fakeServer);
-            const pretendApp = ({
-                listen: listenMock,
-            }: any);
-            jest.spyOn(
-                UseAppEngineMiddleware,
-                "useAppEngineMiddleware",
-            ).mockReturnValue(Promise.resolve(pretendApp));
-            const processSpy = jest.spyOn(process, "on");
-            await startGateway(options, pretendApp);
-            const infoSpy = jest.spyOn(options.logger, "info");
-            const processCallback = processSpy.mock.calls[0][1];
-
-            // Act
-            processCallback();
-
-            // Assert
-            expect(infoSpy).toHaveBeenCalledWith(
-                "SIGINT received, shutting down server.",
-            );
-            expect(fakeServer.close).toHaveBeenCalled();
-        });
-
-        it("should handle errors from closing the server", async () => {
-            // Arrange
-            const options = {
-                name: "TEST_GATEWAY",
-                port: 42,
-                host: "127.0.0.1",
-                logger: createLogger("test", "debug"),
-                mode: "test",
-            };
-            const fakeServer = {
-                address: () => ({
-                    address: "ADDRESS",
-                    port: "PORT",
-                }),
-                close: jest.fn(),
-            };
-            const listenMock = jest.fn().mockReturnValue(fakeServer);
-            const pretendApp = ({
-                listen: listenMock,
-            }: any);
-            jest.spyOn(
-                UseAppEngineMiddleware,
-                "useAppEngineMiddleware",
-            ).mockReturnValue(Promise.resolve(pretendApp));
-            const processOnSpy = jest.spyOn(process, "on");
-            const processExitSpy = jest
-                .spyOn(process, "exit")
-                .mockReturnValue();
-            await startGateway(options, pretendApp);
-            const errorSpy = jest.spyOn(options.logger, "error");
-            const processCallback = processOnSpy.mock.calls[0][1];
-            processCallback();
-            const closeCallback = fakeServer.close.mock.calls[0][0];
-
-            // Act
-            closeCallback(new Error("ERROR"));
-
-            // Assert
-            expect(errorSpy).toHaveBeenCalledWith(
-                "Error shutting down server: ERROR",
-            );
-            expect(processExitSpy).toHaveBeenCalledWith(1);
-        });
-
-        it("should close gracefully if there is no error", async () => {
-            // Arrange
-            const options = {
-                name: "TEST_GATEWAY",
-                port: 42,
-                host: "127.0.0.1",
-                logger: createLogger("test", "debug"),
-                mode: "test",
-            };
-            const fakeServer = {
-                address: () => ({
-                    address: "ADDRESS",
-                    port: "PORT",
-                }),
-                close: jest.fn(),
-            };
-            const listenMock = jest.fn().mockReturnValue(fakeServer);
-            const pretendApp = ({
-                listen: listenMock,
-            }: any);
-            jest.spyOn(
-                UseAppEngineMiddleware,
-                "useAppEngineMiddleware",
-            ).mockReturnValue(Promise.resolve(pretendApp));
-            const processOnSpy = jest.spyOn(process, "on");
-            const processExitSpy = jest
-                .spyOn(process, "exit")
-                .mockReturnValue();
-            await startGateway(options, pretendApp);
-            const errorSpy = jest.spyOn(options.logger, "error");
-            const processCallback = processOnSpy.mock.calls[0][1];
-            processCallback();
-            const closeCallback = fakeServer.close.mock.calls[0][0];
-
-            // Act
-            closeCallback();
-
-            // Assert
-            expect(errorSpy).not.toHaveBeenCalled();
-            expect(processExitSpy).toHaveBeenCalledWith(0);
-        });
-
-        it("should handle .close() throwing an error", async () => {
-            // Arrange
-            const options = {
-                name: "TEST_GATEWAY",
-                port: 42,
-                host: "127.0.0.1",
-                logger: createLogger("test", "debug"),
-                mode: "test",
-            };
-            const fakeServer = {
-                address: () => ({
-                    address: "ADDRESS",
-                    port: "PORT",
-                }),
-                close: jest.fn().mockImplementation(() => {
-                    throw new Error("CLOSE ERROR");
-                }),
-            };
-            const listenMock = jest.fn().mockReturnValue(fakeServer);
-            const pretendApp = ({
-                listen: listenMock,
-            }: any);
-            jest.spyOn(
-                UseAppEngineMiddleware,
-                "useAppEngineMiddleware",
-            ).mockReturnValue(Promise.resolve(pretendApp));
-            const processOnSpy = jest.spyOn(process, "on");
-            const processExitSpy = jest
-                .spyOn(process, "exit")
-                .mockReturnValue();
-            await startGateway(options, pretendApp);
-            const errorSpy = jest.spyOn(options.logger, "error");
-            const processCallback = processOnSpy.mock.calls[0][1];
-
-            // Act
-            processCallback();
-
-            // Assert
-            expect(errorSpy).toHaveBeenCalledWith(
-                "Error closing gateway: CLOSE ERROR",
-            );
-            expect(processExitSpy).toHaveBeenCalledWith(1);
-        });
+        // Assert
+        expect(infoSpy).toHaveBeenCalledWith(
+            "SIGINT received, shutting down server.",
+        );
+        expect(shutdownSpy).toHaveBeenCalled();
     });
 });

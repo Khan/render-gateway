@@ -2,6 +2,7 @@
 import type {$Application, $Request, $Response} from "express";
 import {useAppEngineMiddleware} from "./use-app-engine-middleware.js";
 import {setupStackdriver} from "./setup-stackdriver.js";
+import {gatewayStarted, shutdownGateway} from "./shutdown.js";
 import type {GatewayOptions, RequestWithLog} from "./types.js";
 
 /**
@@ -96,33 +97,8 @@ export async function startGateway<
      * shutdown the server after a timeout.
      */
     process.on("SIGINT", () => {
-        if (!gateway) {
-            return;
-        }
-
         logger.info("SIGINT received, shutting down server.");
-
-        try {
-            gateway.close((err) => {
-                if (err) {
-                    logger.error(
-                        `Error shutting down server: ${
-                            (err && err.message) || "Unknown Error"
-                        }`,
-                    );
-                    process.exit(1);
-                } else {
-                    process.exit(0);
-                }
-            });
-        } catch (err) {
-            logger.error(
-                `Error closing gateway: ${
-                    (err && err.message) || "Unknown Error"
-                }`,
-            );
-            process.exit(1);
-        }
+        shutdownGateway(logger);
     });
 
     /**
@@ -147,6 +123,8 @@ export async function startGateway<
      * [3] https://khanacademy.slack.com/archives/CJSE4TMQX/p1573252787333500
      */
     if (gateway != null) {
+        gatewayStarted(gateway);
+
         gateway.keepAliveTimeout = keepAliveTimeout || 90000;
 
         /**

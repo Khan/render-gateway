@@ -1,6 +1,7 @@
 // @flow
 import type {Middleware, $Request, $Response, NextFunction} from "express";
 import {getRequestLogger} from "../get-request-logger.js";
+import {shutdownGateway} from "../shutdown.js";
 import type {Logger, RequestWithLog} from "../types.js";
 
 /**
@@ -55,6 +56,7 @@ export const makeMemoryMonitoringMiddleware = <
                 totalUsageBytes,
                 maxAllowedBytes,
             });
+            shutdownGateway(logger);
         }
         next();
     };
