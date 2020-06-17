@@ -9,6 +9,10 @@ var _useAppEngineMiddleware = require("./use-app-engine-middleware.js");
 
 var _setupStackdriver = require("./setup-stackdriver.js");
 
+var _makeMemoryMonitoringMiddleware = require("./make-memory-monitoring-middleware.js");
+
+var _shutdown = require("./shutdown.js");
+
 /**
  * Start a gateway application server.
  *
@@ -82,66 +86,12 @@ async function startGateway(options, app) {
     const host = address.address;
     const port = address.port;
     logger.info(`${name} running at http://${host}:${port}`);
-  });
-  /**
-   * Utility method for gracefully shutting down the server.
-   */
+  }); // Add in the memory monitoring middleware. We add this here so that we
+  // can pass in a references to the HTTP server so that it can close
+  // correctly using the shutdown() method.
 
-  const shutdown = () => {
-    if (!gateway) {
-      return;
-    }
-
-    logger.info("Gracefully shutting down server.");
-
-    try {
-      gateway.close(err => {
-        if (err) {
-          logger.error(`Error shutting down server: ${err && err.message || "Unknown Error"}`);
-          process.exit(1);
-        } else {
-          process.exit(0);
-        }
-      });
-    } catch (err) {
-      logger.error(`Error closing gateway: ${err && err.message || "Unknown Error"}`);
-      process.exit(1);
-    }
-  };
-  /**
-   * Check to see if there are ENV variables specified to limit the total
-   * memory usage of a process. We look at the GAE_MEMORY_MB and MIN_FREE_MB
-   * variables to compute out the maximum amount of memory this process
-   * should be using. Then we compare it against what is actually being used
-   * and if it's above that threshold we shutdown the server.
-   */
-
-
-  const {
-    GAE_MEMORY_MB,
-    MIN_FREE_MB
-  } = process.env;
-  logger.info("GAE_MEMORY_MB", GAE_MEMORY_MB);
-  logger.info("MIN_FREE_MB", MIN_FREE_MB);
-
-  if (GAE_MEMORY_MB && MIN_FREE_MB) {
-    logger.info("USING MIDDLEWARE");
-    appWithMiddleware.use(() => {
-      const gaeMemory = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
-      const minFreeMemory = parseFloat(MIN_FREE_MB) * 1024 * 1024;
-      const maxMemory = gaeMemory - minFreeMemory;
-      const totalMemory = process.memoryUsage().rss;
-      logger.info(`gaeMemory: ${gaeMemory}, minFreeMemory: ${minFreeMemory}, maxMemory: ${maxMemory}, totalMemory: ${totalMemory}`); // We check to see if the total memory usage for this process is
-      // higher than what's allowed and, if so, we shut it down gracefully
-
-      if (totalMemory >= maxMemory) {
-        logger.info(`Memory usage has gone over maximum. ` + `(used: ${totalMemory}), limit: ${maxMemory}`);
-        logger.info(`Memory usage has gone over maximum. ` + `(used: ${totalMemory}), limit: ${maxMemory}`);
-        shutdown();
-      } else {
-        logger.info(`Memory usage has NOT gone over maximum. ` + `(used: ${totalMemory}), limit: ${maxMemory}`);
-      }
-    });
+  if (gateway) {
+    appWithMiddleware.use((0, _makeMemoryMonitoringMiddleware.makeMemoryMonitoringMiddleware)(gateway, logger));
   }
   /**
    * In this server is being run using a process manager, such as PM2, we
@@ -156,7 +106,10 @@ async function startGateway(options, app) {
 
   process.on("SIGINT", () => {
     logger.info("SIGINT received.");
-    shutdown();
+
+    if (gateway) {
+      (0, _shutdown.shutdown)(gateway, logger);
+    }
   });
   /**
    * NOTE(somewhatabstract): We have seen many 502 BAD GATEWAY errors in
