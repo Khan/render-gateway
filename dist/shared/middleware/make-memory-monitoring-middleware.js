@@ -26,7 +26,7 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
     MIN_FREE_MB
   });
 
-  const middleware = (req, res, next) => {
+  const middleware = async (req, res, next) => {
     const logger = (0, _getRequestLogger.getRequestLogger)(rootlogger, req);
 
     if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
@@ -38,13 +38,7 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
     const gaeLimitBytes = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
     const minFreeBytes = parseFloat(MIN_FREE_MB) * 1024 * 1024;
     const maxAllowedBytes = gaeLimitBytes - minFreeBytes;
-    const totalUsageBytes = process.memoryUsage().rss;
-    logger.info("Memory check", {
-      gaeLimitBytes,
-      minFreeBytes,
-      maxAllowedBytes,
-      totalUsageBytes
-    }); // We check to see if the total memory usage for this process is
+    const totalUsageBytes = process.memoryUsage().rss; // We check to see if the total memory usage for this process is
     // higher than what's allowed and, if so, we shut it down gracefully
 
     if (totalUsageBytes >= maxAllowedBytes) {
@@ -52,7 +46,12 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
         totalUsageBytes,
         maxAllowedBytes
       });
-      (0, _shutdown.shutdownGateway)(logger);
+      await (0, _shutdown.shutdownGateway)(logger);
+    } else {
+      logger.info("Memory usage is within bounds.", {
+        maxAllowedBytes,
+        totalUsageBytes
+      });
     }
 
     next();
