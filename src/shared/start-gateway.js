@@ -13,7 +13,10 @@ import type {GatewayOptions, RequestWithLog} from "./types.js";
 export async function startGateway<
     TReq: RequestWithLog<$Request>,
     TRes: $Response,
->(options: GatewayOptions, app: $Application<TReq, TRes>): Promise<void> {
+>(
+    options: GatewayOptions,
+    app: $Application<TReq, TRes>,
+): Promise<?http$Server> {
     const {logger, host, port, name, mode, keepAliveTimeout} = options;
 
     /**
@@ -156,4 +159,6 @@ export async function startGateway<
         const trickFlow: any = gateway;
         trickFlow.headersTimeout = gateway.keepAliveTimeout + 5000;
     }
+
+    return gateway;
 }
