@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeMemoryMonitoringMiddleware = void 0;
 
+var _getLogger = require("../ka-shared/get-logger.js");
+
 var _shutdown = require("./shutdown.js");
 
 /**
@@ -22,6 +24,7 @@ const makeMemoryMonitoringMiddleware = (server, logger) => {
   logger.info(`GAE_MEMORY_MB: ${GAE_MEMORY_MB}`);
   logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
   return (req, res, next) => {
+    const logger = (0, _getLogger.getLogger)(req);
     logger.info("INSIDE MIDDLEWARE");
 
     if (!GAE_MEMORY_MB || !MIN_FREE_MB) {

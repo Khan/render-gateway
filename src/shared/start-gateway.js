@@ -4,6 +4,7 @@ import {useAppEngineMiddleware} from "./use-app-engine-middleware.js";
 import {setupStackdriver} from "./setup-stackdriver.js";
 import {makeMemoryMonitoringMiddleware} from "./make-memory-monitoring-middleware.js";
 import {shutdown} from "./shutdown.js";
+import {getLogger} from "../ka-shared/get-logger.js";
 import type {GatewayOptions, RequestWithLog} from "./types.js";
 
 /**
@@ -59,6 +60,7 @@ export async function startGateway<
     );
 
     appWithMiddleware.use((req, res, next) => {
+        const logger = getLogger(req);
         logger.info("BEFORE USE CATCHALL");
         next();
     });
@@ -91,6 +93,7 @@ export async function startGateway<
     });
 
     appWithMiddleware.use((req, res, next) => {
+        const logger = getLogger(req);
         logger.info("AFTER USE CATCHALL");
         next();
     });

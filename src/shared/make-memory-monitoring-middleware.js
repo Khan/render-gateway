@@ -1,4 +1,5 @@
 // @flow
+import {getLogger} from "../ka-shared/get-logger.js";
 import {shutdown} from "./shutdown.js";
 import type {Logger} from "./types.js";
 
@@ -19,6 +20,8 @@ export const makeMemoryMonitoringMiddleware = (
     logger.info(`MIN_FREE_MB: ${MIN_FREE_MB}`);
 
     return (req, res, next) => {
+        const logger = getLogger(req);
+
         logger.info("INSIDE MIDDLEWARE");
 
         if (!GAE_MEMORY_MB || !MIN_FREE_MB) {

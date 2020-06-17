@@ -13,6 +13,8 @@ var _makeMemoryMonitoringMiddleware = require("./make-memory-monitoring-middlewa
 
 var _shutdown = require("./shutdown.js");
 
+var _getLogger = require("../ka-shared/get-logger.js");
+
 /**
  * Start a gateway application server.
  *
@@ -64,6 +66,7 @@ async function startGateway(options, app) {
 
   const appWithMiddleware = await (0, _useAppEngineMiddleware.useAppEngineMiddleware)(app, mode, logger);
   appWithMiddleware.use((req, res, next) => {
+    const logger = (0, _getLogger.getLogger)(req);
     logger.info("BEFORE USE CATCHALL");
     next();
   });
@@ -92,6 +95,7 @@ async function startGateway(options, app) {
     logger.info(`${name} running at http://${host}:${port}`);
   });
   appWithMiddleware.use((req, res, next) => {
+    const logger = (0, _getLogger.getLogger)(req);
     logger.info("AFTER USE CATCHALL");
     next();
   }); // Add in the memory monitoring middleware. We add this here so that we

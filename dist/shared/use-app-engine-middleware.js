@@ -13,6 +13,8 @@ var _makeRequestMiddleware = require("./make-request-middleware.js");
 
 var _makeAppEngineRequestIdMiddleware = require("./make-app-engine-request-id-middleware.js");
 
+var _getLogger = require("../ka-shared/get-logger.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -24,6 +26,7 @@ async function useAppEngineMiddleware(app, mode, logger) {
   .use((0, _makeAppEngineRequestIdMiddleware.makeAppEngineRequestIDMiddleware)(logger)) // Add the app.
   .use(app) // Add the error logging middleware.
   .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger)).use((req, res, next) => {
+    const logger = (0, _getLogger.getLogger)(req);
     logger.info("USE CATCHALL");
     next();
   });
