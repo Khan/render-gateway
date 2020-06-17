@@ -125,30 +125,25 @@ export async function startGateway<
      */
     const {GAE_MEMORY_MB, MIN_FREE_MB} = process.env;
 
-    // eslint-disable-next-line no-console
-    console.log("GAE_MEMORY_MB", GAE_MEMORY_MB);
-    // eslint-disable-next-line no-console
-    console.log("MIN_FREE_MB", MIN_FREE_MB);
+    logger.info("GAE_MEMORY_MB", GAE_MEMORY_MB);
+    logger.info("MIN_FREE_MB", MIN_FREE_MB);
 
     if (GAE_MEMORY_MB && MIN_FREE_MB) {
-        // eslint-disable-next-line no-console
-        console.log("USING MIDDLEWARE");
+        logger.info("USING MIDDLEWARE");
         appWithMiddleware.use(() => {
             const gaeMemory = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
             const minFreeMemory = parseFloat(MIN_FREE_MB) * 1024 * 1024;
             const maxMemory = gaeMemory - minFreeMemory;
             const totalMemory = process.memoryUsage().rss;
 
-            // eslint-disable-next-line no-console
-            console.log(
+            logger.info(
                 `gaeMemory: ${gaeMemory}, minFreeMemory: ${minFreeMemory}, maxMemory: ${maxMemory}, totalMemory: ${totalMemory}`,
             );
 
             // We check to see if the total memory usage for this process is
             // higher than what's allowed and, if so, we shut it down gracefully
             if (totalMemory >= maxMemory) {
-                // eslint-disable-next-line no-console
-                console.log(
+                logger.info(
                     `Memory usage has gone over maximum. ` +
                         `(used: ${totalMemory}), limit: ${maxMemory}`,
                 );
@@ -158,8 +153,7 @@ export async function startGateway<
                 );
                 shutdown();
             } else {
-                // eslint-disable-next-line no-console
-                console.log(
+                logger.info(
                     `Memory usage has NOT gone over maximum. ` +
                         `(used: ${totalMemory}), limit: ${maxMemory}`,
                 );
