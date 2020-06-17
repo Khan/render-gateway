@@ -1,9 +1,9 @@
 // @flow
 import express from "express";
 import type {$Application, $Request, $Response} from "express";
-import {makeErrorMiddleware} from "./make-error-middleware.js";
-import {makeRequestMiddleware} from "./make-request-middleware.js";
-import {makeAppEngineRequestIDMiddleware} from "./make-app-engine-request-id-middleware.js";
+import {makeErrorMiddleware} from "./middleware/make-error-middleware.js";
+import {makeRequestMiddleware} from "./middleware/make-request-middleware.js";
+import {makeAppEngineRequestIDMiddleware} from "./middleware/make-app-engine-request-id-middleware.js";
 
 import type {Logger, Runtime} from "./types.js";
 

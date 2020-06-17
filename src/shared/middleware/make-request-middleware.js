@@ -3,7 +3,7 @@ import * as lw from "@google-cloud/logging-winston";
 import expressWinston from "express-winston";
 
 import type {Middleware, $Request, $Response} from "express";
-import type {Logger, Runtime} from "./types.js";
+import type {Logger, Runtime} from "../types.js";
 
 /**
  * Create middleware for tracking requests.
