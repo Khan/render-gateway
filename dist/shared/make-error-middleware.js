@@ -15,7 +15,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const makeErrorMiddleware = logger =>
 /**
  * Express-winston types aren't parameterized, so we suppress the error.
- * $FlowIgnore
  */
 _expressWinston.default.errorLogger({
   level: "error",

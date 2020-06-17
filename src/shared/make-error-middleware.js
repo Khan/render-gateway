@@ -12,7 +12,6 @@ export const makeErrorMiddleware = <TReq: $Request, TRes: $Response>(
 ): Middleware<TReq, TRes> =>
     /**
      * Express-winston types aren't parameterized, so we suppress the error.
-     * $FlowIgnore
      */
     expressWinston.errorLogger({
         level: "error",

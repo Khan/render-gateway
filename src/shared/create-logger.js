@@ -63,7 +63,10 @@ const getTransport = (mode: Runtime): Transport => {
              * log method, or any other of its more specific logging methods.
              */
             const sink = new stream.Writable({write: () => {}});
-            // This is a hack to make our writable stream work $FlowFixMe
+            /**
+             * $FlowFixMe[cannot-write]
+             * This is a hack to make our writable stream work
+             */
             sink._write = sink.write;
             return new winston.transports.Stream({
                 format: getFormatters("test"),

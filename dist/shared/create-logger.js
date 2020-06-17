@@ -86,7 +86,11 @@ const getTransport = mode => {
        */
       const sink = new _stream.default.Writable({
         write: () => {}
-      }); // This is a hack to make our writable stream work $FlowFixMe
+      });
+      /**
+       * $FlowFixMe[cannot-write]
+       * This is a hack to make our writable stream work
+       */
 
       sink._write = sink.write;
       return new _winston.default.transports.Stream({

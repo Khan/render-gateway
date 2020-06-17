@@ -37,7 +37,7 @@ export async function startGateway<
     if (mode === "development") {
         try {
             /* eslint-disable import/no-unassigned-import */
-            // $FlowIgnore(May not be installed)
+            // $FlowIgnore[cannot-resolve-module]
             require("heapdump");
             /* eslint-enable import/no-unassigned-import */
             logger.debug(
@@ -152,7 +152,7 @@ export async function startGateway<
          * However, if we don't do the following shenanigans, it puts an error
          * on the appWithMiddleware.listen call above instead of here, and that
          * just feels wrong. I tried a $FlowIgnore here, but that doesn't work,
-         * it has to be surpressed above in that case.
+         * it has to be suppressed above in that case.
          */
         const trickFlow: any = gateway;
         trickFlow.headersTimeout = gateway.keepAliveTimeout + 5000;
