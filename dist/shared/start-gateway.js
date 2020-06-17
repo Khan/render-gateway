@@ -149,5 +149,7 @@ async function startGateway(options, app) {
     const trickFlow = gateway;
     trickFlow.headersTimeout = gateway.keepAliveTimeout + 5000;
   }
+
+  return gateway;
 }
 //# sourceMappingURL=start-gateway.js.map
