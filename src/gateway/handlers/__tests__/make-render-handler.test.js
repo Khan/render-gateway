@@ -52,10 +52,10 @@ describe("#makeRenderHandler", () => {
 
             // Act
             /**
-             * Middleware<Request, Response> can mean two different call
-             * signatures, and sadly, they both have completely different
-             * argument type ordering, which totally confused flow here.
-             * $FlowIgnore
+             * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+             * can mean two different call signatures, and sadly, they both
+             * have completely different argument type ordering, which
+             * totally confused flow here.
              */
             await handler(fakeRequest, fakeResponse);
 
@@ -91,10 +91,10 @@ describe("#makeRenderHandler", () => {
 
             // Act
             /**
-             * Middleware<Request, Response> can mean two different call
-             * signatures, and sadly, they both have completely different
-             * argument type ordering, which totally confused flow here.
-             * $FlowIgnore
+             * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+             * can mean two different call signatures, and sadly, they both
+             * have completely different argument type ordering, which
+             * totally confused flow here.
              */
             const underTest = handler(fakeRequest, fakeResponse);
 
@@ -134,10 +134,10 @@ describe("#makeRenderHandler", () => {
 
             // Act
             /**
-             * Middleware<Request, Response> can mean two different call
-             * signatures, and sadly, they both have completely different
-             * argument type ordering, which totally confused flow here.
-             * $FlowIgnore
+             * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+             * can mean two different call signatures, and sadly, they both
+             * have completely different argument type ordering, which
+             * totally confused flow here.
              */
             const underTest = handler(fakeRequest, fakeResponse);
 
@@ -179,10 +179,10 @@ describe("#makeRenderHandler", () => {
 
             // Act
             /**
-             * Middleware<Request, Response> can mean two different call
-             * signatures, and sadly, they both have completely different
-             * argument type ordering, which totally confused flow here.
-             * $FlowIgnore
+             * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+             * can mean two different call signatures, and sadly, they both
+             * have completely different argument type ordering, which
+             * totally confused flow here.
              */
             await handler(fakeRequest, fakeResponse);
 
@@ -229,10 +229,12 @@ describe("#makeRenderHandler", () => {
                     };
                     const handler = makeRenderHandler(fakeRenderEnvironment);
                     /**
-                     * Middleware<Request, Response> can mean two different call
-                     * signatures, and sadly, they both have completely different
-                     * argument type ordering, which totally confused flow here.
-                     * $FlowIgnore
+                     * $FlowIgnore[incompatible-call]
+                     *
+                     * Middleware<Request, Response> can mean two different
+                     * call signatures, and sadly, they both have completely
+                     * different argument type ordering, which totally confused
+                     * flow here.
                      */
                     await handler(fakeRequest, fakeResponse);
                     const underTest =
@@ -283,10 +285,12 @@ describe("#makeRenderHandler", () => {
                     };
                     const handler = makeRenderHandler(fakeRenderEnvironment);
                     /**
-                     * Middleware<Request, Response> can mean two different call
-                     * signatures, and sadly, they both have completely different
-                     * argument type ordering, which totally confused flow here.
-                     * $FlowIgnore
+                     * $FlowIgnore[incompatible-call]
+                     *
+                     * Middleware<Request, Response> can mean two different
+                     * call signatures, and sadly, they both have completely
+                     * different argument type ordering, which totally confused
+                     * flow here.
                      */
                     await handler(fakeRequest, fakeResponse);
                     const getHeader =
@@ -343,10 +347,12 @@ describe("#makeRenderHandler", () => {
                         });
                     const handler = makeRenderHandler(fakeRenderEnvironment);
                     /**
-                     * Middleware<Request, Response> can mean two different call
-                     * signatures, and sadly, they both have completely different
-                     * argument type ordering, which totally confused flow here.
-                     * $FlowIgnore
+                     * $FlowIgnore[incompatible-call]
+                     *
+                     * Middleware<Request, Response> can mean two different
+                     * call signatures, and sadly, they both have completely
+                     * different argument type ordering, which totally confused
+                     * flow here.
                      */
                     await handler(fakeRequest, fakeResponse);
                     const underTest =
@@ -399,10 +405,10 @@ describe("#makeRenderHandler", () => {
 
                 // Act
                 /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
+                 * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+                 * can mean two different call signatures, and sadly, they both
+                 * have completely different argument type ordering, which
+                 * totally confused flow here.
                  */
                 await handler(fakeRequest, fakeResponse);
 
@@ -463,10 +469,11 @@ describe("#makeRenderHandler", () => {
 
                     // Act
                     /**
-                     * Middleware<Request, Response> can mean two different call
-                     * signatures, and sadly, they both have completely different
-                     * argument type ordering, which totally confused flow here.
-                     * $FlowIgnore
+                     * $FlowIgnore[incompatible-call]
+                     * Middleware<Request, Response> can mean two different
+                     * call signatures, and sadly, they both have completely
+                     * different argument type ordering, which totally confused
+                     * flow here.
                      */
                     await handler(fakeRequest, fakeResponse);
 
@@ -515,10 +522,10 @@ describe("#makeRenderHandler", () => {
 
                 // Act
                 /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
+                 * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+                 * can mean two different call signatures, and sadly, they both
+                 * have completely different argument type ordering, which
+                 * totally confused flow here.
                  */
                 await handler(fakeRequest, fakeResponse);
 
@@ -556,10 +563,10 @@ describe("#makeRenderHandler", () => {
 
                 // Act
                 /**
-                 * Middleware<Request, Response> can mean two different call
-                 * signatures, and sadly, they both have completely different
-                 * argument type ordering, which totally confused flow here.
-                 * $FlowIgnore
+                 * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+                 * can mean two different call signatures, and sadly, they both
+                 * have completely different argument type ordering, which
+                 * totally confused flow here.
                  */
                 await handler(fakeRequest, fakeResponse);
 
@@ -603,10 +610,10 @@ describe("#makeRenderHandler", () => {
 
             // Act
             /**
-             * Middleware<Request, Response> can mean two different call
-             * signatures, and sadly, they both have completely different
-             * argument type ordering, which totally confused flow here.
-             * $FlowIgnore
+             * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+             * can mean two different call signatures, and sadly, they both
+             * have completely different argument type ordering, which
+             * totally confused flow here.
              */
             await handler(fakeRequest, fakeResponse);
 

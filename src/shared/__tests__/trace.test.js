@@ -135,11 +135,11 @@ describe("#trace", () => {
 
                 // Act
                 /**
-                 * Flow is going to complain because name is readonly.
+                 * $FlowExpectedError[cannot-write] Flow is going to complain
+                 * because name is readonly.
                  * We will suppress this because we want to test that runtime
                  * code is enforcing this. The idea of this test is to ensure
                  * that folks don't edit out this specific behavior.
-                 * $ExpectError
                  */
                 const underTest = () => (session.action = "NEW_ACTION!");
 

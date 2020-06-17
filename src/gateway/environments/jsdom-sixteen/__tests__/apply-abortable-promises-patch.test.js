@@ -3,7 +3,7 @@ import {applyAbortablePromisesPatch} from "../apply-abortable-promises-patch.js"
 
 describe("#applyAbortablePromisesPatch", () => {
     afterEach(() => {
-        // $FlowIgnore
+        // $FlowIgnore[prop-missing]
         delete Promise.prototype.abort;
     });
 
@@ -20,7 +20,7 @@ describe("#applyAbortablePromisesPatch", () => {
 
     it("should replace any existing abort method on the promise prototype", () => {
         // Arrange
-        // $FlowIgnore
+        // $FlowIgnore[prop-missing]
         Promise.prototype.abort = "ABORT_FN";
 
         // Act
@@ -34,7 +34,7 @@ describe("#applyAbortablePromisesPatch", () => {
     it("should not delete the existing function if it was applied by us", () => {
         // Arrange
         applyAbortablePromisesPatch();
-        // $FlowIgnore
+        // $FlowIgnore[prop-missing]
         const abortFn = Promise.prototype.abort;
 
         // Act
@@ -48,7 +48,7 @@ describe("#applyAbortablePromisesPatch", () => {
     it("should delete the existing function if it was applied by us and force is true", () => {
         // Arrange
         applyAbortablePromisesPatch();
-        // $FlowIgnore
+        // $FlowIgnore[prop-missing]
         const abortFn = Promise.prototype.abort;
 
         // Act
