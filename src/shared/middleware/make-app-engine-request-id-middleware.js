@@ -1,8 +1,8 @@
 // @flow
 import type {$Response, $Request, Middleware, NextFunction} from "express";
-import {getAppEngineRequestID} from "./get-app-engine-request-id.js";
-import {getRequestLogger} from "./get-request-logger.js";
-import type {Logger, RequestWithLog} from "./types.js";
+import {getAppEngineRequestID} from "../get-app-engine-request-id.js";
+import {getRequestLogger} from "../get-request-logger.js";
+import type {Logger, RequestWithLog} from "../types.js";
 
 /**
  * Create a middleware that sets the log property of a request to a logger
