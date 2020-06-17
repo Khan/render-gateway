@@ -23,11 +23,11 @@ export const makeMemoryMonitoringMiddleware = <
         MIN_FREE_MB,
     });
 
-    const middleware = <TReq: RequestWithLog<$Request>, TRes: $Response>(
+    const middleware: <TReq: RequestWithLog<$Request>, TRes: $Response>(
         req: TReq,
         res: TRes,
         next: NextFunction,
-    ): void => {
+    ) => Promise<void> = async (req, res, next) => {
         const logger = getRequestLogger(rootlogger, req);
 
         if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
@@ -42,13 +42,6 @@ export const makeMemoryMonitoringMiddleware = <
         const maxAllowedBytes = gaeLimitBytes - minFreeBytes;
         const totalUsageBytes = process.memoryUsage().rss;
 
-        logger.info("Memory check", {
-            gaeLimitBytes,
-            minFreeBytes,
-            maxAllowedBytes,
-            totalUsageBytes,
-        });
-
         // We check to see if the total memory usage for this process is
         // higher than what's allowed and, if so, we shut it down gracefully
         if (totalUsageBytes >= maxAllowedBytes) {
@@ -56,7 +49,12 @@ export const makeMemoryMonitoringMiddleware = <
                 totalUsageBytes,
                 maxAllowedBytes,
             });
-            shutdownGateway(logger);
+            await shutdownGateway(logger);
+        } else {
+            logger.info("Memory usage is within bounds.", {
+                maxAllowedBytes,
+                totalUsageBytes,
+            });
         }
         next();
     };

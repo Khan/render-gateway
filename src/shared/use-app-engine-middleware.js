@@ -1,5 +1,6 @@
 // @flow
 import express from "express";
+import asyncHandler from "express-async-handler";
 import type {$Application, $Request, $Response} from "express";
 import {makeErrorMiddleware} from "./middleware/make-error-middleware.js";
 import {makeRequestMiddleware} from "./middleware/make-request-middleware.js";
@@ -23,7 +24,7 @@ export async function useAppEngineMiddleware<TReq: $Request, TRes: $Response>(
             // Add requestID middleware.
             .use(makeAppEngineRequestIDMiddleware(logger))
             // Add memory monitoring.
-            .use(makeMemoryMonitoringMiddleware(logger))
+            .use(asyncHandler(makeMemoryMonitoringMiddleware(logger)))
             // Add the app.
             .use(app)
             // Add the error logging middleware.

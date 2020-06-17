@@ -30,6 +30,7 @@ export const shutdownGateway: (logger: Logger) => Promise<void> = (logger) =>
             resolve();
             return;
         }
+        logger.debug("Closing gateway.");
         startedGateway.close((err) => {
             if (err) {
                 reject(err);
