@@ -5,9 +5,17 @@ import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
 describe("#start-gateway", () => {
+    beforeEach(() => {
+        jest.spyOn(process, "on").mockImplementation(() => {});
+    });
+
     const GAE_SERVICE = process.env.GAE_SERVICE;
     afterEach(() => {
-        process.env.GAE_SERVICE = GAE_SERVICE;
+        if (process.env.GAE_SERVICE == null) {
+            delete process.env.GAE_SERVICE;
+        } else {
+            process.env.GAE_SERVICE = GAE_SERVICE;
+        }
     });
 
     it("should set GAE_SERVICE if it is not set", () => {
