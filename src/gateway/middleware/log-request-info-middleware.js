@@ -12,7 +12,7 @@ export function logRequestInfoMiddleware<Req: Request, Res: $Response>(
     res: Res,
     next: NextFunction,
 ): void {
-    getLogger().debug(`Request received: ${req.url}`, {
+    getLogger(req).debug(`Request received: ${req.url}`, {
         headers: req.headers,
         method: req.method,
         url: req.url,
