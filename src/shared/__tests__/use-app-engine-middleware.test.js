@@ -8,6 +8,7 @@ import {useAppEngineMiddleware} from "../use-app-engine-middleware.js";
 jest.mock("express");
 jest.mock("../middleware/make-error-middleware.js");
 jest.mock("../middleware/make-request-middleware.js");
+jest.mock("../middleware/make-memory-monitoring-middleware.js");
 
 describe("#useAppEngineMiddleware", () => {
     it("should use the passed application", async () => {
