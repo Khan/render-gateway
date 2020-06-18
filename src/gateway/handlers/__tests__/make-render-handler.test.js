@@ -33,6 +33,7 @@ describe("#makeRenderHandler", () => {
                     url: "THE_URL",
                 },
             };
+            const nextFn = jest.fn();
             const renderResult = {
                 body: "BODY",
                 status: 200,
@@ -57,7 +58,7 @@ describe("#makeRenderHandler", () => {
              * have completely different argument type ordering, which
              * totally confused flow here.
              */
-            await handler(fakeRequest, fakeResponse);
+            await handler(fakeRequest, fakeResponse, nextFn);
 
             // Assert
             expect(getLoggerSpy).toHaveBeenCalledWith(fakeRequest);
@@ -73,6 +74,7 @@ describe("#makeRenderHandler", () => {
             const fakeRequest: any = {
                 query: {},
             };
+            const nextFn = jest.fn();
             const renderResult = {
                 body: "BODY",
                 status: 200,
@@ -96,7 +98,7 @@ describe("#makeRenderHandler", () => {
              * have completely different argument type ordering, which
              * totally confused flow here.
              */
-            const underTest = handler(fakeRequest, fakeResponse);
+            const underTest = handler(fakeRequest, fakeResponse, nextFn);
 
             // Assert
             expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -116,6 +118,7 @@ describe("#makeRenderHandler", () => {
                     url: ["URL1", "URL2"],
                 },
             };
+            const nextFn = jest.fn();
             const renderResult = {
                 body: "BODY",
                 status: 200,
@@ -139,7 +142,7 @@ describe("#makeRenderHandler", () => {
              * have completely different argument type ordering, which
              * totally confused flow here.
              */
-            const underTest = handler(fakeRequest, fakeResponse);
+            const underTest = handler(fakeRequest, fakeResponse, nextFn);
 
             // Assert
             expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
@@ -159,6 +162,7 @@ describe("#makeRenderHandler", () => {
                     url: "THE_URL",
                 },
             };
+            const nextFn = jest.fn();
             jest.spyOn(KAShared, "trace").mockReturnValue({
                 end: jest.fn(),
                 addLabel: jest.fn(),
@@ -184,7 +188,7 @@ describe("#makeRenderHandler", () => {
              * have completely different argument type ordering, which
              * totally confused flow here.
              */
-            await handler(fakeRequest, fakeResponse);
+            await handler(fakeRequest, fakeResponse, nextFn);
 
             // Assert
             expect(fakeRenderEnvironment.render).toHaveBeenCalledWith(
@@ -213,6 +217,7 @@ describe("#makeRenderHandler", () => {
                         },
                         header: jest.fn().mockReturnValue("HEADER_VALUE"),
                     };
+                    const nextFn = jest.fn();
                     const renderResult = {
                         body: "BODY",
                         status: 200,
@@ -236,7 +241,7 @@ describe("#makeRenderHandler", () => {
                      * different argument type ordering, which totally confused
                      * flow here.
                      */
-                    await handler(fakeRequest, fakeResponse);
+                    await handler(fakeRequest, fakeResponse, nextFn);
                     const underTest =
                         fakeRenderEnvironment.render.mock.calls[0][1].getHeader;
 
@@ -269,6 +274,7 @@ describe("#makeRenderHandler", () => {
                             .mockReturnValueOnce("HEADER_VALUE2")
                             .mockReturnValueOnce("HEADER_VALUE3"),
                     };
+                    const nextFn = jest.fn();
                     const renderResult = {
                         body: "BODY",
                         status: 200,
@@ -292,7 +298,7 @@ describe("#makeRenderHandler", () => {
                      * different argument type ordering, which totally confused
                      * flow here.
                      */
-                    await handler(fakeRequest, fakeResponse);
+                    await handler(fakeRequest, fakeResponse, nextFn);
                     const getHeader =
                         fakeRenderEnvironment.render.mock.calls[0][1].getHeader;
                     const getTrackedHeaders =
@@ -329,6 +335,7 @@ describe("#makeRenderHandler", () => {
                             url: "THE_URL",
                         },
                     };
+                    const nextFn = jest.fn();
                     const renderResult = {
                         body: "BODY",
                         status: 200,
@@ -354,7 +361,7 @@ describe("#makeRenderHandler", () => {
                      * different argument type ordering, which totally confused
                      * flow here.
                      */
-                    await handler(fakeRequest, fakeResponse);
+                    await handler(fakeRequest, fakeResponse, nextFn);
                     const underTest =
                         fakeRenderEnvironment.render.mock.calls[0][1].trace;
 
@@ -384,6 +391,7 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                const nextFn = jest.fn();
                 const renderResult = {
                     body: "BODY",
                     status: 200,
@@ -410,7 +418,7 @@ describe("#makeRenderHandler", () => {
                  * have completely different argument type ordering, which
                  * totally confused flow here.
                  */
-                await handler(fakeRequest, fakeResponse);
+                await handler(fakeRequest, fakeResponse, nextFn);
 
                 // Assert
                 expect(fakeResponse.header).toHaveBeenCalledWith({
@@ -433,6 +441,7 @@ describe("#makeRenderHandler", () => {
                             url: "THE_URL",
                         },
                     };
+                    const nextFn = jest.fn();
                     const renderResult = {
                         body: "BODY",
                         status: redirectStatus,
@@ -475,7 +484,7 @@ describe("#makeRenderHandler", () => {
                      * different argument type ordering, which totally confused
                      * flow here.
                      */
-                    await handler(fakeRequest, fakeResponse);
+                    await handler(fakeRequest, fakeResponse, nextFn);
 
                     // Assert
                     expect(handleErrorSpy).toHaveBeenCalledWith(
@@ -504,6 +513,7 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                const nextFn = jest.fn();
                 const renderResult = {
                     body: "BODY",
                     status: 200,
@@ -527,7 +537,7 @@ describe("#makeRenderHandler", () => {
                  * have completely different argument type ordering, which
                  * totally confused flow here.
                  */
-                await handler(fakeRequest, fakeResponse);
+                await handler(fakeRequest, fakeResponse, nextFn);
 
                 // Assert
                 expect(fakeResponse.status).toHaveBeenCalledWith(200);
@@ -545,6 +555,7 @@ describe("#makeRenderHandler", () => {
                         url: "THE_URL",
                     },
                 };
+                const nextFn = jest.fn();
                 const renderResult = {
                     body: "BODY",
                     status: 200,
@@ -568,64 +579,155 @@ describe("#makeRenderHandler", () => {
                  * have completely different argument type ordering, which
                  * totally confused flow here.
                  */
-                await handler(fakeRequest, fakeResponse);
+                await handler(fakeRequest, fakeResponse, nextFn);
 
                 // Assert
                 expect(fakeResponse.send).toHaveBeenCalledWith("BODY");
             });
+
+            it("should call next", async () => {
+                // Arrange
+                const fakeResponse: any = {
+                    send: jest.fn().mockReturnThis(),
+                    status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest: any = {
+                    query: {
+                        url: "THE_URL",
+                    },
+                };
+                const nextFn = jest.fn();
+                const renderResult = {
+                    body: "BODY",
+                    status: 200,
+                    headers: {},
+                };
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
+                const fakeRenderEnvironment: any = {
+                    render: jest
+                        .fn()
+                        .mockReturnValue(Promise.resolve(renderResult)),
+                };
+                const handler = makeRenderHandler(fakeRenderEnvironment);
+
+                // Act
+                /**
+                 * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+                 * can mean two different call signatures, and sadly, they both
+                 * have completely different argument type ordering, which
+                 * totally confused flow here.
+                 */
+                await handler(fakeRequest, fakeResponse, nextFn);
+
+                // Assert
+                expect(nextFn).toHaveBeenCalled();
+            });
         });
 
-        it("should defer to handleError when the render callback", async () => {
-            // Arrange
-            const fakeResponse: any = {
-                send: jest.fn().mockReturnThis(),
-                status: jest.fn().mockReturnThis(),
-                header: jest.fn().mockReturnThis(),
-            };
-            const fakeRequest: any = {
-                query: {
-                    url: "THE_URL",
-                },
-            };
-            jest.spyOn(KAShared, "trace").mockReturnValue({
-                end: jest.fn(),
-                addLabel: jest.fn(),
+        describe("when render callback rejects", () => {
+            it("should defer to handleError", async () => {
+                // Arrange
+                const fakeResponse: any = {
+                    send: jest.fn().mockReturnThis(),
+                    status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest: any = {
+                    query: {
+                        url: "THE_URL",
+                    },
+                };
+                const nextFn = jest.fn();
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
+                const fakeRenderEnvironment: any = {
+                    render: jest
+                        .fn()
+                        .mockReturnValue(Promise.reject(new Error("ERROR!"))),
+                };
+                const fakeLogger = {
+                    error: jest.fn(),
+                };
+                const customErrorHandler = jest.fn();
+                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+                const handler = makeRenderHandler(
+                    fakeRenderEnvironment,
+                    customErrorHandler,
+                    "ERROR_RESPONSE",
+                );
+                const handleErrorSpy = jest.spyOn(HandleError, "handleError");
+
+                // Act
+                /**
+                 * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+                 * can mean two different call signatures, and sadly, they both
+                 * have completely different argument type ordering, which
+                 * totally confused flow here.
+                 */
+                await handler(fakeRequest, fakeResponse, nextFn);
+
+                // Assert
+                expect(handleErrorSpy).toHaveBeenCalledWith(
+                    "Render failed",
+                    customErrorHandler,
+                    "ERROR_RESPONSE",
+                    fakeRequest,
+                    fakeResponse,
+                    expect.objectContaining({message: "ERROR!"}),
+                );
             });
-            const fakeRenderEnvironment: any = {
-                render: jest
-                    .fn()
-                    .mockReturnValue(Promise.reject(new Error("ERROR!"))),
-            };
-            const fakeLogger = {
-                error: jest.fn(),
-            };
-            const customErrorHandler = jest.fn();
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
-            const handler = makeRenderHandler(
-                fakeRenderEnvironment,
-                customErrorHandler,
-                "ERROR_RESPONSE",
-            );
-            const handleErrorSpy = jest.spyOn(HandleError, "handleError");
 
-            // Act
-            /**
-             * $FlowIgnore[incompatible-call] Middleware<Request, Response>
-             * can mean two different call signatures, and sadly, they both
-             * have completely different argument type ordering, which
-             * totally confused flow here.
-             */
-            await handler(fakeRequest, fakeResponse);
+            it("should call next", async () => {
+                // Arrange
+                const fakeResponse: any = {
+                    send: jest.fn().mockReturnThis(),
+                    status: jest.fn().mockReturnThis(),
+                    header: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest: any = {
+                    query: {
+                        url: "THE_URL",
+                    },
+                };
+                const nextFn = jest.fn();
+                jest.spyOn(KAShared, "trace").mockReturnValue({
+                    end: jest.fn(),
+                    addLabel: jest.fn(),
+                });
+                const fakeRenderEnvironment: any = {
+                    render: jest
+                        .fn()
+                        .mockReturnValue(Promise.reject(new Error("ERROR!"))),
+                };
+                const fakeLogger = {
+                    error: jest.fn(),
+                };
+                const customErrorHandler = jest.fn();
+                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+                const handler = makeRenderHandler(
+                    fakeRenderEnvironment,
+                    customErrorHandler,
+                    "ERROR_RESPONSE",
+                );
 
-            // Assert
-            expect(handleErrorSpy).toHaveBeenCalledWith(
-                "Render failed",
-                customErrorHandler,
-                "ERROR_RESPONSE",
-                fakeRequest,
-                fakeResponse,
-                expect.objectContaining({message: "ERROR!"}),
-            );
+                // Act
+                /**
+                 * $FlowIgnore[incompatible-call] Middleware<Request, Response>
+                 * can mean two different call signatures, and sadly, they both
+                 * have completely different argument type ordering, which
+                 * totally confused flow here.
+                 */
+                await handler(fakeRequest, fakeResponse, nextFn);
+
+                // Assert
+                expect(nextFn).toHaveBeenCalled();
+            });
         });
     });
 });

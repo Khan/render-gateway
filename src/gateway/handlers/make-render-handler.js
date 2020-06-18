@@ -1,5 +1,5 @@
 // @flow
-import type {Middleware} from "express";
+import type {Middleware, NextFunction} from "express";
 import {getLogger, trace} from "../../ka-shared/index.js";
 import {handleError} from "./handle-error.js";
 import type {ITraceSession} from "../../shared/index.js";
@@ -150,6 +150,7 @@ export const makeRenderHandler = (
 ): Middleware<Request, Response> => (
     req: Request,
     res: Response,
+    next: NextFunction,
 ): Promise<void> =>
     renderHandler(
         renderEnvironment,
@@ -157,4 +158,4 @@ export const makeRenderHandler = (
         defaultErrorResponse,
         req,
         res,
-    );
+    ).finally(next);
