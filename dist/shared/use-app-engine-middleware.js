@@ -23,11 +23,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Apply the middleware that we want to use with Google App Engine (GAE).
  */
 async function useAppEngineMiddleware(app, mode, logger) {
-  return (0, _express.default)() // Add the request logging middleware.
+  const wrappedApp = (0, _express.default)() // Add the request logging middleware.
   .use(await (0, _makeRequestMiddleware.makeRequestMiddleware)(mode, logger)) // Add requestID middleware.
   .use((0, _makeAppEngineRequestIdMiddleware.makeAppEngineRequestIDMiddleware)(logger)) // Add the app.
   .use(app) // Add the error logging middleware.
-  .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger)) // Add memory monitoring.
-  .use((0, _expressAsyncHandler.default)((0, _makeMemoryMonitoringMiddleware.makeMemoryMonitoringMiddleware)(logger)));
+  .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger)); // Add memory monitoring, if it is supported.
+
+  const memoryMonitoringMiddleware = (0, _makeMemoryMonitoringMiddleware.makeMemoryMonitoringMiddleware)(logger);
+
+  if (memoryMonitoringMiddleware != null) {
+    return wrappedApp.use((0, _expressAsyncHandler.default)(memoryMonitoringMiddleware));
+  }
+
+  return wrappedApp;
 }
 //# sourceMappingURL=use-app-engine-middleware.js.map
