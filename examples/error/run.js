@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable import/no-commonjs */
 /**
- * This is a simple local server for testing this code works.
+ * This is a simple local server for testing what happens if rendering errors.
  */
 
 /**
@@ -13,16 +13,11 @@ const {runServer} = require("../../src/gateway/index.js");
 
 async function main() {
     const renderEnvironment = {
-        // TODO(somewhatabstract): Implement something more complete for testing.
         render: (
             url /*: string*/,
             renderAPI /*: RenderAPI*/,
         ) /*: Promise<RenderResult>*/ =>
-            Promise.resolve({
-                body: `You asked us to render ${url}`,
-                status: 200,
-                headers: {},
-            }),
+            Promise.reject(new Error(`OH NO! We couldn't render ${url}`)),
     };
 
     runServer({
