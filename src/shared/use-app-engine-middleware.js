@@ -23,11 +23,11 @@ export async function useAppEngineMiddleware<TReq: $Request, TRes: $Response>(
             .use(await makeRequestMiddleware(mode, logger))
             // Add requestID middleware.
             .use(makeAppEngineRequestIDMiddleware(logger))
-            // Add memory monitoring.
-            .use(asyncHandler(makeMemoryMonitoringMiddleware(logger)))
             // Add the app.
             .use(app)
             // Add the error logging middleware.
             .use(makeErrorMiddleware(logger))
+            // Add memory monitoring.
+            .use(asyncHandler(makeMemoryMonitoringMiddleware(logger)))
     );
 }

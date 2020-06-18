@@ -49,4 +49,4 @@ export const shutdownGateway: (logger: Logger) => Promise<void> = (logger) =>
         });
     })
         .then(() => process.exit(0))
-        .catch((err) => process.exit(1));
+        .catch(() => process.exit(1));
