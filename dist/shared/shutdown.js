@@ -43,17 +43,12 @@ const shutdownGateway = logger => new Promise((resolve, reject) => {
   startedGateway.close(err => {
     if (err) {
       const simplifiedError = (0, _extractError.extractError)(err);
-      /**
-       * $FlowIgnore[extra-arg] Flow types for winston aren't aware
-       * of the callbacks the logging functions have.
-       */
-
       logger.error("Error closing gateway", simplifiedError, () => reject());
     } else {
       logger.info("Gateway closed. Shutting down process.", () => resolve());
     }
   });
-}).then(() => process.exit(0)).catch(err => process.exit(1));
+}).then(() => process.exit(0)).catch(() => process.exit(1));
 
 exports.shutdownGateway = shutdownGateway;
 //# sourceMappingURL=shutdown.js.map
