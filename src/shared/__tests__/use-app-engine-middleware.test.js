@@ -1,11 +1,14 @@
 // @flow
 import * as Express from "express";
+import * as ExpressAsyncHandler from "express-async-handler";
 import * as MakeErrorMiddleware from "../middleware/make-error-middleware.js";
 import * as MakeAppEngineRequestIDMiddleware from "../middleware/make-app-engine-request-id-middleware.js";
 import * as MakeRequestMiddleware from "../middleware/make-request-middleware.js";
+import * as MakeMemoryMonitoringMiddleware from "../middleware/make-memory-monitoring-middleware.js";
 import {useAppEngineMiddleware} from "../use-app-engine-middleware.js";
 
 jest.mock("express");
+jest.mock("express-async-handler");
 jest.mock("../middleware/make-error-middleware.js");
 jest.mock("../middleware/make-request-middleware.js");
 jest.mock("../middleware/make-memory-monitoring-middleware.js");
@@ -151,6 +154,63 @@ describe("#useAppEngineMiddleware", () => {
         // Assert
         expect(makeRequestMiddlewareSpy).toHaveBeenCalledWith(
             "test",
+            pretendLogger,
+        );
+    });
+
+    it("should add memory management middleware wrapped with async handler", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendApp = ({}: any);
+        const newApp = ({
+            use: jest.fn(() => newApp),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(newApp);
+
+        /**
+         * To check that the middleware is what gets wrapped, we're going
+         * to mock one to just be a function that returns a string, and then
+         * mock the wrapper to return a version of that string. Then we can
+         * confirm that they were combined for our test expectation.
+         */
+        jest.spyOn(
+            MakeMemoryMonitoringMiddleware,
+            "makeMemoryMonitoringMiddleware",
+        ).mockReturnValue(() => "MEMORY_MONITOR");
+        jest.spyOn(ExpressAsyncHandler, "default").mockImplementation(
+            (pretendFn) => `ASYNC_HANDLER:${pretendFn()}`,
+        );
+
+        // Act
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
+
+        // Assert
+        expect(newApp.use).toHaveBeenCalledWith("ASYNC_HANDLER:MEMORY_MONITOR");
+    });
+
+    it("should pass logger memory management middleware", async () => {
+        // Arrange
+        const pretendLogger = ({}: any);
+        const pretendApp = ({}: any);
+        const newApp = ({
+            use: jest.fn(() => newApp),
+        }: any);
+        jest.spyOn(Express, "default").mockReturnValue(newApp);
+        const makeMemoryMonitoringMiddlewareSpy = jest
+            .spyOn(
+                MakeMemoryMonitoringMiddleware,
+                "makeMemoryMonitoringMiddleware",
+            )
+            .mockReturnValue(() => "MEMORY_MONITOR");
+        jest.spyOn(ExpressAsyncHandler, "default").mockImplementation(
+            (pretendFn) => `ASYNC_HANDLER:${pretendFn()}`,
+        );
+
+        // Act
+        await useAppEngineMiddleware(pretendApp, "test", pretendLogger);
+
+        // Assert
+        expect(makeMemoryMonitoringMiddlewareSpy).toHaveBeenCalledWith(
             pretendLogger,
         );
     });
