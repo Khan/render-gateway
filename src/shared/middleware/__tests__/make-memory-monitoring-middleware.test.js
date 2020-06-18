@@ -22,227 +22,241 @@ describe("#makeMemoryMonitoringMiddleware", () => {
         restoreEnvVar("MIN_FREE_MB", MIN_FREE_MB);
     });
 
-    it("should log the memory management environment variables used", () => {
-        // Arrange
-        process.env.GAE_MEMORY_MB = "99";
-        process.env.MIN_FREE_MB = "42";
-        const fakeLogger: any = {
-            info: jest.fn(),
-        };
+    describe("missing env vars", () => {
+        it("should log if GAE_MEMORY_MB env var is missing", async () => {
+            // Arrange
+            const fakeLogger: any = {
+                info: jest.fn(),
+                warn: jest.fn(),
+            };
+            delete process.env.GAE_MEMORY_MB;
+            process.env.MIN_FREE_MB = "42";
 
-        // Act
-        makeMemoryMonitoringMiddleware(fakeLogger);
+            // Act
+            makeMemoryMonitoringMiddleware(fakeLogger);
 
-        // Assert
-        expect(fakeLogger.info).toHaveBeenCalledWith(
-            "Creating memory monitoring middleware",
-            {
-                GAE_MEMORY_MB: "99",
-                MIN_FREE_MB: "42",
-            },
-        );
-    });
-
-    it("should return a middleware function", () => {
-        // Arrange
-        const fakeLogger: any = {
-            info: jest.fn(),
-        };
-
-        // Act
-        const result = makeMemoryMonitoringMiddleware(fakeLogger);
-
-        // Assert
-        expect(result).toBeFunction();
-    });
-
-    describe("creates middleware that", () => {
-        describe("missing env vars", () => {
-            it("should warn if GAE_MEMORY_MB env var is missing", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                delete process.env.GAE_MEMORY_MB;
-                process.env.MIN_FREE_MB = "42";
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
-
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), jest.fn());
-
-                // Assert
-                expect(fakeLogger.warn).toHaveBeenCalledWith(
-                    "Memory monitoring cannot be performed. Environment variables missing.",
-                );
-            });
-
-            it("should warn if MIN_FREE_MB env var is missing", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                delete process.env.MIN_FREE_MB;
-                process.env.GAE_MEMORY_MB = "42";
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
-
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), jest.fn());
-
-                // Assert
-                expect(fakeLogger.warn).toHaveBeenCalledWith(
-                    "Memory monitoring cannot be performed. Environment variables missing.",
-                );
-            });
-
-            it("should call next()", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                const nextFn = jest.fn();
-                delete process.env.MIN_FREE_MB;
-                delete process.env.GAE_MEMORY_MB;
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
-
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), nextFn);
-
-                // Assert
-                expect(nextFn).toHaveBeenCalledTimes(1);
-            });
+            // Assert
+            expect(fakeLogger.info).toHaveBeenCalledWith(
+                "Memory monitoring disabled. Required environment variables unavailable.",
+            );
         });
 
-        describe("memory usage within bounds", () => {
-            it("should log memory usage", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                process.env.MIN_FREE_MB = "300";
-                process.env.GAE_MEMORY_MB = "1024";
-                jest.spyOn(process, "memoryUsage").mockReturnValue({
-                    rss: 200 * 1024 * 1024,
-                });
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
+        it("should log if MIN_FREE_MB env var is missing", async () => {
+            // Arrange
+            const fakeLogger: any = {
+                info: jest.fn(),
+                warn: jest.fn(),
+            };
+            delete process.env.MIN_FREE_MB;
+            process.env.GAE_MEMORY_MB = "42";
 
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), jest.fn());
+            // Act
+            makeMemoryMonitoringMiddleware(fakeLogger);
 
-                // Assert
-                expect(fakeLogger.info).toHaveBeenCalledWith(
-                    "Memory usage is within bounds.",
-                    {
-                        totalUsageBytes: 200 * 1024 * 1024,
-                        maxAllowedBytes: 1024 * 1024 * 1024 - 300 * 1024 * 1024,
-                    },
-                );
-            });
-
-            it("should call next()", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                const nextFn = jest.fn();
-                process.env.MIN_FREE_MB = "100";
-                process.env.GAE_MEMORY_MB = "1024";
-                jest.spyOn(process, "memoryUsage").mockReturnValue({
-                    rss: 200 * 1024 * 1024,
-                });
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
-
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), nextFn);
-
-                // Assert
-                expect(nextFn).toHaveBeenCalledTimes(1);
-            });
+            // Assert
+            expect(fakeLogger.info).toHaveBeenCalledWith(
+                "Memory monitoring disabled. Required environment variables unavailable.",
+            );
         });
 
-        describe("memory usage exceeding bounds", () => {
-            it("should log memory usage warning", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                process.env.MIN_FREE_MB = "300";
-                process.env.GAE_MEMORY_MB = "1024";
-                jest.spyOn(process, "memoryUsage").mockReturnValue({
-                    rss: 800 * 1024 * 1024,
+        it("should return null if environmant variables are missing", async () => {
+            // Arrange
+            const fakeLogger: any = {
+                info: jest.fn(),
+                warn: jest.fn(),
+            };
+            delete process.env.MIN_FREE_MB;
+            delete process.env.GAE_MEMORY_MB;
+
+            // Act
+            const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
+
+            // Assert
+            expect(middleware).toBeNull();
+        });
+    });
+
+    describe("env vars present", () => {
+        it("should log the memory management environment variables used", () => {
+            // Arrange
+            process.env.GAE_MEMORY_MB = "99";
+            process.env.MIN_FREE_MB = "42";
+            const fakeLogger: any = {
+                info: jest.fn(),
+            };
+
+            // Act
+            makeMemoryMonitoringMiddleware(fakeLogger);
+
+            // Assert
+            expect(fakeLogger.info).toHaveBeenCalledWith(
+                "Creating memory monitoring middleware",
+                {
+                    GAE_MEMORY_MB: "99",
+                    MIN_FREE_MB: "42",
+                },
+            );
+        });
+
+        it("should return a middleware function", () => {
+            // Arrange
+            process.env.GAE_MEMORY_MB = "99";
+            process.env.MIN_FREE_MB = "42";
+            const fakeLogger: any = {
+                info: jest.fn(),
+            };
+
+            // Act
+            const result = makeMemoryMonitoringMiddleware(fakeLogger);
+
+            // Assert
+            expect(result).toBeFunction();
+        });
+
+        describe("creates middleware that", () => {
+            describe("memory usage within bounds", () => {
+                it("should log memory usage", async () => {
+                    // Arrange
+                    const fakeLogger: any = {
+                        info: jest.fn(),
+                        warn: jest.fn(),
+                    };
+                    process.env.MIN_FREE_MB = "300";
+                    process.env.GAE_MEMORY_MB = "1024";
+                    jest.spyOn(process, "memoryUsage").mockReturnValue({
+                        rss: 200 * 1024 * 1024,
+                    });
+                    const middleware = makeMemoryMonitoringMiddleware(
+                        fakeLogger,
+                    );
+
+                    // Act
+                    // $FlowIgnore[incompatible-call] We know this is OK.
+                    // $FlowIgnore[not-a-function] We know this is OK.
+                    await middleware(({}: any), ({}: any), jest.fn());
+
+                    // Assert
+                    expect(fakeLogger.info).toHaveBeenCalledWith(
+                        "Memory usage is within bounds.",
+                        {
+                            totalUsageBytes: 200 * 1024 * 1024,
+                            maxAllowedBytes:
+                                1024 * 1024 * 1024 - 300 * 1024 * 1024,
+                        },
+                    );
                 });
-                jest.spyOn(Shutdown, "shutdownGateway").mockResolvedValue();
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
 
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), jest.fn());
+                it("should call next()", async () => {
+                    // Arrange
+                    const fakeLogger: any = {
+                        info: jest.fn(),
+                        warn: jest.fn(),
+                    };
+                    const nextFn = jest.fn();
+                    process.env.MIN_FREE_MB = "100";
+                    process.env.GAE_MEMORY_MB = "1024";
+                    jest.spyOn(process, "memoryUsage").mockReturnValue({
+                        rss: 200 * 1024 * 1024,
+                    });
+                    const middleware = makeMemoryMonitoringMiddleware(
+                        fakeLogger,
+                    );
 
-                // Assert
-                expect(fakeLogger.warn).toHaveBeenCalledWith(
-                    "Memory usage is exceeding maximum.",
-                    {
-                        totalUsageBytes: 800 * 1024 * 1024,
-                        maxAllowedBytes: 1024 * 1024 * 1024 - 300 * 1024 * 1024,
-                    },
-                );
+                    // Act
+                    // $FlowIgnore[incompatible-call] We know this is OK.
+                    // $FlowIgnore[not-a-function] We know this is OK.
+                    await middleware(({}: any), ({}: any), nextFn);
+
+                    // Assert
+                    expect(nextFn).toHaveBeenCalledTimes(1);
+                });
             });
 
-            it("should shutdown gateway", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                process.env.MIN_FREE_MB = "300";
-                process.env.GAE_MEMORY_MB = "1024";
-                jest.spyOn(process, "memoryUsage").mockReturnValue({
-                    rss: 800 * 1024 * 1024,
+            describe("memory usage exceeding bounds", () => {
+                it("should log memory usage warning", async () => {
+                    // Arrange
+                    const fakeLogger: any = {
+                        info: jest.fn(),
+                        warn: jest.fn(),
+                    };
+                    process.env.MIN_FREE_MB = "300";
+                    process.env.GAE_MEMORY_MB = "1024";
+                    jest.spyOn(process, "memoryUsage").mockReturnValue({
+                        rss: 800 * 1024 * 1024,
+                    });
+                    jest.spyOn(Shutdown, "shutdownGateway").mockResolvedValue();
+                    const middleware = makeMemoryMonitoringMiddleware(
+                        fakeLogger,
+                    );
+
+                    // Act
+                    // $FlowIgnore[incompatible-call] We know this is OK.
+                    // $FlowIgnore[not-a-function] We know this is OK.
+                    await middleware(({}: any), ({}: any), jest.fn());
+
+                    // Assert
+                    expect(fakeLogger.warn).toHaveBeenCalledWith(
+                        "Memory usage is exceeding maximum.",
+                        {
+                            totalUsageBytes: 800 * 1024 * 1024,
+                            maxAllowedBytes:
+                                1024 * 1024 * 1024 - 300 * 1024 * 1024,
+                        },
+                    );
                 });
-                const shutdownSpy = jest
-                    .spyOn(Shutdown, "shutdownGateway")
-                    .mockResolvedValue();
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
 
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), jest.fn());
+                it("should shutdown gateway", async () => {
+                    // Arrange
+                    const fakeLogger: any = {
+                        info: jest.fn(),
+                        warn: jest.fn(),
+                    };
+                    process.env.MIN_FREE_MB = "300";
+                    process.env.GAE_MEMORY_MB = "1024";
+                    jest.spyOn(process, "memoryUsage").mockReturnValue({
+                        rss: 800 * 1024 * 1024,
+                    });
+                    const shutdownSpy = jest
+                        .spyOn(Shutdown, "shutdownGateway")
+                        .mockResolvedValue();
+                    const middleware = makeMemoryMonitoringMiddleware(
+                        fakeLogger,
+                    );
 
-                // Assert
-                expect(shutdownSpy).toHaveBeenCalledWith(fakeLogger);
-            });
+                    // Act
+                    // $FlowIgnore[incompatible-call] We know this is OK.
+                    // $FlowIgnore[not-a-function] We know this is OK.
+                    await middleware(({}: any), ({}: any), jest.fn());
 
-            it("should call next()", async () => {
-                // Arrange
-                const fakeLogger: any = {
-                    info: jest.fn(),
-                    warn: jest.fn(),
-                };
-                const nextFn = jest.fn();
-                process.env.MIN_FREE_MB = "300";
-                process.env.GAE_MEMORY_MB = "1024";
-                jest.spyOn(process, "memoryUsage").mockReturnValue({
-                    rss: 800 * 1024 * 1024,
+                    // Assert
+                    expect(shutdownSpy).toHaveBeenCalledWith(fakeLogger);
                 });
-                jest.spyOn(Shutdown, "shutdownGateway").mockResolvedValue();
-                const middleware = makeMemoryMonitoringMiddleware(fakeLogger);
 
-                // Act
-                // $FlowIgnore[incompatible-call] We know this is OK.
-                await middleware(({}: any), ({}: any), nextFn);
+                it("should call next()", async () => {
+                    // Arrange
+                    const fakeLogger: any = {
+                        info: jest.fn(),
+                        warn: jest.fn(),
+                    };
+                    const nextFn = jest.fn();
+                    process.env.MIN_FREE_MB = "300";
+                    process.env.GAE_MEMORY_MB = "1024";
+                    jest.spyOn(process, "memoryUsage").mockReturnValue({
+                        rss: 800 * 1024 * 1024,
+                    });
+                    jest.spyOn(Shutdown, "shutdownGateway").mockResolvedValue();
+                    const middleware = makeMemoryMonitoringMiddleware(
+                        fakeLogger,
+                    );
 
-                // Assert
-                expect(nextFn).toHaveBeenCalledTimes(1);
+                    // Act
+                    // $FlowIgnore[incompatible-call] We know this is OK.
+                    // $FlowIgnore[not-a-function] We know this is OK.
+                    await middleware(({}: any), ({}: any), nextFn);
+
+                    // Assert
+                    expect(nextFn).toHaveBeenCalledTimes(1);
+                });
             });
         });
     });

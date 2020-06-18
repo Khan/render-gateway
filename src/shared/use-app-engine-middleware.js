@@ -17,17 +17,20 @@ export async function useAppEngineMiddleware<TReq: $Request, TRes: $Response>(
     mode: Runtime,
     logger: Logger,
 ): Promise<$Application<TReq, TRes>> {
-    return (
-        express<TReq, TRes>()
-            // Add the request logging middleware.
-            .use(await makeRequestMiddleware(mode, logger))
-            // Add requestID middleware.
-            .use(makeAppEngineRequestIDMiddleware(logger))
-            // Add the app.
-            .use(app)
-            // Add the error logging middleware.
-            .use(makeErrorMiddleware(logger))
-            // Add memory monitoring.
-            .use(asyncHandler(makeMemoryMonitoringMiddleware(logger)))
-    );
+    const wrappedApp = express<TReq, TRes>()
+        // Add the request logging middleware.
+        .use(await makeRequestMiddleware(mode, logger))
+        // Add requestID middleware.
+        .use(makeAppEngineRequestIDMiddleware(logger))
+        // Add the app.
+        .use(app)
+        // Add the error logging middleware.
+        .use(makeErrorMiddleware(logger));
+
+    // Add memory monitoring, if it is supported.
+    const memoryMonitoringMiddleware = makeMemoryMonitoringMiddleware(logger);
+    if (memoryMonitoringMiddleware != null) {
+        return wrappedApp.use(asyncHandler(memoryMonitoringMiddleware));
+    }
+    return wrappedApp;
 }

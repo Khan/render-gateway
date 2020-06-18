@@ -16,8 +16,16 @@ export const makeMemoryMonitoringMiddleware = <
     TRes: $Response,
 >(
     rootlogger: Logger,
-): Middleware<TReq, TRes> => {
+): ?Middleware<TReq, TRes> => {
     const {GAE_MEMORY_MB, MIN_FREE_MB} = process.env;
+    if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
+        // We don't add this if these env vars aren't available.
+        rootlogger.info(
+            "Memory monitoring disabled. Required environment variables unavailable.",
+        );
+        return null;
+    }
+
     rootlogger.info(`Creating memory monitoring middleware`, {
         GAE_MEMORY_MB,
         MIN_FREE_MB,
@@ -30,13 +38,6 @@ export const makeMemoryMonitoringMiddleware = <
     ) => Promise<void> = async (req, res, next) => {
         const logger = getRequestLogger(rootlogger, req);
 
-        if (!GAE_MEMORY_MB || !MIN_FREE_MB) {
-            logger.warn(
-                "Memory monitoring cannot be performed. Environment variables missing.",
-            );
-            next();
-            return;
-        }
         const gaeLimitBytes = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
         const minFreeBytes = parseFloat(MIN_FREE_MB) * 1024 * 1024;
         const maxAllowedBytes = gaeLimitBytes - minFreeBytes;
