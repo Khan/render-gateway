@@ -34,10 +34,6 @@ export const shutdownGateway: (logger: Logger) => Promise<void> = (logger) =>
         startedGateway.close((err) => {
             if (err) {
                 const simplifiedError = extractError(err);
-                /**
-                 * $FlowIgnore[extra-arg] Flow types for winston aren't aware
-                 * of the callbacks the logging functions have.
-                 */
                 logger.error("Error closing gateway", simplifiedError, () =>
                     reject(),
                 );
