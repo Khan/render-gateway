@@ -44,7 +44,7 @@ const shutdownGateway = logger => new Promise((resolve, reject) => {
     if (err) {
       const simplifiedError = (0, _extractError.extractError)(err);
 
-      if (simplifiedError.error.includes("ERR_SERVER_NOT_RUNNING")) {
+      if (simplifiedError.error && simplifiedError.error.includes("ERR_SERVER_NOT_RUNNING")) {
         logger.info("Gateway already closed.", () => resolve());
       } else {
         logger.error("Error closing gateway", simplifiedError, () => reject());
