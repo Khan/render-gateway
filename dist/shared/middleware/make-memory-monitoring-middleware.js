@@ -34,6 +34,10 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
   });
 
   const middleware = async (req, res, next) => {
+    // We tell the client to not keep the connection alive, this will
+    // ensure that we're able to shutdown the server as soon as the
+    // request has completed.
+    res.set("Connection", "close");
     const logger = (0, _getRequestLogger.getRequestLogger)(rootlogger, req);
     const gaeLimitBytes = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
     const minFreeBytes = parseFloat(MIN_FREE_MB) * 1024 * 1024;
@@ -45,13 +49,7 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
       logger.warn("Memory usage is exceeding maximum.", {
         totalUsageBytes,
         maxAllowedBytes
-      }); // We notify the process manager that we're about to go offline
-      // so that it stops sending us new requests.
-
-      if (process.send) {
-        process.send("offline");
-      }
-
+      });
       await (0, _shutdown.shutdownGateway)(logger);
     } else {
       logger.info("Memory usage is within bounds.", {

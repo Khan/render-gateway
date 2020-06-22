@@ -85,6 +85,28 @@ describe("#shutdownGateway", () => {
         expect(fakeGateway.close).toHaveBeenCalledWith(expect.any(Function));
     });
 
+    it("should send a 'offline' message", async () => {
+        // Arrange
+        const {gatewayStarted, shutdownGateway} = require("../shutdown.js");
+        const fakeLogger: any = {
+            info: jest.fn().mockImplementation((msg, cb) => cb()),
+            error: jest.fn().mockImplementation((msg, meta, cb) => cb()),
+            debug: jest.fn(),
+        };
+        const fakeGateway: any = {
+            close: jest.fn().mockImplementation((cb) => cb()),
+        };
+        const sendSpy = jest.spyOn(process, "send").mockReturnValue(null);
+        jest.spyOn(process, "exit").mockImplementation(() => {});
+        gatewayStarted(fakeGateway);
+
+        // Act
+        await shutdownGateway(fakeLogger);
+
+        // Assert
+        expect(sendSpy).toHaveBeenCalledWith("offline");
+    });
+
     describe("when gateway close errors", () => {
         it("should log error", async () => {
             // Arrange

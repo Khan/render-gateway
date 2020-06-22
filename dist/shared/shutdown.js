@@ -39,12 +39,18 @@ const shutdownGateway = logger => new Promise((resolve, reject) => {
     return;
   }
 
-  logger.debug("Closing gateway.");
+  logger.debug("Closing gateway."); // We notify the process manager that we're about to go offline
+  // so that it stops sending us new requests.
+
+  if (process.send) {
+    process.send("offline");
+  }
+
   startedGateway.close(err => {
     if (err) {
       const simplifiedError = (0, _extractError.extractError)(err);
 
-      if (simplifiedError.error.includes("ERR_SERVER_NOT_RUNNING")) {
+      if (simplifiedError.error && simplifiedError.error.includes("ERR_SERVER_NOT_RUNNING")) {
         logger.info("Gateway already closed.", () => resolve());
       } else {
         logger.error("Error closing gateway", simplifiedError, () => reject());
@@ -52,7 +58,12 @@ const shutdownGateway = logger => new Promise((resolve, reject) => {
     } else {
       logger.info("Gateway closed. Shutting down process.", () => resolve());
     }
-  });
+  }); // If the server hasn't shutdown in 15s then we force it to shutdown
+  // This could be because of connections being kept alive
+
+  setTimeout(() => {
+    logger.error("Server failed to close. Forcing it to shutdown.", () => reject());
+  }, 15000);
 }).then(() => process.exit(0)).catch(() => process.exit(1));
 
 exports.shutdownGateway = shutdownGateway;
