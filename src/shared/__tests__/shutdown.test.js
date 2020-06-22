@@ -144,6 +144,38 @@ describe("#shutdownGateway", () => {
             // Assert
             expect(exitSpy).toHaveBeenCalledWith(1);
         });
+
+        it("should log if the gateway is already closed", async () => {
+            // Arrange
+            const {gatewayStarted, shutdownGateway} = require("../shutdown.js");
+            const fakeLogger: any = {
+                info: jest.fn().mockImplementation((msg, cb) => cb()),
+                error: jest.fn().mockImplementation((msg, meta, cb) => cb()),
+                debug: jest.fn(),
+            };
+            const fakeGateway: any = {
+                close: jest
+                    .fn()
+                    .mockImplementation((cb) =>
+                        cb(
+                            new Error(
+                                "Error [ERR_SERVER_NOT_RUNNING]: Server is not running.",
+                            ),
+                        ),
+                    ),
+            };
+            jest.spyOn(process, "exit").mockImplementation(() => {});
+            gatewayStarted(fakeGateway);
+
+            // Act
+            await shutdownGateway(fakeLogger);
+
+            // Assert
+            expect(fakeLogger.info).toHaveBeenCalledWith(
+                "Gateway already closed.",
+                expect.any(Function),
+            );
+        });
     });
 
     describe("when gateway close succeeds", () => {

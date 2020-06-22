@@ -34,9 +34,14 @@ export const shutdownGateway: (logger: Logger) => Promise<void> = (logger) =>
         startedGateway.close((err) => {
             if (err) {
                 const simplifiedError = extractError(err);
-                logger.error("Error closing gateway", simplifiedError, () =>
-                    reject(),
-                );
+
+                if (simplifiedError.error.includes("ERR_SERVER_NOT_RUNNING")) {
+                    logger.info("Gateway already closed.", () => resolve());
+                } else {
+                    logger.error("Error closing gateway", simplifiedError, () =>
+                        reject(),
+                    );
+                }
             } else {
                 logger.info("Gateway closed. Shutting down process.", () =>
                     resolve(),
