@@ -80,6 +80,21 @@ async function startGateway(options, app) {
       logger.warn(`${name} may not have started properly: ${address}`);
       return;
     }
+    /**
+     * Once the server has started up we let any process managers know
+     * that the server is now running and can safely take on new requests.
+     */
+    // Send a "ready" event for 'pm2'
+
+
+    if (process.send) {
+      process.send("ready");
+    } // Send an "online" event for 'naught'
+
+
+    if (process.send) {
+      process.send("online");
+    }
 
     const host = address.address;
     const port = address.port;
@@ -98,6 +113,17 @@ async function startGateway(options, app) {
   process.on("SIGINT", () => {
     logger.info("SIGINT received, shutting down server.");
     (0, _shutdown.shutdownGateway)(logger);
+  });
+  /**
+   * A process manager may also send us a "shutdown" message (as in the
+   * case of naught or pm2 on windows). So we want to handle that too!
+   */
+
+  process.on("message", message => {
+    if (message === "shutdown") {
+      logger.info("'shutdown' message received, shutting down server.");
+      (0, _shutdown.shutdownGateway)(logger);
+    }
   });
   /**
    * NOTE(somewhatabstract): We have seen many 502 BAD GATEWAY errors in

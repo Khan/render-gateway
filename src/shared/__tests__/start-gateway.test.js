@@ -286,6 +286,74 @@ describe("#start-gateway", () => {
                 "TEST_GATEWAY running at http://ADDRESS:PORT",
             );
         });
+
+        it("sends ready message on start", async () => {
+            // Arrange
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            const fakeServer = {
+                address: () => ({
+                    address: "ADDRESS",
+                    port: "PORT",
+                }),
+            };
+            const listenMock = jest.fn().mockReturnValue(fakeServer);
+            const pretendApp = ({
+                listen: listenMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            const sendSpy = jest.spyOn(process, "send").mockReturnValue(null);
+            await startGateway(options, pretendApp);
+            const listenCallback = listenMock.mock.calls[0][2];
+
+            // Act
+            listenCallback();
+
+            // Assert
+            expect(sendSpy).toHaveBeenCalledWith("ready");
+        });
+
+        it("sends online message on start", async () => {
+            // Arrange
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            const fakeServer = {
+                address: () => ({
+                    address: "ADDRESS",
+                    port: "PORT",
+                }),
+            };
+            const listenMock = jest.fn().mockReturnValue(fakeServer);
+            const pretendApp = ({
+                listen: listenMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            const sendSpy = jest.spyOn(process, "send").mockReturnValue(null);
+            await startGateway(options, pretendApp);
+            const listenCallback = listenMock.mock.calls[0][2];
+
+            // Act
+            listenCallback();
+
+            // Assert
+            expect(sendSpy).toHaveBeenCalledWith("online");
+        });
     });
 
     it("should attempt to shutdown the gateway on SIGINT", async () => {
@@ -326,5 +394,85 @@ describe("#start-gateway", () => {
             "SIGINT received, shutting down server.",
         );
         expect(shutdownSpy).toHaveBeenCalled();
+    });
+
+    it("should attempt to shutdown the gateway on shutdown message", async () => {
+        // Arrange
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            host: "127.0.0.1",
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const fakeServer = {
+            address: () => ({
+                address: "ADDRESS",
+                port: "PORT",
+            }),
+            close: jest.fn(),
+        };
+        const shutdownSpy = jest.spyOn(Shutdown, "shutdownGateway");
+        const listenMock = jest.fn().mockReturnValue(fakeServer);
+        const pretendApp = ({
+            listen: listenMock,
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+        const processSpy = jest.spyOn(process, "on");
+        await startGateway(options, pretendApp);
+        const infoSpy = jest.spyOn(options.logger, "info");
+        const processCallback = processSpy.mock.calls[1][1];
+
+        // Act
+        processCallback("shutdown");
+
+        // Assert
+        expect(infoSpy).toHaveBeenCalledWith(
+            "'shutdown' message received, shutting down server.",
+        );
+        expect(shutdownSpy).toHaveBeenCalled();
+    });
+
+    it("should not attempt to shutdown the gateway on another message", async () => {
+        // Arrange
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            host: "127.0.0.1",
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const fakeServer = {
+            address: () => ({
+                address: "ADDRESS",
+                port: "PORT",
+            }),
+            close: jest.fn(),
+        };
+        const shutdownSpy = jest.spyOn(Shutdown, "shutdownGateway");
+        const listenMock = jest.fn().mockReturnValue(fakeServer);
+        const pretendApp = ({
+            listen: listenMock,
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+        const processSpy = jest.spyOn(process, "on");
+        await startGateway(options, pretendApp);
+        const infoSpy = jest.spyOn(options.logger, "info");
+        const processCallback = processSpy.mock.calls[1][1];
+
+        // Act
+        processCallback("other");
+
+        // Assert
+        expect(infoSpy).not.toHaveBeenCalledWith(
+            "'shutdown' message received, shutting down server.",
+        );
+        expect(shutdownSpy).not.toHaveBeenCalled();
     });
 });
