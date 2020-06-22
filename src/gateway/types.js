@@ -52,35 +52,6 @@ export type AuthenticationOptions = {
 };
 
 /**
- * Options to configure the request caching strategy.
- */
-export type CachingStrategy = {
-    /**
-     * The superagent-cache-plugin-compatible cache that will be used as the
-     * cache implementation.
-     */
-    +provider: mixed,
-
-    /**
-     * A callback to calculate when the cached response for a given URL should
-     * expire. If this method is omitted, the cache provider's default
-     * expiration will be used. The result is given to superagent-cache-plugin
-     * and works according to its documentation.
-     *
-     * https://github.com/jpodwys/superagent-cache-plugin/tree/02e41c5b98c89318133d4736b2bd1abcc1866bab
-     */
-    +getExpiration?: (url: string) => ?number,
-
-    /**
-     * A callback used to determine if a particular URL's result should be
-     * cached or not. This defaults to only allowing JS file extensions to be
-     * stored. This callback should return null for the default behavior to
-     * apply.
-     */
-    +isCacheable?: (url: string) => ?boolean,
-};
-
-/**
  * A promise that has an abort() method.
  */
 export interface AbortablePromise<T> extends Promise<T> {

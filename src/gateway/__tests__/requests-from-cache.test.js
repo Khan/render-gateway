@@ -6,8 +6,6 @@ import {
     asUncachedRequest,
 } from "../requests-from-cache.js";
 
-jest.mock("superagent-cache-plugin");
-
 describe("#isFromCache", () => {
     it("should return true if the response FROM_CACHE_PROP_NAME property is true", () => {
         // Arrange
