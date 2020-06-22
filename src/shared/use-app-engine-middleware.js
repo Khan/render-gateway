@@ -6,6 +6,7 @@ import {makeErrorMiddleware} from "./middleware/make-error-middleware.js";
 import {makeRequestMiddleware} from "./middleware/make-request-middleware.js";
 import {makeAppEngineRequestIDMiddleware} from "./middleware/make-app-engine-request-id-middleware.js";
 import {makeMemoryMonitoringMiddleware} from "./middleware/make-memory-monitoring-middleware.js";
+import {makeCloseConnectionMiddleware} from "./middleware/make-close-connection-middleware.js";
 
 import type {Logger, Runtime} from "./types.js";
 
@@ -22,6 +23,8 @@ export async function useAppEngineMiddleware<TReq: $Request, TRes: $Response>(
         .use(await makeRequestMiddleware(mode, logger))
         // Add requestID middleware.
         .use(makeAppEngineRequestIDMiddleware(logger))
+        // Add close connection middleware.
+        .use(makeCloseConnectionMiddleware())
         // Add the app.
         .use(app)
         // Add the error logging middleware.

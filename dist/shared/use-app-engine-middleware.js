@@ -17,6 +17,8 @@ var _makeAppEngineRequestIdMiddleware = require("./middleware/make-app-engine-re
 
 var _makeMemoryMonitoringMiddleware = require("./middleware/make-memory-monitoring-middleware.js");
 
+var _makeCloseConnectionMiddleware = require("./middleware/make-close-connection-middleware.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -25,7 +27,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 async function useAppEngineMiddleware(app, mode, logger) {
   const wrappedApp = (0, _express.default)() // Add the request logging middleware.
   .use(await (0, _makeRequestMiddleware.makeRequestMiddleware)(mode, logger)) // Add requestID middleware.
-  .use((0, _makeAppEngineRequestIdMiddleware.makeAppEngineRequestIDMiddleware)(logger)) // Add the app.
+  .use((0, _makeAppEngineRequestIdMiddleware.makeAppEngineRequestIDMiddleware)(logger)) // Add close connection middleware.
+  .use((0, _makeCloseConnectionMiddleware.makeCloseConnectionMiddleware)()) // Add the app.
   .use(app) // Add the error logging middleware.
   .use((0, _makeErrorMiddleware.makeErrorMiddleware)(logger)); // Add memory monitoring, if it is supported.
 

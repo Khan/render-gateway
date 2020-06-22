@@ -36,11 +36,6 @@ export const makeMemoryMonitoringMiddleware = <
         res: TRes,
         next: NextFunction,
     ) => Promise<void> = async (req, res, next) => {
-        // We tell the client to not keep the connection alive, this will
-        // ensure that we're able to shutdown the server as soon as the
-        // request has completed.
-        res.set("Connection", "close");
-
         const logger = getRequestLogger(rootlogger, req);
 
         const gaeLimitBytes = parseFloat(GAE_MEMORY_MB) * 1024 * 1024;
