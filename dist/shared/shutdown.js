@@ -58,11 +58,11 @@ const shutdownGateway = logger => new Promise((resolve, reject) => {
     } else {
       logger.info("Gateway closed. Shutting down process.", () => resolve());
     }
-  }); // If the server hasn't shutdown in 15s then we force it to shutdown
-  // This could be because of connections being kept alive
+  }); // If the server hasn't shutdown in 20s then we log some details so
+  // that we're aware that this is happening.
 
   setTimeout(() => {
-    logger.error("Server failed to close. Forcing it to shutdown.", () => reject());
+    logger.warn("Server failed to close after 20s.");
   }, 15000);
 }).then(() => process.exit(0)).catch(() => process.exit(1));
 
