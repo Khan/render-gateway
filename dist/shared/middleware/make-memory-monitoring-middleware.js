@@ -45,7 +45,13 @@ const makeMemoryMonitoringMiddleware = rootlogger => {
       logger.warn("Memory usage is exceeding maximum.", {
         totalUsageBytes,
         maxAllowedBytes
-      });
+      }); // We notify the process manager that we're about to go offline
+      // so that it stops sending us new requests.
+
+      if (process.send) {
+        process.send("offline");
+      }
+
       await (0, _shutdown.shutdownGateway)(logger);
     } else {
       logger.info("Memory usage is within bounds.", {

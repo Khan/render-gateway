@@ -50,6 +50,11 @@ export const makeMemoryMonitoringMiddleware = <
                 totalUsageBytes,
                 maxAllowedBytes,
             });
+            // We notify the process manager that we're about to go offline
+            // so that it stops sending us new requests.
+            if (process.send) {
+                process.send("offline");
+            }
             await shutdownGateway(logger);
         } else {
             logger.info("Memory usage is within bounds.", {

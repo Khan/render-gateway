@@ -205,6 +205,34 @@ describe("#makeMemoryMonitoringMiddleware", () => {
                     );
                 });
 
+                it("should send offline message", async () => {
+                    // Arrange
+                    const fakeLogger: any = {
+                        info: jest.fn(),
+                        warn: jest.fn(),
+                    };
+                    process.env.MIN_FREE_MB = "300";
+                    process.env.GAE_MEMORY_MB = "1024";
+                    jest.spyOn(process, "memoryUsage").mockReturnValue({
+                        rss: 800 * 1024 * 1024,
+                    });
+                    jest.spyOn(Shutdown, "shutdownGateway").mockResolvedValue();
+                    const sendSpy = jest
+                        .spyOn(process, "send")
+                        .mockReturnValue(null);
+                    const middleware = makeMemoryMonitoringMiddleware(
+                        fakeLogger,
+                    );
+
+                    // Act
+                    // $FlowIgnore[incompatible-call] We know this is OK.
+                    // $FlowIgnore[not-a-function] We know this is OK.
+                    await middleware(({}: any), ({}: any), jest.fn());
+
+                    // Assert
+                    expect(sendSpy).toHaveBeenCalledWith("offline");
+                });
+
                 it("should shutdown gateway", async () => {
                     // Arrange
                     const fakeLogger: any = {
