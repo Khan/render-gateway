@@ -132,7 +132,7 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
  */
 
 
-const makeRenderHandler = (renderEnvironment, errorHandler, defaultErrorResponse) => (req, res) => renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res);
+const makeRenderHandler = (renderEnvironment, errorHandler, defaultErrorResponse) => (req, res, next) => renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res).finally(next);
 
 exports.makeRenderHandler = makeRenderHandler;
 //# sourceMappingURL=make-render-handler.js.map

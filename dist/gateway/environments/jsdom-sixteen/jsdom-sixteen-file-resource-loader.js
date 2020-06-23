@@ -53,9 +53,9 @@ class JSDOMSixteenFileResourceLoader extends _jsdom.ResourceLoader {
       try {
         const parsedURL = new URL(url);
         return _path.default.normalize(_path.default.join(this._rootFolder, parsedURL.pathname));
-      } catch (e) {
-        /* nothing */
-      } // Assume relative path
+      } catch (e) {}
+      /* nothing */
+      // Assume relative path
 
 
       return _path.default.normalize(_path.default.join(this._rootFolder, url));

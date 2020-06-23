@@ -11,8 +11,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "start:example": "bash -c 'RUNNER=\"./examples/$0/run.js\"; KA_LOG_LEVEL=silly NODE_ENV=development babel-watch \"$RUNNER\"'",
-    "start": "yarn start:example simple",
+    "example": "bash -c 'RUNNER=\"./examples/$0/run.js\"; KA_LOG_LEVEL=silly NODE_ENV=development babel-watch \"$RUNNER\"'",
+    "start": "yarn example simple",
     "clean": "rm -rf dist",
     "test": "jest --colors --config jest.config.js",
     "coverage": "jest --colors --config jest.config.js --coverage",
