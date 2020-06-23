@@ -34,7 +34,7 @@ export async function startGateway<
      * With this installed, `kill -USR2 <pid>` can be used to create a
      * heapsnapshot file of the gateway's memory.
      */
-    if (mode === "development") {
+    if (process.env.KA_ALLOW_HEAPDUMP || mode === "development") {
         try {
             /* eslint-disable import/no-unassigned-import */
             // $FlowIgnore[cannot-resolve-module]
