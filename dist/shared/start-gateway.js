@@ -41,7 +41,7 @@ async function startGateway(options, app) {
    */
 
 
-  if (mode === "development") {
+  if (process.env.KA_ALLOW_HEAPDUMP || mode === "development") {
     try {
       /* eslint-disable import/no-unassigned-import */
       // $FlowIgnore[cannot-resolve-module]
