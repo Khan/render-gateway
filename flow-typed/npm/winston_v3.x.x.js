@@ -81,7 +81,13 @@ declare type $winstonLoggerConfig<T: $winstonLevels> = {
 };
 
 declare type $winstonLogger<T: $winstonLevels> = {
-    [$Keys<T>]: (message: string, meta?: Object) => void,
+    // Start: https://github.com/Khan/render-gateway/pull/196
+    [$Keys<T>]: (
+        message: string,
+        metaOrCallback?: Object | (() => void),
+        callback?: () => void,
+    ) => void,
+    // End: https://github.com/Khan/render-gateway/pull/196
     add: ($winstonTransport) => void,
     clear: () => void,
     child: (defaultRequestMetadata: any) => $winstonLogger<T>,
