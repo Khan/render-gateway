@@ -1,13 +1,13 @@
 // @flow
 import * as Express from "express";
-import * as MakeErrorMiddleware from "../make-error-middleware.js";
-import * as MakeAppEngineRequestIDMiddleware from "../make-app-engine-request-id-middleware.js";
-import * as MakeRequestMiddleware from "../make-request-middleware.js";
+import * as MakeErrorMiddleware from "../middleware/make-error-middleware.js";
+import * as MakeAppEngineRequestIDMiddleware from "../middleware/make-app-engine-request-id-middleware.js";
+import * as MakeRequestMiddleware from "../middleware/make-request-middleware.js";
 import {useAppEngineMiddleware} from "../use-app-engine-middleware.js";
 
 jest.mock("express");
-jest.mock("../make-error-middleware.js");
-jest.mock("../make-request-middleware.js");
+jest.mock("../middleware/make-error-middleware.js");
+jest.mock("../middleware/make-request-middleware.js");
 
 describe("#useAppEngineMiddleware", () => {
     it("should use the passed application", async () => {

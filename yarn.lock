@@ -7634,11 +7634,6 @@ stubs@^3.0.0:
   resolved "https://registry.yarnpkg.com/stubs/-/stubs-3.0.0.tgz#e8d2ba1fa9c90570303c030b6900f7d5f89abe5b"
   integrity sha1-6NK6H6nJBXAwPAMLaQD31fiavls=
 
-superagent-cache-plugin@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/superagent-cache-plugin/-/superagent-cache-plugin-2.1.0.tgz#5bd58a6ab11b6f33625422c660f8f0ff2e6de643"
-  integrity sha512-279uTBO5MQxR/4Ztdoef3+MQxbXG3ypatMrtLg1nld97Aq5GTEULPEKAvfJFy45hhnrGJR/xXsPhIHwmpnyNrw==
-
 superagent@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/superagent/-/superagent-5.2.2.tgz#6ff726c5642795b2c27009e92687c8e69a6bb07d"

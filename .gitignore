@@ -4,6 +4,9 @@
 logs
 *.log
 
+# Memory dumps
+*.heapsnapshot
+
 # Runtime data
 pids
 *.pid
