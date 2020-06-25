@@ -56,7 +56,8 @@ async function renderHandler(
         const renderAPI: RenderAPI = {
             trace: traceFn,
             logger,
-            headers: req.headers,
+            // Passthrough the request headers to the render environment
+            headers: {...req.headers},
         };
 
         /**
