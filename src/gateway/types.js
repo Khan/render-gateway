@@ -58,16 +58,6 @@ export interface AbortablePromise<T> extends Promise<T> {
     abort: () => void;
 }
 
-/**
- * Callback to retrieve the value of a header.
- *
- * @param {string} name The case insensitive name of the header,
- * e.g. User-Agent.
- * @returns {?string} The value of the header or null, if the header was not
- * in the request.
- */
-export type GetHeaderCallback = (name: string) => ?string;
-
 export interface TraceCallback {
     /**
      * Begin a trace session.
@@ -78,13 +68,6 @@ export interface TraceCallback {
      * indicate when the session is finished.
      */
     (action: string, message: string): ITraceSession;
-}
-
-export interface GetTrackedHeadersCallback {
-    /**
-     * Get the headers that have been tracked and their values.
-     */
-    (): $ReadOnly<{[header: string]: string, ...}>;
 }
 
 /**
