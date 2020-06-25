@@ -21,30 +21,11 @@ var _handleError = require("./handle-error.js");
 async function renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res) {
   const logger = (0, _index.getLogger)(req);
   /**
-   * We track header access and provide an API to find out which headers were
-   * accessed. This allows service implementations and their rendering code
-   * to properly generate a Vary header or work out what data a page should
-   * embed so that they can implement effective caching and hydration
-   * strategies. We must mark all headers as being tracked, even those that
-   * don't exist, as their non-existence is also important for Varying on.
-   */
-
-  const trackedHeaders = {};
-
-  const trackHeaderLookup = name => {
-    const headerValue = req.header(name);
-    trackedHeaders[name] = headerValue;
-    return headerValue;
-  };
-
-  const getTrackedHeaders = () => Object.assign({}, trackedHeaders);
-  /**
    * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
    * sessions open on rejection (or otherwise).
    *
    * For now, we'll assume callers will tidy up.
    */
-
 
   const traceFn = (action, message) => (0, _index.trace)(action, message, req);
   /**
@@ -69,10 +50,9 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
      * Put together the API we make available when rendering.
      */
     const renderAPI = {
-      getHeader: trackHeaderLookup,
       trace: traceFn,
-      getTrackedHeaders,
-      logger
+      logger,
+      headers: req.headers
     };
     /**
      * Defer this bit to the render callback.
