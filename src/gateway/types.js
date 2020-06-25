@@ -133,7 +133,7 @@ export type RenderAPI = {
      * A dict of headers that've come from the client.
      *
      * Access of these headers should be tracked and a Vary header should be
-     * set based on their access.
+     * set based on their access (even if they don't exist).
      */
     headers: {[header: string]: string, ...},
 
