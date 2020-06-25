@@ -976,10 +976,10 @@
     retry-request "^4.1.1"
     teeny-request "^6.0.3"
 
-"@google-cloud/debug-agent@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.0.0.tgz#d3039dcab1deb1eb702ab8c12227f073018abe57"
-  integrity sha512-iCBS2JmXHLGs1AGnGpfWr9IStY/iR5eNTpKaugORd5Cn2yD5tcm/rjK8dr7FKW9qh1yu4KY4eMhaUbVu8Owr1A==
+"@google-cloud/debug-agent@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.1.0.tgz#733aee4ab4eef1761749e176505812858eb8c736"
+  integrity sha512-uEkoK8P694LLBKbpb9WYnM7qnkYvMaySW2hJHieKheNboJ/MJiv4gcpBlFhuNQrFtzrY4ngiFZXNhnrmJOwsvw==
   dependencies:
     "@google-cloud/common" "^3.0.0"
     acorn "^7.0.0"
@@ -1782,12 +1782,7 @@ acorn-walk@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.1.1.tgz#345f0dffad5c735e7373d2fec9a1023e6a44b83e"
   integrity sha512-wdlPY2tm/9XBr7QkKlq0WQVgiuGTX6YWPyRyBviSoScBuLfTVQhvwg6wJ369GJ/1nPfTLMfnrFIfjqVg6d+jQQ==
 
-acorn@^7.0.0, acorn@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.1.1.tgz#e35668de0b402f359de515c5482a1ab9f89a69bf"
-  integrity sha512-add7dgA5ppRPxCFJoAGfMDi7PIBXq1RtGo7BhbLaxwrXPOmw8gq48Y9ozT01hUKy9byMjlR20EJhu5zlkErEkg==
-
-acorn@^7.2.0:
+acorn@^7.0.0, acorn@^7.1.1, acorn@^7.2.0:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.3.1.tgz#85010754db53c3fbaf3b9ea3e083aa5c5d147ffd"
   integrity sha512-tLc0wSnatxAQHVHUapaHdz72pi9KUyHjq5KyHjGg9Y8Ifdc79pTh2XvI6I1/chZbnM7QtNKzh66ooDogPZSleA==
