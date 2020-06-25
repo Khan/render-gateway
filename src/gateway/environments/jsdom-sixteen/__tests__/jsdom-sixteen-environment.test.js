@@ -38,7 +38,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeConfiguration = {
@@ -74,7 +74,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeLoader: any = {
@@ -114,7 +114,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeConfiguration = {
@@ -149,7 +149,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -195,7 +195,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -229,7 +229,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -263,7 +263,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -307,7 +307,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {};
@@ -357,7 +357,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {};
@@ -400,7 +400,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {};
@@ -453,7 +453,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {};
@@ -504,7 +504,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -560,7 +560,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {};
@@ -607,7 +607,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -671,7 +671,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -729,7 +729,7 @@ describe("JSDOMSixteenEnvironment", () => {
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -788,7 +788,7 @@ window["__register__"](fakeRender);
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -845,7 +845,7 @@ window["__register__"](fakeRender);
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -907,7 +907,7 @@ window["__register__"](fakeRender);
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -967,7 +967,7 @@ window["__register__"](fakeRender);
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -1041,7 +1041,7 @@ window["__register__"](fakeRender);
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
@@ -1118,7 +1118,7 @@ window["__register__"](fakeRender);
             };
             const fakeRenderAPI: any = {
                 trace: jest.fn().mockReturnValue(fakeTraceSession),
-                getHeader: jest.fn(),
+                headers: {},
                 logger: fakeLogger,
             };
             const fakeResourceLoader: any = {
