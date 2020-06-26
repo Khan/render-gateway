@@ -135,7 +135,7 @@ export type RenderAPI = {
      * Access of these headers should be tracked and a Vary header should be
      * set based on their access (even if they don't exist).
      */
-    +headers: {+[header: string]: string},
+    +headers: {+[header: string]: string, ...},
 
     /**
      * Callback to start a trace session for tracing an operation.
