@@ -1056,6 +1056,7 @@ function fakeRender() {
 
 window["__register__"](fakeRender);
 `),
+                close: jest.fn(),
             };
             const afterEnvCloseable = {
                 close: () => {
@@ -1100,6 +1101,7 @@ window["__register__"](fakeRender);
             // Assert
             expect(fakeWindow.close).toHaveBeenCalled();
             expect(fakeGate.close).toHaveBeenCalled();
+            expect(fakeResourceLoader.close).toHaveBeenCalled();
         });
 
         it.each([
