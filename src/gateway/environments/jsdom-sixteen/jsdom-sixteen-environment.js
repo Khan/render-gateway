@@ -138,7 +138,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                     } catch (e) {
                         const simplifiedError = extractError(e);
                         logger.error(
-                            `Closeable encountered an error during resource loader close: ${
+                            `Closeable encountered an error: ${
                                 simplifiedError.error || ""
                             }`,
                             {
@@ -201,6 +201,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                 url,
                 renderAPI,
             );
+            closeables.push(resourceLoader);
 
             // Let's get those files!
             const files = await this._retrieveTargetFiles(

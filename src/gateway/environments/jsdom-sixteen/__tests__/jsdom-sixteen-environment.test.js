@@ -1025,7 +1025,7 @@ window["__register__"](fakeRender);
 
             // Assert
             expect(fakeLogger.error).toHaveBeenCalledWith(
-                "Closeable encountered an error during resource loader close: Error: AFTER ENV GO BOOM ON CLOSE!",
+                "Closeable encountered an error: Error: AFTER ENV GO BOOM ON CLOSE!",
                 expect.any(Object),
             );
         });
