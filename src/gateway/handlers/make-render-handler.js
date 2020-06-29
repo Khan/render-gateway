@@ -8,6 +8,7 @@ import type {
     Response,
     IRenderEnvironment,
     RenderAPI,
+    GetTrackedHeadersCallback,
     CustomErrorHandlerFn,
 } from "../types.js";
 
@@ -28,6 +29,23 @@ async function renderHandler(
     res: Response,
 ): Promise<void> {
     const logger = getLogger(req);
+
+    /**
+     * We track header access and provide an API to find out which headers were
+     * accessed. This allows service implementations and their rendering code
+     * to properly generate a Vary header or work out what data a page should
+     * embed so that they can implement effective caching and hydration
+     * strategies. We must mark all headers as being tracked, even those that
+     * don't exist, as their non-existence is also important for Varying on.
+     */
+    const trackedHeaders = {};
+    const trackHeaderLookup = (name: string): ?string => {
+        const headerValue = req.header(name);
+        trackedHeaders[name] = headerValue;
+        return headerValue;
+    };
+    const getTrackedHeaders: GetTrackedHeadersCallback = () =>
+        Object.assign({}, trackedHeaders);
 
     /**
      * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
@@ -54,10 +72,10 @@ async function renderHandler(
          * Put together the API we make available when rendering.
          */
         const renderAPI: RenderAPI = {
+            getHeader: trackHeaderLookup,
             trace: traceFn,
+            getTrackedHeaders,
             logger,
-            // Passthrough the request headers
-            headers: {...req.headers},
         };
 
         /**
