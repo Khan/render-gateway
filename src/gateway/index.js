@@ -14,6 +14,7 @@ export type {
     AbortablePromise,
     IRenderEnvironment,
     TraceCallback,
+    GetHeaderCallback,
     RenderAPI,
     RenderResult,
     ErrorResult,
