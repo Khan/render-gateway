@@ -89,8 +89,9 @@ class JSDOMSixteenEnvironment {
          * We are going to need a resource loader so that we can obtain files
          * both inside and outside the JSDOM VM.
          */
-        const resourceLoader = this._configuration.getResourceLoader(url, renderAPI); // Let's get those files!
+        const resourceLoader = this._configuration.getResourceLoader(url, renderAPI);
 
+        closeables.push(resourceLoader); // Let's get those files!
 
         const files = await this._retrieveTargetFiles(url, renderAPI, resourceLoader);
         /**
@@ -254,7 +255,7 @@ class JSDOMSixteenEnvironment {
             (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
           } catch (e) {
             const simplifiedError = (0, _index.extractError)(e);
-            logger.error(`Closeable encountered an error during resource loader close: ${simplifiedError.error || ""}`, _objectSpread({}, simplifiedError));
+            logger.error(`Closeable encountered an error: ${simplifiedError.error || ""}`, _objectSpread({}, simplifiedError));
           }
         }
         /**
