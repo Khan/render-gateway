@@ -4,9 +4,8 @@ import type {Logger} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
     CloseableResourceLoader,
-    IGate,
-    ICloseable,
 } from "./types.js";
+import type {ICloseable, IGate} from "../shared/types.js";
 import type {IRenderEnvironment, RenderAPI, RenderResult} from "../../types.js";
 
 interface RenderCallbackFn {
@@ -249,7 +248,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
             const tmpFnName = "__tmp_patchTimers";
             const {
                 patchAgainstDanglingTimers,
-            } = require("./patch-against-dangling-timers.js");
+            } = require("../shared/patch-against-dangling-timers.js");
             vmContext[tmpFnName] = patchAgainstDanglingTimers;
             const timerGateAPI: IGate = this._runScript(
                 vmContext,

@@ -2,12 +2,12 @@
 import path from "path";
 import * as JSDOM from "jsdom16";
 
-import * as ApplyAbortablePromisesPatch from "../apply-abortable-promises-patch.js";
+import * as ApplyAbortablePromisesPatch from "../../shared/apply-abortable-promises-patch.js";
 
 import {JSDOMSixteenFileResourceLoader} from "../jsdom-sixteen-file-resource-loader.js";
 
 jest.mock("jsdom16");
-jest.mock("../apply-abortable-promises-patch.js");
+jest.mock("../../shared/apply-abortable-promises-patch.js");
 
 describe("JSDOMSixteenFileResourceLoader", () => {
     describe("#constructor", () => {

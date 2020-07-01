@@ -10,7 +10,7 @@ import {
     request,
     abortInFlightRequests,
 } from "../../request.js";
-import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
+import {applyAbortablePromisesPatch} from "../shared/apply-abortable-promises-patch.js";
 
 import type {RequestOptions, RenderAPI} from "../../types.js";
 

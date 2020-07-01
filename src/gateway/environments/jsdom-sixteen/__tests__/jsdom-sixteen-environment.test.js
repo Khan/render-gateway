@@ -2,12 +2,12 @@
 import vm from "vm";
 import * as JSDOM from "jsdom16";
 import * as CreateVirtualConsole from "../create-virtual-console.js";
-import * as PatchAgainstDanglingTimers from "../patch-against-dangling-timers.js";
+import * as PatchAgainstDanglingTimers from "../../shared/patch-against-dangling-timers.js";
 import {JSDOMSixteenEnvironment} from "../jsdom-sixteen-environment.js";
 
 jest.mock("jsdom16");
 jest.mock("../create-virtual-console.js");
-jest.mock("../patch-against-dangling-timers.js");
+jest.mock("../../shared/patch-against-dangling-timers.js");
 
 describe("JSDOMSixteenEnvironment", () => {
     beforeEach(() => {
