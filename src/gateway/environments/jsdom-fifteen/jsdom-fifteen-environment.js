@@ -1,4 +1,5 @@
 // @flow
+import type {JSDOM} from "jsdom15";
 import {extractError} from "../../../shared/index.js";
 import type {Logger} from "../../../shared/index.js";
 import type {
@@ -156,14 +157,10 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
         });
     }
 
-    _runScript(
-        vmContext: vm$Context,
-        script: string,
-        options?: vm$ScriptOptions,
-    ): any {
+    _runScript(jsdom: JSDOM, script: string, options?: vm$ScriptOptions): any {
         const {Script} = require("vm");
         const realScript = new Script(script, options);
-        return realScript.runInContext(vmContext);
+        return jsdom.runVMScript(realScript);
     }
 
     /**
@@ -232,14 +229,10 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
              * wrapper. As part of that wrapper, we want to make it easier to
              * run scripts (like our rendering JS code) within the VM context.
              * So, let's create a helper for that.
-             *
-             * We cast the context to any, because otherwise it is typed as an
-             * empty object, which makes life annoying.
              */
-            const vmContext: any = jsdomInstance.getInternalVMContext();
 
             /**
-             * Next, we want to patch timers so we can make sure they don't
+             * We want to patch timers so we can make sure they don't
              * fire after we are done (and so we can catch dangling timers if
              * necessary). To do this, we are going to hang the timer API off
              * the vmContext and then execute it from inside the context.
@@ -249,12 +242,12 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
             const {
                 patchAgainstDanglingTimers,
             } = require("../shared/patch-against-dangling-timers.js");
-            vmContext[tmpFnName] = patchAgainstDanglingTimers;
+            jsdomInstance.window[tmpFnName] = patchAgainstDanglingTimers;
             const timerGateAPI: IGate = this._runScript(
-                vmContext,
+                jsdomInstance,
                 `${tmpFnName}(window);`,
             );
-            delete vmContext[tmpFnName];
+            delete jsdomInstance.window[tmpFnName];
             closeables.push(timerGateAPI);
 
             /**
@@ -266,7 +259,7 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
                 url,
                 files.urls,
                 renderAPI,
-                vmContext,
+                jsdomInstance.window,
             );
             closeables.push(afterRenderTidyUp);
 
@@ -276,14 +269,16 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
              */
             const {registrationCallbackName} = this._configuration;
             const registeredCbName = "__registeredCallback";
-            vmContext[registrationCallbackName] = (
+            jsdomInstance.window[registrationCallbackName] = (
                 cb: RenderCallbackFn,
             ): void => {
-                vmContext[registrationCallbackName][registeredCbName] = cb;
+                (jsdomInstance.window[registrationCallbackName]: any)[
+                    registeredCbName
+                ] = cb;
             };
             closeables.push({
                 close: () => {
-                    delete vmContext[registrationCallbackName];
+                    delete jsdomInstance.window[registrationCallbackName];
                 },
             });
 
@@ -293,7 +288,7 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
              * We pass the filename here so we can get some nicer stack traces.
              */
             for (const {content, url} of files.files) {
-                this._runScript(vmContext, content, {filename: url});
+                this._runScript(jsdomInstance, content, {filename: url});
             }
 
             /**
@@ -301,8 +296,9 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
              * Let's assert that and then invoke the render process.
              */
             if (
-                typeof vmContext[registrationCallbackName][registeredCbName] !==
-                "function"
+                typeof (jsdomInstance.window[registrationCallbackName]: any)[
+                    registeredCbName
+                ] !== "function"
             ) {
                 throw new Error("No render callback was registered.");
             }
@@ -311,7 +307,7 @@ export class JSDOMFifteenEnvironment implements IRenderEnvironment {
              * And now we run the registered callback inside the VM.
              */
             const result: RenderResult = await this._runScript(
-                vmContext,
+                jsdomInstance,
                 `
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
     cb();`,

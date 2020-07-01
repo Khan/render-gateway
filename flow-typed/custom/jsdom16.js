@@ -1,26 +1,26 @@
 // flow-typed signature: 6393943152251b303dd7a2ad2a2fff94
-// flow-typed version: <<STUB>>/jsdom_v15.1.1/flow_v0.108.0
+// flow-typed version: <<STUB>>/jsdom_v16.2.2/flow_v0.108.0
 
 import type {MarkupData} from "parse5";
 import type {CookieJar} from "tough-cookie";
 
-declare export class jsdom$JSDOM {
+declare export class jsdom16$JSDOM {
     static fromURL(
         url: string,
-        options?: jsdom$FromUrlOptions,
-    ): Promise<jsdom$JSDOM>;
+        options?: jsdom16$FromUrlOptions,
+    ): Promise<jsdom16$JSDOM>;
     static fromFile(
         url: string,
-        options?: jsdom$FromFileOptions,
-    ): Promise<jsdom$JSDOM>;
+        options?: jsdom16$FromFileOptions,
+    ): Promise<jsdom16$JSDOM>;
     static fragment(html: string): DocumentFragment;
     constructor(
-        html?: string | Buffer | jsdom$BinaryData,
-        options?: jsdom$ConstructorOptions,
+        html?: string | Buffer | jsdom16$BinaryData,
+        options?: jsdom16$ConstructorOptions,
     ): this;
-    +window: jsdom$DOMWindow;
-    +virtualConsole: jsdom$VirtualConsole;
-    +cookieJar: jsdom$CookieJar;
+    +window: jsdom16$DOMWindow;
+    +virtualConsole: jsdom16$VirtualConsole;
+    +cookieJar: jsdom16$CookieJar;
 
     /**
      * The serialize() method will return the HTML serialization of the document, including the doctype.
@@ -39,10 +39,10 @@ declare export class jsdom$JSDOM {
      * To get access to this ability, use the getInternalVMContext() method.
      */
     getInternalVMContext(): vm$Context;
-    reconfigure(settings: jsdom$ReconfigureSettings): void;
+    reconfigure(settings: jsdom16$ReconfigureSettings): void;
 }
 
-declare interface jsdom$Options {
+declare interface jsdom16$Options {
     /**
      * referrer just affects the value read from document.referrer.
      * It defaults to no referrer (which reflects as the empty string).
@@ -63,9 +63,9 @@ declare interface jsdom$Options {
      */
     includeNodeLocations?: boolean;
     runScripts?: "dangerously" | "outside-only";
-    resources?: "usable" | jsdom$ResourceLoader;
-    virtualConsole?: jsdom$VirtualConsole;
-    cookieJar?: jsdom$CookieJar;
+    resources?: "usable" | jsdom16$ResourceLoader;
+    virtualConsole?: jsdom16$VirtualConsole;
+    cookieJar?: jsdom16$CookieJar;
 
     /**
      * jsdom does not have the capability to render visual content, and will act like a headless browser by default.
@@ -75,11 +75,11 @@ declare interface jsdom$Options {
      * content.
      */
     pretendToBeVisual?: boolean;
-    beforeParse?: (window: jsdom$DOMWindow) => void;
+    beforeParse?: (window: jsdom16$DOMWindow) => void;
 }
 
-declare type jsdom$FromUrlOptions = jsdom$Options;
-declare type jsdom$FromFileOptions = jsdom$Options & {
+declare type jsdom16$FromUrlOptions = jsdom16$Options;
+declare type jsdom16$FromFileOptions = jsdom16$Options & {
     /**
      * url sets the value returned by window.location, document.URL, and document.documentURI,
      * and affects things like resolution of relative URLs within the document
@@ -97,7 +97,7 @@ declare type jsdom$FromFileOptions = jsdom$Options & {
     ...
 };
 
-declare type jsdom$ConstructorOptions = jsdom$Options & {
+declare type jsdom16$ConstructorOptions = jsdom16$Options & {
     /**
      * url sets the value returned by window.location, document.URL, and document.documentURI,
      * and affects things like resolution of relative URLs within the document
@@ -121,7 +121,7 @@ declare type jsdom$ConstructorOptions = jsdom$Options & {
     ...
 };
 
-declare type jsdom$DOMWindow = {
+declare type jsdom16$DOMWindow = {
     eval(script: string): void,
     DOMException: typeof DOMException,
     Attr: typeof Attr,
@@ -259,7 +259,7 @@ declare type jsdom$DOMWindow = {
     ...
 };
 
-declare type jsdom$BinaryData =
+declare type jsdom16$BinaryData =
     | ArrayBuffer
     | DataView
     | Int8Array
@@ -272,25 +272,28 @@ declare type jsdom$BinaryData =
     | Float32Array
     | Float64Array;
 
-declare class jsdom$VirtualConsole mixins events$EventEmitter {
+declare class jsdom16$VirtualConsole mixins events$EventEmitter {
     on<K: $Keys<Console>>(method: K, callback: $ElementType<Console, K>): this;
     on(event: "jsdomError", callback: (e: Error) => void): this;
-    sendTo(console: Console, options?: jsdom$VirtualConsoleSendToOptions): this;
+    sendTo(
+        console: Console,
+        options?: jsdom16$VirtualConsoleSendToOptions,
+    ): this;
 }
 
-declare interface jsdom$VirtualConsoleSendToOptions {
+declare interface jsdom16$VirtualConsoleSendToOptions {
     omitJSDOMErrors: boolean;
 }
 
-declare class jsdom$CookieJar extends tough$CookieJar {}
+declare class jsdom16$CookieJar extends tough$CookieJar {}
 
-declare interface jsdom$ReconfigureSettings {
-    windowTop?: jsdom$DOMWindow;
+declare interface jsdom16$ReconfigureSettings {
+    windowTop?: jsdom16$DOMWindow;
     url?: string;
 }
 
-declare interface jsdom$FetchOptions {
-    cookieJar?: jsdom$CookieJar;
+declare interface jsdom16$FetchOptions {
+    cookieJar?: jsdom16$CookieJar;
     referrer?: string;
     accept?: string;
     element?:
@@ -300,33 +303,33 @@ declare interface jsdom$FetchOptions {
         | HTMLImageElement;
 }
 
-declare interface jsdom$ResourceLoaderConstructorOptions {
+declare interface jsdom16$ResourceLoaderConstructorOptions {
     strictSSL?: boolean;
     proxy?: string;
     userAgent?: string;
 }
 
-declare class jsdom$ResourceLoader {
-    constructor(obj?: jsdom$ResourceLoaderConstructorOptions): this;
-    fetch(url: string, options?: jsdom$FetchOptions): ?Promise<Buffer>;
+declare class jsdom16$ResourceLoader {
+    constructor(obj?: jsdom16$ResourceLoaderConstructorOptions): this;
+    fetch(url: string, options?: jsdom16$FetchOptions): ?Promise<Buffer>;
 }
 
-declare module "jsdom" {
-    declare type Options = jsdom$Options;
-    declare type FromUrlOptions = jsdom$FromUrlOptions;
-    declare type FromFileOptions = jsdom$FromFileOptions;
-    declare type ConstructorOptons = jsdom$ConstructorOptions;
-    declare type DOMWindow = jsdom$DOMWindow;
-    declare type BinaryData = jsdom$BinaryData;
-    declare type VirtualConsoleSendToOptions = jsdom$VirtualConsoleSendToOptions;
-    declare type ReconfigureSettings = jsdom$ReconfigureSettings;
-    declare type FetchOptions = jsdom$FetchOptions;
-    declare type ResourceLoaderConstructorOptions = jsdom$ResourceLoaderConstructorOptions;
+declare module "jsdom16" {
+    declare type Options = jsdom16$Options;
+    declare type FromUrlOptions = jsdom16$FromUrlOptions;
+    declare type FromFileOptions = jsdom16$FromFileOptions;
+    declare type ConstructorOptons = jsdom16$ConstructorOptions;
+    declare type DOMWindow = jsdom16$DOMWindow;
+    declare type BinaryData = jsdom16$BinaryData;
+    declare type VirtualConsoleSendToOptions = jsdom16$VirtualConsoleSendToOptions;
+    declare type ReconfigureSettings = jsdom16$ReconfigureSettings;
+    declare type FetchOptions = jsdom16$FetchOptions;
+    declare type ResourceLoaderConstructorOptions = jsdom16$ResourceLoaderConstructorOptions;
 
     declare module.exports: {
-        JSDOM: typeof jsdom$JSDOM,
-        VirtualConsole: typeof jsdom$VirtualConsole,
-        CookieJar: typeof jsdom$CookieJar,
-        ResourceLoader: typeof jsdom$ResourceLoader,
+        JSDOM: typeof jsdom16$JSDOM,
+        VirtualConsole: typeof jsdom16$VirtualConsole,
+        CookieJar: typeof jsdom16$CookieJar,
+        ResourceLoader: typeof jsdom16$ResourceLoader,
     };
 }
