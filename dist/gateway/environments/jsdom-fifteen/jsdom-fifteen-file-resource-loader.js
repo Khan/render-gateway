@@ -11,7 +11,7 @@ var _path = _interopRequireDefault(require("path"));
 
 var _util = require("util");
 
-var _jsdom = require("jsdom16");
+var _jsdom = require("jsdom15");
 
 var _applyAbortablePromisesPatch = require("../shared/apply-abortable-promises-patch.js");
 
