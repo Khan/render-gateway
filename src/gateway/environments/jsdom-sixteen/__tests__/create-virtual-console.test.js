@@ -1,5 +1,5 @@
 // @flow
-import {VirtualConsole} from "jsdom";
+import {VirtualConsole} from "jsdom16";
 import * as Shared from "../../../../shared/index.js";
 import {createVirtualConsole} from "../create-virtual-console.js";
 

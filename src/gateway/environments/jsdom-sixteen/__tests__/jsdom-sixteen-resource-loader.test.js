@@ -1,5 +1,5 @@
 // @flow
-import * as JSDOM from "jsdom";
+import * as JSDOM from "jsdom16";
 
 import * as Request from "../../../request.js";
 import * as ApplyAbortablePromisesPatch from "../apply-abortable-promises-patch.js";
@@ -7,7 +7,7 @@ import * as Shared from "../../../../shared/index.js";
 
 import {JSDOMSixteenResourceLoader} from "../jsdom-sixteen-resource-loader.js";
 
-jest.mock("jsdom");
+jest.mock("jsdom16");
 jest.mock("../../../../shared/index.js");
 jest.mock("../../../request.js");
 jest.mock("../apply-abortable-promises-patch.js");

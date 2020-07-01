@@ -215,7 +215,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * where we setup custom resource loading and our virtual console
              * too.
              */
-            const {JSDOM} = require("jsdom");
+            const {JSDOM} = require("jsdom16");
             const {
                 createVirtualConsole,
             } = require("./create-virtual-console.js");

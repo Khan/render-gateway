@@ -1,12 +1,12 @@
 // @flow
 import path from "path";
-import * as JSDOM from "jsdom";
+import * as JSDOM from "jsdom16";
 
 import * as ApplyAbortablePromisesPatch from "../apply-abortable-promises-patch.js";
 
 import {JSDOMSixteenFileResourceLoader} from "../jsdom-sixteen-file-resource-loader.js";
 
-jest.mock("jsdom");
+jest.mock("jsdom16");
 jest.mock("../apply-abortable-promises-patch.js");
 
 describe("JSDOMSixteenFileResourceLoader", () => {

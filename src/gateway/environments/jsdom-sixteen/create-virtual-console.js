@@ -1,5 +1,5 @@
 // @flow
-import {VirtualConsole} from "jsdom";
+import {VirtualConsole} from "jsdom16";
 import {extractError} from "../../../shared/index.js";
 import type {Logger} from "../../../shared/index.js";
 

@@ -2,8 +2,8 @@
 import fs from "fs";
 import path from "path";
 import {promisify} from "util";
-import {ResourceLoader} from "jsdom";
-import type {FetchOptions} from "jsdom";
+import {ResourceLoader} from "jsdom16";
+import type {FetchOptions} from "jsdom16";
 import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 
 const readFileAsync = promisify(fs.readFile);

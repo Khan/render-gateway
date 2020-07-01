@@ -1,5 +1,5 @@
 // @flow
-import type {ResourceLoader} from "jsdom";
+import type {ResourceLoader} from "jsdom16";
 import type {RenderAPI} from "../../types.js";
 
 /**

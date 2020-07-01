@@ -49,9 +49,12 @@
     "eslint-plugin-react": "^7.20.2",
     "flow-bin": "^0.128.0",
     "flow-typed": "^3.1.0",
+    "heapdump": "^0.3.15",
     "husky": "^4.2.5",
     "jest": "^26.1.0",
     "jest-extended": "^0.11.5",
+    "jsdom15": "npm:jsdom@^15",
+    "jsdom16": "npm:jsdom@^16",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5"
   },
@@ -85,6 +88,7 @@
   },
   "peerDependencies": {
     "heapdump": "^0.3.15",
-    "jsdom": "^16.2.2"
+    "jsdom15": "npm:jsdom@^15",
+    "jsdom16": "npm:jsdom@^16"
   }
 }

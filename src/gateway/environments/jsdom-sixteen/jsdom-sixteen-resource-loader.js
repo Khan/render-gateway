@@ -2,8 +2,8 @@
 import {URL} from "url";
 import type {Agent as HttpAgent} from "http";
 import type {Agent as HttpsAgent} from "https";
-import {ResourceLoader} from "jsdom";
-import type {FetchOptions} from "jsdom";
+import {ResourceLoader} from "jsdom16";
+import type {FetchOptions} from "jsdom16";
 import {getAgentForURL} from "../../../shared/index.js";
 import {
     DefaultRequestOptions,
