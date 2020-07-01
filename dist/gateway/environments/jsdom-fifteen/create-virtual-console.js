@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.createVirtualConsole = void 0;
 
-var _jsdom = require("jsdom16");
+var _jsdom = require("jsdom15");
 
 var _index = require("../../../shared/index.js");
 

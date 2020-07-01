@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.JSDOMSixteenEnvironment = void 0;
+exports.JSDOMFifteenEnvironment = void 0;
 
 var _index = require("../../../shared/index.js");
 
@@ -15,21 +15,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 const MinimalPage = "<!DOCTYPE html><html><head></head><body></body></html>";
 /**
- * A render environment built to support the JSDOM 16.x API.
+ * A render environment built to support the JSDOM 15.x API.
  */
 
-class JSDOMSixteenEnvironment {
+class JSDOMFifteenEnvironment {
   /**
    * Create a new instance of this environment.
    *
-   * @param {IJSDOMSixteenConfiguration} configuration
+   * @param {IJSDOMFifteenConfiguration} configuration
    * Configuration for the environment.
    */
   constructor(configuration) {
     _defineProperty(this, "_configuration", void 0);
 
     _defineProperty(this, "_retrieveTargetFiles", async (url, renderAPI, resourceLoader) => {
-      const traceSession = renderAPI.trace("JSDOM16._retrieveTargetFiles", `JSDOMSixteenEnvironment retrieving files`);
+      const traceSession = renderAPI.trace("JSDOM15._retrieveTargetFiles", `JSDOMFifteenEnvironment retrieving files`);
 
       try {
         /**
@@ -102,7 +102,7 @@ class JSDOMSixteenEnvironment {
 
         const {
           JSDOM
-        } = require("jsdom16");
+        } = require("jsdom15");
 
         const {
           createVirtualConsole
@@ -121,14 +121,10 @@ class JSDOMSixteenEnvironment {
          * wrapper. As part of that wrapper, we want to make it easier to
          * run scripts (like our rendering JS code) within the VM context.
          * So, let's create a helper for that.
-         *
-         * We cast the context to any, because otherwise it is typed as an
-         * empty object, which makes life annoying.
          */
 
-        const vmContext = jsdomInstance.getInternalVMContext();
         /**
-         * Next, we want to patch timers so we can make sure they don't
+         * We want to patch timers so we can make sure they don't
          * fire after we are done (and so we can catch dangling timers if
          * necessary). To do this, we are going to hang the timer API off
          * the vmContext and then execute it from inside the context.
@@ -141,11 +137,11 @@ class JSDOMSixteenEnvironment {
           patchAgainstDanglingTimers
         } = require("../shared/patch-against-dangling-timers.js");
 
-        vmContext[tmpFnName] = patchAgainstDanglingTimers;
+        jsdomInstance.window[tmpFnName] = patchAgainstDanglingTimers;
 
-        const timerGateAPI = this._runScript(vmContext, `${tmpFnName}(window);`);
+        const timerGateAPI = this._runScript(jsdomInstance, `${tmpFnName}(window);`);
 
-        delete vmContext[tmpFnName];
+        delete jsdomInstance.window[tmpFnName];
         closeables.push(timerGateAPI);
         /**
          * At this point, we give our configuration an opportunity to
@@ -153,7 +149,7 @@ class JSDOMSixteenEnvironment {
          * can be used to tidy up after we're done.
          */
 
-        const afterRenderTidyUp = await this._configuration.afterEnvSetup(url, files.urls, renderAPI, vmContext);
+        const afterRenderTidyUp = await this._configuration.afterEnvSetup(url, files.urls, renderAPI, jsdomInstance.window);
         closeables.push(afterRenderTidyUp);
         /**
          * At this point, before loading the files for rendering, we must
@@ -165,13 +161,13 @@ class JSDOMSixteenEnvironment {
         } = this._configuration;
         const registeredCbName = "__registeredCallback";
 
-        vmContext[registrationCallbackName] = cb => {
-          vmContext[registrationCallbackName][registeredCbName] = cb;
+        jsdomInstance.window[registrationCallbackName] = cb => {
+          jsdomInstance.window[registrationCallbackName][registeredCbName] = cb;
         };
 
         closeables.push({
           close: () => {
-            delete vmContext[registrationCallbackName];
+            delete jsdomInstance.window[registrationCallbackName];
           }
         });
         /**
@@ -184,7 +180,7 @@ class JSDOMSixteenEnvironment {
           content,
           url
         } of files.files) {
-          this._runScript(vmContext, content, {
+          this._runScript(jsdomInstance, content, {
             filename: url
           });
         }
@@ -194,7 +190,7 @@ class JSDOMSixteenEnvironment {
          */
 
 
-        if (typeof vmContext[registrationCallbackName][registeredCbName] !== "function") {
+        if (typeof jsdomInstance.window[registrationCallbackName][registeredCbName] !== "function") {
           throw new Error("No render callback was registered.");
         }
         /**
@@ -202,7 +198,7 @@ class JSDOMSixteenEnvironment {
          */
 
 
-        const result = await this._runScript(vmContext, `
+        const result = await this._runScript(jsdomInstance, `
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
     cb();`);
         /**
@@ -270,13 +266,13 @@ class JSDOMSixteenEnvironment {
     });
   }
 
-  _runScript(vmContext, script, options) {
+  _runScript(jsdom, script, options) {
     const {
       Script
     } = require("vm");
 
     const realScript = new Script(script, options);
-    return realScript.runInContext(vmContext);
+    return jsdom.runVMScript(realScript);
   }
   /**
    * Generate a render result for the given url.
@@ -294,5 +290,5 @@ class JSDOMSixteenEnvironment {
 
 }
 
-exports.JSDOMSixteenEnvironment = JSDOMSixteenEnvironment;
-//# sourceMappingURL=jsdom-sixteen-environment.js.map
+exports.JSDOMFifteenEnvironment = JSDOMFifteenEnvironment;
+//# sourceMappingURL=jsdom-fifteen-environment.js.map

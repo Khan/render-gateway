@@ -3,11 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.JSDOMSixteenResourceLoader = void 0;
+exports.JSDOMFifteenResourceLoader = void 0;
 
 var _url = require("url");
 
-var _jsdom = require("jsdom16");
+var _jsdom = require("jsdom15");
 
 var _index = require("../../../shared/index.js");
 
@@ -22,7 +22,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
- * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
+ * A ResourceLoader implementation for JSDOM fifteen-compatible versions of
  * JSDOM that only allows for fetching JS files, and provides the ability to
  * handle and modify the fetch return result.
  *
@@ -35,7 +35,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * A JS file request is identified by the regular expression:
  *   /^.*\.js(?:\?.*)?/g
  */
-class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
+class JSDOMFifteenResourceLoader extends _jsdom.ResourceLoader {
   /**
    * Used to indicate if any pending requests are still needed so that we
    * can report when an unused request is fulfilled.
@@ -135,7 +135,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
        */
 
 
-      return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+      return JSDOMFifteenResourceLoader.EMPTY_RESPONSE;
     }
     /**
      * We must still be active.
@@ -155,7 +155,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
        * as an empty string so things can tidy up properly.
        */
 
-      return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+      return JSDOMFifteenResourceLoader.EMPTY_RESPONSE;
     }
     /**
      * This must be a JavaScript file request. Let's make a request for the
@@ -196,5 +196,5 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
 
 }
 
-exports.JSDOMSixteenResourceLoader = JSDOMSixteenResourceLoader;
-//# sourceMappingURL=jsdom-sixteen-resource-loader.js.map
+exports.JSDOMFifteenResourceLoader = JSDOMFifteenResourceLoader;
+//# sourceMappingURL=jsdom-fifteen-resource-loader.js.map
