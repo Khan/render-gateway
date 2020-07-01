@@ -5,10 +5,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Environments = void 0;
 
-var _index = require("./jsdom-sixteen/index.js");
+var _index = require("./jsdom-fifteen/index.js");
+
+var _index2 = require("./jsdom-sixteen/index.js");
 
 const Environments = {
-  JSDOMSixteen: _index.JSDOMSixteen
+  JSDOMFifteen: _index.JSDOMFifteen,
+  JSDOMSixteen: _index2.JSDOMSixteen
 };
 exports.Environments = Environments;
 //# sourceMappingURL=index.js.map
