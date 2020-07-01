@@ -54,6 +54,19 @@ describe("#makeShouldRetry", () => {
             );
         });
 
+        it("should not log if no error", () => {
+            // Arrange
+            const fakeLogger: any = {warn: jest.fn()};
+            const fakeResponse: any = {status: "STATUS_CODE"};
+            const shouldRetry = makeShouldRetry(fakeLogger);
+
+            // Act
+            shouldRetry(null, fakeResponse);
+
+            // Assert
+            expect(fakeLogger.warn).not.toHaveBeenCalled();
+        });
+
         it("should return undefined when there is no override", () => {
             // Arrange
             const fakeLogger: any = {warn: jest.fn()};

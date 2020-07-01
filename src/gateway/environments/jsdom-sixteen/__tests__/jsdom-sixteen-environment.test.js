@@ -105,6 +105,47 @@ describe("JSDOMSixteenEnvironment", () => {
             );
         });
 
+        it("should use the resource loader for getFileList fetching", async () => {
+            // Arrange
+            const fakeLogger: any = "FAKE_LOGGER";
+            const fakeTraceSession: any = {
+                end: jest.fn(),
+                addLabel: jest.fn(),
+            };
+            const fakeRenderAPI: any = {
+                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                getHeader: jest.fn(),
+                logger: fakeLogger,
+            };
+            const fakeLoader: any = {
+                fetch: jest.fn(),
+            };
+            const fakeConfiguration = {
+                registrationCallbackName: "__register__",
+                getFileList: jest.fn().mockResolvedValue([]),
+                getResourceLoader: jest.fn().mockReturnValue(fakeLoader),
+                afterEnvSetup: jest.fn(),
+            };
+            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            try {
+                await underTest.render("URL", fakeRenderAPI);
+            } catch (e) {
+                /**
+                 * We care about the expectation below.
+                 */
+            }
+
+            // Act
+            const fetchFn = fakeConfiguration.getFileList.mock.calls[0][2];
+            fetchFn("SOME_URL", "OPTIONS");
+
+            // Assert
+            expect(fakeLoader.fetch).toHaveBeenCalledWith(
+                "SOME_URL",
+                "OPTIONS",
+            );
+        });
+
         it("should trace the file acquisition phase", async () => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";

@@ -33,7 +33,10 @@ export async function startGateway<
      * In development mode, we include the heapdump module if it exists.
      * With this installed, `kill -USR2 <pid>` can be used to create a
      * heapsnapshot file of the gateway's memory.
+     *
+     * We ignore this from coverage because we don't care enough to test it.
      */
+    /* istanbul ignore next */
     if (process.env.KA_ALLOW_HEAPDUMP || mode === "development") {
         try {
             /* eslint-disable import/no-unassigned-import */
