@@ -77,6 +77,7 @@ declare type $winstonLoggerConfig<T: $winstonLevels> = {
     level?: $Keys<T>,
     levels?: T,
     transports?: $winstonTransport | Array<$winstonTransport>,
+    defaultMeta?: any,
     ...
 };
 

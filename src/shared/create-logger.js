@@ -1,10 +1,10 @@
 // @flow
 import stream from "stream";
 import winston from "winston";
-
 import * as lw from "@google-cloud/logging-winston";
-
 import type {Transport, NpmLogLevels, Format} from "winston";
+
+import {getGatewayInfo} from "./get-gateway-info.js";
 import type {Runtime, Logger, LogLevel, Info} from "./types.js";
 
 /**
@@ -101,9 +101,15 @@ export const createLogger = (
     runtimeMode: Runtime,
     logLevel: LogLevel,
 ): Logger => {
+    const {instance, pid} = getGatewayInfo();
     const winstonLogger = winston.createLogger<NpmLogLevels>({
+        exitOnError: false,
         level: logLevel,
         transports: getTransport(runtimeMode),
+        defaultMeta: {
+            instanceID: instance,
+            processID: pid,
+        },
     });
 
     winstonLogger.debug(
