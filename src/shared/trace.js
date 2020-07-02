@@ -1,6 +1,7 @@
 // @flow
 import type {Tracer} from "@google-cloud/trace-agent";
 import {getGatewayInfo} from "./get-gateway-info.js";
+import {getDelta} from "./get-delta.js";
 import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
 
 /**
@@ -81,7 +82,6 @@ export const trace = (
          * We disable this lint rule as the linter does not appear to
          * understand the optional chaining.
          */
-        // eslint-disable-next-line flowtype/no-unused-expressions
         span?.addLabel(name, value);
     };
 
@@ -95,8 +95,8 @@ export const trace = (
         /**
          * Add some session information to the span as labels.
          */
-        addLabel("memoryBefore", beforeMemory);
-        addLabel("memoryAfter", afterMemory);
+        addLabel("/memory/delta", getDelta(beforeMemory, afterMemory));
+        addLabel("/memory/final", afterMemory);
 
         /**
          * We need to build the metadata that we will be logging.
@@ -129,7 +129,6 @@ export const trace = (
          * We disable this lint rule as the linter does not appear to
          * understand the optional chaining.
          */
-        // eslint-disable-next-line flowtype/no-unused-expressions
         span?.endSpan();
     };
 

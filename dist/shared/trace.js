@@ -7,6 +7,8 @@ exports.trace = void 0;
 
 var _getGatewayInfo = require("./get-gateway-info.js");
 
+var _getDelta = require("./get-delta.js");
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -90,7 +92,6 @@ const trace = (logger, action, message, tracer) => {
      * We disable this lint rule as the linter does not appear to
      * understand the optional chaining.
      */
-    // eslint-disable-next-line flowtype/no-unused-expressions
 
     span === null || span === void 0 ? void 0 : span.addLabel(name, value);
   };
@@ -106,8 +107,8 @@ const trace = (logger, action, message, tracer) => {
      * Add some session information to the span as labels.
      */
 
-    addLabel("memoryBefore", beforeMemory);
-    addLabel("memoryAfter", afterMemory);
+    addLabel("/memory/delta", (0, _getDelta.getDelta)(beforeMemory, afterMemory));
+    addLabel("/memory/final", afterMemory);
     /**
      * We need to build the metadata that we will be logging.
      * This is a combination of the given info, some custom things we add,
@@ -133,7 +134,6 @@ const trace = (logger, action, message, tracer) => {
      * We disable this lint rule as the linter does not appear to
      * understand the optional chaining.
      */
-    // eslint-disable-next-line flowtype/no-unused-expressions
 
     span === null || span === void 0 ? void 0 : span.endSpan();
   };
