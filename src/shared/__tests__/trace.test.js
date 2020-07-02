@@ -165,8 +165,12 @@ describe("#trace", () => {
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
                 jest.spyOn(process, "memoryUsage")
-                    .mockReturnValueOnce("BEFORE")
-                    .mockReturnValueOnce("AFTER");
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 10000,
+                    })
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 50000,
+                    });
                 jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
@@ -180,8 +184,12 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED ACTION: MESSAGE",
                     level: "debug",
-                    memoryAfter: "AFTER",
-                    memoryBefore: "BEFORE",
+                    "/memory/delta": {
+                        someMemoryStuff: 40000,
+                    },
+                    "/memory/final": {
+                        someMemoryStuff: 50000,
+                    },
                 });
             });
 
@@ -195,8 +203,12 @@ describe("#trace", () => {
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
                 jest.spyOn(process, "memoryUsage")
-                    .mockReturnValueOnce("BEFORE")
-                    .mockReturnValueOnce("AFTER");
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 10000,
+                    })
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 50000,
+                    });
                 jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
@@ -210,8 +222,12 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED ACTION: MESSAGE",
                     level: "silly",
-                    memoryAfter: "AFTER",
-                    memoryBefore: "BEFORE",
+                    "/memory/delta": {
+                        someMemoryStuff: 40000,
+                    },
+                    "/memory/final": {
+                        someMemoryStuff: 50000,
+                    },
                 });
             });
 
@@ -225,8 +241,12 @@ describe("#trace", () => {
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
                 jest.spyOn(process, "memoryUsage")
-                    .mockReturnValueOnce("BEFORE")
-                    .mockReturnValueOnce("AFTER");
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 10000,
+                    })
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 50000,
+                    });
                 jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
@@ -242,8 +262,12 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED ACTION: MESSAGE",
                     level: "debug",
-                    memoryAfter: "AFTER",
-                    memoryBefore: "BEFORE",
+                    "/memory/delta": {
+                        someMemoryStuff: 40000,
+                    },
+                    "/memory/final": {
+                        someMemoryStuff: 50000,
+                    },
                     LABEL_A: "label_a",
                     "/label/b": "label_b",
                 });
@@ -259,8 +283,12 @@ describe("#trace", () => {
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
                 jest.spyOn(process, "memoryUsage")
-                    .mockReturnValueOnce("BEFORE")
-                    .mockReturnValueOnce("AFTER");
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 50000,
+                    })
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 10000,
+                    });
                 jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
@@ -281,8 +309,12 @@ describe("#trace", () => {
                     cached: true,
                     size: 56,
                     someotherrubbish: "blahblahblah",
-                    memoryAfter: "AFTER",
-                    memoryBefore: "BEFORE",
+                    "/memory/delta": {
+                        someMemoryStuff: -40000,
+                    },
+                    "/memory/final": {
+                        someMemoryStuff: 10000,
+                    },
                 });
             });
 
@@ -296,8 +328,12 @@ describe("#trace", () => {
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
                 jest.spyOn(process, "memoryUsage")
-                    .mockReturnValueOnce("BEFORE")
-                    .mockReturnValueOnce("AFTER");
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 10000,
+                    })
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 50000,
+                    });
                 jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
@@ -320,8 +356,12 @@ describe("#trace", () => {
                     cached: true,
                     size: 56,
                     someotherrubbish: "blahblahblah",
-                    memoryAfter: "AFTER",
-                    memoryBefore: "BEFORE",
+                    "/memory/delta": {
+                        someMemoryStuff: 40000,
+                    },
+                    "/memory/final": {
+                        someMemoryStuff: 50000,
+                    },
                     "/label/b": "label_b",
                 });
             });
@@ -336,8 +376,12 @@ describe("#trace", () => {
                     startTimer: jest.fn().mockReturnValue(fakeTimer),
                 };
                 jest.spyOn(process, "memoryUsage")
-                    .mockReturnValueOnce("BEFORE")
-                    .mockReturnValueOnce("AFTER");
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 10000,
+                    })
+                    .mockReturnValueOnce({
+                        someMemoryStuff: 50000,
+                    });
                 jest.spyOn(GetGatewayInfo, "getGatewayInfo").mockReturnValue({
                     name: "GATEWAY_NAME",
                     version: "GATEWAY_VERSION",
@@ -353,8 +397,12 @@ describe("#trace", () => {
                 expect(fakeTimer.done).toHaveBeenCalledWith({
                     message: "TRACED ACTION: MESSAGE",
                     level: "debug",
-                    memoryAfter: "AFTER",
-                    memoryBefore: "BEFORE",
+                    "/memory/delta": {
+                        someMemoryStuff: 40000,
+                    },
+                    "/memory/final": {
+                        someMemoryStuff: 50000,
+                    },
                 });
             });
 
