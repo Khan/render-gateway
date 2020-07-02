@@ -161,6 +161,9 @@ describe("#makeRenderHandler", () => {
                 query: {
                     url: "THE_URL",
                 },
+                headers: {
+                    HEADER_NAME: "HEADER_VALUE",
+                },
             };
             const nextFn = jest.fn();
             jest.spyOn(KAShared, "trace").mockReturnValue({
@@ -195,133 +198,15 @@ describe("#makeRenderHandler", () => {
                 "THE_URL",
                 {
                     logger: fakeLogger,
-                    getHeader: expect.any(Function),
                     trace: expect.any(Function),
-                    getTrackedHeaders: expect.any(Function),
+                    headers: {
+                        HEADER_NAME: "HEADER_VALUE",
+                    },
                 },
             );
         });
 
         describe("provided render API", () => {
-            describe("#getHeader", () => {
-                it("should return the value of the requested header", async () => {
-                    // Arrange
-                    const fakeResponse: any = {
-                        send: jest.fn().mockReturnThis(),
-                        status: jest.fn().mockReturnThis(),
-                        header: jest.fn().mockReturnThis(),
-                    };
-                    const fakeRequest: any = {
-                        query: {
-                            url: "THE_URL",
-                        },
-                        header: jest.fn().mockReturnValue("HEADER_VALUE"),
-                    };
-                    const nextFn = jest.fn();
-                    const renderResult = {
-                        body: "BODY",
-                        status: 200,
-                        headers: {},
-                    };
-                    jest.spyOn(KAShared, "trace").mockReturnValue({
-                        end: jest.fn(),
-                        addLabel: jest.fn(),
-                    });
-                    const fakeRenderEnvironment: any = {
-                        render: jest
-                            .fn()
-                            .mockReturnValue(Promise.resolve(renderResult)),
-                    };
-                    const handler = makeRenderHandler(fakeRenderEnvironment);
-                    /**
-                     * $FlowIgnore[incompatible-call]
-                     *
-                     * Middleware<Request, Response> can mean two different
-                     * call signatures, and sadly, they both have completely
-                     * different argument type ordering, which totally confused
-                     * flow here.
-                     */
-                    await handler(fakeRequest, fakeResponse, nextFn);
-                    const underTest =
-                        fakeRenderEnvironment.render.mock.calls[0][1].getHeader;
-
-                    // Act
-                    const result = underTest("HEADER_NAME");
-
-                    //Assert
-                    expect(result).toBe("HEADER_VALUE");
-                    expect(fakeRequest.header).toHaveBeenCalledWith(
-                        "HEADER_NAME",
-                    );
-                });
-            });
-
-            describe("#getTrackedHeaders", () => {
-                it("should return headers that were accessed via getHeader and existed in the request", async () => {
-                    // Arrange
-                    const fakeResponse: any = {
-                        send: jest.fn().mockReturnThis(),
-                        status: jest.fn().mockReturnThis(),
-                        header: jest.fn().mockReturnThis(),
-                    };
-                    const fakeRequest: any = {
-                        query: {
-                            url: "THE_URL",
-                        },
-                        header: jest
-                            .fn()
-                            .mockReturnValueOnce("HEADER_VALUE1")
-                            .mockReturnValueOnce("HEADER_VALUE2")
-                            .mockReturnValueOnce("HEADER_VALUE3"),
-                    };
-                    const nextFn = jest.fn();
-                    const renderResult = {
-                        body: "BODY",
-                        status: 200,
-                        headers: {},
-                    };
-                    jest.spyOn(KAShared, "trace").mockReturnValue({
-                        end: jest.fn(),
-                        addLabel: jest.fn(),
-                    });
-                    const fakeRenderEnvironment: any = {
-                        render: jest
-                            .fn()
-                            .mockReturnValue(Promise.resolve(renderResult)),
-                    };
-                    const handler = makeRenderHandler(fakeRenderEnvironment);
-                    /**
-                     * $FlowIgnore[incompatible-call]
-                     *
-                     * Middleware<Request, Response> can mean two different
-                     * call signatures, and sadly, they both have completely
-                     * different argument type ordering, which totally confused
-                     * flow here.
-                     */
-                    await handler(fakeRequest, fakeResponse, nextFn);
-                    const getHeader =
-                        fakeRenderEnvironment.render.mock.calls[0][1].getHeader;
-                    const getTrackedHeaders =
-                        fakeRenderEnvironment.render.mock.calls[0][1]
-                            .getTrackedHeaders;
-
-                    // Act
-                    getHeader("HEADER1");
-                    getHeader("HEADER2");
-                    getHeader("HEADER3");
-                    getHeader("HEADER4");
-                    const result = getTrackedHeaders();
-
-                    //Assert
-                    expect(result).toStrictEqual({
-                        HEADER1: "HEADER_VALUE1",
-                        HEADER2: "HEADER_VALUE2",
-                        HEADER3: "HEADER_VALUE3",
-                        HEADER4: undefined,
-                    });
-                });
-            });
-
             describe("#trace", () => {
                 it("should call trace", async () => {
                     // Arrange

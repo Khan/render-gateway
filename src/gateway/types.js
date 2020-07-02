@@ -58,16 +58,6 @@ export interface AbortablePromise<T> extends Promise<T> {
     abort: () => void;
 }
 
-/**
- * Callback to retrieve the value of a header.
- *
- * @param {string} name The case insensitive name of the header,
- * e.g. User-Agent.
- * @returns {?string} The value of the header or null, if the header was not
- * in the request.
- */
-export type GetHeaderCallback = (name: string) => ?string;
-
 export interface TraceCallback {
     /**
      * Begin a trace session.
@@ -78,13 +68,6 @@ export interface TraceCallback {
      * indicate when the session is finished.
      */
     (action: string, message: string): ITraceSession;
-}
-
-export interface GetTrackedHeadersCallback {
-    /**
-     * Get the headers that have been tracked and their values.
-     */
-    (): $ReadOnly<{[header: string]: string, ...}>;
 }
 
 /**
@@ -147,22 +130,12 @@ export type RenderResult = {
  */
 export type RenderAPI = {
     /**
-     * Callback to request the value of a header in the request.
+     * A dict of headers that've come from the client.
      *
-     * This can be used to determine additional context about the render
-     * operation. For example, depending on your specific setup, they may
-     * contain version information to help determine what the render package
-     * should contain. It is provided as a callback so that the gateway
-     * implementation can track which headers influence a render, which can then
-     * be reported back as a Vary header in the gateway response.
+     * Access of these headers should be tracked and a Vary header should be
+     * set based on their access (even if they don't exist).
      */
-    +getHeader: GetHeaderCallback,
-
-    /**
-     * Callback to retrieve a map of the request headers that have been accessed
-     * and their values.
-     */
-    +getTrackedHeaders: GetTrackedHeadersCallback,
+    headers: {[header: string]: string, ...},
 
     /**
      * Callback to start a trace session for tracing an operation.

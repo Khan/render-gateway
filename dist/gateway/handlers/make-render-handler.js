@@ -9,6 +9,12 @@ var _index = require("../../ka-shared/index.js");
 
 var _handleError = require("./handle-error.js");
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Handle a request as a render.
  *
@@ -21,30 +27,11 @@ var _handleError = require("./handle-error.js");
 async function renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res) {
   const logger = (0, _index.getLogger)(req);
   /**
-   * We track header access and provide an API to find out which headers were
-   * accessed. This allows service implementations and their rendering code
-   * to properly generate a Vary header or work out what data a page should
-   * embed so that they can implement effective caching and hydration
-   * strategies. We must mark all headers as being tracked, even those that
-   * don't exist, as their non-existence is also important for Varying on.
-   */
-
-  const trackedHeaders = {};
-
-  const trackHeaderLookup = name => {
-    const headerValue = req.header(name);
-    trackedHeaders[name] = headerValue;
-    return headerValue;
-  };
-
-  const getTrackedHeaders = () => Object.assign({}, trackedHeaders);
-  /**
    * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
    * sessions open on rejection (or otherwise).
    *
    * For now, we'll assume callers will tidy up.
    */
-
 
   const traceFn = (action, message) => (0, _index.trace)(action, message, req);
   /**
@@ -69,10 +56,10 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
      * Put together the API we make available when rendering.
      */
     const renderAPI = {
-      getHeader: trackHeaderLookup,
       trace: traceFn,
-      getTrackedHeaders,
-      logger
+      logger,
+      // Passthrough the request headers
+      headers: _objectSpread({}, req.headers)
     };
     /**
      * Defer this bit to the render callback.
