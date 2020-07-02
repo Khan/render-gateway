@@ -77,7 +77,9 @@ declare type $winstonLoggerConfig<T: $winstonLevels> = {
     level?: $Keys<T>,
     levels?: T,
     transports?: $winstonTransport | Array<$winstonTransport>,
+    // Start: https://github.com/Khan/render-gateway/pull/xxx
     defaultMeta?: any,
+    // End: https://github.com/Khan/render-gateway/pull/xxx
     ...
 };
 
@@ -98,6 +100,9 @@ declare type $winstonLogger<T: $winstonLevels> = {
     // Start: https://github.com/Khan/react-render-server/pull/21
     startTimer: () => $winstonProfiler<T>,
     // End: https://github.com/Khan/react-render-server/pull/21
+    // Start: https://github.com/Khan/render-gateway/pull/xxx
+    defaultMeta?: any,
+    // End: https://github.com/Khan/render-gateway/pull/xxx
     ...
 };
 

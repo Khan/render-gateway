@@ -12,4 +12,6 @@ import type {GatewayInfo} from "./types.js";
 export const getGatewayInfo = (): GatewayInfo => ({
     name: process.env.GAE_SERVICE || "unknown",
     version: process.env.GAE_VERSION || "unknown",
+    instance: process.env.GAE_INSTANCE || "unknown",
+    pid: process.pid,
 });

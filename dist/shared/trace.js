@@ -114,7 +114,7 @@ const trace = (logger, action, message, tracer) => {
      * and any profile labels that were added.
      */
 
-    const metadata = _objectSpread(_objectSpread(_objectSpread({}, profileLabels), info), {}, {
+    const metadata = _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, profileLabels), info), logger.defaultMeta), {}, {
       message: `TRACED ${logMessage}`,
       level: (info === null || info === void 0 ? void 0 : info.level) || "debug"
     });

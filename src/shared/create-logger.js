@@ -103,7 +103,6 @@ export const createLogger = (
 ): Logger => {
     const {instance, pid} = getGatewayInfo();
     const winstonLogger = winston.createLogger<NpmLogLevels>({
-        exitOnError: false,
         level: logLevel,
         transports: getTransport(runtimeMode),
         defaultMeta: {

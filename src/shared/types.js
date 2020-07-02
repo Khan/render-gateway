@@ -35,6 +35,16 @@ export type GatewayInfo = {
      * Usually the value of GAE_VERSION, if set. Otherwise, "unknown".
      */
     +version: string,
+
+    /**
+     * Usually the value of GAE_INSTANCE, if set. Otherwise, "unknown".
+     */
+    +instance: string,
+
+    /**
+     * The process identifier.
+     */
+    +pid: number,
 };
 
 /**
