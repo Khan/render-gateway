@@ -11,6 +11,8 @@ var _winston = _interopRequireDefault(require("winston"));
 
 var lw = _interopRequireWildcard(require("@google-cloud/logging-winston"));
 
+var _getGatewayInfo = require("./get-gateway-info.js");
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -124,9 +126,18 @@ const getTransport = mode => {
 
 
 const createLogger = (runtimeMode, logLevel) => {
+  const {
+    instance,
+    pid
+  } = (0, _getGatewayInfo.getGatewayInfo)();
+
   const winstonLogger = _winston.default.createLogger({
     level: logLevel,
-    transports: getTransport(runtimeMode)
+    transports: getTransport(runtimeMode),
+    defaultMeta: {
+      instanceID: instance,
+      processID: pid
+    }
   });
 
   winstonLogger.debug(`Created logger (Level=${logLevel} Mode=${runtimeMode})`);

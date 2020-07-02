@@ -15,7 +15,9 @@ exports.getGatewayInfo = void 0;
  */
 const getGatewayInfo = () => ({
   name: process.env.GAE_SERVICE || "unknown",
-  version: process.env.GAE_VERSION || "unknown"
+  version: process.env.GAE_VERSION || "unknown",
+  instance: process.env.GAE_INSTANCE || "unknown",
+  pid: process.pid
 });
 
 exports.getGatewayInfo = getGatewayInfo;

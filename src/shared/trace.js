@@ -106,6 +106,11 @@ export const trace = (
         const metadata = {
             ...profileLabels,
             ...info,
+            /**
+             * We have to add the default metadata because winston does not
+             * include this for profiler.done calls, strangely.
+             */
+            ...logger.defaultMeta,
             message: `TRACED ${logMessage}`,
             level: info?.level || "debug",
         };
