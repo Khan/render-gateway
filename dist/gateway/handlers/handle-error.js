@@ -7,8 +7,6 @@ exports.handleError = void 0;
 
 var _index = require("../../shared/index.js");
 
-var _index2 = require("../../ka-shared/index.js");
-
 var _formatError = require("../format-error.js");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -31,7 +29,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * @param {AmbiguousError} error The error that is to be handled.
  */
 const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, res, error) => {
-  const logger = (0, _index2.getLogger)(req);
+  const logger = (0, _index.getLogger)(req);
   /**
    * Something went wrong. Let's report it!
    */

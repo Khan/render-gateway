@@ -9,6 +9,8 @@ var _useAppEngineMiddleware = require("./use-app-engine-middleware.js");
 
 var _setupStackdriver = require("./setup-stackdriver.js");
 
+var _rootLogger = require("./root-logger.js");
+
 /**
  * Start a gateway application server.
  *
@@ -35,6 +37,15 @@ async function startGateway(options, app) {
     process.env.GAE_SERVICE = name;
   }
   /**
+   * Setup logging.
+   * We create the root logger once and then share it via a singleton.
+   * This avoids us creating a new one in each worker, which was happening
+   * when we created the logger on import of `getLogger`.
+   */
+
+
+  (0, _rootLogger.setRootLogger)(logger);
+  /**
    * In development mode, we include the heapdump module if it exists.
    * With this installed, `kill -USR2 <pid>` can be used to create a
    * heapsnapshot file of the gateway's memory.
@@ -43,7 +54,6 @@ async function startGateway(options, app) {
    */
 
   /* istanbul ignore next */
-
 
   if (process.env.KA_ALLOW_HEAPDUMP || mode === "development") {
     try {

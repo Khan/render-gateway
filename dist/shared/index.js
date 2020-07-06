@@ -9,6 +9,12 @@ Object.defineProperty(exports, "createLogger", {
     return _createLogger.createLogger;
   }
 });
+Object.defineProperty(exports, "getLogger", {
+  enumerable: true,
+  get: function () {
+    return _getLogger.getLogger;
+  }
+});
 Object.defineProperty(exports, "getGatewayInfo", {
   enumerable: true,
   get: function () {
@@ -53,6 +59,8 @@ Object.defineProperty(exports, "getAgentForURL", {
 });
 
 var _createLogger = require("./create-logger.js");
+
+var _getLogger = require("./get-logger.js");
 
 var _getGatewayInfo = require("./get-gateway-info.js");
 
