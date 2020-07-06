@@ -7,6 +7,8 @@ exports.makeCheckSecretMiddleware = makeCheckSecretMiddleware;
 
 var _index = require("../../ka-shared/index.js");
 
+var _index2 = require("../../shared/index.js");
+
 var _getSecrets = require("../get-secrets.js");
 
 const redactSecretHeader = (req, headerName) => {
@@ -71,7 +73,7 @@ function makeDevelopmentMiddleware(options) {
    * The secrets middleware is a noop when not in production.
    */
   return Promise.resolve(function (req, res, next) {
-    const logger = (0, _index.getLogger)(req);
+    const logger = (0, _index2.getLogger)(req);
     /**
      * If authentication options were given, let's log a message if the
      * expected header is omitted. This is a valid thing to do in dev since

@@ -3,12 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "getLogger", {
-  enumerable: true,
-  get: function () {
-    return _getLogger.getLogger;
-  }
-});
 Object.defineProperty(exports, "makeCommonServiceRouter", {
   enumerable: true,
   get: function () {
@@ -21,26 +15,24 @@ Object.defineProperty(exports, "getGCloudSecrets", {
     return _getGcloudSecrets.getGCloudSecrets;
   }
 });
-Object.defineProperty(exports, "trace", {
-  enumerable: true,
-  get: function () {
-    return _trace.trace;
-  }
-});
 Object.defineProperty(exports, "getRuntimeMode", {
   enumerable: true,
   get: function () {
     return _getRuntimeMode.getRuntimeMode;
   }
 });
-
-var _getLogger = require("./get-logger.js");
+Object.defineProperty(exports, "getLogLevel", {
+  enumerable: true,
+  get: function () {
+    return _getLogLevel.getLogLevel;
+  }
+});
 
 var _makeCommonServiceRouter = require("./routes/make-common-service-router.js");
 
 var _getGcloudSecrets = require("./get-gcloud-secrets.js");
 
-var _trace = require("./trace.js");
-
 var _getRuntimeMode = require("./get-runtime-mode.js");
+
+var _getLogLevel = require("./get-log-level.js");
 //# sourceMappingURL=index.js.map

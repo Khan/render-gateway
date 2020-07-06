@@ -4,6 +4,8 @@ import * as SetupStackdriver from "../setup-stackdriver.js";
 import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
+jest.mock("../root-logger.js");
+
 describe("#start-gateway", () => {
     beforeEach(() => {
         jest.spyOn(process, "on").mockImplementation(() => {});

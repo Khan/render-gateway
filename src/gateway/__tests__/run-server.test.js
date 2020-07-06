@@ -25,7 +25,7 @@ describe("#runServer", () => {
             render: jest.fn(),
         };
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
@@ -55,7 +55,7 @@ describe("#runServer", () => {
             render: jest.fn(),
         };
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
@@ -88,7 +88,7 @@ describe("#runServer", () => {
         };
         const pretendAuthOptions = ({}: any);
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
@@ -124,7 +124,7 @@ describe("#runServer", () => {
         };
         const pretendAuthOptions = ({}: any);
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
@@ -159,7 +159,7 @@ describe("#runServer", () => {
             render: jest.fn(),
         };
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
@@ -201,7 +201,7 @@ describe("#runServer", () => {
         const pretendLogger = ({}: any);
         const fakeRenderEnvironment: any = {render: jest.fn()};
         jest.spyOn(KAShared, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(pretendLogger);
+        jest.spyOn(Shared, "createLogger").mockReturnValue(pretendLogger);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),

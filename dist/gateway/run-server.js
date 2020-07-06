@@ -81,9 +81,12 @@ const runServer = async options => {
 
   app.set("trust proxy", true); // Start the gateway.
 
+  const runtimeMode = (0, _index2.getRuntimeMode)();
+  const logLevel = (0, _index2.getLogLevel)();
+
   const gatewayOptions = _objectSpread({
-    mode: (0, _index2.getRuntimeMode)(),
-    logger: (0, _index2.getLogger)()
+    mode: runtimeMode,
+    logger: (0, _index.createLogger)(runtimeMode, logLevel)
   }, remainingOptions);
 
   await (0, _index.startGateway)(gatewayOptions, app);

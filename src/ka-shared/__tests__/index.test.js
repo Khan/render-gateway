@@ -10,10 +10,9 @@ describe("index.js", () => {
         // Assert
         expect(result).toContainAllKeys([
             "getGCloudSecrets",
-            "getLogger",
+            "getLogLevel",
             "getRuntimeMode",
             "makeCommonServiceRouter",
-            "trace",
         ]);
     });
 

@@ -8,11 +8,10 @@
  *      "./start-trace-agent.js",
  * ]
  */
-export {getLogger} from "./get-logger.js";
 export {makeCommonServiceRouter} from "./routes/make-common-service-router.js";
 export {getGCloudSecrets} from "./get-gcloud-secrets.js";
-export {trace} from "./trace.js";
 export {getRuntimeMode} from "./get-runtime-mode.js";
+export {getLogLevel} from "./get-log-level.js";
 
 export type {Secrets, SecretString, SecretsConfig} from "./types.js";
 

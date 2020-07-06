@@ -2,6 +2,7 @@
 import type {$Application, $Request, $Response} from "express";
 import {useAppEngineMiddleware} from "./use-app-engine-middleware.js";
 import {setupStackdriver} from "./setup-stackdriver.js";
+import {setRootLogger} from "./root-logger.js";
 import type {GatewayOptions, RequestWithLog} from "./types.js";
 
 /**
@@ -28,6 +29,14 @@ export async function startGateway<
     if (process.env.GAE_SERVICE == null) {
         process.env.GAE_SERVICE = name;
     }
+
+    /**
+     * Setup logging.
+     * We create the root logger once and then share it via a singleton.
+     * This avoids us creating a new one in each worker, which was happening
+     * when we created the logger on import of `getLogger`.
+     */
+    setRootLogger(logger);
 
     /**
      * In development mode, we include the heapdump module if it exists.

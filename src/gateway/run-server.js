@@ -1,13 +1,13 @@
 // @flow
 import express from "express";
 import asyncHandler from "express-async-handler";
-import {startGateway, getGatewayInfo} from "../shared/index.js";
+import {startGateway, getGatewayInfo, createLogger} from "../shared/index.js";
 import type {RenderGatewayOptions, Request, Response} from "./types.js";
 import type {GatewayOptions} from "../shared/index.js";
 import {
     getRuntimeMode,
-    getLogger,
     makeCommonServiceRouter,
+    getLogLevel,
 } from "../ka-shared/index.js";
 import {makeCheckSecretMiddleware} from "./middleware/make-check-secret-middleware.js";
 import {logRequestInfoMiddleware} from "./middleware/log-request-info-middleware.js";
@@ -75,9 +75,11 @@ export const runServer = async (
     app.set("trust proxy", true);
 
     // Start the gateway.
+    const runtimeMode = getRuntimeMode();
+    const logLevel = getLogLevel();
     const gatewayOptions: GatewayOptions = {
-        mode: getRuntimeMode(),
-        logger: getLogger(),
+        mode: runtimeMode,
+        logger: createLogger(runtimeMode, logLevel),
         ...remainingOptions,
     };
     await startGateway<Request, Response>(gatewayOptions, app);

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeRenderHandler = void 0;
 
-var _index = require("../../ka-shared/index.js");
+var _index = require("../../shared/index.js");
 
 var _handleError = require("./handle-error.js");
 

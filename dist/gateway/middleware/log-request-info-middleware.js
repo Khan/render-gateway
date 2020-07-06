@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.logRequestInfoMiddleware = logRequestInfoMiddleware;
 
-var _index = require("../../ka-shared/index.js");
+var _index = require("../../shared/index.js");
 
 /**
  * Simple middleware that logs some info about the incoming request.
