@@ -68,7 +68,7 @@ const getFormatters = mode => {
  */
 
 
-const getTransport = mode => {
+const getTransport = (mode, logLevel) => {
   switch (mode) {
     /**
      * Our flow types guard against misuse as long as someone is using them.
@@ -117,7 +117,9 @@ const getTransport = mode => {
        * to the express request, make sure this transport is passed to
        * that middleware so that it doesn't add its own.
        */
-      return new lw.LoggingWinston();
+      return new lw.LoggingWinston({
+        level: logLevel
+      });
   }
 };
 /**
@@ -133,7 +135,7 @@ const createLogger = (runtimeMode, logLevel) => {
 
   const winstonLogger = _winston.default.createLogger({
     level: logLevel,
-    transports: getTransport(runtimeMode),
+    transports: getTransport(runtimeMode, logLevel),
     defaultMeta: {
       instanceID: instance,
       processID: pid
