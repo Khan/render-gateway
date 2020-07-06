@@ -1,13 +1,11 @@
 // @flow
 import * as Shared from "../../../shared/index.js";
-import * as KAShared from "../../../ka-shared/index.js";
 import * as FormatError from "../../format-error.js";
 import {handleError} from "../handle-error.js";
 
 import type {SimplifiedError} from "../../../shared/index.js";
 
 jest.mock("../../../shared/index.js");
-jest.mock("../../../ka-shared/index.js");
 jest.mock("../../format-error.js");
 
 describe("#handleError", () => {
@@ -23,7 +21,7 @@ describe("#handleError", () => {
         const fakeRequest: any = {
             query: {url: "THE URL"},
         };
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
         // Act
         handleError(
@@ -57,7 +55,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             handleError(
@@ -97,7 +95,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const formatErrorSpy = jest
                 .spyOn(FormatError, "formatError")
                 .mockReturnValue("FORMATTED ERROR");
@@ -136,7 +134,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             jest.spyOn(FormatError, "formatError").mockReturnValue(
                 "FORMATTED ERROR",
             );
@@ -175,7 +173,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue(null);
 
             // Act
@@ -216,7 +214,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue(null);
 
             // Act
@@ -257,7 +255,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue(null);
             const formatErrorSpy = jest
                 .spyOn(FormatError, "formatError")
@@ -297,7 +295,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             jest.spyOn(FormatError, "formatError").mockReturnValue(
                 "FORMATTED ERROR",
             );
@@ -337,7 +335,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockImplementation(() => {
                 throw new Error("CUSTOM HANDLER BOOM!");
             });
@@ -381,7 +379,7 @@ describe("#handleError", () => {
             jest.spyOn(Shared, "extractError")
                 .mockReturnValueOnce(originalError)
                 .mockReturnValueOnce(handlerError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockImplementation(() => {
                 throw new Error("CUSTOM HANDLER BOOM!");
             });
@@ -434,7 +432,7 @@ describe("#handleError", () => {
             jest.spyOn(Shared, "extractError")
                 .mockReturnValueOnce(originalError)
                 .mockReturnValueOnce(handlerError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockImplementation(() => {
                 throw new Error("CUSTOM HANDLER BOOM!");
             });
@@ -486,7 +484,7 @@ describe("#handleError", () => {
             jest.spyOn(Shared, "extractError")
                 .mockReturnValueOnce(originalError)
                 .mockReturnValueOnce(handlerError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             jest.spyOn(FormatError, "formatError").mockReturnValue(
                 "FORMATTED ERROR",
             );
@@ -529,7 +527,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue({
                 body: "My custom response",
                 headers: {
@@ -578,7 +576,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue({
                 body: "My custom response",
                 headers: {
@@ -622,7 +620,7 @@ describe("#handleError", () => {
                 stack: "STACK",
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const customHandler = jest.fn().mockReturnValue({
                 body: "My custom response",
                 headers: {

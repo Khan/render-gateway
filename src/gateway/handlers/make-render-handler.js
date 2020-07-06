@@ -1,6 +1,6 @@
 // @flow
 import type {Middleware, NextFunction} from "express";
-import {getLogger, trace} from "../../ka-shared/index.js";
+import {getLogger, trace} from "../../shared/index.js";
 import {handleError} from "./handle-error.js";
 import type {ITraceSession} from "../../shared/index.js";
 import type {

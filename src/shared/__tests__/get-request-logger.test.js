@@ -2,6 +2,30 @@
 import {getRequestLogger} from "../get-request-logger.js";
 
 describe("#getRequestLogger", () => {
+    it("should throw if both arguments are null/undefined", () => {
+        // Arrange
+
+        // Act
+        const underTest = () => getRequestLogger();
+
+        // Assert
+        expect(underTest).toThrowErrorMatchingInlineSnapshot(
+            `"No logs available"`,
+        );
+    });
+
+    it("should throw if defaultLogger and request.log are null/undefined", () => {
+        // Arrange
+
+        // Act
+        const underTest = () => getRequestLogger(null, ({}: any));
+
+        // Assert
+        expect(underTest).toThrowErrorMatchingInlineSnapshot(
+            `"No logs available"`,
+        );
+    });
+
     it("should return the default logger when there is no request", () => {
         // Arrange
         const pretendDefaultLogger = ({}: any);
@@ -24,18 +48,20 @@ describe("#getRequestLogger", () => {
         expect(result).toBe(pretendDefaultLogger);
     });
 
-    it("should return the request logger when the request has a log", () => {
-        // Arrange
-        const pretendDefaultLogger = ({}: any);
-        const pretendRequestLogger = ({}: any);
-        const pretendRequest = ({
-            log: pretendRequestLogger,
-        }: any);
+    it.each([{}, null])(
+        "should return the request logger when the request has a log",
+        (defaultLogger) => {
+            // Arrange
+            const pretendRequestLogger = ({}: any);
+            const pretendRequest = ({
+                log: pretendRequestLogger,
+            }: any);
 
-        // Act
-        const result = getRequestLogger(pretendDefaultLogger, pretendRequest);
+            // Act
+            const result = getRequestLogger(defaultLogger, pretendRequest);
 
-        // Assert
-        expect(result).toBe(pretendRequestLogger);
-    });
+            // Assert
+            expect(result).toBe(pretendRequestLogger);
+        },
+    );
 });

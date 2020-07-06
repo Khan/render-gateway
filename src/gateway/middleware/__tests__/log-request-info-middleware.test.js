@@ -1,8 +1,8 @@
 // @flow
-import * as KAShared from "../../../ka-shared/index.js";
+import * as Shared from "../../../shared/index.js";
 import {logRequestInfoMiddleware} from "../log-request-info-middleware.js";
 
-jest.mock("../../../ka-shared/index.js");
+jest.mock("../../../shared/index.js");
 
 describe("#logRequestInfoMiddleware", () => {
     it("should log the request info", async () => {
@@ -19,7 +19,7 @@ describe("#logRequestInfoMiddleware", () => {
             method: "GET",
         };
         const fakeResponse: any = {};
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
         // Act
         logRequestInfoMiddleware(fakeRequest, fakeResponse, fakeNext);
@@ -54,7 +54,7 @@ describe("#logRequestInfoMiddleware", () => {
             method: "GET",
         };
         const fakeResponse: any = {};
-        jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+        jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
         // Act
         logRequestInfoMiddleware(fakeRequest, fakeResponse, fakeNext);

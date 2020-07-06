@@ -1,6 +1,6 @@
 // @flow
 import type {$Response, NextFunction} from "express";
-import {getLogger} from "../../ka-shared/index.js";
+import {getLogger} from "../../shared/index.js";
 
 import type {Request} from "../types.js";
 

@@ -1,6 +1,5 @@
 // @flow
-import {extractError} from "../../shared/index.js";
-import {getLogger} from "../../ka-shared/index.js";
+import {extractError, getLogger} from "../../shared/index.js";
 import {formatError} from "../format-error.js";
 import type {AmbiguousError} from "../../shared/index.js";
 import type {Request, Response, CustomErrorHandlerFn} from "../types.js";

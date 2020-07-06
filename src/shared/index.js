@@ -21,6 +21,7 @@ export type {
 } from "./types.js";
 
 export {createLogger} from "./create-logger.js";
+export {getLogger} from "./get-logger.js";
 export {getGatewayInfo} from "./get-gateway-info.js";
 export {getRequestLogger} from "./get-request-logger.js";
 export {getRuntimeMode} from "./get-runtime-mode.js";

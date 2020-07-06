@@ -1,10 +1,10 @@
 // @flow
-import * as KAShared from "../../ka-shared/index.js";
+import * as Shared from "../../shared/index.js";
 import * as MakeRequest from "../make-request.js";
 import * as RequestsFromCache from "../requests-from-cache.js";
 import {request, abortInFlightRequests} from "../request.js";
 
-jest.mock("../../ka-shared/index.js");
+jest.mock("../../shared/index.js");
 jest.mock("../make-request.js");
 jest.mock("../requests-from-cache.js");
 
@@ -30,7 +30,7 @@ describe("#abortInFlightRequests", () => {
             addLabel: jest.fn(),
             end: jest.fn(),
         };
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
         request(fakeLogger, "URL", fakeOptions);
 
@@ -59,7 +59,7 @@ describe("#abortInFlightRequests", () => {
             addLabel: jest.fn(),
             end: jest.fn(),
         };
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(fakeRequest)
             .mockReturnValue(fakeRequest2);
@@ -96,9 +96,9 @@ describe("#request", () => {
             addLabel: jest.fn(),
             end: jest.fn(),
         };
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
-        const traceSpy = jest.spyOn(KAShared, "trace");
+        const traceSpy = jest.spyOn(Shared, "trace");
 
         // Act
         request(fakeLogger, "URL", fakeOptions);
@@ -122,7 +122,7 @@ describe("#request", () => {
             addLabel: jest.fn(),
             end: jest.fn(),
         };
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         const makeRequestSpy = jest
             .spyOn(MakeRequest, "makeRequest")
             .mockReturnValue(fakeRequest);
@@ -157,7 +157,7 @@ describe("#request", () => {
             end: jest.fn(),
         };
         const traceSpy = jest
-            .spyOn(KAShared, "trace")
+            .spyOn(Shared, "trace")
             .mockReturnValue(fakeTraceSession);
         const makeRequestSpy = jest
             .spyOn(MakeRequest, "makeRequest")
@@ -183,7 +183,7 @@ describe("#request", () => {
             addLabel: jest.fn(),
             end: jest.fn(),
         };
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
 
         // Act
@@ -206,7 +206,7 @@ describe("#request", () => {
             addLabel: jest.fn(),
             end: jest.fn(),
         };
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(MakeRequest, "makeRequest").mockReturnValueOnce(fakeRequest);
 
         // Act
@@ -235,7 +235,7 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(rejectedRequest)
             .mockReturnValueOnce(fakeRequest);
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
 
         // Act
         let result;
@@ -268,7 +268,7 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(resolvedRequest)
             .mockReturnValueOnce(fakeRequest);
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
 
         // Act
         await request(fakeLogger, "URL", fakeOptions);
@@ -296,7 +296,7 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(rejectedRequest)
             .mockReturnValueOnce(fakeRequest);
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
 
         // Act
         try {
@@ -327,7 +327,7 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(resolvedRequest)
             .mockReturnValueOnce(fakeRequest);
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(RequestsFromCache, "isFromCache").mockReturnValue(
             "FAKE_FROM_CACHE",
         );
@@ -364,7 +364,7 @@ describe("#request", () => {
         jest.spyOn(MakeRequest, "makeRequest")
             .mockReturnValueOnce(resolvedRequest)
             .mockReturnValueOnce(fakeRequest);
-        jest.spyOn(KAShared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
         jest.spyOn(RequestsFromCache, "isFromCache").mockReturnValue(
             "FAKE_FROM_CACHE",
         );

@@ -1,9 +1,9 @@
 // @flow
-import * as KAShared from "../../../ka-shared/index.js";
+import * as Shared from "../../../shared/index.js";
 import * as HandleError from "../handle-error.js";
 import {makeRenderHandler} from "../make-render-handler.js";
 
-jest.mock("../../../ka-shared/index.js");
+jest.mock("../../../shared/index.js");
 jest.mock("../handle-error.js");
 
 describe("#makeRenderHandler", () => {
@@ -44,11 +44,11 @@ describe("#makeRenderHandler", () => {
                     .fn()
                     .mockReturnValue(Promise.resolve(renderResult)),
             };
-            jest.spyOn(KAShared, "trace").mockReturnValue({
+            jest.spyOn(Shared, "trace").mockReturnValue({
                 end: jest.fn(),
                 addLabel: jest.fn(),
             });
-            const getLoggerSpy = jest.spyOn(KAShared, "getLogger");
+            const getLoggerSpy = jest.spyOn(Shared, "getLogger");
             const handler = makeRenderHandler(fakeRenderEnvironment);
 
             // Act
@@ -80,7 +80,7 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
-            jest.spyOn(KAShared, "trace").mockReturnValue({
+            jest.spyOn(Shared, "trace").mockReturnValue({
                 end: jest.fn(),
                 addLabel: jest.fn(),
             });
@@ -124,7 +124,7 @@ describe("#makeRenderHandler", () => {
                 status: 200,
                 headers: {},
             };
-            jest.spyOn(KAShared, "trace").mockReturnValue({
+            jest.spyOn(Shared, "trace").mockReturnValue({
                 end: jest.fn(),
                 addLabel: jest.fn(),
             });
@@ -166,12 +166,12 @@ describe("#makeRenderHandler", () => {
                 },
             };
             const nextFn = jest.fn();
-            jest.spyOn(KAShared, "trace").mockReturnValue({
+            jest.spyOn(Shared, "trace").mockReturnValue({
                 end: jest.fn(),
                 addLabel: jest.fn(),
             });
             const fakeLogger = "FAKE_LOGGER";
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
             const renderResult = {
                 body: "BODY",
                 status: 200,
@@ -232,7 +232,7 @@ describe("#makeRenderHandler", () => {
                             .mockReturnValue(Promise.resolve(renderResult)),
                     };
                     const traceSpy = jest
-                        .spyOn(KAShared, "trace")
+                        .spyOn(Shared, "trace")
                         .mockReturnValue({
                             end: jest.fn(),
                             addLabel: jest.fn(),
@@ -285,7 +285,7 @@ describe("#makeRenderHandler", () => {
                         NAME2: "VALUE2",
                     },
                 };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
+                jest.spyOn(Shared, "trace").mockReturnValue({
                     end: jest.fn(),
                     addLabel: jest.fn(),
                 });
@@ -335,7 +335,7 @@ describe("#makeRenderHandler", () => {
                             NAME2: "VALUE2",
                         },
                     };
-                    jest.spyOn(KAShared, "trace").mockReturnValue({
+                    jest.spyOn(Shared, "trace").mockReturnValue({
                         end: jest.fn(),
                         addLabel: jest.fn(),
                     });
@@ -347,9 +347,7 @@ describe("#makeRenderHandler", () => {
                     const fakeLogger = {
                         error: jest.fn(),
                     };
-                    jest.spyOn(KAShared, "getLogger").mockReturnValue(
-                        fakeLogger,
-                    );
+                    jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
                     const handleErrorSpy = jest.spyOn(
                         HandleError,
                         "handleError",
@@ -404,7 +402,7 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
+                jest.spyOn(Shared, "trace").mockReturnValue({
                     end: jest.fn(),
                     addLabel: jest.fn(),
                 });
@@ -446,7 +444,7 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
+                jest.spyOn(Shared, "trace").mockReturnValue({
                     end: jest.fn(),
                     addLabel: jest.fn(),
                 });
@@ -488,7 +486,7 @@ describe("#makeRenderHandler", () => {
                     status: 200,
                     headers: {},
                 };
-                jest.spyOn(KAShared, "trace").mockReturnValue({
+                jest.spyOn(Shared, "trace").mockReturnValue({
                     end: jest.fn(),
                     addLabel: jest.fn(),
                 });
@@ -527,7 +525,7 @@ describe("#makeRenderHandler", () => {
                     },
                 };
                 const nextFn = jest.fn();
-                jest.spyOn(KAShared, "trace").mockReturnValue({
+                jest.spyOn(Shared, "trace").mockReturnValue({
                     end: jest.fn(),
                     addLabel: jest.fn(),
                 });
@@ -540,7 +538,7 @@ describe("#makeRenderHandler", () => {
                     error: jest.fn(),
                 };
                 const customErrorHandler = jest.fn();
-                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+                jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
                 const handler = makeRenderHandler(
                     fakeRenderEnvironment,
                     customErrorHandler,
@@ -581,7 +579,7 @@ describe("#makeRenderHandler", () => {
                     },
                 };
                 const nextFn = jest.fn();
-                jest.spyOn(KAShared, "trace").mockReturnValue({
+                jest.spyOn(Shared, "trace").mockReturnValue({
                     end: jest.fn(),
                     addLabel: jest.fn(),
                 });
@@ -594,7 +592,7 @@ describe("#makeRenderHandler", () => {
                     error: jest.fn(),
                 };
                 const customErrorHandler = jest.fn();
-                jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+                jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
                 const handler = makeRenderHandler(
                     fakeRenderEnvironment,
                     customErrorHandler,

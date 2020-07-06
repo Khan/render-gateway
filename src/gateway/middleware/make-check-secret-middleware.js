@@ -1,6 +1,7 @@
 // @flow
 import type {Middleware, $Response, NextFunction} from "express";
-import {getRuntimeMode, getLogger} from "../../ka-shared/index.js";
+import {getRuntimeMode} from "../../ka-shared/index.js";
+import {getLogger} from "../../shared/index.js";
 import {getSecrets} from "../get-secrets.js";
 
 import type {AuthenticationOptions, Request} from "../types.js";

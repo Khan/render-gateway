@@ -1,9 +1,11 @@
 // @flow
 import * as KAShared from "../../../ka-shared/index.js";
+import * as Shared from "../../../shared/index.js";
 import * as GetSecrets from "../../get-secrets.js";
 import {makeCheckSecretMiddleware} from "../make-check-secret-middleware.js";
 
 jest.mock("../../../ka-shared/index.js");
+jest.mock("../../../shared/index.js");
 jest.mock("../../get-secrets.js");
 
 describe("#makeCheckSecretMiddleware", () => {
@@ -15,7 +17,7 @@ describe("#makeCheckSecretMiddleware", () => {
                 info: jest.fn(),
             };
             const result: Function = await makeCheckSecretMiddleware();
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(null, null, fakeNext);
@@ -31,7 +33,7 @@ describe("#makeCheckSecretMiddleware", () => {
                 info: jest.fn(),
             };
             const result: Function = await makeCheckSecretMiddleware();
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(null, null, fakeNext);
@@ -67,7 +69,7 @@ describe("#makeCheckSecretMiddleware", () => {
             const result: Function = await makeCheckSecretMiddleware(
                 fakeAuthOptions,
             );
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(fakeRequest, null, fakeNext);
@@ -96,7 +98,7 @@ describe("#makeCheckSecretMiddleware", () => {
             const result: Function = await makeCheckSecretMiddleware(
                 fakeAuthOptions,
             );
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(fakeRequest, null, fakeNext);
@@ -130,7 +132,7 @@ describe("#makeCheckSecretMiddleware", () => {
             const result: Function = await makeCheckSecretMiddleware(
                 fakeAuthOptions,
             );
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(fakeRequest, null, fakeNext);
@@ -164,7 +166,7 @@ describe("#makeCheckSecretMiddleware", () => {
             const result: Function = await makeCheckSecretMiddleware(
                 fakeAuthOptions,
             );
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             result(fakeRequest, null, fakeNext);
@@ -205,7 +207,7 @@ describe("#makeCheckSecretMiddleware", () => {
             const result: Function = await makeCheckSecretMiddleware(
                 fakeAuthOptions,
             );
-            jest.spyOn(KAShared, "getLogger").mockReturnValue(fakeLogger);
+            jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
             const underTest = () => result(fakeRequest, null, fakeNext);
