@@ -31,10 +31,16 @@ async function makeProductionMiddleware<Req: Request, Res: $Response>(
      * server - likely just a killswitch to kill an instance so that GAE spins
      * up new ones.
      */
-    const {secretKey, headerName, cryptoKeyPath} = options;
+    const {secretKey, deprecatedSecretKey, headerName, cryptoKeyPath} = options;
     const secrets = await getSecrets(cryptoKeyPath);
     const secret = secrets[secretKey];
+    const deprecatedSecret =
+        deprecatedSecretKey == null ? secret : secrets[deprecatedSecretKey];
     if (secret == null) {
+        /**
+         * We don't check if the deprecated secret is set or not. If it isn't
+         * that's not a critical error.
+         */
         throw new Error("Unable to load secret");
     }
 
@@ -48,7 +54,7 @@ async function makeProductionMiddleware<Req: Request, Res: $Response>(
          */
         redactSecretHeader(req, headerName);
 
-        if (requestSecret !== secret) {
+        if (requestSecret !== secret && requestSecret !== deprecatedSecret) {
             res.status(401).send({error: "Missing or invalid secret"});
             return;
         }
