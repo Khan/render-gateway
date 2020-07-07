@@ -272,6 +272,7 @@ describe("#makeCheckSecretMiddleware", () => {
             beforeEach(() => {
                 jest.spyOn(GetSecrets, "getSecrets").mockReturnValue({
                     SECRET_KEY: "SECRET_VALUE",
+                    DEPRECATED_SECRET_KEY: "DEPRECATED_SECRET_VALUE",
                 });
             });
 
@@ -365,6 +366,64 @@ describe("#makeCheckSecretMiddleware", () => {
                     // Assert
                     expect(underTest).toThrowErrorMatchingInlineSnapshot(
                         `"Secret header could not be redacted!"`,
+                    );
+                });
+            });
+
+            describe("upon request with valid deprecated secret", () => {
+                it("should continue", async () => {
+                    // Arrange
+                    const headers = {
+                        header_name: "DEPRECATED_SECRET_VALUE",
+                    };
+                    const fakeRequest = {
+                        header: (name: string) => headers[name.toLowerCase()],
+                        headers,
+                    };
+                    const fakeNext = jest.fn();
+                    const authenticationOptions = {
+                        cryptoKeyPath: "CRYPTO_KEY_PATH",
+                        secretKey: "SECRET_KEY",
+                        deprecatedSecretKey: "DEPRECATED_SECRET_KEY",
+                        headerName: "HEADER_NAME",
+                    };
+                    const middleware: Function = await makeCheckSecretMiddleware(
+                        authenticationOptions,
+                    );
+
+                    // Act
+                    middleware(fakeRequest, null, fakeNext);
+
+                    // Assert
+                    expect(fakeNext).toHaveBeenCalledTimes(1);
+                });
+
+                it("should delete the auth header", async () => {
+                    // Arrange
+                    const headers = {
+                        header_name: "DEPRECATED_SECRET_VALUE",
+                    };
+                    const fakeRequest = {
+                        header: (name: string) => headers[name.toLowerCase()],
+                        headers,
+                    };
+                    const fakeNext = jest.fn();
+                    const authenticationOptions = {
+                        cryptoKeyPath: "CRYPTO_KEY_PATH",
+                        secretKey: "SECRET_KEY",
+                        deprecatedSecretKey: "DEPRECATED_SECRET_KEY",
+                        headerName: "HEADER_NAME",
+                    };
+                    const middleware: Function = await makeCheckSecretMiddleware(
+                        authenticationOptions,
+                    );
+
+                    // Act
+                    middleware(fakeRequest, null, fakeNext);
+
+                    // Assert
+                    expect(fakeRequest.headers).not.toHaveProperty(
+                        "header_name",
                     );
                 });
             });

@@ -35,6 +35,15 @@ export type AuthenticationOptions = {
     +secretKey: string,
 
     /**
+     * The key of the secret that we are deprecating.
+     *
+     * This secret is loaded from the secrets.json.enc file that the service
+     * must provide. It is there so that we can rotate out a deprecated secret
+     * without impairing functionality.
+     */
+    +deprecatedSecretKey?: string,
+
+    /**
      * The name of the header to be matched.
      *
      * This is a header in the request, the value of which will be matched
