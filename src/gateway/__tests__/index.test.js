@@ -23,10 +23,6 @@ describe("index.js", () => {
         const {Requests: result} = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys([
-            "request",
-            "abortInFlightRequests",
-            "DefaultRequestOptions",
-        ]);
+        expect(result).toContainAllKeys(["request", "DefaultRequestOptions"]);
     });
 });

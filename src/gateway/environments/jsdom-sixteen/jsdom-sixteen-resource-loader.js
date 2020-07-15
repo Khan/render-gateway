@@ -5,11 +5,7 @@ import type {Agent as HttpsAgent} from "https";
 import {ResourceLoader} from "jsdom";
 import type {FetchOptions} from "jsdom";
 import {getAgentForURL} from "../../../shared/index.js";
-import {
-    DefaultRequestOptions,
-    request,
-    abortInFlightRequests,
-} from "../../request.js";
+import {DefaultRequestOptions, request} from "../../request.js";
 import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 
 import type {RequestOptions, RenderAPI} from "../../types.js";
@@ -98,7 +94,6 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
 
     close(): void {
         this._active = false;
-        abortInFlightRequests();
 
         /**
          * We need to destroy any agents we created or they may retain

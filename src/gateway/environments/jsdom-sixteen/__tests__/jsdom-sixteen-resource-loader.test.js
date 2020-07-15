@@ -72,22 +72,6 @@ describe("JSDOMSixteenResourceLoader", () => {
     });
 
     describe("#close", () => {
-        it("should abort inflight requests", () => {
-            // Arrange
-            const abortInFlightRequestsSpy = jest.spyOn(
-                Request,
-                "abortInFlightRequests",
-            );
-            const fakeRenderAPI: any = {};
-            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
-
-            // Act
-            underTest.close();
-
-            // Assert
-            expect(abortInFlightRequestsSpy).toHaveBeenCalled();
-        });
-
         it("should set isActive to false", () => {
             // Arrange
             const fakeRenderAPI: any = {};
