@@ -1,30 +1,10 @@
 // @flow
 import type {Response} from "superagent";
-import type {
-    InFlightRequests,
-    RequestOptions,
-    AbortablePromise,
-} from "./types.js";
+import type {RequestOptions, AbortablePromise} from "./types.js";
 import type {Logger} from "../shared/types.js";
 import {makeRequest} from "./make-request.js";
 import {isFromCache} from "./requests-from-cache.js";
 import {trace} from "../shared/index.js";
-
-/**
- * This tracks our inflight requests.
- */
-const inFlightRequests: InFlightRequests = {};
-
-/**
- * Abort any requests that are inflight and clear the inflight request queue.
- */
-export const abortInFlightRequests = (): void => {
-    for (const url of Object.keys(inFlightRequests)) {
-        const request = inFlightRequests[url];
-        delete inFlightRequests[url];
-        request.abort();
-    }
-};
 
 /**
  * The defaults used for request options.
@@ -37,10 +17,6 @@ export const DefaultRequestOptions: RequestOptions = {
 
 /**
  * Request a URL.
- *
- * Unlike makeRequest, which makes a new request, this will track inflight
- * requests and if there is one for the request being made, return that instead
- * of making a new one.
  *
  * NOTE: The AbortablePromise is only shallowly abortable. If any standard
  * promise methods are called on this, the promise they return no longer will
@@ -55,15 +31,6 @@ export const request = (
         ...DefaultRequestOptions,
         ...options,
     };
-
-    /**
-     * Something may have already started this request. If it is already
-     * "in flight", let's use it rather than making a whole new one.
-     */
-    const inFlight = inFlightRequests[url];
-    if (inFlight != null) {
-        return inFlight;
-    }
 
     /**
      * We don't already have this request in flight, so let's make a new
@@ -89,7 +56,6 @@ export const request = (
             return res;
         })
         .finally(() => {
-            delete inFlightRequests[url];
             traceSession.end();
         });
 
@@ -106,6 +72,5 @@ export const request = (
     if (finalizedRequest !== abortableRequest) {
         finalizedRequest.abort = () => abortableRequest.abort();
     }
-    inFlightRequests[url] = finalizedRequest;
     return finalizedRequest;
 };

@@ -2,25 +2,13 @@
 import type {Agent as HttpAgent} from "http";
 import type {Agent as HttpsAgent} from "https";
 import type {$Request, $Response} from "express";
-import type {
-    CallbackHandler,
-    Plugin,
-    Response as SuperAgentResponse,
-} from "superagent";
+import type {CallbackHandler, Plugin} from "superagent";
 import type {
     RequestWithLog,
     ITraceSession,
     Logger,
     SimplifiedError,
 } from "../shared/index.js";
-
-/**
- * Used to track inflight requests.
- */
-export type InFlightRequests = {
-    [url: string]: AbortablePromise<SuperAgentResponse>,
-    ...
-};
 
 /**
  * Options for configuring incoming request authentication.
