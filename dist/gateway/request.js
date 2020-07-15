@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.request = exports.DefaultRequestOptions = exports.abortInFlightRequests = void 0;
+exports.request = exports.DefaultRequestOptions = void 0;
 
 var _makeRequest = require("./make-request.js");
 
@@ -18,26 +18,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
- * This tracks our inflight requests.
- */
-const inFlightRequests = {};
-/**
- * Abort any requests that are inflight and clear the inflight request queue.
- */
-
-const abortInFlightRequests = () => {
-  for (const url of Object.keys(inFlightRequests)) {
-    const request = inFlightRequests[url];
-    delete inFlightRequests[url];
-    request.abort();
-  }
-};
-/**
  * The defaults used for request options.
  */
-
-
-exports.abortInFlightRequests = abortInFlightRequests;
 const DefaultRequestOptions = {
   buffer: true,
   retries: 2,
@@ -45,10 +27,6 @@ const DefaultRequestOptions = {
 };
 /**
  * Request a URL.
- *
- * Unlike makeRequest, which makes a new request, this will track inflight
- * requests and if there is one for the request being made, return that instead
- * of making a new one.
  *
  * NOTE: The AbortablePromise is only shallowly abortable. If any standard
  * promise methods are called on this, the promise they return no longer will
@@ -59,17 +37,6 @@ exports.DefaultRequestOptions = DefaultRequestOptions;
 
 const request = (logger, url, options) => {
   const optionsToUse = _objectSpread(_objectSpread({}, DefaultRequestOptions), options);
-  /**
-   * Something may have already started this request. If it is already
-   * "in flight", let's use it rather than making a whole new one.
-   */
-
-
-  const inFlight = inFlightRequests[url];
-
-  if (inFlight != null) {
-    return inFlight;
-  }
   /**
    * We don't already have this request in flight, so let's make a new
    * request.
@@ -94,7 +61,6 @@ const request = (logger, url, options) => {
     traceSession.addLabel("successful", true);
     return res;
   }).finally(() => {
-    delete inFlightRequests[url];
     traceSession.end();
   });
   /**
@@ -113,7 +79,6 @@ const request = (logger, url, options) => {
     finalizedRequest.abort = () => abortableRequest.abort();
   }
 
-  inFlightRequests[url] = finalizedRequest;
   return finalizedRequest;
 };
 

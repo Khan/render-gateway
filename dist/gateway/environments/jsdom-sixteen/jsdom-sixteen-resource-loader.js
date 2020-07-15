@@ -96,7 +96,6 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
 
   close() {
     this._active = false;
-    (0, _request.abortInFlightRequests)();
     /**
      * We need to destroy any agents we created or they may retain
      * sockets that retain references to our JSDOM environment and cause
