@@ -4,6 +4,7 @@ import winston from "winston";
 import * as lw from "@google-cloud/logging-winston";
 import type {Transport, NpmLogLevels, Format} from "winston";
 
+import {Errors} from "./errors.js";
 import {getGatewayInfo} from "./get-gateway-info.js";
 import type {Runtime, Logger, LogLevel, Info} from "./types.js";
 
@@ -97,20 +98,35 @@ const getTransport = (mode: Runtime, logLevel: LogLevel): Transport => {
 };
 
 /**
+ * Get default metadata to attach to logs.
+ */
+export const getDefaultMetadata = (): any => {
+    const {instance, pid} = getGatewayInfo();
+    return {
+        instanceID: instance,
+        processID: pid,
+    };
+};
+
+/**
  * Create a logger for the given runtime mode and log level.
  */
 export const createLogger = (
     runtimeMode: Runtime,
     logLevel: LogLevel,
 ): Logger => {
-    const {instance, pid} = getGatewayInfo();
     const winstonLogger = winston.createLogger<NpmLogLevels>({
         level: logLevel,
         transports: getTransport(runtimeMode, logLevel),
-        defaultMeta: {
-            instanceID: instance,
-            processID: pid,
-        },
+        format: winston.format((info) => {
+            // Let's make sure that errors reported without a taxonomic
+            // label get labelled.
+            if (info.level === "error" && info.kind == null) {
+                info.kind = Errors.Internal;
+            }
+            return info;
+        })(),
+        defaultMeta: getDefaultMetadata(),
     });
 
     winstonLogger.debug(
