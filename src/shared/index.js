@@ -20,6 +20,7 @@ export type {
     SimplifiedError,
 } from "./types.js";
 
+export {Errors} from "./errors.js";
 export {createLogger} from "./create-logger.js";
 export {getLogger} from "./get-logger.js";
 export {getGatewayInfo} from "./get-gateway-info.js";
