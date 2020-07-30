@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.asCachedRequest = exports.asUncachedRequest = exports.isFromCache = exports.FROM_CACHE_PROP_NAME = void 0;
 
+var _index = require("../shared/index.js");
+
+var _index2 = require("../ka-shared/index.js");
+
 /**
  * This is the name of the property we attach to responses so that we can
  * indicate if a response was from the cache or not.
@@ -83,7 +87,7 @@ const asCachedRequest = (options, request) => {
   } = options;
 
   if (cachePlugin == null) {
-    throw new Error("Cannot cache request without cache plugin instance.");
+    throw new _index.KAError("Cannot cache request without cache plugin instance.", _index2.Errors.NotAllowed);
   }
 
   const FRESHLY_PRUNED = "PRUNED";

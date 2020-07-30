@@ -5,10 +5,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getRequestLogger = void 0;
 
+var _kaError = _interopRequireDefault(require("./ka-error.js"));
+
+var _errors = require("./errors.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 const getRequestLogger = (defaultLogger, request) => {
   if (defaultLogger == null) {
     if (request == null || request.log == null) {
-      throw new Error("No logs available");
+      throw new _kaError.default("No logs available", _errors.Errors.Internal);
     }
 
     return request.log;

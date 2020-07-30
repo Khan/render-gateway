@@ -21,7 +21,7 @@ const redactSecretHeader = (req, headerName) => {
    */
 
   if (req.header(headerName) != null) {
-    throw new Error("Secret header could not be redacted!");
+    throw new _index2.KAError("Secret header could not be redacted!", _index.Errors.NotAllowed);
   }
 };
 
@@ -50,7 +50,7 @@ async function makeProductionMiddleware(options) {
      * We don't check if the deprecated secret is set or not. If it isn't
      * that's not a critical error.
      */
-    throw new Error("Unable to load secret");
+    throw new _index2.KAError("Unable to load secret", _index.Errors.NotFound);
   }
 
   return function (req, res, next) {

@@ -11,6 +11,8 @@ var _setupStackdriver = require("./setup-stackdriver.js");
 
 var _rootLogger = require("./root-logger.js");
 
+var _errors = require("./errors.js");
+
 /**
  * Start a gateway application server.
  *
@@ -82,7 +84,9 @@ async function startGateway(options, app) {
 
   const gateway = appWithMiddleware.listen(port, host, err => {
     if (gateway == null || err != null) {
-      logger.error(`${name} appears not to have started: ${err && err.message || "Unknown error"}`);
+      logger.error(`${name} appears not to have started: ${err && err.message || "Unknown error"}`, {
+        kind: _errors.Errors.Internal
+      });
       return;
     }
 
@@ -117,14 +121,18 @@ async function startGateway(options, app) {
     try {
       gateway.close(err => {
         if (err) {
-          logger.error(`Error shutting down server: ${err && err.message || "Unknown Error"}`);
+          logger.error(`Error shutting down server: ${err && err.message || "Unknown Error"}`, {
+            kind: _errors.Errors.Internal
+          });
           process.exit(1);
         } else {
           process.exit(0);
         }
       });
     } catch (err) {
-      logger.error(`Error closing gateway: ${err && err.message || "Unknown Error"}`);
+      logger.error(`Error closing gateway: ${err && err.message || "Unknown Error"}`, {
+        kind: _errors.Errors.Internal
+      });
       process.exit(1);
     }
   });

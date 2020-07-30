@@ -7,6 +7,8 @@ exports.handleError = void 0;
 
 var _index = require("../../shared/index.js");
 
+var _index2 = require("../../ka-shared/index.js");
+
 var _formatError = require("../format-error.js");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -60,7 +62,8 @@ const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, re
         headers
       } = overriddenResponse;
       logger.error(`${overallProblem}; custom error response generated`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
-        requestURL
+        requestURL,
+        kind: _index2.Errors.TransientKhanService
       }));
       res.header(headers);
       res.send(body);
@@ -74,7 +77,8 @@ const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, re
     const innerError = (0, _index.extractError)(customHandlerError);
     logger.error(`${overallProblem}; custom handler failed`, _objectSpread(_objectSpread({}, innerError), {}, {
       originalError: simplifiedError,
-      requestURL
+      requestURL,
+      kind: _index2.Errors.TransientKhanService
     }));
     res.send((0, _formatError.formatError)(defaultErrorResponse, _objectSpread(_objectSpread({}, innerError), {}, {
       originalError: simplifiedError
@@ -88,7 +92,8 @@ const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, re
 
 
   logger.error(`${overallProblem}; uncaught error`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
-    requestURL
+    requestURL,
+    kind: _index2.Errors.TransientKhanService
   }));
   res.send((0, _formatError.formatError)(defaultErrorResponse, simplifiedError));
 };

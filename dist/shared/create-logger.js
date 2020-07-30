@@ -3,13 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLogger = void 0;
+exports.createLogger = exports.getDefaultMetadata = void 0;
 
 var _stream = _interopRequireDefault(require("stream"));
 
 var _winston = _interopRequireDefault(require("winston"));
 
 var lw = _interopRequireWildcard(require("@google-cloud/logging-winston"));
+
+var _errors = require("./errors.js");
 
 var _getGatewayInfo = require("./get-gateway-info.js");
 
@@ -123,23 +125,41 @@ const getTransport = (mode, logLevel) => {
   }
 };
 /**
- * Create a logger for the given runtime mode and log level.
+ * Get default metadata to attach to logs.
  */
 
 
-const createLogger = (runtimeMode, logLevel) => {
+const getDefaultMetadata = () => {
   const {
     instance,
     pid
   } = (0, _getGatewayInfo.getGatewayInfo)();
+  return {
+    instanceID: instance,
+    processID: pid
+  };
+};
+/**
+ * Create a logger for the given runtime mode and log level.
+ */
 
+
+exports.getDefaultMetadata = getDefaultMetadata;
+
+const createLogger = (runtimeMode, logLevel) => {
   const winstonLogger = _winston.default.createLogger({
     level: logLevel,
     transports: getTransport(runtimeMode, logLevel),
-    defaultMeta: {
-      instanceID: instance,
-      processID: pid
-    }
+    format: _winston.default.format(info => {
+      // Let's make sure that errors reported without a taxonomic
+      // label get labelled.
+      if (info.level === "error" && info.kind == null) {
+        info.kind = _errors.Errors.Internal;
+      }
+
+      return info;
+    })(),
+    defaultMeta: getDefaultMetadata()
   });
 
   winstonLogger.debug(`Created logger (Level=${logLevel} Mode=${runtimeMode})`);
