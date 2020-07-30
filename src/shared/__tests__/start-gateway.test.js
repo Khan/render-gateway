@@ -226,6 +226,7 @@ describe("#start-gateway", () => {
                 };
                 const fakeServer = {
                     address: () => address,
+                    on: jest.fn(),
                 };
                 const listenMock = jest.fn().mockReturnValue(fakeServer);
                 const pretendApp = ({
@@ -263,6 +264,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
             const pretendApp = ({
@@ -330,6 +332,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
@@ -369,6 +372,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
@@ -413,6 +417,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
@@ -455,6 +460,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn().mockImplementation(() => {
                     throw new Error("CLOSE ERROR");
                 }),
