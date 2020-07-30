@@ -20,6 +20,7 @@ export type {
     SimplifiedError,
 } from "./types.js";
 
+export {default as KAError} from "./ka-error.js";
 export {Errors} from "./errors.js";
 export {createLogger} from "./create-logger.js";
 export {getLogger} from "./get-logger.js";

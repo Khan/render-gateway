@@ -4,6 +4,7 @@ import {useAppEngineMiddleware} from "./use-app-engine-middleware.js";
 import {setupStackdriver} from "./setup-stackdriver.js";
 import {setRootLogger} from "./root-logger.js";
 import type {GatewayOptions, RequestWithLog} from "./types.js";
+import {Errors} from "./errors.js";
 
 /**
  * Start a gateway application server.
@@ -83,6 +84,9 @@ export async function startGateway<
                 `${name} appears not to have started: ${
                     (err && err.message) || "Unknown error"
                 }`,
+                {
+                    kind: Errors.Internal,
+                },
             );
             return;
         }
@@ -121,6 +125,9 @@ export async function startGateway<
                         `Error shutting down server: ${
                             (err && err.message) || "Unknown Error"
                         }`,
+                        {
+                            kind: Errors.Internal,
+                        },
                     );
                     process.exit(1);
                 } else {
@@ -132,6 +139,9 @@ export async function startGateway<
                 `Error closing gateway: ${
                     (err && err.message) || "Unknown Error"
                 }`,
+                {
+                    kind: Errors.Internal,
+                },
             );
             process.exit(1);
         }

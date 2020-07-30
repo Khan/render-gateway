@@ -1,5 +1,7 @@
 // @flow
 import type {Request, Response} from "superagent";
+import {KAError} from "../shared/index.js";
+import {Errors} from "../ka-shared/index.js";
 import type {RequestOptions, AbortablePromise} from "./types.js";
 
 /**
@@ -73,7 +75,10 @@ export const asCachedRequest = (
 ): AbortablePromise<Response> => {
     const {cachePlugin, getExpiration, buffer} = options;
     if (cachePlugin == null) {
-        throw new Error("Cannot cache request without cache plugin instance.");
+        throw new KAError(
+            "Cannot cache request without cache plugin instance.",
+            Errors.NotAllowed,
+        );
     }
 
     const FRESHLY_PRUNED = "PRUNED";

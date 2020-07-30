@@ -1,5 +1,6 @@
 // @flow
-import {extractError} from "../../../shared/index.js";
+import {extractError, KAError} from "../../../shared/index.js";
+import {Errors} from "../../../ka-shared/index.js";
 import type {Logger} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
@@ -52,7 +53,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
      */
     constructor(configuration: IJSDOMSixteenConfiguration) {
         if (configuration == null) {
-            throw new Error("Must provide environment configuration");
+            throw new KAError(
+                "Must provide environment configuration",
+                Errors.Internal,
+            );
         }
         this._configuration = configuration;
     }
@@ -99,8 +103,9 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                          * error!
                          */
                         if (fetchResult == null) {
-                            throw new Error(
+                            throw new KAError(
                                 `Unable to retrieve ${f}. ResourceLoader returned null.`,
+                                Errors.TransientService,
                             );
                         }
                         /**
@@ -133,7 +138,6 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                  */
                 for (let i = closeables.length - 1; i >= 0; i--) {
                     try {
-                        // eslint-disable-next-line flowtype/no-unused-expressions
                         closeables[i]?.close?.();
                     } catch (e) {
                         const simplifiedError = extractError(e);
@@ -143,6 +147,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                             }`,
                             {
                                 ...simplifiedError,
+                                kind: Errors.Internal,
                             },
                         );
                     }
@@ -305,7 +310,10 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                 typeof vmContext[registrationCallbackName][registeredCbName] !==
                 "function"
             ) {
-                throw new Error("No render callback was registered.");
+                throw new KAError(
+                    "No render callback was registered.",
+                    Errors.Internal,
+                );
             }
 
             /**
@@ -328,8 +336,9 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                 !Object.prototype.hasOwnProperty.call(result, "status") ||
                 !Object.prototype.hasOwnProperty.call(result, "headers")
             ) {
-                throw new Error(
+                throw new KAError(
                     `Malformed render result: ${JSON.stringify(result)}`,
+                    Errors.Internal,
                 );
             }
 

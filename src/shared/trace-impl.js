@@ -3,6 +3,8 @@ import type {Tracer} from "@google-cloud/trace-agent";
 import {getGatewayInfo} from "./get-gateway-info.js";
 import {getDelta} from "./get-delta.js";
 import {getDefaultMetadata} from "./create-logger.js";
+import KAError from "./ka-error.js";
+import {Errors} from "./errors.js";
 import type {Logger, ITraceSession, TraceSessionInfo} from "./types.js";
 
 /**
@@ -36,7 +38,10 @@ export const traceImpl = (
     tracer?: Tracer,
 ): ITraceSession => {
     if (!action) {
-        throw new Error("Must provide an action for the trace session.");
+        throw new KAError(
+            "Must provide an action for the trace session.",
+            Errors.Internal,
+        );
     }
     const logMessage = `${action}${message ? `: ${message}` : ""}`;
 

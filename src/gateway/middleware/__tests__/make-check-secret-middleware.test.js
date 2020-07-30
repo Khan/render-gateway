@@ -9,6 +9,14 @@ jest.mock("../../../shared/index.js");
 jest.mock("../../get-secrets.js");
 
 describe("#makeCheckSecretMiddleware", () => {
+    beforeEach(() => {
+        // Let's make sure KAError still works.
+        jest.spyOn(Shared, "KAError").mockImplementation((...args) => {
+            const {KAError} = jest.requireActual("../../../shared/index.js");
+            return new KAError(args);
+        });
+    });
+
     describe("without authentication options", () => {
         it("should create noop middleware", async () => {
             // Arrange
@@ -214,7 +222,7 @@ describe("#makeCheckSecretMiddleware", () => {
 
             // Assert
             expect(underTest).toThrowErrorMatchingInlineSnapshot(
-                `"Secret header could not be redacted!"`,
+                `"Secret header could not be redacted!,NotAllowed"`,
             );
         });
     });
@@ -264,7 +272,7 @@ describe("#makeCheckSecretMiddleware", () => {
 
             // Assert
             await expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
-                `"Unable to load secret"`,
+                `"Unable to load secret,NotFound"`,
             );
         });
 
@@ -365,7 +373,7 @@ describe("#makeCheckSecretMiddleware", () => {
 
                     // Assert
                     expect(underTest).toThrowErrorMatchingInlineSnapshot(
-                        `"Secret header could not be redacted!"`,
+                        `"Secret header could not be redacted!,NotAllowed"`,
                     );
                 });
             });
@@ -560,7 +568,7 @@ describe("#makeCheckSecretMiddleware", () => {
 
                     // Assert
                     expect(underTest).toThrowErrorMatchingInlineSnapshot(
-                        `"Secret header could not be redacted!"`,
+                        `"Secret header could not be redacted!,NotAllowed"`,
                     );
                 });
             });

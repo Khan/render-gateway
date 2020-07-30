@@ -40,9 +40,7 @@ describe("JSDOMSixteenResourceLoader", () => {
             const underTest = () => new JSDOMSixteenResourceLoader((null: any));
 
             // Assert
-            expect(underTest).toThrowErrorMatchingInlineSnapshot(
-                `"Must provide render API."`,
-            );
+            expect(underTest).toThrowErrorMatchingInlineSnapshot(`""`);
         });
 
         it("should initialize isActive to true", () => {

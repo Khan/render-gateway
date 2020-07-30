@@ -1,7 +1,7 @@
 // @flow
 import type {Middleware, $Response, NextFunction} from "express";
-import {getRuntimeMode} from "../../ka-shared/index.js";
-import {getLogger} from "../../shared/index.js";
+import {getRuntimeMode, Errors} from "../../ka-shared/index.js";
+import {getLogger, KAError} from "../../shared/index.js";
 import {getSecrets} from "../get-secrets.js";
 
 import type {AuthenticationOptions, Request} from "../types.js";
@@ -15,7 +15,10 @@ const redactSecretHeader = <Req: Request>(req: Req, headerName: string) => {
      * Let's make sure that secret is gone.
      */
     if (req.header(headerName) != null) {
-        throw new Error("Secret header could not be redacted!");
+        throw new KAError(
+            "Secret header could not be redacted!",
+            Errors.NotAllowed,
+        );
     }
 };
 
@@ -41,7 +44,7 @@ async function makeProductionMiddleware<Req: Request, Res: $Response>(
          * We don't check if the deprecated secret is set or not. If it isn't
          * that's not a critical error.
          */
-        throw new Error("Unable to load secret");
+        throw new KAError("Unable to load secret", Errors.NotFound);
     }
 
     return function (req: Req, res: Res, next: NextFunction): void {

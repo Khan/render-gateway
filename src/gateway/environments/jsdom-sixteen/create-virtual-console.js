@@ -1,6 +1,7 @@
 // @flow
 import {VirtualConsole} from "jsdom";
 import {extractError} from "../../../shared/index.js";
+import {Errors} from "../../../ka-shared/index.js";
 import type {Logger} from "../../../shared/index.js";
 
 /**
@@ -18,28 +19,34 @@ export const createVirtualConsole = (logger: Logger): VirtualConsole => {
             return;
         }
         const simplifiedError = extractError(e);
-        logger.error(`JSDOM:${simplifiedError.error || ""}`, simplifiedError);
+        logger.error(`JSDOM:${simplifiedError.error || ""}`, {
+            ...simplifiedError,
+            kind: Errors.Internal,
+        });
     });
 
     // NOTE: We pass args array as the metadata parameter for winston log.
+    //       We don't worry about adding the error kind here; we mark these
+    //       as Errors.Internal automatically if they don't already include a
+    //       kind.
     virtualConsole.on("error", (message, ...args) =>
-        logger.error(`JSDOM:${message}`, args),
+        logger.error(`JSDOM:${message}`, {args}),
     );
     virtualConsole.on("warn", (message, ...args) =>
-        logger.warn(`JSDOM:${message}`, args),
+        logger.warn(`JSDOM:${message}`, {args}),
     );
     virtualConsole.on("info", (message, ...args) =>
-        logger.info(`JSDOM:${message}`, args),
+        logger.info(`JSDOM:${message}`, {args}),
     );
     virtualConsole.on("log", (message, ...args) =>
         /**
          * Winston uses log for a different, core thing, so let's map log to
          * info.
          */
-        logger.info(`JSDOM:${message}`, args),
+        logger.info(`JSDOM:${message}`, {args}),
     );
     virtualConsole.on("debug", (message, ...args) =>
-        logger.debug(`JSDOM:${message}`, args),
+        logger.debug(`JSDOM:${message}`, {args}),
     );
     return virtualConsole;
 };

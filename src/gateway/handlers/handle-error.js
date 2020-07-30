@@ -1,5 +1,6 @@
 // @flow
 import {extractError, getLogger} from "../../shared/index.js";
+import {Errors} from "../../ka-shared/index.js";
 import {formatError} from "../format-error.js";
 import type {AmbiguousError} from "../../shared/index.js";
 import type {Request, Response, CustomErrorHandlerFn} from "../types.js";
@@ -57,6 +58,7 @@ export const handleError = (
             logger.error(`${overallProblem}; custom error response generated`, {
                 ...simplifiedError,
                 requestURL,
+                kind: Errors.TransientKhanService,
             });
             res.header(headers);
             res.send(body);
@@ -72,6 +74,7 @@ export const handleError = (
             ...innerError,
             originalError: simplifiedError,
             requestURL,
+            kind: Errors.TransientKhanService,
         });
         res.send(
             formatError(defaultErrorResponse, {
@@ -89,6 +92,7 @@ export const handleError = (
     logger.error(`${overallProblem}; uncaught error`, {
         ...simplifiedError,
         requestURL,
+        kind: Errors.TransientKhanService,
     });
     res.send(formatError(defaultErrorResponse, simplifiedError));
 };
