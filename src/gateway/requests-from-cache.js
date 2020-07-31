@@ -40,7 +40,7 @@ export const asUncachedRequest = (
      * We need to ensure that what we return has the `abort` method still so
      * that we can let things like JSDOM call abort on promises.
      */
-    const superagentRequest = request.buffer(options.buffer);
+    const superagentRequest = request.buffer(true);
     const responsePromise = superagentRequest.then((res) => {
         /**
          * There's no cache, so this is definitely not from cache.
@@ -73,7 +73,7 @@ export const asCachedRequest = (
     options: RequestOptions,
     request: Request,
 ): AbortablePromise<Response> => {
-    const {cachePlugin, getExpiration, buffer} = options;
+    const {cachePlugin, getExpiration} = options;
     if (cachePlugin == null) {
         throw new KAError(
             "Cannot cache request without cache plugin instance.",
@@ -110,7 +110,7 @@ export const asCachedRequest = (
             guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED;
             return guttedResponse;
         })
-        .buffer(buffer);
+        .buffer(true);
 
     const responsePromise = superagentRequest.then((res) => {
         /**

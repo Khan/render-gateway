@@ -223,11 +223,6 @@ export type Response = $Response;
  */
 export type RequestOptions = {
     /**
-     * When true, the response body will be buffered, otherwise it will not.
-     */
-    +buffer: boolean,
-
-    /**
      * Time to wait in milliseconds before a request times out.
      */
     +timeout: number,
