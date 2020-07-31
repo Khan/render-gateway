@@ -189,7 +189,10 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
        * If buffering is on (bad for memory use), then text will always
        * be present.
        *
-       * So, let's cater to all eventualities.
+       * So, let's cater to almost all eventualities.
+       *
+       * There are some circumstances where body might be null too, but
+       * those are cases we should never encounter.
        */
 
 
