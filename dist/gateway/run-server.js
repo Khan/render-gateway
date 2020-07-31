@@ -38,7 +38,7 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
  * render gateway will operate.
  * @returns {Promise<void>} The promise of working.
  */
-const runServer = async options => {
+const runServer = async (options) => {
   const {
     authentication,
     renderEnvironment,
