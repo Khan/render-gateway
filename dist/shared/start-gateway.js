@@ -102,11 +102,38 @@ async function startGateway(options, app) {
     logger.info(`${name} running at http://${host}:${port}`);
   });
   /**
-   * In this server is being run using a process manager, such as PM2, we
-   * may be asked to shutdown gracefully. We do this be listening for the
-   * SIGINT signal and then close the server. This prevents new connections
-   * from coming in and waits until the existing connections complete before
-   * the callback is fired. At which point we can safely shutdown the server.
+   * We use keep-alive connections with other resources. These can prevent
+   * the gateway process from shutting down if they are open when we're
+   * trying to close. So, let's track them and provide a means for us to\
+   * destroy them.
+   */
+
+  const connections = {};
+
+  const closeConnections = () => {
+    for (const connection of Object.values(connections)) {
+      connection.destroy();
+    }
+  };
+
+  gateway === null || gateway === void 0 ? void 0 : gateway.on("connection", connection => {
+    const key = `${connection.remoteAddress}:${connection.remotePort}`;
+    connections[key] = connection;
+    connection.on("close", () => {
+      delete connections[key];
+    });
+  });
+  /**
+   * When this server is being run (by direct invocation, or using a process
+   * manager, such as PM2), we may be asked to shutdown gracefully.
+   * We do this be listening for the SIGINT signal and then close the server.
+   * This prevents new connections from coming in and waits until the
+   * existing connections complete before the callback is fired.
+   * At which point we can safely shutdown the server.
+   *
+   * We hurry things along by actively closing any existing connections
+   * once the close has been requested.
+   *
    * If we fail to respond then the process manager may try to forcefully
    * shutdown the server after a timeout.
    */
@@ -129,6 +156,7 @@ async function startGateway(options, app) {
           process.exit(0);
         }
       });
+      closeConnections();
     } catch (err) {
       logger.error(`Error closing gateway: ${err && err.message || "Unknown Error"}`, {
         kind: _errors.Errors.Internal

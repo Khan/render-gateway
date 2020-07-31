@@ -152,6 +152,87 @@ describe("#start-gateway", () => {
         );
     });
 
+    it("should listen for connections", async () => {
+        // Arrange
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            host: "127.0.0.1",
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        const fakeServer = {
+            address: () => ({
+                address: "ADDRESS",
+                port: "PORT",
+            }),
+            on: jest.fn(),
+        };
+        const listenMock = jest.fn().mockReturnValue(fakeServer);
+        const pretendApp = ({
+            listen: listenMock,
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+
+        // Act
+        await startGateway(options, pretendApp);
+
+        // Assert
+        expect(fakeServer.on).toHaveBeenCalledWith(
+            "connection",
+            expect.any(Function),
+        );
+    });
+
+    it("should listen for connections closing", async () => {
+        // Arrange
+        const options = {
+            name: "TEST_GATEWAY",
+            port: 42,
+            host: "127.0.0.1",
+            logger: createLogger("test", "debug"),
+            mode: "test",
+        };
+        let connectionHandler;
+        const fakeServer = {
+            address: () => ({
+                address: "ADDRESS",
+                port: "PORT",
+            }),
+            on: jest.fn().mockImplementation((event, fn) => {
+                if (event === "connection") {
+                    connectionHandler = fn;
+                }
+            }),
+        };
+        const fakeConnection = {
+            remoteAddress: "CONNECTION_ADDRESS",
+            remotePort: "CONNECTION_PORT",
+            on: jest.fn(),
+        };
+        const listenMock = jest.fn().mockReturnValue(fakeServer);
+        const pretendApp = ({
+            listen: listenMock,
+        }: any);
+        jest.spyOn(
+            UseAppEngineMiddleware,
+            "useAppEngineMiddleware",
+        ).mockReturnValue(Promise.resolve(pretendApp));
+        await startGateway(options, pretendApp);
+
+        // Act
+        connectionHandler?.(fakeConnection);
+
+        // Assert
+        expect(fakeConnection.on).toHaveBeenCalledWith(
+            "close",
+            expect.any(Function),
+        );
+    });
+
     describe("listen callback", () => {
         it("should report start failure if gateway is null", async () => {
             // Arrange
@@ -232,6 +313,7 @@ describe("#start-gateway", () => {
                 };
                 const fakeServer = {
                     address: () => address,
+                    on: jest.fn(),
                 };
                 const listenMock = jest.fn().mockReturnValue(fakeServer);
                 const pretendApp = ({
@@ -269,6 +351,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
             const pretendApp = ({
@@ -336,6 +419,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
@@ -375,6 +459,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
@@ -422,6 +507,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn(),
             };
             const listenMock = jest.fn().mockReturnValue(fakeServer);
@@ -464,6 +550,7 @@ describe("#start-gateway", () => {
                     address: "ADDRESS",
                     port: "PORT",
                 }),
+                on: jest.fn(),
                 close: jest.fn().mockImplementation(() => {
                     throw new Error("CLOSE ERROR");
                 }),
@@ -495,6 +582,77 @@ describe("#start-gateway", () => {
                 },
             );
             expect(processExitSpy).toHaveBeenCalledWith(1);
+        });
+
+        it("should destroy only open connections on close", async () => {
+            // Arrange
+            const options = {
+                name: "TEST_GATEWAY",
+                port: 42,
+                host: "127.0.0.1",
+                logger: createLogger("test", "debug"),
+                mode: "test",
+            };
+            let connectionHandler;
+            const fakeServer = {
+                address: () => ({
+                    address: "ADDRESS",
+                    port: "PORT",
+                }),
+                on: jest.fn().mockImplementation((event, fn) => {
+                    if (event === "connection") {
+                        connectionHandler = fn;
+                    }
+                }),
+                close: jest.fn(),
+            };
+            const fakeConnection1 = {
+                remoteAddress: "CONNECTION_ADDRESS1",
+                remotePort: "CONNECTION_PORT1",
+                on: jest.fn(),
+                destroy: jest.fn(),
+            };
+            const fakeConnection2 = {
+                remoteAddress: "CONNECTION_ADDRESS2",
+                remotePort: "CONNECTION_PORT2",
+                on: jest.fn(),
+                destroy: jest.fn(),
+            };
+            const fakeConnection3 = {
+                remoteAddress: "CONNECTION_ADDRESS3",
+                remotePort: "CONNECTION_PORT3",
+                on: jest.fn(),
+                destroy: jest.fn(),
+            };
+            const listenMock = jest.fn().mockReturnValue(fakeServer);
+            const pretendApp = ({
+                listen: listenMock,
+            }: any);
+            jest.spyOn(
+                UseAppEngineMiddleware,
+                "useAppEngineMiddleware",
+            ).mockReturnValue(Promise.resolve(pretendApp));
+            const processOnSpy = jest.spyOn(process, "on");
+            await startGateway(options, pretendApp);
+            const sigintCallback = processOnSpy.mock.calls[0][1];
+
+            // Act
+            // Register some connections
+            connectionHandler?.(fakeConnection1);
+            connectionHandler?.(fakeConnection2);
+            connectionHandler?.(fakeConnection3);
+            // "close" one by firing the handler registered with its "close"
+            // event
+            fakeConnection2.on.mock.calls[0][1]();
+            // Now pretend we got the SIGINT signal.
+            sigintCallback();
+
+            // Assert
+            expect(fakeConnection1.destroy).toHaveBeenCalled();
+            expect(fakeConnection3.destroy).toHaveBeenCalled();
+
+            // This shouldn't be called because it was closed.
+            expect(fakeConnection2.destroy).not.toHaveBeenCalled();
         });
     });
 });
