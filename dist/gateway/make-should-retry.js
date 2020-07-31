@@ -31,6 +31,7 @@ const makeShouldRetry = (logger, override) => {
      */
     if (err != null) {
       logger.warn("Request failed. Might retry.", _objectSpread(_objectSpread({}, (0, _index.extractError)(err)), {}, {
+        code: err.code,
         status: res === null || res === void 0 ? void 0 : res.status
       }));
     }

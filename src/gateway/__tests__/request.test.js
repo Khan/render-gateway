@@ -59,7 +59,6 @@ describe("#request", () => {
         // Assert
         expect(makeRequestSpy).toHaveBeenCalledWith(
             expect.objectContaining({
-                buffer: true,
                 timeout: 60000,
                 retries: 2,
                 opt: "FAKE_OPTIONS",

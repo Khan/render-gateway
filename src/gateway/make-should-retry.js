@@ -25,6 +25,7 @@ export const makeShouldRetry = (
         if (err != null) {
             logger.warn("Request failed. Might retry.", {
                 ...extractError(err),
+                code: (err: any).code,
                 status: res?.status,
             });
         }

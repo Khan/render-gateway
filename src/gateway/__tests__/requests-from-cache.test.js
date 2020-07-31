@@ -47,7 +47,7 @@ describe("#isFromCache", () => {
 });
 
 describe("#asUncachedRequest", () => {
-    it("should buffer according to the buffer option", () => {
+    it("should buffer", () => {
         // Arrange
         const fakeOptions: any = {
             buffer: "FAKE_BUFFER",
@@ -61,7 +61,7 @@ describe("#asUncachedRequest", () => {
         asUncachedRequest(fakeOptions, fakeRequest);
 
         // Assert
-        expect(fakeRequest.buffer).toHaveBeenCalledWith(fakeOptions.buffer);
+        expect(fakeRequest.buffer).toHaveBeenCalledWith(true);
     });
 
     it("should resolve with the FROM_CACHE_PROP_NAME prop set to false", async () => {
@@ -309,7 +309,7 @@ describe("#asCachedRequest", () => {
         });
     });
 
-    it("should buffer according to the buffer argument", () => {
+    it("should buffer", () => {
         // Arrange
         const fakeOptions: any = {
             buffer: "FAKE_BUFFER",
@@ -327,7 +327,7 @@ describe("#asCachedRequest", () => {
         asCachedRequest(fakeOptions, fakeRequest);
 
         // Assert
-        expect(fakeRequest.buffer).toHaveBeenCalledWith(fakeOptions.buffer);
+        expect(fakeRequest.buffer).toHaveBeenCalledWith(true);
     });
 
     describe("when the request is freshly pruned (i.e. just cached)", () => {

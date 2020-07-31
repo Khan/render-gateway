@@ -46,7 +46,7 @@ const asUncachedRequest = (options, request) => {
    * We need to ensure that what we return has the `abort` method still so
    * that we can let things like JSDOM call abort on promises.
    */
-  const superagentRequest = request.buffer(options.buffer);
+  const superagentRequest = request.buffer(true);
   const responsePromise = superagentRequest.then(res => {
     /**
      * There's no cache, so this is definitely not from cache.
@@ -82,13 +82,18 @@ exports.asUncachedRequest = asUncachedRequest;
 const asCachedRequest = (options, request) => {
   const {
     cachePlugin,
-    getExpiration,
-    buffer
+    getExpiration
   } = options;
 
   if (cachePlugin == null) {
     throw new _index.KAError("Cannot cache request without cache plugin instance.", _index2.Errors.NotAllowed);
   }
+  /**
+   * TODO(somewhatabstract, WEB-2722): Replace this with the requestID of the
+   * render request. This will then work properly for both in-memory and other
+   * cache types.
+   */
+
 
   const FRESHLY_PRUNED = "PRUNED";
   /**
@@ -110,7 +115,7 @@ const asCachedRequest = (options, request) => {
     const guttedResponse = gutResponse(response);
     guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED;
     return guttedResponse;
-  }).buffer(buffer);
+  }).buffer(true);
   const responsePromise = superagentRequest.then(res => {
     /**
      * Set the FROM_CACHE_PROP_NAME property to a boolean value.
@@ -122,7 +127,8 @@ const asCachedRequest = (options, request) => {
      * false.
      *
      * The response we get here is what is in the cache so any
-     * modifications we make are reflected in the cached value.
+     * modifications we make are reflected in the cached value (this is
+     * only true for in-memory cache).
      *
      * That means that if we get here and the FROM_CACHE_PROP_NAME is
      * not equal to FRESHLY_PRUNED, it MUST have come from the

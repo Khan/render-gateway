@@ -178,6 +178,17 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
 
         return Buffer.from("");
       }
+      /**
+       * Our requests are always buffered.
+       *
+       * This is OK because we limit our requests to only text files.
+       * If this code were downloading binary data, this would not be
+       * helpful and we may want to consider using the default buffer
+       * setup that only buffers for things where a parser is available.
+       *
+       * Let's worry about that later.
+       */
+
 
       return Buffer.from(response.text);
     });
