@@ -21,7 +21,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * The defaults used for request options.
  */
 const DefaultRequestOptions = {
-  buffer: true,
+  buffer: false,
   retries: 2,
   timeout: 60000
 };
