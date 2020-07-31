@@ -38,6 +38,9 @@
 
 /**
  * @type {Errors} A utility for referencing our error taxonomy.
+ *
+ * See https://khanacademy.atlassian.net/wiki/spaces/ENG/pages/150208513/Goliath+Errors+Best+Practices#Error-Kinds
+ * for details of the error taxonomy definitions.
  */
 export const Errors = Object.freeze({
     NotFound: "NotFound",

@@ -50,7 +50,7 @@ export const getAgentForURL = (url: URL): HttpAgent | HttpsAgent => {
         default:
             throw new KAError(
                 `Unsupported protocol: ${url.protocol}`,
-                Errors.Internal,
+                Errors.InvalidInput,
             );
     }
 };

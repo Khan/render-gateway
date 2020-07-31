@@ -59,7 +59,7 @@ const getAgentForURL = url => {
       return new https.Agent(agentOptions);
 
     default:
-      throw new _kaError.default(`Unsupported protocol: ${url.protocol}`, _errors.Errors.Internal);
+      throw new _kaError.default(`Unsupported protocol: ${url.protocol}`, _errors.Errors.InvalidInput);
   }
 };
 
