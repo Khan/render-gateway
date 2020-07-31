@@ -11,6 +11,8 @@ var _jsdom = require("jsdom");
 
 var _index = require("../../../shared/index.js");
 
+var _index2 = require("../../../ka-shared/index.js");
+
 var _request = require("../../request.js");
 
 var _applyAbortablePromisesPatch = require("./apply-abortable-promises-patch.js");
@@ -73,7 +75,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
     _defineProperty(this, "_handleFetchResult", void 0);
 
     if (renderAPI == null) {
-      throw new Error("Must provide render API.");
+      throw new _index.KAError("Must provide render API.", _index2.Errors.Internal);
     }
 
     this._active = true;

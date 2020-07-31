@@ -13,6 +13,10 @@ var _util = require("util");
 
 var _jsdom = require("jsdom");
 
+var _index = require("../../../shared/index.js");
+
+var _index2 = require("../../../ka-shared/index.js");
+
 var _applyAbortablePromisesPatch = require("./apply-abortable-promises-patch.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -62,7 +66,7 @@ class JSDOMSixteenFileResourceLoader extends _jsdom.ResourceLoader {
     });
 
     if (!_fs.default.existsSync(rootFolder)) {
-      throw new Error("Root folder cannot be found");
+      throw new _index.KAError("Root folder cannot be found", _index2.Errors.NotFound);
     }
 
     this._rootFolder = rootFolder;

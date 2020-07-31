@@ -1,4 +1,5 @@
 // @flow
+
 import type {
     NpmLogLevels,
     Logger as WinstonLogger,
@@ -6,6 +7,15 @@ import type {
 } from "winston";
 
 import type {$Request} from "express";
+import typeof {Errors} from "./errors.js";
+
+/**
+ * What kind of error is being reported.
+ *
+ * This type represents our error taxonomy:
+ *  - https://khanacademy.atlassian.net/wiki/spaces/ENG/pages/150208513/Goliath+Errors+Best+Practices
+ */
+export type ErrorKind = $Values<Errors>;
 
 /**
  * Describes logging metdata.

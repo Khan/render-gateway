@@ -1,22 +1,18 @@
 // @flow
-import * as FS from "fs";
 import * as Kms from "@google-cloud/kms";
+import * as ReadFile from "../read-file.js";
 import {getGCloudSecrets} from "../get-gcloud-secrets.js";
 
-jest.mock("fs");
-jest.mock("@google-cloud/kms", () => ({
-    KeyManagementServiceClient: jest.fn(),
-}));
+jest.mock("../read-file.js");
+jest.mock("@google-cloud/kms");
 
 describe("#getGcloudSecrets", () => {
     describe("configuration has cryptoKeyPath", () => {
         it("should read the encrypted secrets file", async () => {
             // Arrange
             const readFileSpy = jest
-                .spyOn(FS, "readFile")
-                .mockImplementation((_, callback) =>
-                    callback(undefined, Buffer.from("SECRETS_FILE_CONTENTS")),
-                );
+                .spyOn(ReadFile, "readFile")
+                .mockResolvedValue(Buffer.from("SECRETS_FILE_CONTENTS"));
             /**
              * Pretend result needs encoding right or the parsing code is
              * going to throw.
@@ -29,8 +25,8 @@ describe("#getGcloudSecrets", () => {
                     .fn()
                     .mockReturnValue(Promise.resolve([pretendResult])),
             };
-            jest.spyOn(Kms, "KeyManagementServiceClient").mockReturnValue(
-                pretendKMSClient,
+            jest.spyOn(Kms, "KeyManagementServiceClient").mockImplementation(
+                () => pretendKMSClient,
             );
 
             // Act
@@ -39,16 +35,13 @@ describe("#getGcloudSecrets", () => {
             });
 
             // Assert
-            expect(readFileSpy).toHaveBeenCalledWith(
-                "./secrets.json.enc",
-                expect.any(Function),
-            );
+            expect(readFileSpy).toHaveBeenCalledWith("./secrets.json.enc");
         });
 
         it("should use KMS to decrypt the secrets", async () => {
             // Arrange
-            jest.spyOn(FS, "readFile").mockImplementation((_, callback) =>
-                callback(undefined, Buffer.from("SECRETS_FILE_CONTENTS")),
+            jest.spyOn(ReadFile, "readFile").mockResolvedValue(
+                Buffer.from("SECRETS_FILE_CONTENTS"),
             );
             /**
              * Pretend result needs encoding right or the parsing code is
@@ -62,8 +55,8 @@ describe("#getGcloudSecrets", () => {
                     .fn()
                     .mockReturnValue(Promise.resolve([pretendResult])),
             };
-            jest.spyOn(Kms, "KeyManagementServiceClient").mockReturnValue(
-                pretendKMSClient,
+            jest.spyOn(Kms, "KeyManagementServiceClient").mockImplementation(
+                () => pretendKMSClient,
             );
 
             // Act
@@ -82,8 +75,8 @@ describe("#getGcloudSecrets", () => {
 
         it("should return the secrets object", async () => {
             // Arrange
-            jest.spyOn(FS, "readFile").mockImplementation((_, callback) =>
-                callback(undefined, Buffer.from("SECRETS_FILE_CONTENTS")),
+            jest.spyOn(ReadFile, "readFile").mockResolvedValue(
+                Buffer.from("SECRETS_FILE_CONTENTS"),
             );
             /**
              * Pretend result needs encoding right or the parsing code is
@@ -97,8 +90,8 @@ describe("#getGcloudSecrets", () => {
                     .fn()
                     .mockReturnValue(Promise.resolve([pretendResult])),
             };
-            jest.spyOn(Kms, "KeyManagementServiceClient").mockReturnValue(
-                pretendKMSClient,
+            jest.spyOn(Kms, "KeyManagementServiceClient").mockImplementation(
+                () => pretendKMSClient,
             );
 
             // Act
@@ -117,12 +110,9 @@ describe("#getGcloudSecrets", () => {
         it("should read the secrets config file", async () => {
             // Arrange
             const readFileSpy = jest
-                .spyOn(FS, "readFile")
-                .mockImplementation((_, callback) =>
-                    callback(
-                        undefined,
-                        JSON.stringify({SECRET_NAME: "SECRET_CONFIG"}),
-                    ),
+                .spyOn(ReadFile, "readFile")
+                .mockResolvedValue(
+                    Buffer.from(JSON.stringify({SECRET_NAME: "SECRET_CONFIG"})),
                 );
 
             // Act
@@ -134,15 +124,13 @@ describe("#getGcloudSecrets", () => {
             // Assert
             expect(readFileSpy).toHaveBeenCalledWith(
                 "ROOT_PATH/secrets-config.json",
-                expect.any(Function),
             );
         });
 
         it("should lookup each secret from the config file", async () => {
             // Arrange
-            jest.spyOn(FS, "readFile").mockImplementation((_, callback) =>
-                callback(
-                    undefined,
+            jest.spyOn(ReadFile, "readFile").mockResolvedValue(
+                Buffer.from(
                     JSON.stringify({
                         SECRET_NAME_1: "SECRET_CONFIG_1",
                         SECRET_NAME_2: "SECRET_CONFIG_2",
@@ -174,12 +162,9 @@ describe("#getGcloudSecrets", () => {
         });
 
         it("should throw if the lookup returns null", async () => {
-            // Arrange
-            jest.spyOn(FS, "readFile").mockImplementation((_, callback) =>
-                callback(
-                    undefined,
-                    JSON.stringify({SECRET_NAME_1: "SECRET_CONFIG_1"}),
-                ),
+            // Arrangejest
+            jest.spyOn(ReadFile, "readFile").mockResolvedValue(
+                Buffer.from(JSON.stringify({SECRET_NAME_1: "SECRET_CONFIG_1"})),
             );
 
             // Act
@@ -196,9 +181,8 @@ describe("#getGcloudSecrets", () => {
 
         it("should return the looked up secrets", async () => {
             // Arrange
-            jest.spyOn(FS, "readFile").mockImplementation((_, callback) =>
-                callback(
-                    undefined,
+            jest.spyOn(ReadFile, "readFile").mockResolvedValue(
+                Buffer.from(
                     JSON.stringify({
                         SECRET_NAME_1: "SECRET_CONFIG_1",
                         SECRET_NAME_2: "SECRET_CONFIG_2",

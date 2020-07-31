@@ -1,6 +1,7 @@
 // @flow
 import type {Middleware, NextFunction} from "express";
-import {getLogger, trace} from "../../shared/index.js";
+import {getLogger, trace, KAError} from "../../shared/index.js";
+import {Errors} from "../../ka-shared/index.js";
 import {handleError} from "./handle-error.js";
 import type {ITraceSession} from "../../shared/index.js";
 import type {
@@ -44,9 +45,12 @@ async function renderHandler(
     const renderURL = req.query.url;
     if (typeof renderURL !== "string") {
         if (renderURL == null) {
-            throw new Error(`Missing url query param`);
+            throw new KAError(`Missing url query param`, Errors.InvalidInput);
         }
-        throw new Error(`More than one url query param given`);
+        throw new KAError(
+            `More than one url query param given`,
+            Errors.InvalidInput,
+        );
     }
     const traceSession = traceFn("render", `Rendering ${renderURL}`);
     try {
@@ -83,8 +87,9 @@ async function renderHandler(
             [301, 302, 307, 308].includes(status) &&
             headers["Location"] == null
         ) {
-            throw new Error(
+            throw new KAError(
                 "Render resulted in redirection status without required Location header",
+                Errors.NotAllowed,
             );
         }
         /**

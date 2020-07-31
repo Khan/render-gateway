@@ -3,6 +3,18 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+Object.defineProperty(exports, "KAError", {
+  enumerable: true,
+  get: function () {
+    return _kaError.default;
+  }
+});
+Object.defineProperty(exports, "Errors", {
+  enumerable: true,
+  get: function () {
+    return _errors.Errors;
+  }
+});
 Object.defineProperty(exports, "createLogger", {
   enumerable: true,
   get: function () {
@@ -58,6 +70,10 @@ Object.defineProperty(exports, "getAgentForURL", {
   }
 });
 
+var _kaError = _interopRequireDefault(require("./ka-error.js"));
+
+var _errors = require("./errors.js");
+
 var _createLogger = require("./create-logger.js");
 
 var _getLogger = require("./get-logger.js");
@@ -75,4 +91,6 @@ var _trace = require("./trace.js");
 var _extractError = require("./extract-error.js");
 
 var _getAgentForUrl = require("./get-agent-for-url.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 //# sourceMappingURL=index.js.map

@@ -7,6 +7,14 @@ jest.mock("../../../shared/index.js");
 jest.mock("../handle-error.js");
 
 describe("#makeRenderHandler", () => {
+    beforeEach(() => {
+        // Let's make sure KAError still works.
+        jest.spyOn(Shared, "KAError").mockImplementation((...args) => {
+            const {KAError} = jest.requireActual("../../../shared/index.js");
+            return new KAError(args);
+        });
+    });
+
     it("should return a function", () => {
         // Arrange
         const fakeRenderEnvironment: any = {
@@ -102,7 +110,7 @@ describe("#makeRenderHandler", () => {
 
             // Assert
             expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
-                `"Missing url query param"`,
+                `"Missing url query param,InvalidInput"`,
             );
         });
 
@@ -146,7 +154,7 @@ describe("#makeRenderHandler", () => {
 
             // Assert
             expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
-                `"More than one url query param given"`,
+                `"More than one url query param given,InvalidInput"`,
             );
         });
 
@@ -377,8 +385,9 @@ describe("#makeRenderHandler", () => {
                         fakeRequest,
                         fakeResponse,
                         expect.objectContaining({
-                            message:
+                            message: expect.stringContaining(
                                 "Render resulted in redirection status without required Location header",
+                            ),
                         }),
                     );
                 },

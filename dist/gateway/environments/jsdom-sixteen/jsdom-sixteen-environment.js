@@ -7,6 +7,8 @@ exports.JSDOMSixteenEnvironment = void 0;
 
 var _index = require("../../../shared/index.js");
 
+var _index2 = require("../../../ka-shared/index.js");
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -56,7 +58,7 @@ class JSDOMSixteenEnvironment {
              */
 
             if (fetchResult == null) {
-              throw new Error(`Unable to retrieve ${f}. ResourceLoader returned null.`);
+              throw new _index.KAError(`Unable to retrieve ${f}. ResourceLoader returned null.`, _index2.Errors.TransientService);
             }
             /**
              * No need to reconnect the abort() in this case since we
@@ -195,7 +197,7 @@ class JSDOMSixteenEnvironment {
 
 
         if (typeof vmContext[registrationCallbackName][registeredCbName] !== "function") {
-          throw new Error("No render callback was registered.");
+          throw new _index.KAError("No render callback was registered.", _index2.Errors.Internal);
         }
         /**
          * And now we run the registered callback inside the VM.
@@ -211,7 +213,7 @@ class JSDOMSixteenEnvironment {
          */
 
         if (result == null || !Object.prototype.hasOwnProperty.call(result, "body") || !Object.prototype.hasOwnProperty.call(result, "status") || !Object.prototype.hasOwnProperty.call(result, "headers")) {
-          throw new Error(`Malformed render result: ${JSON.stringify(result)}`);
+          throw new _index.KAError(`Malformed render result: ${JSON.stringify(result)}`, _index2.Errors.Internal);
         }
         /**
          * After all that, we should have a result, so let's return it and
@@ -230,7 +232,7 @@ class JSDOMSixteenEnvironment {
     });
 
     if (configuration == null) {
-      throw new Error("Must provide environment configuration");
+      throw new _index.KAError("Must provide environment configuration", _index2.Errors.Internal);
     }
 
     this._configuration = configuration;
@@ -251,11 +253,12 @@ class JSDOMSixteenEnvironment {
           try {
             var _closeables$i, _closeables$i$close;
 
-            // eslint-disable-next-line flowtype/no-unused-expressions
             (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
           } catch (e) {
             const simplifiedError = (0, _index.extractError)(e);
-            logger.error(`Closeable encountered an error: ${simplifiedError.error || ""}`, _objectSpread({}, simplifiedError));
+            logger.error(`Closeable encountered an error: ${simplifiedError.error || ""}`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
+              kind: _index2.Errors.Internal
+            }));
           }
         }
         /**

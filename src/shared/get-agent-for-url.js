@@ -2,6 +2,8 @@
 import type {URL} from "url";
 import type {Agent as HttpAgent} from "http";
 import type {Agent as HttpsAgent} from "https";
+import {Errors} from "./errors.js";
+import KAError from "./ka-error.js";
 
 /**
  * When making requests from one Node service to other services, we have seen
@@ -46,6 +48,9 @@ export const getAgentForURL = (url: URL): HttpAgent | HttpsAgent => {
             return new https.Agent(agentOptions);
 
         default:
-            throw new Error(`Unsupported protocol: ${url.protocol}`);
+            throw new KAError(
+                `Unsupported protocol: ${url.protocol}`,
+                Errors.InvalidInput,
+            );
     }
 };

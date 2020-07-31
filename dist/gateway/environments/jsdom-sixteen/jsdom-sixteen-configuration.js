@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.JSDOMSixteenConfiguration = void 0;
 
+var _index = require("../../../shared/index.js");
+
+var _index2 = require("../../../ka-shared/index.js");
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
@@ -45,15 +49,15 @@ class JSDOMSixteenConfiguration {
     _defineProperty(this, "afterEnvSetup", void 0);
 
     if (typeof getFileList !== "function") {
-      throw new Error("Must provide valid callback for obtaining file list");
+      throw new _index.KAError("Must provide valid callback for obtaining file list", _index2.Errors.Internal);
     }
 
     if (typeof getResourceLoader !== "function") {
-      throw new Error("Must provide valid callback for obtaining resource loader");
+      throw new _index.KAError("Must provide valid callback for obtaining resource loader", _index2.Errors.Internal);
     }
 
     if (afterEnvSetup != null && typeof afterEnvSetup !== "function") {
-      throw new Error("Must provide valid callback for after env setup or null");
+      throw new _index.KAError("Must provide valid callback for after env setup or null", _index2.Errors.Internal);
     }
 
     this.registrationCallbackName = registrationCallbackName;

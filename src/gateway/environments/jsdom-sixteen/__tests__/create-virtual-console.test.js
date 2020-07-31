@@ -48,6 +48,7 @@ describe("#createVirtualConsole", () => {
         // Assert
         expect(fakeLogger.error).toHaveBeenCalledWith("JSDOM:ERROR_MESSAGE", {
             error: "ERROR_MESSAGE",
+            kind: "Internal",
             stack: "ERROR_STACK",
         });
     });
@@ -67,11 +68,12 @@ describe("#createVirtualConsole", () => {
         );
 
         // Assert
-        expect(
-            fakeLogger.error,
-        ).toHaveBeenCalledWith("JSDOM:This is an error message", [
-            "and these are args",
-        ]);
+        expect(fakeLogger.error).toHaveBeenCalledWith(
+            "JSDOM:This is an error message",
+            {
+                args: ["and these are args"],
+            },
+        );
     });
 
     it("should pass warn to logger.warn with args as metadata", () => {
@@ -85,11 +87,12 @@ describe("#createVirtualConsole", () => {
         underTest.emit("warn", "This is a warn message", "and these are args");
 
         // Assert
-        expect(
-            fakeLogger.warn,
-        ).toHaveBeenCalledWith("JSDOM:This is a warn message", [
-            "and these are args",
-        ]);
+        expect(fakeLogger.warn).toHaveBeenCalledWith(
+            "JSDOM:This is a warn message",
+            {
+                args: ["and these are args"],
+            },
+        );
     });
 
     it("should pass info to logger.info with args as metadata", () => {
@@ -103,11 +106,12 @@ describe("#createVirtualConsole", () => {
         underTest.emit("info", "This is an info message", "and these are args");
 
         // Assert
-        expect(
-            fakeLogger.info,
-        ).toHaveBeenCalledWith("JSDOM:This is an info message", [
-            "and these are args",
-        ]);
+        expect(fakeLogger.info).toHaveBeenCalledWith(
+            "JSDOM:This is an info message",
+            {
+                args: ["and these are args"],
+            },
+        );
     });
 
     it("should pass log to logger.info with args as metadata", () => {
@@ -121,11 +125,12 @@ describe("#createVirtualConsole", () => {
         underTest.emit("log", "This is a log message", "and these are args");
 
         // Assert
-        expect(
-            fakeLogger.info,
-        ).toHaveBeenCalledWith("JSDOM:This is a log message", [
-            "and these are args",
-        ]);
+        expect(fakeLogger.info).toHaveBeenCalledWith(
+            "JSDOM:This is a log message",
+            {
+                args: ["and these are args"],
+            },
+        );
     });
 
     it("should pass debug to logger.debug with args as metadata", () => {
@@ -143,10 +148,11 @@ describe("#createVirtualConsole", () => {
         );
 
         // Assert
-        expect(
-            fakeLogger.debug,
-        ).toHaveBeenCalledWith("JSDOM:This is a debug message", [
-            "and these are args",
-        ]);
+        expect(fakeLogger.debug).toHaveBeenCalledWith(
+            "JSDOM:This is a debug message",
+            {
+                args: ["and these are args"],
+            },
+        );
     });
 });
