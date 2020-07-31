@@ -10,7 +10,7 @@ import {trace} from "../shared/index.js";
  * The defaults used for request options.
  */
 export const DefaultRequestOptions: RequestOptions = {
-    buffer: true,
+    buffer: false,
     retries: 2,
     timeout: 60000,
 };

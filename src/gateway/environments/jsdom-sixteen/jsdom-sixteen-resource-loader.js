@@ -174,7 +174,27 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
                  */
                 return Buffer.from("");
             }
-            return Buffer.from(response.text);
+
+            /**
+             * If buffering is unset (which is better for memory use), then
+             * the text field is only present for things that are parsed
+             * (like JSON). Otherwise, we want response body.
+             *
+             * If buffering is set to false (which is even better for memory),
+             * then the text field is never present and we have to use body.
+             *
+             * If buffering is on (bad for memory use), then text will always
+             * be present.
+             *
+             * So, let's cater to all eventualities.
+             */
+            const data = response.text == null ? response.body : response.text;
+            if (typeof data === "string") {
+                return Buffer.from(data);
+            } else {
+                // I don't think we would ever get here, but just in case.
+                return Buffer.from(JSON.stringify(data));
+            }
         });
 
         /**

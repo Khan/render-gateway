@@ -81,6 +81,11 @@ export const asCachedRequest = (
         );
     }
 
+    /**
+     * TODO(somewhatabstract, WEB-2722): Replace this with the requestID of the
+     * render request. This will then work properly for both in-memory and other
+     * cache types.
+     */
     const FRESHLY_PRUNED = "PRUNED";
 
     /**
@@ -118,7 +123,8 @@ export const asCachedRequest = (
          * false.
          *
          * The response we get here is what is in the cache so any
-         * modifications we make are reflected in the cached value.
+         * modifications we make are reflected in the cached value (this is
+         * only true for in-memory cache).
          *
          * That means that if we get here and the FROM_CACHE_PROP_NAME is
          * not equal to FRESHLY_PRUNED, it MUST have come from the
