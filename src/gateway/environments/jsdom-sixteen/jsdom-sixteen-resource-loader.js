@@ -4,7 +4,8 @@ import type {Agent as HttpAgent} from "http";
 import type {Agent as HttpsAgent} from "https";
 import {ResourceLoader} from "jsdom";
 import type {FetchOptions} from "jsdom";
-import {getAgentForURL} from "../../../shared/index.js";
+import {getAgentForURL, KAError} from "../../../shared/index.js";
+import {Errors} from "../../../ka-shared/index.js";
 import {DefaultRequestOptions, request} from "../../request.js";
 import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 
@@ -70,7 +71,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
         super();
 
         if (renderAPI == null) {
-            throw new Error("Must provide render API.");
+            throw new KAError("Must provide render API.", Errors.Internal);
         }
 
         this._active = true;

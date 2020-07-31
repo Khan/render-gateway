@@ -27,6 +27,12 @@ Object.defineProperty(exports, "getLogLevel", {
     return _getLogLevel.getLogLevel;
   }
 });
+Object.defineProperty(exports, "Errors", {
+  enumerable: true,
+  get: function () {
+    return _errors.Errors;
+  }
+});
 
 var _makeCommonServiceRouter = require("./routes/make-common-service-router.js");
 
@@ -35,4 +41,6 @@ var _getGcloudSecrets = require("./get-gcloud-secrets.js");
 var _getRuntimeMode = require("./get-runtime-mode.js");
 
 var _getLogLevel = require("./get-log-level.js");
+
+var _errors = require("./errors.js");
 //# sourceMappingURL=index.js.map

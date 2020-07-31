@@ -9,6 +9,8 @@ describe("index.js", () => {
 
         // Assert
         expect(result).toContainAllKeys([
+            "KAError",
+            "Errors",
             "createLogger",
             "getLogger",
             "extractError",

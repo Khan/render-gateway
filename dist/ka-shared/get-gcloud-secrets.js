@@ -5,39 +5,40 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getGCloudSecrets = void 0;
 
-var _fs = _interopRequireDefault(require("fs"));
-
 var _path = _interopRequireDefault(require("path"));
 
-var _util = require("util");
-
 var _kms = _interopRequireDefault(require("@google-cloud/kms"));
+
+var _errors = require("./errors.js");
+
+var _index = require("../shared/index.js");
+
+var _readFile = require("./read-file.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Utilities for reading secrets from secrets files.
  */
-const readFile = (0, _util.promisify)(_fs.default.readFile);
+
 /**
  * Look up secrets during development.
  *
  * This assumes a secrets-config.json file exists and then uses the given
  * lookupFn to map them to dev secrets.
  */
-
 const secretsForDev = async (serviceRootPath, lookupFn) => {
   // NOTE(somewhatabstract): It's convenient to use require here since that
   // already understands JSON, but that's harder to test. This way we get
   // the same functionality but we can actually test it.
-  const configBuffer = await readFile(_path.default.join(serviceRootPath, "secrets-config.json"));
-  const secretsConfig = JSON.parse(configBuffer);
+  const configBuffer = await (0, _readFile.readFile)(_path.default.join(serviceRootPath, "secrets-config.json"));
+  const secretsConfig = JSON.parse(configBuffer.toString());
   const secrets = {};
   Object.keys(secretsConfig).forEach(name => {
     const secret = lookupFn(name, secretsConfig[name]);
 
     if (!secret) {
-      throw new Error(`Could not read secret ${name}`);
+      throw new _index.KAError(`Could not read secret ${name}`, _errors.Errors.NotFound);
     }
 
     secrets[name] = secret;
@@ -54,7 +55,7 @@ const secretsForDev = async (serviceRootPath, lookupFn) => {
 
 const secretsForProd = async cryptoKeyPath => {
   const client = new _kms.default.KeyManagementServiceClient();
-  const contentsBuffer = await readFile("./secrets.json.enc");
+  const contentsBuffer = await (0, _readFile.readFile)("./secrets.json.enc");
   const ciphertext = contentsBuffer.toString("base64");
   const [result] = await client.decrypt({
     name: cryptoKeyPath,
@@ -74,7 +75,7 @@ const getGCloudSecrets = config => {
     return secretsForDev(config.serviceRootPath, config.lookupFn);
   }
 
-  throw new Error("Unsupported configuration");
+  throw new _index.KAError("Unsupported configuration", _errors.Errors.NotAllowed);
 };
 
 exports.getGCloudSecrets = getGCloudSecrets;

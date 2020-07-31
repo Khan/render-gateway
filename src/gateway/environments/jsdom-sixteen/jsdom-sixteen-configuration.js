@@ -1,4 +1,6 @@
 // @flow
+import {KAError} from "../../../shared/index.js";
+import {Errors} from "../../../ka-shared/index.js";
 import type {IJSDOMSixteenConfiguration} from "./types.js";
 
 /**
@@ -50,18 +52,21 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
         registrationCallbackName?: string = "__jsdom_env_register",
     ) {
         if (typeof getFileList !== "function") {
-            throw new Error(
+            throw new KAError(
                 "Must provide valid callback for obtaining file list",
+                Errors.Internal,
             );
         }
         if (typeof getResourceLoader !== "function") {
-            throw new Error(
+            throw new KAError(
                 "Must provide valid callback for obtaining resource loader",
+                Errors.Internal,
             );
         }
         if (afterEnvSetup != null && typeof afterEnvSetup !== "function") {
-            throw new Error(
+            throw new KAError(
                 "Must provide valid callback for after env setup or null",
+                Errors.Internal,
             );
         }
 

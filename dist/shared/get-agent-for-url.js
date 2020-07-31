@@ -5,6 +5,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getAgentForURL = void 0;
 
+var _errors = require("./errors.js");
+
+var _kaError = _interopRequireDefault(require("./ka-error.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * When making requests from one Node service to other services, we have seen
  * some long delays establishing TCP connections to the load balancer of those
@@ -53,7 +59,7 @@ const getAgentForURL = url => {
       return new https.Agent(agentOptions);
 
     default:
-      throw new Error(`Unsupported protocol: ${url.protocol}`);
+      throw new _kaError.default(`Unsupported protocol: ${url.protocol}`, _errors.Errors.InvalidInput);
   }
 };
 

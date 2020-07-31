@@ -72,6 +72,7 @@ describe("#handleError", () => {
                 "My test error; uncaught error",
                 {
                     error: "ERROR",
+                    kind: "TransientKhanService",
                     requestURL: "THE URL",
                     stack: "STACK",
                 },
@@ -232,6 +233,7 @@ describe("#handleError", () => {
                 "My test error; uncaught error",
                 {
                     error: "ERROR",
+                    kind: "TransientKhanService",
                     requestURL: "THE URL",
                     stack: "STACK",
                 },
@@ -399,6 +401,7 @@ describe("#handleError", () => {
                 "My test error; custom handler failed",
                 {
                     error: "INNER ERROR",
+                    kind: "TransientKhanService",
                     stack: "INNER STACK",
                     originalError: {
                         error: "ERROR",
@@ -552,6 +555,7 @@ describe("#handleError", () => {
                 {
                     requestURL: "THE URL",
                     error: "ERROR",
+                    kind: "TransientKhanService",
                     stack: "STACK",
                 },
             );

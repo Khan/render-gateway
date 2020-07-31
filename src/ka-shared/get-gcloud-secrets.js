@@ -2,14 +2,13 @@
 /**
  * Utilities for reading secrets from secrets files.
  */
-import fs from "fs";
 import path from "path";
-import {promisify} from "util";
 import kms from "@google-cloud/kms";
+import {Errors} from "./errors.js";
+import {KAError} from "../shared/index.js";
+import {readFile} from "./read-file.js";
 
 import type {SecretsConfig, Secrets, SecretString} from "./types.js";
-
-const readFile = promisify(fs.readFile);
 
 /**
  * Look up secrets during development.
@@ -27,13 +26,13 @@ const secretsForDev = async (
     const configBuffer = await readFile(
         path.join(serviceRootPath, "secrets-config.json"),
     );
-    const secretsConfig = JSON.parse(configBuffer);
+    const secretsConfig = JSON.parse(configBuffer.toString());
 
     const secrets: Secrets = {};
     Object.keys(secretsConfig).forEach((name) => {
         const secret = lookupFn(name, secretsConfig[name]);
         if (!secret) {
-            throw new Error(`Could not read secret ${name}`);
+            throw new KAError(`Could not read secret ${name}`, Errors.NotFound);
         }
         secrets[name] = secret;
     });
@@ -65,5 +64,5 @@ export const getGCloudSecrets = (config: SecretsConfig): Promise<Secrets> => {
         return secretsForDev(config.serviceRootPath, config.lookupFn);
     }
 
-    throw new Error("Unsupported configuration");
+    throw new KAError("Unsupported configuration", Errors.NotAllowed);
 };

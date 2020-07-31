@@ -4,6 +4,8 @@ import path from "path";
 import {promisify} from "util";
 import {ResourceLoader} from "jsdom";
 import type {FetchOptions} from "jsdom";
+import {KAError} from "../../../shared/index.js";
+import {Errors} from "../../../ka-shared/index.js";
 import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 
 const readFileAsync = promisify(fs.readFile);
@@ -28,7 +30,7 @@ export class JSDOMSixteenFileResourceLoader extends ResourceLoader {
         super();
 
         if (!fs.existsSync(rootFolder)) {
-            throw new Error("Root folder cannot be found");
+            throw new KAError("Root folder cannot be found", Errors.NotFound);
         }
 
         this._rootFolder = rootFolder;
