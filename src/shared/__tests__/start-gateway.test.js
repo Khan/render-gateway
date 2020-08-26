@@ -73,6 +73,10 @@ describe("#start-gateway", () => {
     it("should setup stackdriver", async () => {
         // Arrange
         const options = {
+            cloudOptions: {
+                debugAgent: false,
+                profiler: false,
+            },
             name: "TEST_GATEWAY",
             port: 42,
             host: "127.0.0.1",
@@ -94,7 +98,10 @@ describe("#start-gateway", () => {
         await startGateway(options, pretendApp);
 
         // Assert
-        expect(setupStackdriverSpy).toHaveBeenCalledWith("test");
+        expect(setupStackdriverSpy).toHaveBeenCalledWith(
+            "test",
+            options.cloudOptions,
+        );
     });
 
     it("should add GAE middleware", async () => {

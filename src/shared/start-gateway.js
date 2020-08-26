@@ -63,7 +63,7 @@ export async function startGateway<
     }
 
     // Set up stackdriver integrations.
-    await setupStackdriver(mode);
+    await setupStackdriver(mode, options.cloudOptions);
 
     // Add GAE middleware.
     const appWithMiddleware = await useAppEngineMiddleware<TReq, TRes>(
