@@ -32,6 +32,11 @@ export type LogLevel = $Keys<NpmLogLevels>;
  */
 export type Logger = WinstonLogger<NpmLogLevels>;
 
+export type CloudOptions = {
+    +debugAgent?: boolean,
+    +profiler?: boolean,
+};
+
 /**
  * Information about a gateway.
  */
@@ -151,6 +156,11 @@ export type Runtime = "production" | "test" | "development";
  * Options to configure a gateway.
  */
 export type GatewayOptions = {
+    /**
+     * Specify which cloud facilities we want.
+     */
+    +cloudOptions?: CloudOptions,
+
     /**
      * The name of the gateway.
      *
