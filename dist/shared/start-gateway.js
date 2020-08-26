@@ -72,7 +72,7 @@ async function startGateway(options, app) {
   } // Set up stackdriver integrations.
 
 
-  await (0, _setupStackdriver.setupStackdriver)(mode); // Add GAE middleware.
+  await (0, _setupStackdriver.setupStackdriver)(mode, options.cloudOptions); // Add GAE middleware.
 
   const appWithMiddleware = await (0, _useAppEngineMiddleware.useAppEngineMiddleware)(app, mode, logger);
   /**

@@ -12,17 +12,22 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Setup stackdriver integrations.
  */
-const setupStackdriver = async mode => {
+const setupStackdriver = async (mode, options) => {
   if (mode !== "production") {
     return;
   }
 
-  const debugAgent = await Promise.resolve().then(() => _interopRequireWildcard(require("@google-cloud/debug-agent")));
-  debugAgent.start({
-    allowExpressions: true
-  });
-  const profiler = await Promise.resolve().then(() => _interopRequireWildcard(require("@google-cloud/profiler")));
-  profiler.start();
+  if (options === null || options === void 0 ? void 0 : options.debugAgent) {
+    const debugAgent = await Promise.resolve().then(() => _interopRequireWildcard(require("@google-cloud/debug-agent")));
+    debugAgent.start({
+      allowExpressions: true
+    });
+  }
+
+  if (options === null || options === void 0 ? void 0 : options.profiler) {
+    const profiler = await Promise.resolve().then(() => _interopRequireWildcard(require("@google-cloud/profiler")));
+    profiler.start();
+  }
 };
 
 exports.setupStackdriver = setupStackdriver;
