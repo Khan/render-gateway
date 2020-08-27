@@ -17,4 +17,7 @@ export const makeCommonServiceRouter = <Req: $Request, Res: $Response>(
         })
         .get("/_api/version", (req: Req, res: Res) => {
             res.send({version});
+        })
+        .get("/_ah/warmup", (req: Req, res: Res) => {
+            res.send("OK\n");
         });
