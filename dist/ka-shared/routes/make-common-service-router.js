@@ -18,6 +18,8 @@ const makeCommonServiceRouter = version => new _express.Router().get("/_api/ping
   res.send({
     version
   });
+}).get("/_ah/warmup", (req, res) => {
+  res.send("OK\n");
 });
 
 exports.makeCommonServiceRouter = makeCommonServiceRouter;
