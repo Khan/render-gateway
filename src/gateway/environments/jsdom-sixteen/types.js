@@ -36,9 +36,12 @@ export interface IGate extends ICloseable {
  * Standard timer API as implemented by Node's global or a browser window.
  */
 export interface ITimerAPI {
-    setTimeout: $PropertyType<window, "setTimeout">;
-    setInterval: $PropertyType<window, "setInterval">;
-    requestAnimationFrame: $PropertyType<window, "requestAnimationFrame">;
+    setTimeout: $PropertyType<typeof window, "setTimeout">;
+    setInterval: $PropertyType<typeof window, "setInterval">;
+    requestAnimationFrame: $PropertyType<
+        typeof window,
+        "requestAnimationFrame",
+    >;
 }
 
 /**
