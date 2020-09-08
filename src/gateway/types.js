@@ -8,6 +8,7 @@ import type {
     ITraceSession,
     Logger,
     SimplifiedError,
+    CloudOptions,
 } from "../shared/index.js";
 
 /**
@@ -206,6 +207,11 @@ export type RenderGatewayOptions = {
      * to include that for users).
      */
     +defaultRenderErrorResponse?: string,
+
+    /**
+     * Specify which cloud facilities we want.
+     */
+    +cloudOptions?: CloudOptions,
 };
 
 /**

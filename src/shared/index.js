@@ -18,6 +18,7 @@ export type {
     TraceSessionInfo,
     ITraceSession,
     SimplifiedError,
+    CloudOptions,
 } from "./types.js";
 
 export {default as KAError} from "./ka-error.js";
