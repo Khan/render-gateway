@@ -3,10 +3,9 @@ import * as GetRequestLogger from "../../get-request-logger.js";
 import {makeAppEngineRequestIDMiddleware} from "../make-app-engine-request-id-middleware.js";
 import * as GetAppEngineRequestID from "../../get-app-engine-request-id.js";
 
-jest.mock("../../../ka-shared/index.js");
 jest.mock("../../get-app-engine-request-id.js");
 
-describe("#makeErrorMiddleware", () => {
+describe("#makeAppEngineRequestIDMiddleware", () => {
     it("should return middleware function", () => {
         // Arrange
         const pretendLogger = ({}: any);
