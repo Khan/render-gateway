@@ -116,7 +116,7 @@ async function renderHandler(
             e,
         );
     } finally {
-        traceSession.end();
+        traceSession.end({level: "info"});
     }
 }
 

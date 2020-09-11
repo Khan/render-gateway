@@ -1,7 +1,7 @@
 // @flow
 import {extractError, KAError} from "../../../shared/index.js";
 import {Errors} from "../../../ka-shared/index.js";
-import type {Logger} from "../../../shared/index.js";
+import type {Logger, ITraceSession} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
     CloseableResourceLoader,
@@ -70,7 +70,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         renderAPI: RenderAPI,
         resourceLoader: CloseableResourceLoader,
     ): Promise<JavaScriptFiles> => {
-        const traceSession = renderAPI.trace(
+        const traceSession: ITraceSession = renderAPI.trace(
             "JSDOM16._retrieveTargetFiles",
             `JSDOMSixteenEnvironment retrieving files`,
         );
@@ -121,7 +121,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                 urls: fileURLs,
             };
         } finally {
-            traceSession.end();
+            traceSession.end({level: "info"});
         }
     };
 
