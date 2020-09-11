@@ -106,7 +106,9 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
   } catch (e) {
     (0, _handleError.handleError)("Render failed", errorHandler, defaultErrorResponse, req, res, e);
   } finally {
-    traceSession.end();
+    traceSession.end({
+      level: "info"
+    });
   }
 }
 /**

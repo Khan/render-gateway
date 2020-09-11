@@ -74,7 +74,9 @@ class JSDOMSixteenEnvironment {
           urls: fileURLs
         };
       } finally {
-        traceSession.end();
+        traceSession.end({
+          level: "info"
+        });
       }
     });
 
