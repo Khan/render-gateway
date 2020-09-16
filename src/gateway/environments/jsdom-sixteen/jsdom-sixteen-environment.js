@@ -121,7 +121,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                 urls: fileURLs,
             };
         } finally {
-            traceSession.end({level: "info"});
+            traceSession.end();
         }
     };
 
