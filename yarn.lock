@@ -1045,10 +1045,10 @@
     arrify "^2.0.0"
     extend "^3.0.2"
 
-"@google-cloud/profiler@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/profiler/-/profiler-4.0.2.tgz#fbca24ab65b33f739e903a087b115049eba1feda"
-  integrity sha512-tRZBvcPdjvpxrj5lNZ9W/QhdvWM5nh+Y5V5iuGbBOOXlqONux3W0EZngjTi++OO0/jzO4B5roHXpOS5+sM1T9w==
+"@google-cloud/profiler@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@google-cloud/profiler/-/profiler-4.0.3.tgz#8c0572821dc8c05593012aa35ba1db3b10cb2fdc"
+  integrity sha512-YFjoa37DpKY92fqQrY285yTACj3WB0Dby9RMRTsFFSgd+WK3PCsNJ18xrNgD/RJuLttw6eMXESNgj7QuwEkoog==
   dependencies:
     "@google-cloud/common" "^3.0.0"
     "@types/console-log-level" "^1.4.0"
@@ -1057,7 +1057,7 @@
     delay "^4.0.1"
     extend "^3.0.2"
     gcp-metadata "^4.0.0"
-    parse-duration "^0.1.1"
+    parse-duration "^0.4.4"
     pprof "2.0.0"
     pretty-ms "^7.0.0"
     protobufjs "~6.10.0"
@@ -6325,10 +6325,10 @@ parent-module@^1.0.0:
   dependencies:
     callsites "^3.0.0"
 
-parse-duration@^0.1.1:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/parse-duration/-/parse-duration-0.1.2.tgz#9f1403ab86d6139f88a0e55ea6783afeca3110c4"
-  integrity sha512-0qfMZyjOUFBeEIvJ5EayfXJqaEXxQ+Oj2b7tWJM3hvEXvXsYCk05EDVI23oYnEw2NaFYUWdABEVPBvBMh8L/pA==
+parse-duration@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/parse-duration/-/parse-duration-0.4.4.tgz#11c0f51a689e97d06c57bd772f7fda7dc013243c"
+  integrity sha512-KbAJuYGUhZkB9gotDiKLnZ7Z3VTacK3fgwmDdB6ZVDtJbMBT6MfLga0WJaYpPDu0mzqT0NgHtHDt5PY4l0nidg==
 
 parse-glob@^3.0.4:
   version "3.0.4"
