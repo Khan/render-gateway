@@ -1084,10 +1084,10 @@
   resolved "https://registry.yarnpkg.com/@google-cloud/promisify/-/promisify-2.0.0.tgz#d69db22c18551ef8217e59430f06a59cdcd5e9db"
   integrity sha512-r0miGK77TPem+AV3jZtUXopz9DQzeSTvsgQkamfDzkTiurkbHHTmBJQ1YQqF9Z4XjqcNKlmA9n8EvFOptNX0sg==
 
-"@google-cloud/trace-agent@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-5.1.0.tgz#589159aefb756b3adcb0f98a50693823e7e260f0"
-  integrity sha512-OPtIXET63QI1ved7Dyxmrx6o1tNJ++aX+WPm0OfNtYFCn8BPzVMBw/ZCsRmwL6nL+jY1jJ0N9teUO7abCvwpfg==
+"@google-cloud/trace-agent@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-5.1.1.tgz#a8223477625ccb48fb54b7835a8647a586ac33a4"
+  integrity sha512-YTcK0RLN90pLCprg0XC8uV4oAVd79vsXhkcxmEVwiOOYjUDvSrAhb7y/0SY606zgfhJHmUTNb/fZSWEtZP/slQ==
   dependencies:
     "@google-cloud/common" "^3.0.0"
     "@opencensus/propagation-stackdriver" "0.0.22"
@@ -8113,12 +8113,7 @@ uuid@^7.0.0:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
-uuid@^8.0.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.1.0.tgz#6f1536eb43249f473abc6bd58ff983da1ca30d8d"
-  integrity sha512-CI18flHDznR0lq54xBycOVmphdCYnQLKn8abKn7PXUiKUGdEd+/l9LWNJmugXel4hXq7S+RMNl34ecyC9TntWg==
-
-uuid@^8.3.0:
+uuid@^8.0.0, uuid@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
   integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
