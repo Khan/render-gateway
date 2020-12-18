@@ -114,7 +114,7 @@ jobs:
       run: |
         _PUBLISH_BRANCH=$(test $GITHUB_HEAD_REF && echo $GITHUB_HEAD_REF || echo $GITHUB_REF | sed -e "s/refs\/heads\///g")
         test $_PUBLISH_BRANCH || exit 1
-        echo ::set-env name=PUBLISH_BRANCH::$_PUBLISH_BRANCH
+        echo "PUBLISH_BRANCH=$_PUBLISH_BRANCH" >> $GITHUB_ENV
 
     - name: Checkout via SSH
       run: git checkout ${{ env.PUBLISH_BRANCH }}
@@ -129,7 +129,7 @@ jobs:
     - name: Build the distributable artifacts
       run: yarn build
     - name: Detect changes
-      run: echo ::set-env name=HAS_CHANGES::$(git status --porcelain | wc -l)
+      run: echo "HAS_CHANGES=$(git status --porcelain | wc -l | xargs echo)" >> $GITHUB_ENV
     - name: Commit changes
       if: env.HAS_CHANGES != '0'
       run: |
