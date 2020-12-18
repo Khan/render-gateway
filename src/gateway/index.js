@@ -2,9 +2,6 @@
 /**
  * Trace agent is a special case where it must be imported first to ensure
  * correct instrumentation of other imported modules.
- *
- * Comment change to force build to have differences, thus checking action
- * still works.
  */
 // eslint-disable-next-line import/no-unassigned-import
 import "../ka-shared/start-trace-agent.js";
