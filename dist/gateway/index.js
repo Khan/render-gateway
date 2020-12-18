@@ -32,6 +32,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /**
  * Trace agent is a special case where it must be imported first to ensure
  * correct instrumentation of other imported modules.
+ *
+ * Comment change to force build to have differences, thus checking action
+ * still works.
  */
 // eslint-disable-next-line import/no-unassigned-import
 const Requests = RequestAPI;
