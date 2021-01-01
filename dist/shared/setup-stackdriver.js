@@ -17,14 +17,14 @@ const setupStackdriver = async (mode, options) => {
     return;
   }
 
-  if (options === null || options === void 0 ? void 0 : options.debugAgent) {
+  if (options !== null && options !== void 0 && options.debugAgent) {
     const debugAgent = await Promise.resolve().then(() => _interopRequireWildcard(require("@google-cloud/debug-agent")));
     debugAgent.start({
       allowExpressions: true
     });
   }
 
-  if (options === null || options === void 0 ? void 0 : options.profiler) {
+  if (options !== null && options !== void 0 && options.profiler) {
     const profiler = await Promise.resolve().then(() => _interopRequireWildcard(require("@google-cloud/profiler")));
     profiler.start();
   }
