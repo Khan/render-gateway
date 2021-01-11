@@ -991,10 +991,10 @@
     source-map "^0.6.1"
     split "^1.0.0"
 
-"@google-cloud/kms@^2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-2.1.4.tgz#0d5c9a16c00017509d83c57c0e1ad7b72cf0428e"
-  integrity sha512-0H1+/YKD1pjbpkY97IPuQE5Mj3+d2Om/w+xuWqXposWimWL75S28RpdqP861P415oocjUco27FDy+5trfJ310A==
+"@google-cloud/kms@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-2.2.0.tgz#3241fc5c1559eaa1ba1a4dec5caddaa808dc5a78"
+  integrity sha512-Hh3wBYyvUQzq7IVQQarTN/c3CCxfTP5BqE0cl8TckKURCXAiukDxDAOMBtaTzgjdtsNLUGXdYyP4DZoDAXwzqw==
   dependencies:
     google-gax "^2.9.2"
 
