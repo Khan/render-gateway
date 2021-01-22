@@ -998,10 +998,10 @@
   dependencies:
     google-gax "^2.9.2"
 
-"@google-cloud/logging-winston@^4.0.2":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.0.2.tgz#459a236a708d4bd58e31c31727bcde078a6e399c"
-  integrity sha512-4VagrjlfNXoh2/dpmEhyhGTI8YXRA0vFZlV8CzMq2UR9GXGmLEiAeArjqXPwSPN7fcJJKAh+2mlCZbyYv5mZ1A==
+"@google-cloud/logging-winston@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.0.3.tgz#c1b278ace5bda7d6a4d1cd1e23fa0a7946d1d011"
+  integrity sha512-nUO78FTvrPAAfBErFkshfzyFwXv/wbauihvXUDeLmtfdLy5J5F/FS9Lmqu9N6F+vER34httLm7rmixy7+1ylXg==
   dependencies:
     "@google-cloud/logging" "^9.0.0"
     google-auth-library "^6.0.0"
