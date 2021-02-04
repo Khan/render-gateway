@@ -35,7 +35,7 @@
     "ancesdir": "^2.0.2",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
-    "babel-watch": "^7.3.0",
+    "babel-watch": "^7.3.1",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-babel": "^5.3.1",
