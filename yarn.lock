@@ -952,13 +952,13 @@
   dependencies:
     google-gax "^2.9.2"
 
-"@google-cloud/logging-winston@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.0.3.tgz#c1b278ace5bda7d6a4d1cd1e23fa0a7946d1d011"
-  integrity sha512-nUO78FTvrPAAfBErFkshfzyFwXv/wbauihvXUDeLmtfdLy5J5F/FS9Lmqu9N6F+vER34httLm7rmixy7+1ylXg==
+"@google-cloud/logging-winston@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.0.4.tgz#5d574ab9eab6a5112ed242fdbcb367eeeb2f2e9e"
+  integrity sha512-C3D05pPAnT4SneOhsdj1xrBjiRoCOTXHaWbodUGstjqGFjKv+zOUQJpW9wcK6Fp+i2ioOSLBW9ssNDOCBI1znQ==
   dependencies:
     "@google-cloud/logging" "^9.0.0"
-    google-auth-library "^6.0.0"
+    google-auth-library "^7.0.0"
     lodash.mapvalues "^4.6.0"
     logform "^2.1.2"
     triple-beam "^1.3.0"
