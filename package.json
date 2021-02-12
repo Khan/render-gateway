@@ -28,7 +28,7 @@
     "@babel/cli": "^7.12.16",
     "@babel/core": "^7.12.13",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.12.13",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.16",
     "@babel/preset-env": "^7.12.13",
     "@babel/preset-flow": "^7.12.13",
     "@khanacademy/eslint-config": "^0.0.5",
