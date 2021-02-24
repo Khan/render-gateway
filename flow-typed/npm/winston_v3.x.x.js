@@ -52,7 +52,7 @@ declare class $winstonConsoleTransport<T> implements $winstonTransport {
 // Start: https://github.com/Khan/react-render-server/pull/20
 declare type $winstonStreamTransportConfig<T: $winstonLevels> = {
     level?: $Keys<T>,
-    stream: NodeJS.WritableStream,
+    stream: stream$Writable,
     eol?: string,
     ...
 };
@@ -123,7 +123,7 @@ declare type $winstonFormatPrintPrintOptions = {
     ...
 };
 
-declare type winstonFormatCliOptions = {...};
+declare type $winstonFormatCliOptions = {...};
 // End: https://github.com/Khan/react-render-server/pull/20
 
 declare type $winstonFormatSubModule = {

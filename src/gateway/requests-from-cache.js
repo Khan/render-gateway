@@ -17,6 +17,8 @@ export const FROM_CACHE_PROP_NAME: string = "_fromCache";
  * @returns {boolean} true if the response was from cache; otherwise false.
  */
 export const isFromCache = (response: Response): boolean =>
+    // We know that the response doesn't define this thing.
+    // $FlowIgnore[prop-missing]
     response[FROM_CACHE_PROP_NAME] === true;
 
 /**
@@ -45,6 +47,8 @@ export const asUncachedRequest = (
         /**
          * There's no cache, so this is definitely not from cache.
          */
+        // We know that the response doesn't define this thing.
+        // $FlowIgnore[prop-missing]
         res[FROM_CACHE_PROP_NAME] = false;
         return res;
     });
@@ -133,7 +137,10 @@ export const asCachedRequest = (
          *
          * Cheeky, but it works 😈
          */
+        // We know that the response doesn't define this thing.
+        // $FlowIgnore[prop-missing]
         res[FROM_CACHE_PROP_NAME] =
+            // $FlowIgnore[prop-missing]
             res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
         return res;
     });

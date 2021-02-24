@@ -1,8 +1,4 @@
-import * as fs from "fs";
-import * as http from "http";
-import * as stream from "stream";
-import * as cookiejar from "cookiejar";
-
+// @flow
 declare type superagent$CallbackHandler = (
     err: any,
     res: ?superagent$Response,
@@ -24,7 +20,7 @@ declare type superagent$Parser =
 declare type superagent$MultipartValueSingle =
     | Blob
     | Buffer
-    | fs.ReadStream
+    | stream$Readable
     | string
     | boolean
     | number;
@@ -34,10 +30,14 @@ declare type superagent$MultipartValue =
     | superagent$MultipartValueSingle[];
 
 declare interface superagent$SuperAgentRequest extends superagent$Request {
-    agent(agent?: http.Agent): superagent$SuperAgentRequest;
+    agent<+SocketT = net$Socket>(
+        agent?: http$Agent<SocketT>,
+    ): superagent$SuperAgentRequest;
 }
 
-declare interface superagent$SuperAgentStatic extends stream.Stream {
+declare type cookiejar$CookieJar = $FlowFixMe;
+
+declare interface superagent$SuperAgentStatic extends stream$Stream {
     (url: string): superagent$SuperAgentRequest;
     (method: string, url: string): superagent$SuperAgentRequest;
 
@@ -45,8 +45,8 @@ declare interface superagent$SuperAgentStatic extends stream.Stream {
     serialize: {[type: string]: superagent$Serializer};
     parse: {[type: string]: superagent$Parser};
 
-    jar: cookiejar.CookieJar;
-    attachCookies(req: Req): void;
+    jar: cookiejar$CookieJar;
+    attachCookies(req: superagent$SuperAgentRequest): void;
     checkout(
         url: string,
         callback?: superagent$CallbackHandler,
@@ -161,7 +161,7 @@ declare interface superagent$HTTPError extends Error {
     path: string;
 }
 
-declare interface superagent$Response extends NodeJS.ReadableStream {
+declare interface superagent$Response extends stream$Readable {
     accepted: boolean;
     badRequest: boolean;
     body: any;
@@ -174,7 +174,7 @@ declare interface superagent$Response extends NodeJS.ReadableStream {
     get(header: "Set-Cookie"): string[];
     header: any;
     info: boolean;
-    links: object;
+    links: {...};
     noContent: boolean;
     notAcceptable: boolean;
     notFound: boolean;
@@ -230,7 +230,7 @@ declare interface superagent$Request extends Promise<superagent$Response> {
         handler: (response: superagent$Response) => void,
     ): superagent$Request;
     on(name: string, handler: (event: any) => void): superagent$Request;
-    parse(parser: Parser): superagent$Request;
+    parse(parser: superagent$Parser): superagent$Request;
     part(): superagent$Request;
     pfx(
         cert:
@@ -240,17 +240,17 @@ declare interface superagent$Request extends Promise<superagent$Response> {
             | Buffer[]
             | {pfx: string | Buffer, passphrase: string},
     ): superagent$Request;
-    pipe(stream: NodeJS.WritableStream, options?: object): stream.Writable;
-    query(val: object | string): superagent$Request;
+    pipe(stream: stream$Writable, options?: {...}): stream$Writable;
+    query(val: {...} | string): superagent$Request;
     redirects(n: number): superagent$Request;
     responseType(type: string): superagent$Request;
     retry(
         count?: number,
         callback?: superagent$CallbackHandler,
     ): superagent$Request;
-    send(data?: string | object): superagent$Request;
+    send(data?: string | {...}): superagent$Request;
     serialize(serializer: superagent$Serializer): superagent$Request;
-    set(field: object): superagent$Request;
+    set(field: {...}): superagent$Request;
     set(field: string, val: string): superagent$Request;
     set(field: "Cookie", val: string[]): superagent$Request;
     timeout(
