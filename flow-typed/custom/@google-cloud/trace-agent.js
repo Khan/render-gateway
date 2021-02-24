@@ -32,7 +32,7 @@ declare interface traceagent$SpanOptions {
 }
 
 declare class traceagent$Tracer {
-    createChildSpan(options?: $traceagent$SpanOptions): traceagent$Span;
+    createChildSpan(options?: traceagent$SpanOptions): traceagent$Span;
 }
 
 declare type traceagent$Config = {
