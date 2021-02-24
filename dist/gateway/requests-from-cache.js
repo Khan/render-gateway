@@ -23,7 +23,9 @@ const FROM_CACHE_PROP_NAME = "_fromCache";
 
 exports.FROM_CACHE_PROP_NAME = FROM_CACHE_PROP_NAME;
 
-const isFromCache = response => response[FROM_CACHE_PROP_NAME] === true;
+const isFromCache = response => // We know that the response doesn't define this thing.
+// $FlowIgnore[prop-missing]
+response[FROM_CACHE_PROP_NAME] === true;
 /**
  * Turn unbuffered, uncached request into uncached request with or without
  * buffer.
@@ -51,6 +53,8 @@ const asUncachedRequest = (options, request) => {
     /**
      * There's no cache, so this is definitely not from cache.
      */
+    // We know that the response doesn't define this thing.
+    // $FlowIgnore[prop-missing]
     res[FROM_CACHE_PROP_NAME] = false;
     return res;
   });
@@ -137,7 +141,10 @@ const asCachedRequest = (options, request) => {
      *
      * Cheeky, but it works 😈
      */
-    res[FROM_CACHE_PROP_NAME] = res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
+    // We know that the response doesn't define this thing.
+    // $FlowIgnore[prop-missing]
+    res[FROM_CACHE_PROP_NAME] = // $FlowIgnore[prop-missing]
+    res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
     return res;
   });
   const abortableResponse = responsePromise;
