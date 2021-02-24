@@ -3,15 +3,16 @@
 
 declare type $winstonLevels = {[string]: number, ...};
 
-declare type $winstonNpmLogLevels = {
+// KA> Made exact (fixed a lot of errors when reaching Flow 0.142.0)
+declare type $winstonNpmLogLevels = {|
     error: number,
     warn: number,
     info: number,
     verbose: number,
     debug: number,
     silly: number,
-    ...
-};
+|};
+// KA<
 
 declare type $winstonInfo<T: $winstonLevels> = {
     [optionName: string]: any,
