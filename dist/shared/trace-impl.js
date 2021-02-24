@@ -113,7 +113,12 @@ const traceImpl = (logger, action, message, tracer) => {
     const afterMemory = process.memoryUsage();
     /**
      * Add some session information to the span as labels.
+     *
+     * Flow doesn't trust the inexact objects returned by memoryUsage()
+     * and so `getDelta` isn't typed to handle that. Have to rethink
+     * how to make that work.
      */
+    // $FlowFixMe[incompatible-call]
 
     addLabel("/memory/delta", (0, _getDelta.getDelta)(beforeMemory, afterMemory));
     addLabel("/memory/final", afterMemory);
