@@ -10,6 +10,7 @@ describe("#logRequestInfoMiddleware", () => {
         const fakeNext = jest.fn();
         const fakeLogger = {
             info: jest.fn(),
+            debug: jest.fn(),
         };
         const fakeRequest: any = {
             url: "URL",
@@ -30,6 +31,16 @@ describe("#logRequestInfoMiddleware", () => {
             Array [
               "Request received: URL",
               Object {
+                "method": "GET",
+                "url": "URL",
+              },
+            ]
+        `);
+        expect(fakeLogger.debug).toHaveBeenCalledTimes(1);
+        expect(fakeLogger.debug.mock.calls[0]).toMatchInlineSnapshot(`
+            Array [
+              "Request received: URL",
+              Object {
                 "headers": Object {
                   "HEADER": "VALUE",
                 },
@@ -45,6 +56,7 @@ describe("#logRequestInfoMiddleware", () => {
         const fakeNext = jest.fn();
         const fakeLogger = {
             info: jest.fn(),
+            debug: jest.fn(),
         };
         const fakeRequest: any = {
             url: "URL",
