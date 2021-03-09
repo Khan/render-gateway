@@ -9,10 +9,16 @@ var _index = require("../../shared/index.js");
 
 /**
  * Simple middleware that logs some info about the incoming request.
+ *
+ * We flatten the headers since they give us problems with exporting
+ * our info logs to bigquery if we don't. The issue is that we end up
+ * with a bigquery column per unique header name, and so we run out of
+ * columns.
  */
 function logRequestInfoMiddleware(req, res, next) {
+  const flattenedHeaders = Object.keys(req.headers).reduce((headers, key) => headers + `${key}: ${req.headers[key]}\n`, "");
   (0, _index.getLogger)(req).info(`Request received: ${req.url}`, {
-    headers: req.headers,
+    allHeaders: flattenedHeaders,
     method: req.method,
     url: req.url
   });
