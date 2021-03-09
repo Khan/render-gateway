@@ -18,7 +18,7 @@ var _index = require("../../shared/index.js");
 function logRequestInfoMiddleware(req, res, next) {
   const flattenedHeaders = Object.keys(req.headers).reduce((headers, key) => headers + `${key}: ${req.headers[key]}\n`, "");
   (0, _index.getLogger)(req).info(`Request received: ${req.url}`, {
-    headers: flattenedHeaders,
+    allHeaders: flattenedHeaders,
     method: req.method,
     url: req.url
   });
