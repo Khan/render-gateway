@@ -31,7 +31,7 @@ describe("#logRequestInfoMiddleware", () => {
 Array [
   "Request received: URL",
   Object {
-    "headers": "HEADER: VALUE
+    "allHeaders": "HEADER: VALUE
 ANOTHER: ANOTHER VALUE
 ",
     "method": "GET",

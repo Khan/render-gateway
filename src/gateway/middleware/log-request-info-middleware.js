@@ -22,7 +22,7 @@ export function logRequestInfoMiddleware<Req: Request, Res: $Response>(
         "",
     );
     getLogger(req).info(`Request received: ${req.url}`, {
-        headers: flattenedHeaders,
+        allHeaders: flattenedHeaders,
         method: req.method,
         url: req.url,
     });
