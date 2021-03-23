@@ -1100,9 +1100,11 @@ window["__register__"](fakeRender);
                 close: jest.fn(),
             };
             const afterEnvCloseable = {
-                close: () => {
-                    throw new Error("AFTER ENV GO BOOM ON CLOSE!");
-                },
+                close: jest
+                    .fn()
+                    .mockRejectedValue(
+                        new Error("AFTER ENV GO BOOM ON CLOSE!"),
+                    ),
             };
             const fakeConfiguration = {
                 registrationCallbackName: "__register__",
