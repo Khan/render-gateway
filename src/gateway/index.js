@@ -18,6 +18,8 @@ export type {
     RenderResult,
     ErrorResult,
     CustomErrorHandlerFn,
+    Response,
+    Request,
 } from "./types.js";
 export type * from "./environments/index.js";
 
