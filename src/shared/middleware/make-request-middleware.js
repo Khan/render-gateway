@@ -14,14 +14,11 @@ export const makeRequestMiddleware = <TReq: $Request, TRes: $Response>(
 ): Promise<Middleware<TReq, TRes>> => {
     if (mode === "production") {
         /**
-         * In production, we're using the Google middleware. This adds the
-         * log property to the request, allowing us to associate log entries
-         * with a request trace, if the request is being traced.
-         *
-         * WORKAROUND: We must pass the corresponding transport here or it will
-         * get added for us and then we'll have double logging.
+         * In production, we're using the Google logging-winston middleware.
+         * This adds the log property to the request, allowing us to associate
+         * log entries with a request trace, if the request is being traced.
          */
-        return lw.express.makeMiddleware(logger, new lw.LoggingWinston());
+        return lw.express.makeMiddleware(logger);
     }
 
     /**

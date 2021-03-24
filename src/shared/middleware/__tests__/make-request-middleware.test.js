@@ -43,7 +43,7 @@ describe("#makeRequestMiddleware", () => {
             expect(result).toBe(pretendLoggingWinstonMiddleware);
         });
 
-        it("should create middleware with logger and transport", async () => {
+        it("should create middleware with logger", async () => {
             // Arrange
             const pretendLogger = ({}: any);
             const pretendLoggingWinstonMiddleware = ({}: any);
@@ -55,10 +55,7 @@ describe("#makeRequestMiddleware", () => {
             await makeRequestMiddleware("production", pretendLogger);
 
             // Assert
-            expect(middlewareSpy).toHaveBeenCalledWith(
-                pretendLogger,
-                expect.objectContaining({__FAKE_LOGGING_WINSTON__: true}),
-            );
+            expect(middlewareSpy).toHaveBeenCalledWith(pretendLogger);
         });
     });
 
