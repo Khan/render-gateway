@@ -1,5 +1,6 @@
 // @flow
 import winston from "winston";
+import {Errors} from "../errors.js";
 import {createLogger} from "../create-logger.js";
 
 jest.mock("@google-cloud/logging-winston", () => ({
@@ -125,6 +126,22 @@ describe("#createLogger", () => {
 
             // Assert
             expect(transports).toHaveProperty("__FAKE_LOGGING_WINSTON__");
+        });
+
+        it("should ensure errors get kind metadata", () => {
+            // Arrange
+            const mockFormat = jest.spyOn(winston, "format");
+
+            // Act
+            createLogger("production", "silly");
+            const formatter = mockFormat.mock.calls[0][0];
+            const result = formatter({level: "error"});
+
+            // Assert
+            expect(result).toStrictEqual({
+                level: "error",
+                kind: Errors.Internal,
+            });
         });
     });
 

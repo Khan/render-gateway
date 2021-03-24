@@ -21,14 +21,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 const makeRequestMiddleware = (mode, logger) => {
   if (mode === "production") {
     /**
-     * In production, we're using the Google middleware. This adds the
-     * log property to the request, allowing us to associate log entries
-     * with a request trace, if the request is being traced.
-     *
-     * WORKAROUND: We must pass the corresponding transport here or it will
-     * get added for us and then we'll have double logging.
+     * In production, we're using the Google logging-winston middleware.
+     * This adds the log property to the request, allowing us to associate
+     * log entries with a request trace, if the request is being traced.
      */
-    return lw.express.makeMiddleware(logger, new lw.LoggingWinston());
+    return lw.express.makeMiddleware(logger);
   }
   /**
    * In all other cases, we use express-winston to log requests for us.

@@ -33,7 +33,8 @@ function makeAppEngineRequestIDMiddleware(defaultLogger) {
     });
     /*
      * NOTE: the $Request type doesn't have a log field, officially.
-     * However, we know that the Google middleware adds it.
+     * However, we know that the Google middleware adds it, so now we
+     * replace it with our own version.
      */
 
     req.log = requestIDLog;

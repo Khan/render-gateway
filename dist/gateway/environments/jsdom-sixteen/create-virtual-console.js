@@ -33,34 +33,39 @@ const createVirtualConsole = logger => {
     }
 
     const simplifiedError = (0, _index.extractError)(e);
-    logger.error(`JSDOM:${simplifiedError.error || ""}`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
+    logger.error(`JSDOM jsdomError:${simplifiedError.error || ""}`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
       kind: _index2.Errors.Internal
     }));
-  }); // NOTE: We pass args array as the metadata parameter for winston log.
-  //       We don't worry about adding the error kind here; we mark these
-  //       as Errors.Internal automatically if they don't already include a
-  //       kind.
-
-  virtualConsole.on("error", (message, ...args) => logger.error(`JSDOM:${message}`, {
-    args
-  }));
-  virtualConsole.on("warn", (message, ...args) => logger.warn(`JSDOM:${message}`, {
-    args
-  }));
-  virtualConsole.on("info", (message, ...args) => logger.info(`JSDOM:${message}`, {
-    args
-  }));
-  virtualConsole.on("log", (message, ...args) =>
+  });
   /**
-   * Winston uses log for a different, core thing, so let's map log to
-   * info.
+   * NOTE(somewhatabstract): We pass args array as the metadata parameter for
+   * winston log. We don't worry about adding the error kind here; we mark
+   * these as Errors.Internal automatically if they don't already include a
+   * kind.
    */
-  logger.info(`JSDOM:${message}`, {
+
+  virtualConsole.on("error", (message, ...args) => logger.error(`JSDOM error:${message}`, {
     args
   }));
-  virtualConsole.on("debug", (message, ...args) => logger.debug(`JSDOM:${message}`, {
-    args
-  }));
+  /**
+   * We log all other things as `silly`, since they are generally only useful
+   * to us when we're developing/debugging issues locally, and not in
+   * production. We could add some way to turn this on in production
+   * temporarily (like a temporary "elevate log level" query param) if
+   * we find that will be useful, but I haven't encountered an issue that
+   * needed these in production yet; they're just noise.
+   */
+
+  const passthruLog = method => {
+    virtualConsole.on(method, (message, ...args) => logger.silly(`JSDOM ${method}:${message}`, {
+      args
+    }));
+  };
+
+  passthruLog("warn");
+  passthruLog("info");
+  passthruLog("log");
+  passthruLog("debug");
   return virtualConsole;
 };
 
