@@ -115,9 +115,10 @@ const getTransport = (mode, logLevel) => {
        * We must be in production, so we will use the Stackdriver logging
        * setup.
        *
-       * If using the Google-provided middleware that adds a log property
-       * to the express request, make sure this transport is passed to
-       * that middleware so that it doesn't add its own.
+       * The Google-provided logging-winston middleware, which adds a log
+       * property to the express request, looks for this transport before
+       * adding its own (if it didn't, we would get double logging of
+       * each message we logged).
        */
       return new lw.LoggingWinston({
         level: logLevel
