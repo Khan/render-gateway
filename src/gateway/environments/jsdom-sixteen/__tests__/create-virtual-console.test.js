@@ -46,11 +46,14 @@ describe("#createVirtualConsole", () => {
         underTest.emit("jsdomError", new Error("This is a jsdomError message"));
 
         // Assert
-        expect(fakeLogger.error).toHaveBeenCalledWith("JSDOM:ERROR_MESSAGE", {
-            error: "ERROR_MESSAGE",
-            kind: "Internal",
-            stack: "ERROR_STACK",
-        });
+        expect(fakeLogger.error).toHaveBeenCalledWith(
+            "JSDOM jsdomError:ERROR_MESSAGE",
+            {
+                error: "ERROR_MESSAGE",
+                kind: "Internal",
+                stack: "ERROR_STACK",
+            },
+        );
     });
 
     it("should pass errors to logger.error with args as metadata", () => {
@@ -69,90 +72,36 @@ describe("#createVirtualConsole", () => {
 
         // Assert
         expect(fakeLogger.error).toHaveBeenCalledWith(
-            "JSDOM:This is an error message",
+            "JSDOM error:This is an error message",
             {
                 args: ["and these are args"],
             },
         );
     });
 
-    it("should pass warn to logger.warn with args as metadata", () => {
-        // Arrange
-        const fakeLogger: any = {
-            warn: jest.fn(),
-        };
-        const underTest = createVirtualConsole(fakeLogger);
+    it.each(["warn", "info", "log", "debug"])(
+        "should pass %s through to logger silly with args as metadata",
+        (method: string) => {
+            // Arrange
+            const fakeLogger: any = {
+                silly: jest.fn(),
+            };
+            const underTest = createVirtualConsole(fakeLogger);
 
-        // Act
-        underTest.emit("warn", "This is a warn message", "and these are args");
+            // Act
+            underTest.emit(
+                method,
+                "This is a logged message",
+                "and these are args",
+            );
 
-        // Assert
-        expect(fakeLogger.warn).toHaveBeenCalledWith(
-            "JSDOM:This is a warn message",
-            {
-                args: ["and these are args"],
-            },
-        );
-    });
-
-    it("should pass info to logger.info with args as metadata", () => {
-        // Arrange
-        const fakeLogger: any = {
-            info: jest.fn(),
-        };
-        const underTest = createVirtualConsole(fakeLogger);
-
-        // Act
-        underTest.emit("info", "This is an info message", "and these are args");
-
-        // Assert
-        expect(fakeLogger.info).toHaveBeenCalledWith(
-            "JSDOM:This is an info message",
-            {
-                args: ["and these are args"],
-            },
-        );
-    });
-
-    it("should pass log to logger.info with args as metadata", () => {
-        // Arrange
-        const fakeLogger: any = {
-            info: jest.fn(),
-        };
-        const underTest = createVirtualConsole(fakeLogger);
-
-        // Act
-        underTest.emit("log", "This is a log message", "and these are args");
-
-        // Assert
-        expect(fakeLogger.info).toHaveBeenCalledWith(
-            "JSDOM:This is a log message",
-            {
-                args: ["and these are args"],
-            },
-        );
-    });
-
-    it("should pass debug to logger.debug with args as metadata", () => {
-        // Arrange
-        const fakeLogger: any = {
-            debug: jest.fn(),
-        };
-        const underTest = createVirtualConsole(fakeLogger);
-
-        // Act
-        underTest.emit(
-            "debug",
-            "This is a debug message",
-            "and these are args",
-        );
-
-        // Assert
-        expect(fakeLogger.debug).toHaveBeenCalledWith(
-            "JSDOM:This is a debug message",
-            {
-                args: ["and these are args"],
-            },
-        );
-    });
+            // Assert
+            expect(fakeLogger.silly).toHaveBeenCalledWith(
+                `JSDOM ${method}:This is a logged message`,
+                {
+                    args: ["and these are args"],
+                },
+            );
+        },
+    );
 });
