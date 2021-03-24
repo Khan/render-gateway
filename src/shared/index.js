@@ -19,6 +19,7 @@ export type {
     ITraceSession,
     SimplifiedError,
     CloudOptions,
+    ICloseable,
 } from "./types.js";
 
 export {default as KAError} from "./ka-error.js";

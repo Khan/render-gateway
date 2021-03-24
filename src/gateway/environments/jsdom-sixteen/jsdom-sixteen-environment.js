@@ -1,12 +1,11 @@
 // @flow
 import {extractError, KAError} from "../../../shared/index.js";
 import {Errors} from "../../../ka-shared/index.js";
-import type {Logger, ITraceSession} from "../../../shared/index.js";
+import type {Logger, ITraceSession, ICloseable} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
     CloseableResourceLoader,
     IGate,
-    ICloseable,
 } from "./types.js";
 import type {IRenderEnvironment, RenderAPI, RenderResult} from "../../types.js";
 
@@ -131,14 +130,14 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * We wrap this in a timeout to hopefully mitigate any chances
              * of https://github.com/jsdom/jsdom/issues/1682
              */
-            setTimeout(() => {
+            setTimeout(async () => {
                 /**
                  * We want to close things in reverse, just to be sure we
                  * tidy up in the same order that we put things together.
                  */
                 for (let i = closeables.length - 1; i >= 0; i--) {
                     try {
-                        closeables[i]?.close?.();
+                        await closeables[i]?.close?.();
                     } catch (e) {
                         const simplifiedError = extractError(e);
                         logger.error(

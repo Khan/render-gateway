@@ -244,7 +244,7 @@ class JSDOMSixteenEnvironment {
        * We wrap this in a timeout to hopefully mitigate any chances
        * of https://github.com/jsdom/jsdom/issues/1682
        */
-      setTimeout(() => {
+      setTimeout(async () => {
         /**
          * We want to close things in reverse, just to be sure we
          * tidy up in the same order that we put things together.
@@ -253,7 +253,7 @@ class JSDOMSixteenEnvironment {
           try {
             var _closeables$i, _closeables$i$close;
 
-            (_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i);
+            await ((_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i));
           } catch (e) {
             const simplifiedError = (0, _index.extractError)(e);
             logger.error(`Closeable encountered an error: ${simplifiedError.error || ""}`, _objectSpread(_objectSpread({}, simplifiedError), {}, {

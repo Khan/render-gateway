@@ -205,3 +205,13 @@ export type GatewayOptions = {
 export type RequestWithLog<TReq: $Request> = TReq & {
     log?: Logger,
 };
+
+/**
+ * A thing that can be closed.
+ */
+export interface ICloseable {
+    /**
+     * Close the closeable.
+     */
+    +close?: () => ?Promise<void>;
+}
