@@ -48,7 +48,7 @@ const makeRequest = (options, logger, url) => {
    */
 
 
-  return (0, _requestsFromCache.asUncachedRequest)(options, request);
+  return (0, _requestsFromCache.asUncachedRequest)(request);
 };
 
 exports.makeRequest = makeRequest;
