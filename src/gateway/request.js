@@ -3,7 +3,7 @@ import type {Response} from "superagent";
 import type {RequestOptions, AbortablePromise} from "./types.js";
 import type {Logger} from "../shared/types.js";
 import {makeRequest} from "./make-request.js";
-import {isFromCache} from "./requests-from-cache.js";
+import {getResponseSource} from "./requests-from-cache.js";
 import {trace} from "../shared/index.js";
 
 /**
@@ -50,7 +50,11 @@ export const request = (
      */
     const finalizedPromise = abortableRequest
         .then((res) => {
-            traceSession.addLabel("fromCache", isFromCache(res));
+            const currentRequestCacheID = options?.getCacheID?.();
+            traceSession.addLabel(
+                "source",
+                getResponseSource(res, currentRequestCacheID),
+            );
             traceSession.addLabel("successful", true);
             return res;
         })

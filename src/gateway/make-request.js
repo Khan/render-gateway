@@ -46,5 +46,5 @@ export const makeRequest = (
     /**
      * We're not caching this request, so let's just not set caching up.
      */
-    return asUncachedRequest(options, request);
+    return asUncachedRequest(request);
 };
