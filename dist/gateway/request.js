@@ -56,7 +56,10 @@ const request = (logger, url, options) => {
    */
 
   const finalizedPromise = abortableRequest.then(res => {
-    traceSession.addLabel("fromCache", (0, _requestsFromCache.isFromCache)(res));
+    var _options$getCacheID;
+
+    const currentRequestCacheID = options === null || options === void 0 ? void 0 : (_options$getCacheID = options.getCacheID) === null || _options$getCacheID === void 0 ? void 0 : _options$getCacheID.call(options);
+    traceSession.addLabel("source", (0, _requestsFromCache.getResponseSource)(res, currentRequestCacheID));
     traceSession.addLabel("successful", true);
     return res;
   }).finally(() => {

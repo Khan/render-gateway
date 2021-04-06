@@ -11,6 +11,8 @@ import type {
     CloudOptions,
 } from "../shared/index.js";
 
+export type ResponseSource = "unknown" | "cache" | "new request";
+
 /**
  * Options for configuring incoming request authentication.
  */
@@ -284,6 +286,18 @@ export type RequestOptions = {
      * - allow retry if err.crossDomain is truthy
      */
     +shouldRetry?: CallbackHandler,
+
+    /**
+     * Call to obtain a cache-safe identifier the currently handled request.
+     *
+     * This is used to identify the request when comparing with cached
+     * responses so that we can determine if a response was fulfilled from
+     * cache or from a fresh request.
+     *
+     * Without an implementation of this method, it is not possible to
+     * determine if something is from cache or not.
+     */
+    +getCacheID?: () => string,
 };
 
 /**

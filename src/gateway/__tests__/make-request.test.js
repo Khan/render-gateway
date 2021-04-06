@@ -113,7 +113,7 @@ describe("#makeRequest", () => {
         });
 
         describe("isCachable returns false", () => {
-            it("should call asUncachedRequest with request and buffer value", () => {
+            it("should call asUncachedRequest with request", () => {
                 // Arrange
                 const fakeRequest = "FAKE_REQUEST";
                 const fakeLogger: any = "LOGGER";
@@ -134,10 +134,7 @@ describe("#makeRequest", () => {
                 makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
                 // Assert
-                expect(asUncachedRequestSpy).toHaveBeenCalledWith(
-                    fakeRequestOptions,
-                    fakeRequest,
-                );
+                expect(asUncachedRequestSpy).toHaveBeenCalledWith(fakeRequest);
             });
 
             it("should return result of asUncachedRequest", () => {
@@ -171,7 +168,7 @@ describe("#makeRequest", () => {
     });
 
     describe("with no cache plugin", () => {
-        it("should call asUncachedRequest with request and buffer value", () => {
+        it("should call asUncachedRequest with request", () => {
             // Arrange
             const fakeRequest = "FAKE_REQUEST";
             const fakeLogger: any = "LOGGER";
@@ -189,10 +186,7 @@ describe("#makeRequest", () => {
             makeRequest(fakeRequestOptions, fakeLogger, "URL");
 
             // Assert
-            expect(asUncachedRequestSpy).toHaveBeenCalledWith(
-                fakeRequestOptions,
-                fakeRequest,
-            );
+            expect(asUncachedRequestSpy).toHaveBeenCalledWith(fakeRequest);
         });
 
         it("should return result of asUncachedRequest", () => {

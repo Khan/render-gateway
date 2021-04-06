@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.asCachedRequest = exports.asUncachedRequest = exports.isFromCache = exports.FROM_CACHE_PROP_NAME = void 0;
+exports.asCachedRequest = exports.asUncachedRequest = exports.getResponseSource = exports.CACHE_ID_PROP_NAME = void 0;
 
 var _index = require("../shared/index.js");
 
@@ -13,56 +13,55 @@ var _index2 = require("../ka-shared/index.js");
  * This is the name of the property we attach to responses so that we can
  * indicate if a response was from the cache or not.
  */
-const FROM_CACHE_PROP_NAME = "_fromCache";
+const CACHE_ID_PROP_NAME = "_cacheID";
 /**
- * Determine if a superagent response was from the cache or not.
+ * Determine the source of a superagent response.
  *
  * @param {SuperAgentResponse} response The response to check.
- * @returns {boolean} true if the response was from cache; otherwise false.
+ * @param {string} cacheID The cacheID for items that are freshly added to the
+ * cache in the current request.
+ * @returns {ResponseSource} "cache" if the response was from cache,
+ * "new request" if it was not from cache, or "unknown" if a cache state cannot
+ * be determined.
  */
 
-exports.FROM_CACHE_PROP_NAME = FROM_CACHE_PROP_NAME;
+exports.CACHE_ID_PROP_NAME = CACHE_ID_PROP_NAME;
 
-const isFromCache = response => // We know that the response doesn't define this thing.
-// $FlowIgnore[prop-missing]
-response[FROM_CACHE_PROP_NAME] === true;
+const getResponseSource = (response, cacheID) => {
+  // We know that the response doesn't define this prop.
+  // $FlowIgnore[prop-missing]
+  const responseCacheID = response[CACHE_ID_PROP_NAME]; // If the cacheID to compare or the cache ID of the response are nully,
+  // then we have no idea about the cache state.
+
+  if (cacheID == null || responseCacheID == null) {
+    return "unknown";
+  } // If the response cacheID and the passed in cacheID are the same, then
+  // we assume that the response was cached during the current request and
+  // therefore, it was not taken from the existing cache.
+
+
+  return responseCacheID === cacheID ? "new request" : "cache";
+};
 /**
- * Turn unbuffered, uncached request into uncached request with or without
- * buffer.
+ * Turn unbuffered, uncached request into uncached request with buffer.
  *
  * The request will resolve with an additional property to indicate if it was
  * resolved from cache or not.
  *
- * @param {RequestOptions} options Used to determine if the request should
- * buffer or not.
  * @param {Request} request The request to be modified.
  * @returns {Promise<Response>} A superagent request supporting caching for the
  * given URL.
  */
 
 
-exports.isFromCache = isFromCache;
+exports.getResponseSource = getResponseSource;
 
-const asUncachedRequest = (options, request) => {
+const asUncachedRequest = request => {
   /**
-   * We need to ensure that what we return has the `abort` method still so
-   * that we can let things like JSDOM call abort on promises.
+   * We just return the superagent request. It is already abortable.
    */
   const superagentRequest = request.buffer(true);
-  const responsePromise = superagentRequest.then(res => {
-    /**
-     * There's no cache, so this is definitely not from cache.
-     */
-    // We know that the response doesn't define this thing.
-    // $FlowIgnore[prop-missing]
-    res[FROM_CACHE_PROP_NAME] = false;
-    return res;
-  });
-  const abortableResponse = responsePromise;
-
-  abortableResponse.abort = () => superagentRequest.abort();
-
-  return abortableResponse;
+  return superagentRequest;
 };
 /**
  * Turn unbuffered, uncached request into cached request with or without buffer.
@@ -93,19 +92,14 @@ const asCachedRequest = (options, request) => {
     throw new _index.KAError("Cannot cache request without cache plugin instance.", _index2.Errors.NotAllowed);
   }
   /**
-   * TODO(somewhatabstract, WEB-2722): Replace this with the requestID of the
-   * render request. This will then work properly for both in-memory and other
-   * cache types.
-   */
-
-
-  const FRESHLY_PRUNED = "PRUNED";
-  /**
    * We need to ensure that what we return has the `abort` method still so
    * that we can let things like JSDOM call abort on promises.
    */
 
+
   const superagentRequest = request.use(cachePlugin).expiration(getExpiration === null || getExpiration === void 0 ? void 0 : getExpiration(request.url)).prune((response, gutResponse) => {
+    var _options$getCacheID;
+
     /**
      * This is called to prune a response before it goes into the
      * cache.
@@ -117,41 +111,16 @@ const asCachedRequest = (options, request) => {
      * do, for now.
      */
     const guttedResponse = gutResponse(response);
-    guttedResponse[FROM_CACHE_PROP_NAME] = FRESHLY_PRUNED;
+    const cacheID = (_options$getCacheID = options.getCacheID) === null || _options$getCacheID === void 0 ? void 0 : _options$getCacheID.call(options);
+
+    if (cacheID != null) {
+      guttedResponse[CACHE_ID_PROP_NAME] = cacheID;
+    }
+
     return guttedResponse;
-  }).buffer(true);
-  const responsePromise = superagentRequest.then(res => {
-    /**
-     * Set the FROM_CACHE_PROP_NAME property to a boolean value.
-     *
-     * This works because if it is a brand new response that was just
-     * cached, then the FROM_CACHE_PROP_NAME property is set explicitly
-     * to FRESHLY_PRUNED. Therefore, we know it was not
-     * previously cached. So, we set FROM_CACHE_PROP_NAME property to
-     * false.
-     *
-     * The response we get here is what is in the cache so any
-     * modifications we make are reflected in the cached value (this is
-     * only true for in-memory cache).
-     *
-     * That means that if we get here and the FROM_CACHE_PROP_NAME is
-     * not equal to FRESHLY_PRUNED, it MUST have come from the
-     * cache and not a brand new request, so we can set the
-     * FROM_CACHE_PROP_NAME property to true!
-     *
-     * Cheeky, but it works 😈
-     */
-    // We know that the response doesn't define this thing.
-    // $FlowIgnore[prop-missing]
-    res[FROM_CACHE_PROP_NAME] = // $FlowIgnore[prop-missing]
-    res[FROM_CACHE_PROP_NAME] !== FRESHLY_PRUNED;
-    return res;
-  });
-  const abortableResponse = responsePromise;
+  }).buffer(true); // We know this is abortable.
 
-  abortableResponse.abort = () => superagentRequest.abort();
-
-  return abortableResponse;
+  return superagentRequest;
 };
 
 exports.asCachedRequest = asCachedRequest;

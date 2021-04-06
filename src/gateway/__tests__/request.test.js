@@ -168,7 +168,7 @@ describe("#request", () => {
             .mockReturnValueOnce(resolvedRequest)
             .mockReturnValueOnce(fakeRequest);
         jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
-        jest.spyOn(RequestsFromCache, "isFromCache").mockReturnValue(
+        jest.spyOn(RequestsFromCache, "getResponseSource").mockReturnValue(
             "FAKE_FROM_CACHE",
         );
 
@@ -177,7 +177,7 @@ describe("#request", () => {
 
         // Assert
         expect(fakeTraceSession.addLabel).toHaveBeenCalledWith(
-            "fromCache",
+            "source",
             "FAKE_FROM_CACHE",
         );
         expect(fakeTraceSession.addLabel).toHaveBeenCalledWith(
@@ -205,7 +205,7 @@ describe("#request", () => {
             .mockReturnValueOnce(resolvedRequest)
             .mockReturnValueOnce(fakeRequest);
         jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
-        jest.spyOn(RequestsFromCache, "isFromCache").mockReturnValue(
+        jest.spyOn(RequestsFromCache, "getResponseSource").mockReturnValue(
             "FAKE_FROM_CACHE",
         );
 
