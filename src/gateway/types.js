@@ -56,6 +56,7 @@ export type AuthenticationOptions = {
  */
 export interface AbortablePromise<T> extends Promise<T> {
     abort: () => void;
+    aborted: boolean;
 }
 
 export interface TraceCallback {
