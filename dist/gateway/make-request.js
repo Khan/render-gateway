@@ -29,7 +29,15 @@ const makeRequest = (options, logger, url) => {
   /**
    * Create the base request with our various options.
    */
-  const request = (0, _makeUnbufferedNoCacheRequest.makeUnbufferedNoCacheRequest)(options, logger, url);
+  const request = (0, _makeUnbufferedNoCacheRequest.makeUnbufferedNoCacheRequest)(options, logger, url); // We know request doesn't have this, but we want it to have this, so we're
+  // adding it.
+  // $FlowIgnore[prop-missing]
+
+  Object.defineProperty(request, "aborted", {
+    // We happen to know that this internal property exists.
+    // $FlowIgnore[prop-missing]
+    get: () => request._aborted
+  });
   /**
    * We only add caching support if we were given a cache to use.
    * We also make sure that this request is something we want to cache.
