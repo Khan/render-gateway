@@ -220,7 +220,6 @@ declare interface superagent$Request extends Promise<superagent$Response> {
     get(field: string): string;
     key(cert: string | string[] | Buffer | Buffer[]): superagent$Request;
     ok(callback: (res: superagent$Response) => boolean): superagent$Request;
-    on(name: "abort", handler: (event: any) => void): superagent$Request;
     on(name: "error", handler: (err: any) => void): superagent$Request;
     on(
         name: "progress",
