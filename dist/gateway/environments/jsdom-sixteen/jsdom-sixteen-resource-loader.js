@@ -168,7 +168,9 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
       agent: this._getAgent(url)
     }));
     const handleInactive = abortableFetch.then(response => {
-      const aborted = abortableFetch.aborted;
+      const {
+        aborted
+      } = abortableFetch;
 
       if (!this._active || aborted) {
         if (!aborted) {
