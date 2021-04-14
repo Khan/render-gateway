@@ -299,6 +299,29 @@ describe("JSDOMSixteenResourceLoader", () => {
             });
         });
 
+        it("should resolve to empty response for aborted requests", async () => {
+            // Arrange
+            const abortablePromise = new Promise((resolve, reject) => {
+                resolve({text: "THIS IS NOT EMPTY"});
+            });
+            (abortablePromise: any).abort = jest.fn();
+            (abortablePromise: any).aborted = true;
+            jest.spyOn(Request, "request").mockReturnValue(abortablePromise);
+            const fakeLogger = "FAKE_LOGGER";
+            const fakeRenderAPI: any = {
+                logger: fakeLogger,
+            };
+            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+
+            // Act
+            const result: any = await underTest.fetch(
+                "http://example.com/test.js?p=1",
+            );
+
+            // Assert
+            expect(result).toBeEmpty();
+        });
+
         describe("called after close()", () => {
             it("should log a warning", () => {
                 // Arrange

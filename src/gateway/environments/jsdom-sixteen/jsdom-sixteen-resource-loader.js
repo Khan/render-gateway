@@ -162,10 +162,13 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
             agent: this._getAgent(url),
         });
         const handleInactive = abortableFetch.then((response) => {
-            if (!this._active) {
-                logger.silly(
-                    `File requested but never used: ${readableURLForLogging}`,
-                );
+            const {aborted} = abortableFetch;
+            if (!this._active || aborted) {
+                if (!aborted) {
+                    logger.silly(
+                        `File requested but never used: ${readableURLForLogging}`,
+                    );
+                }
 
                 /**
                  * Just return an empty buffer so no code executes. The
@@ -201,6 +204,9 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
          * can abort it when closing, if it needs to.
          */
         (finalResult: any).abort = abortableFetch.abort;
+        Object.defineProperty((finalResult: any), "aborted", {
+            get: () => abortableFetch.aborted,
+        });
 
         return finalResult;
     }

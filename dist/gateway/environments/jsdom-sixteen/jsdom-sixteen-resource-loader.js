@@ -168,13 +168,20 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
       agent: this._getAgent(url)
     }));
     const handleInactive = abortableFetch.then(response => {
-      if (!this._active) {
-        logger.silly(`File requested but never used: ${readableURLForLogging}`);
+      const {
+        aborted
+      } = abortableFetch;
+
+      if (!this._active || aborted) {
+        if (!aborted) {
+          logger.silly(`File requested but never used: ${readableURLForLogging}`);
+        }
         /**
          * Just return an empty buffer so no code executes. The
          * request function passed at construction will have handled
          * caching of the real file request.
          */
+
 
         return Buffer.from("");
       }
@@ -203,6 +210,9 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
      */
 
     finalResult.abort = abortableFetch.abort;
+    Object.defineProperty(finalResult, "aborted", {
+      get: () => abortableFetch.aborted
+    });
     return finalResult;
   }
 

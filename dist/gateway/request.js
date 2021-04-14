@@ -79,6 +79,10 @@ const request = (logger, url, options) => {
 
   if (finalizedRequest !== abortableRequest) {
     finalizedRequest.abort = () => abortableRequest.abort();
+
+    Object.defineProperty(finalizedRequest, "aborted", {
+      get: () => abortableRequest.aborted
+    });
   }
 
   return finalizedRequest;
