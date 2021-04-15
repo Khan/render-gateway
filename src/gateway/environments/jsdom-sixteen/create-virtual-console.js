@@ -2,7 +2,9 @@
 import {VirtualConsole} from "jsdom";
 import {extractError} from "../../../shared/index.js";
 import {Errors} from "../../../ka-shared/index.js";
-import type {Logger} from "../../../shared/index.js";
+import type {Logger, ICloseable} from "../../../shared/index.js";
+
+type CloseableVirtualConsole = ICloseable & typeof VirtualConsole;
 
 /**
  * Create a virtual console for use with JSDOM.
@@ -10,9 +12,21 @@ import type {Logger} from "../../../shared/index.js";
  * @param {Logger} logger The logger to which this virtual console logs.
  * @returns {VirtualConsole} A JSDOM VirtualConsole instance.
  */
-export const createVirtualConsole = (logger: Logger): VirtualConsole => {
+export const createVirtualConsole = (
+    logger: Logger,
+): CloseableVirtualConsole => {
+    let closed = false;
     const virtualConsole = new VirtualConsole();
+
+    // We know virtual console doesn't have a close. We're adding it.
+    // $FlowIgnore[prop-missing]
+    virtualConsole.close = () => (closed = true);
+
     virtualConsole.on("jsdomError", (e: Error) => {
+        if (closed) {
+            // We are closed. No logging.
+            return;
+        }
         if (e.message.indexOf("Could not load img") >= 0) {
             // We know that images cannot load. We're deliberately blocking
             // them.
@@ -31,8 +45,10 @@ export const createVirtualConsole = (logger: Logger): VirtualConsole => {
      * these as Errors.Internal automatically if they don't already include a
      * kind.
      */
-    virtualConsole.on("error", (message, ...args) =>
-        logger.error(`JSDOM error:${message}`, {args}),
+    virtualConsole.on(
+        "error",
+        (message, ...args) =>
+            !closed && logger.error(`JSDOM error:${message}`, {args}),
     );
 
     /**
@@ -44,13 +60,16 @@ export const createVirtualConsole = (logger: Logger): VirtualConsole => {
      * needed these in production yet; they're just noise.
      */
     const passthruLog = (method: "warn" | "info" | "log" | "debug") => {
-        virtualConsole.on(method, (message, ...args) =>
-            logger.silly(`JSDOM ${method}:${message}`, {args}),
-        );
+        !closed &&
+            virtualConsole.on(method, (message, ...args) =>
+                logger.silly(`JSDOM ${method}:${message}`, {args}),
+            );
     };
     passthruLog("warn");
     passthruLog("info");
     passthruLog("log");
     passthruLog("debug");
-    return virtualConsole;
+
+    // We have made this into a real closeable virtual console.
+    return (virtualConsole: any);
 };
