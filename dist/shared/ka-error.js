@@ -16,21 +16,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  */
 class KAError extends Error {
   /**
-   * Construct KAError instance.
+   * Construct a KAError instance.
    *
    * @param {string} message The error message.
-   * @param {TKind} kind The kind of KA error.
+   * @param {TKind} kind The kind of error.
    * @param {Error} [sourceError] The original error that spawned this one.
    */
   constructor(message, kind, sourceError = null) {
-    super(message);
+    super(message); // Set the name so we get a nice error output, like
+    // KAInternalError
 
     _defineProperty(this, "kind", void 0);
 
     _defineProperty(this, "sourceError", void 0);
 
-    this.name = `KA${kind}Error`;
-    this.kind = kind;
+    this.name = `KA${kind}Error`; // The kind of error which could be used for categorization with
+    // other error sources that use the same error taxonomy.
+
+    this.kind = kind; // If there is a source error that we're wrapping, we also want to
+    // unpack that and attach it for additional diagnostics.
 
     if (sourceError != null) {
       this.sourceError = (0, _extractError.extractError)(sourceError);
