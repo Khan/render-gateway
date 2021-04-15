@@ -13,7 +13,35 @@ on:
 
 
 jobs:
+  prime_cache:
+    name: Prime node_modules cache
+    env:
+      CI: true
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: actions/cache@v2
+      id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
+    - name: Install dependencies
+      if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      run: yarn install --frozen-lockfile
+
+
   lint:
+    needs: [prime_cache]
     name: Lint and flow check
     env:
       CI: true
@@ -118,6 +146,7 @@ jobs:
   # branches because of our use of an SSH deploy key that is setup against
   # the repo.
   publish_to_branch:
+    needs: [prime_cache]
     name: Publish to branch
     # We only want to run this if it's a push event or a pull_request for
     # a non-feature branch.
