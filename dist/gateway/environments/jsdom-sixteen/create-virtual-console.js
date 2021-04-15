@@ -24,8 +24,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * @returns {VirtualConsole} A JSDOM VirtualConsole instance.
  */
 const createVirtualConsole = logger => {
-  const virtualConsole = new _jsdom.VirtualConsole();
+  let closed = false;
+  const virtualConsole = new _jsdom.VirtualConsole(); // We know virtual console doesn't have a close. We're adding it.
+  // $FlowIgnore[prop-missing]
+
+  virtualConsole.close = () => closed = true;
+
   virtualConsole.on("jsdomError", e => {
+    if (closed) {
+      // We are closed. No logging.
+      return;
+    }
+
     if (e.message.indexOf("Could not load img") >= 0) {
       // We know that images cannot load. We're deliberately blocking
       // them.
@@ -44,7 +54,7 @@ const createVirtualConsole = logger => {
    * kind.
    */
 
-  virtualConsole.on("error", (message, ...args) => logger.error(`JSDOM error:${message}`, {
+  virtualConsole.on("error", (message, ...args) => !closed && logger.error(`JSDOM error:${message}`, {
     args
   }));
   /**
@@ -57,7 +67,7 @@ const createVirtualConsole = logger => {
    */
 
   const passthruLog = method => {
-    virtualConsole.on(method, (message, ...args) => logger.silly(`JSDOM ${method}:${message}`, {
+    !closed && virtualConsole.on(method, (message, ...args) => logger.silly(`JSDOM ${method}:${message}`, {
       args
     }));
   };
@@ -65,7 +75,8 @@ const createVirtualConsole = logger => {
   passthruLog("warn");
   passthruLog("info");
   passthruLog("log");
-  passthruLog("debug");
+  passthruLog("debug"); // We have made this into a real closeable virtual console.
+
   return virtualConsole;
 };
 
