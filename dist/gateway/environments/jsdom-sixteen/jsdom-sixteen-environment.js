@@ -107,16 +107,16 @@ class JSDOMSixteenEnvironment {
         } = require("jsdom");
 
         const {
-          createVirtualConsole
-        } = require("./create-virtual-console.js");
+          CloseableVirtualConsole
+        } = require("./closeable-virtual-console.js");
 
-        const virtualConsole = createVirtualConsole(renderAPI.logger);
+        const virtualConsole = new CloseableVirtualConsole(renderAPI.logger);
         const jsdomInstance = new JSDOM(MinimalPage, {
           url,
           runScripts: "dangerously",
           resources: resourceLoader,
           pretendToBeVisual: true,
-          virtualConsole: virtualConsole
+          virtualConsole
         });
         closeables.push(virtualConsole);
         closeables.push(jsdomInstance.window);
