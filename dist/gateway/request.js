@@ -71,20 +71,12 @@ const request = (logger, url, options) => {
    */
 
   const finalizedRequest = finalizedPromise;
-  /**
-   * In tests, we might mock the promise API to return the same mock, so
-   * to avoid cyclic abort calls, we only add abort if we're not the same
-   * object.
-   */
 
-  if (finalizedRequest !== abortableRequest) {
-    finalizedRequest.abort = () => abortableRequest.abort();
+  finalizedRequest.abort = () => abortableRequest.abort();
 
-    Object.defineProperty(finalizedRequest, "aborted", {
-      get: () => abortableRequest.aborted
-    });
-  }
-
+  Object.defineProperty(finalizedRequest, "aborted", {
+    get: () => abortableRequest.aborted
+  });
   return finalizedRequest;
 };
 
