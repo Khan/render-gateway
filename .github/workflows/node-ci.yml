@@ -11,17 +11,25 @@ on:
     - master
     - feature/*
 
-
+# Our jobs run like this to minimize wasting resource cycles:
+#   1. Prime caches for primary configuration (ubuntu on node 12).
+#      This way the next two jobs can run in parallel but rely on this primed
+#      cache.
+#   2. Lint, coverage, and publish
+#     a. Lint
+#     b. Coverage and publish
+#   3. Run tests for remaining configurations.
+#      Since these don't share caches, we don't need to prime those caches.
 jobs:
-  prime_cache:
-    name: Prime node_modules cache
+  prime_cache_primary:
+    name: Prime node_modules cache for primary configuration
     env:
       CI: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest]
-        node-version: [12.x, 14.x]
+        os: [ubuntu-latest]
+        node-version: [12.x]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -41,7 +49,7 @@ jobs:
 
 
   lint:
-    needs: [prime_cache]
+    needs: [prime_cache_primary]
     name: Lint and flow check
     env:
       CI: true
@@ -72,41 +80,6 @@ jobs:
       run: yarn flow:ci
 
 
-  coverage:
-    needs: [lint]
-    name: Coverage
-    env:
-      CI: true
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [12.x]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: actions/cache@v2
-      id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
-      with:
-        path: node_modules
-        key: ${{ runner.os }}${{ matrix.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}${{ matrix.node-version }}-node-modules-
-    - name: Install dependencies
-      if: steps.node-modules-cache.outputs.cache-hit != 'true'
-      run: yarn install --frozen-lockfile
-    - name: Run tests with coverage
-      run: yarn coverage
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
-
-
   test:
     needs: [lint, publish_to_branch]
     name: Test
@@ -118,7 +91,7 @@ jobs:
         os: [ubuntu-latest, macOS-latest]
         node-version: [12.x, 14.x]
         exclude:
-          # The coverage job covers this configuration
+          # The publish job covers this configuration
           - os: ubuntu-latest
             node-version: 12.x
     steps:
@@ -143,17 +116,22 @@ jobs:
 
   # This workflow will build distributable artifacts and commit them to the
   # branch that is being used for the PR. This should work even on protected
-  # branches because of our use of an SSH deploy key that is setup against
-  # the repo.
+  # branches because of secrets. This also is responsible for running and
+  # uploading code coverage since it already runs the tests before the build
+  # anyway.
   publish_to_branch:
-    needs: [prime_cache]
-    name: Publish to branch
+    needs: [prime_cache_primary]
+    name: Publish to branch and gather coverage
     # We only want to run this if it's a push event or a pull_request for
     # a non-feature branch.
     if: github.event_name == 'push' || !startsWith(github.head_ref, 'feature/')
     env:
       CI: true
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [12.x]
     steps:
     - uses: webfactory/ssh-agent@v0.4.1
       with:
@@ -176,10 +154,10 @@ jobs:
 
     - name: Checkout via SSH
       run: git checkout ${{ env.PUBLISH_BRANCH }}
-    - name: Use Node.js 12
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
-        node-version: 12.x
+        node-version: ${{ matrix.node-version }}
     - uses: actions/cache@v2
       id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
       with:
@@ -190,8 +168,13 @@ jobs:
     - name: Install dependencies
       if: steps.node-modules-cache.outputs.cache-hit != 'true'
       run: yarn install --frozen-lockfile
-    - name: Run tests
-      run: yarn test
+    - name: Run tests with coverage
+      run: yarn coverage
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
     - name: Build the distributable artifacts
       run: yarn build
     - name: Detect changes

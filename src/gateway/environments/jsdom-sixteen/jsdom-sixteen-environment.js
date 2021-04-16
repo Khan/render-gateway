@@ -131,26 +131,37 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * of https://github.com/jsdom/jsdom/issues/1682
              */
             setTimeout(async () => {
+                const reportCloseableError = (e) => {
+                    // We do not want to stop closing just because something
+                    // errored.
+                    const simplifiedError = extractError(e);
+                    logger.error(
+                        `Closeable encountered an error: ${
+                            simplifiedError.error || ""
+                        }`,
+                        {
+                            ...simplifiedError,
+                            kind: Errors.Internal,
+                        },
+                    );
+                };
                 /**
-                 * We want to close things in reverse, just to be sure we
-                 * tidy up in the same order that we put things together.
+                 * We want to close things. We're going to assume that
+                 * things are robust to change and close everything at once.
+                 * That way we shutdown as fast as we can, and any "closed"
+                 * states that are set on close to gate things like wasted
+                 * JS requests are properly entered as soon as possible.
                  */
-                for (let i = closeables.length - 1; i >= 0; i--) {
-                    try {
-                        await closeables[i]?.close?.();
-                    } catch (e) {
-                        const simplifiedError = extractError(e);
-                        logger.error(
-                            `Closeable encountered an error: ${
-                                simplifiedError.error || ""
-                            }`,
-                            {
-                                ...simplifiedError,
-                                kind: Errors.Internal,
-                            },
-                        );
-                    }
-                }
+                await Promise.all(
+                    closeables.map((c) => {
+                        try {
+                            return c?.close?.()?.catch(reportCloseableError);
+                        } catch (e) {
+                            reportCloseableError(e);
+                        }
+                    }),
+                );
+
                 /**
                  * Let's clear the array to make sure we're not holding
                  * on to any references unnecessarily.
@@ -221,15 +232,19 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              */
             const {JSDOM} = require("jsdom");
             const {
-                createVirtualConsole,
-            } = require("./create-virtual-console.js");
+                CloseableVirtualConsole,
+            } = require("./closeable-virtual-console.js");
+            const virtualConsole = new CloseableVirtualConsole(
+                renderAPI.logger,
+            );
             const jsdomInstance = new JSDOM(MinimalPage, {
                 url,
                 runScripts: "dangerously",
                 resources: (resourceLoader: any),
                 pretendToBeVisual: true,
-                virtualConsole: createVirtualConsole(renderAPI.logger),
+                virtualConsole,
             });
+            closeables.push(virtualConsole);
             closeables.push(jsdomInstance.window);
 
             /**

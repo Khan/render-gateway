@@ -19,6 +19,13 @@ jest.mock("@google-cloud/logging-winston", () => ({
 }));
 
 describe("#createLogger", () => {
+    beforeEach(() => {
+        // We silence winston's console output.
+        jest.spyOn(winston, "createLogger").mockReturnValue({
+            debug: jest.fn(),
+        });
+    });
+
     describe("during test", () => {
         it("should write to a stream", () => {
             // Arrange
@@ -87,32 +94,31 @@ describe("#createLogger", () => {
             expect(transports).toBeInstanceOf(winston.transports.Console);
         });
 
-        it("should format log messages to include metadata", () => {
-            // Arrange
-            jest.spyOn(winston, "createLogger");
-            const fakePrintF = jest.fn();
-            jest.spyOn(winston.format, "combine", "get").mockReturnValue(
-                jest.fn(),
-            );
-            jest.spyOn(winston.format, "printf", "get").mockReturnValue(
-                fakePrintF,
-            );
+        it.each([undefined, {other: "metadata"}, {}])(
+            "should format log messages to include metadata when present (%s)",
+            (otherMetadata) => {
+                // Arrange
+                jest.spyOn(winston, "createLogger");
+                const fakePrintF = jest.fn();
+                jest.spyOn(winston.format, "combine", "get").mockReturnValue(
+                    jest.fn(),
+                );
+                jest.spyOn(winston.format, "printf", "get").mockReturnValue(
+                    fakePrintF,
+                );
 
-            // Act
-            createLogger("development", "silly");
-            const result = fakePrintF.mock.calls[0][0]({
-                level: "debug",
-                message: "MESSAGE",
-                other: "metadata",
-            });
+                // Act
+                createLogger("development", "silly");
+                const result = fakePrintF.mock.calls[0][0]({
+                    level: "debug",
+                    message: "MESSAGE",
+                    ...otherMetadata,
+                });
 
-            // Assert
-            expect(result).toMatchInlineSnapshot(`
-                "debug: MESSAGE {
-                    \\"other\\": \\"metadata\\"
-                }"
-            `);
-        });
+                // Assert
+                expect(result).toMatchSnapshot();
+            },
+        );
     });
 
     describe("during production", () => {
@@ -128,7 +134,7 @@ describe("#createLogger", () => {
             expect(transports).toHaveProperty("__FAKE_LOGGING_WINSTON__");
         });
 
-        it("should ensure errors get kind metadata", () => {
+        it("should ensure errors get kind metadata if they lack it", () => {
             // Arrange
             const mockFormat = jest.spyOn(winston, "format");
 
@@ -141,6 +147,22 @@ describe("#createLogger", () => {
             expect(result).toStrictEqual({
                 level: "error",
                 kind: Errors.Internal,
+            });
+        });
+
+        it("should not change kind metadata for errors that already have it", () => {
+            // Arrange
+            const mockFormat = jest.spyOn(winston, "format");
+
+            // Act
+            createLogger("production", "silly");
+            const formatter = mockFormat.mock.calls[0][0];
+            const result = formatter({level: "error", kind: Errors.NotAllowed});
+
+            // Assert
+            expect(result).toStrictEqual({
+                level: "error",
+                kind: Errors.NotAllowed,
             });
         });
     });

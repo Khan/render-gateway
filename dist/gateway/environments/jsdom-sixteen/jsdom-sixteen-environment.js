@@ -107,16 +107,18 @@ class JSDOMSixteenEnvironment {
         } = require("jsdom");
 
         const {
-          createVirtualConsole
-        } = require("./create-virtual-console.js");
+          CloseableVirtualConsole
+        } = require("./closeable-virtual-console.js");
 
+        const virtualConsole = new CloseableVirtualConsole(renderAPI.logger);
         const jsdomInstance = new JSDOM(MinimalPage, {
           url,
           runScripts: "dangerously",
           resources: resourceLoader,
           pretendToBeVisual: true,
-          virtualConsole: createVirtualConsole(renderAPI.logger)
+          virtualConsole
         });
+        closeables.push(virtualConsole);
         closeables.push(jsdomInstance.window);
         /**
          * OK, we know this is a JSDOM instance but we want to expose a nice
@@ -245,27 +247,36 @@ class JSDOMSixteenEnvironment {
        * of https://github.com/jsdom/jsdom/issues/1682
        */
       setTimeout(async () => {
+        const reportCloseableError = e => {
+          // We do not want to stop closing just because something
+          // errored.
+          const simplifiedError = (0, _index.extractError)(e);
+          logger.error(`Closeable encountered an error: ${simplifiedError.error || ""}`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
+            kind: _index2.Errors.Internal
+          }));
+        };
         /**
-         * We want to close things in reverse, just to be sure we
-         * tidy up in the same order that we put things together.
+         * We want to close things. We're going to assume that
+         * things are robust to change and close everything at once.
+         * That way we shutdown as fast as we can, and any "closed"
+         * states that are set on close to gate things like wasted
+         * JS requests are properly entered as soon as possible.
          */
-        for (let i = closeables.length - 1; i >= 0; i--) {
-          try {
-            var _closeables$i, _closeables$i$close;
 
-            await ((_closeables$i = closeables[i]) === null || _closeables$i === void 0 ? void 0 : (_closeables$i$close = _closeables$i.close) === null || _closeables$i$close === void 0 ? void 0 : _closeables$i$close.call(_closeables$i));
+
+        await Promise.all(closeables.map(c => {
+          try {
+            var _c$close, _c$close$call;
+
+            return c === null || c === void 0 ? void 0 : (_c$close = c.close) === null || _c$close === void 0 ? void 0 : (_c$close$call = _c$close.call(c)) === null || _c$close$call === void 0 ? void 0 : _c$close$call.catch(reportCloseableError);
           } catch (e) {
-            const simplifiedError = (0, _index.extractError)(e);
-            logger.error(`Closeable encountered an error: ${simplifiedError.error || ""}`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
-              kind: _index2.Errors.Internal
-            }));
+            reportCloseableError(e);
           }
-        }
+        }));
         /**
          * Let's clear the array to make sure we're not holding
          * on to any references unnecessarily.
          */
-
 
         closeables.length = 0;
         resolve();

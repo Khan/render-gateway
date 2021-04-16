@@ -67,16 +67,9 @@ export const request = (
      * to our list of in flight requests.
      */
     const finalizedRequest: AbortablePromise<Response> = (finalizedPromise: any);
-    /**
-     * In tests, we might mock the promise API to return the same mock, so
-     * to avoid cyclic abort calls, we only add abort if we're not the same
-     * object.
-     */
-    if (finalizedRequest !== abortableRequest) {
-        finalizedRequest.abort = () => abortableRequest.abort();
-        Object.defineProperty(finalizedRequest, "aborted", {
-            get: () => abortableRequest.aborted,
-        });
-    }
+    finalizedRequest.abort = () => abortableRequest.abort();
+    Object.defineProperty(finalizedRequest, "aborted", {
+        get: () => abortableRequest.aborted,
+    });
     return finalizedRequest;
 };

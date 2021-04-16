@@ -14,7 +14,7 @@ describe("#request", () => {
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -40,7 +40,7 @@ describe("#request", () => {
         };
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -73,7 +73,7 @@ describe("#request", () => {
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -100,7 +100,7 @@ describe("#request", () => {
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -123,7 +123,7 @@ describe("#request", () => {
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -154,7 +154,7 @@ describe("#request", () => {
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -191,7 +191,7 @@ describe("#request", () => {
         const fakeOptions: any = "FAKE_OPTIONS";
         const fakeLogger: any = "FAKE_LOGGER";
         const fakeRequest: any = {
-            abort: jest.fn().mockReturnThis(),
+            abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
@@ -214,5 +214,72 @@ describe("#request", () => {
 
         // Assert
         expect(fakeTraceSession.end).toHaveBeenCalled();
+    });
+
+    describe("returned request", () => {
+        describe("#abort", () => {
+            it("should call abort on the traced request", () => {
+                // Arrange
+                const fakeOptions: any = "FAKE_OPTIONS";
+                const fakeLogger: any = "FAKE_LOGGER";
+                const fakeThenFinallyPromise: any = {
+                    then: jest.fn().mockReturnThis(),
+                    finally: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest: any = {
+                    abort: jest.fn(),
+                    then: jest.fn().mockReturnValue(fakeThenFinallyPromise),
+                    finally: jest.fn().mockReturnValue(fakeThenFinallyPromise),
+                };
+                const fakeTraceSession: any = {
+                    addLabel: jest.fn(),
+                    end: jest.fn(),
+                };
+                jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+                jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(
+                    fakeRequest,
+                );
+
+                // Act
+                const tracedRequest = request(fakeLogger, "URL", fakeOptions);
+                tracedRequest.abort();
+
+                // Assert
+                expect(fakeRequest.abort).toHaveBeenCalled();
+            });
+        });
+
+        describe("@aborted", () => {
+            it("should return value of aborted on the traced request", () => {
+                // Arrange
+                const fakeOptions: any = "FAKE_OPTIONS";
+                const fakeLogger: any = "FAKE_LOGGER";
+                const fakeThenFinallyPromise: any = {
+                    then: jest.fn().mockReturnThis(),
+                    finally: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest: any = {
+                    abort: jest.fn(),
+                    aborted: "FAKE_ABORTED_VALUE",
+                    then: jest.fn().mockReturnValue(fakeThenFinallyPromise),
+                    finally: jest.fn().mockReturnValue(fakeThenFinallyPromise),
+                };
+                const fakeTraceSession: any = {
+                    addLabel: jest.fn(),
+                    end: jest.fn(),
+                };
+                jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+                jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(
+                    fakeRequest,
+                );
+
+                // Act
+                const tracedRequest = request(fakeLogger, "URL", fakeOptions);
+                const result = tracedRequest.aborted;
+
+                // Assert
+                expect(result).toBe(fakeRequest.aborted);
+            });
+        });
     });
 });
