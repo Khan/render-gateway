@@ -13,12 +13,13 @@ on:
 
 # Our jobs run like this to minimize wasting resource cycles:
 #   1. Prime caches for primary configuration (ubuntu on node 12).
+#      This way the next two jobs can run in parallel but rely on this primed
+#      cache.
 #   2. Lint, coverage, and publish
 #     a. Lint
 #     b. Coverage and publish
-#   3. Prime caches for remaining configurations
-#   4. Run tests for remaining configurations
-
+#   3. Run tests for remaining configurations.
+#      Since these don't share caches, we don't need to prime those caches.
 jobs:
   prime_cache_primary:
     name: Prime node_modules cache for primary configuration
@@ -29,38 +30,6 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node-version: [12.x]
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - uses: actions/cache@v2
-      id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
-      with:
-        path: node_modules
-        key: ${{ runner.os }}${{ matrix.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}${{ matrix.node-version }}-node-modules-
-    - name: Install dependencies
-      if: steps.node-modules-cache.outputs.cache-hit != 'true'
-      run: yarn install --frozen-lockfile
-
-
-  prime_cache_secondary:
-    needs: [lint, publish_to_branch]
-    name: Prime node_modules cache for seconday configurations
-    env:
-      CI: true
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macOS-latest]
-        node-version: [12.x, 14.x]
-        exclude:
-          # The primary cache primer job handles this.
-          - os: ubuntu-latest
-            node-version: 12.x
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -112,7 +81,7 @@ jobs:
 
 
   test:
-    needs: [prime_cache_secondary]
+    needs: [lint, publish_to_branch]
     name: Test
     env:
       CI: true
@@ -158,7 +127,11 @@ jobs:
     if: github.event_name == 'push' || !startsWith(github.head_ref, 'feature/')
     env:
       CI: true
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [12.x]
     steps:
     - uses: webfactory/ssh-agent@v0.4.1
       with:
@@ -181,10 +154,10 @@ jobs:
 
     - name: Checkout via SSH
       run: git checkout ${{ env.PUBLISH_BRANCH }}
-    - name: Use Node.js 12
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
-        node-version: 12.x
+        node-version: ${{ matrix.node-version }}
     - uses: actions/cache@v2
       id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
       with:
