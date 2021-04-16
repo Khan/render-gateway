@@ -232,15 +232,17 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              */
             const {JSDOM} = require("jsdom");
             const {
-                createVirtualConsole,
-            } = require("./create-virtual-console.js");
-            const virtualConsole = createVirtualConsole(renderAPI.logger);
+                CloseableVirtualConsole,
+            } = require("./closeable-virtual-console.js");
+            const virtualConsole = new CloseableVirtualConsole(
+                renderAPI.logger,
+            );
             const jsdomInstance = new JSDOM(MinimalPage, {
                 url,
                 runScripts: "dangerously",
                 resources: (resourceLoader: any),
                 pretendToBeVisual: true,
-                virtualConsole: (virtualConsole: any),
+                virtualConsole,
             });
             closeables.push(virtualConsole);
             closeables.push(jsdomInstance.window);

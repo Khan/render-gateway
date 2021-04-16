@@ -180,9 +180,13 @@ describe("JSDOMSixteenResourceLoader", () => {
                 // Arrange
                 const fakePromise = {
                     then: jest.fn().mockReturnThis(),
-                    abort: jest.fn(),
                 };
-                jest.spyOn(Request, "request").mockReturnValue(fakePromise);
+                const fakeRequest = {
+                    then: jest.fn().mockReturnValue(fakePromise),
+                    abort: jest.fn(),
+                    aborted: "FAKE_ABORTED_VALUE",
+                };
+                jest.spyOn(Request, "request").mockReturnValue(fakeRequest);
                 const fakeLogger = "FAKE_LOGGER";
                 const fakeRenderAPI: any = {
                     logger: fakeLogger,
@@ -196,7 +200,33 @@ describe("JSDOMSixteenResourceLoader", () => {
                 result.abort();
 
                 // Assert
-                expect(fakePromise.abort).toHaveBeenCalled();
+                expect(fakeRequest.abort).toHaveBeenCalled();
+            });
+
+            it("should have aborted property that gets aborted property of request", () => {
+                // Arrange
+                const fakePromise = {
+                    then: jest.fn().mockReturnThis(),
+                };
+                const fakeRequest = {
+                    then: jest.fn().mockReturnValue(fakePromise),
+                    abort: jest.fn(),
+                    aborted: "FAKE_ABORTED_VALUE",
+                };
+                jest.spyOn(Request, "request").mockReturnValue(fakeRequest);
+                const fakeLogger = "FAKE_LOGGER";
+                const fakeRenderAPI: any = {
+                    logger: fakeLogger,
+                };
+                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+
+                // Act
+                const result: any = underTest.fetch(
+                    "http://example.com/test.js?p=1",
+                );
+
+                // Assert
+                expect(result.aborted).toBe(fakeRequest.aborted);
             });
 
             it("should resolve with buffer of content", async () => {
@@ -204,9 +234,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const fakeResponse = {
                     text: "RESPONSE",
                 };
-                jest.spyOn(Request, "request").mockReturnValue(
-                    Promise.resolve(fakeResponse),
-                );
+                jest.spyOn(Request, "request").mockResolvedValue(fakeResponse);
                 const fakeLogger = "FAKE_LOGGER";
                 const fakeRenderAPI: any = {
                     logger: fakeLogger,
@@ -223,7 +251,75 @@ describe("JSDOMSixteenResourceLoader", () => {
                 expect(result.toString()).toBe("RESPONSE");
             });
 
-            describe("fetch resolves after close()", () => {
+            it("should invoke custom handler if one was provided", async () => {
+                // Arrange
+                const fakeResponse = Promise.resolve({
+                    text: "RESPONSE",
+                });
+                jest.spyOn(Request, "request").mockReturnValue(fakeResponse);
+                const fakeLogger = "FAKE_LOGGER";
+                const fakeRenderAPI: any = {
+                    logger: fakeLogger,
+                };
+                const fakeFetchOptions = {
+                    options: "ARE FAKE",
+                };
+                const customHandler = jest
+                    .fn()
+                    .mockResolvedValue(new Buffer("CUSTOM"));
+                const underTest = new JSDOMSixteenResourceLoader(
+                    fakeRenderAPI,
+                    undefined,
+                    customHandler,
+                );
+
+                // Act
+                await underTest.fetch(
+                    "http://example.com/test.js?p=1",
+                    fakeFetchOptions,
+                );
+
+                // Assert
+                expect(customHandler).toHaveBeenCalledWith(
+                    fakeResponse,
+                    "http://example.com/test.js?p=1",
+                    fakeFetchOptions,
+                );
+            });
+
+            it("should return result of custom handler if one was provided", async () => {
+                // Arrange
+                const fakeResponse = Promise.resolve({
+                    text: "RESPONSE",
+                });
+                jest.spyOn(Request, "request").mockReturnValue(fakeResponse);
+                const fakeLogger = "FAKE_LOGGER";
+                const fakeRenderAPI: any = {
+                    logger: fakeLogger,
+                };
+                const fakeFetchOptions = {
+                    options: "ARE FAKE",
+                };
+                const customHandler = jest
+                    .fn()
+                    .mockResolvedValue(new Buffer("CUSTOM"));
+                const underTest = new JSDOMSixteenResourceLoader(
+                    fakeRenderAPI,
+                    undefined,
+                    customHandler,
+                );
+
+                // Act
+                const result: any = await underTest.fetch(
+                    "http://example.com/test.js?p=1",
+                    fakeFetchOptions,
+                );
+
+                // Assert
+                expect(result.toString()).toBe("CUSTOM");
+            });
+
+            describe("but resolves after close()", () => {
                 it("should resolve to an empty buffer", async () => {
                     // Arrange
                     const fakeResponse = {

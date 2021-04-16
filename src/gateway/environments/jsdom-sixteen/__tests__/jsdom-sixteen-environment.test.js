@@ -1,12 +1,12 @@
 // @flow
 import vm from "vm";
 import * as JSDOM from "jsdom";
-import * as CreateVirtualConsole from "../create-virtual-console.js";
+import * as CloseableVirtualConsole from "../closeable-virtual-console.js";
 import * as PatchAgainstDanglingTimers from "../patch-against-dangling-timers.js";
 import {JSDOMSixteenEnvironment} from "../jsdom-sixteen-environment.js";
 
 jest.mock("jsdom");
-jest.mock("../create-virtual-console.js");
+jest.mock("../closeable-virtual-console.js");
 jest.mock("../patch-against-dangling-timers.js");
 
 describe("JSDOMSixteenEnvironment", () => {
@@ -361,9 +361,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const jsdomSpy = jest.spyOn(JSDOM, "JSDOM");
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
 
@@ -384,7 +384,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     runScripts: "dangerously",
                     resources: fakeResourceLoader,
                     pretendToBeVisual: true,
-                    virtualConsole: "FAKE_CONSOLE",
+                    virtualConsole: {fakeConsole: "FAKE_CONSOLE"},
                 },
             );
         });
@@ -411,9 +411,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {
                 close: jest.fn(),
             };
@@ -454,9 +454,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -507,9 +507,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -560,9 +560,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -617,9 +617,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn().mockResolvedValue(afterEnvCloseable),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -674,9 +674,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -738,9 +738,9 @@ describe("JSDOMSixteenEnvironment", () => {
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -795,9 +795,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -854,9 +854,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow: any = {
                 close: jest.fn(),
             };
@@ -911,9 +911,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -976,9 +976,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn().mockResolvedValue(afterEnvCloseable),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
@@ -1038,9 +1038,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn().mockResolvedValue(afterEnvCloseable),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow: any = {
                 close: jest.fn(),
             };
@@ -1115,9 +1115,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn().mockResolvedValue(afterEnvCloseable),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow: any = {
                 close: jest.fn(),
             };
@@ -1154,7 +1154,7 @@ window["__register__"](fakeRender);
             {status: 200, headers: {}},
             {body: "NEED MORE THAN THIS"},
             {body: "THIS HELPS BUT WHERE ARE THE HEADERS", status: 200},
-        ])("should reject if result is malformed", async (testResult) => {
+        ])("should reject if result is malformed (%s)", async (testResult) => {
             // Arrange
             const fakeLogger: any = "FAKE_LOGGER";
             const fakeTraceSession: any = {
@@ -1184,9 +1184,9 @@ window["__register__"](fakeRender);
                 afterEnvSetup: jest.fn(),
             };
             jest.spyOn(
-                CreateVirtualConsole,
-                "createVirtualConsole",
-            ).mockReturnValue("FAKE_CONSOLE");
+                CloseableVirtualConsole,
+                "CloseableVirtualConsole",
+            ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const fakeWindow = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
