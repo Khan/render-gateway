@@ -20,6 +20,7 @@ export type {
     CustomErrorHandlerFn,
     Response,
     Request,
+    Timeouts,
 } from "./types.js";
 export type * from "./environments/index.js";
 
