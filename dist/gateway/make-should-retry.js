@@ -30,12 +30,8 @@ const makeShouldRetry = (logger, override) => {
      * log that the request failed if we don't have an error object.
      */
     if (err != null) {
-      if (logger.defaultMeta != null) {
-        logger.defaultMeta.retries += 1;
-      } // We log at the lowest level as usually we don't care about this
+      // We log at the lowest level as usually we don't care about this
       // as long as we ultimately succeed.
-
-
       logger.silly("Request failed. Might retry.", _objectSpread(_objectSpread({}, (0, _index.extractError)(err)), {}, {
         code: err.code,
         status: res === null || res === void 0 ? void 0 : res.status

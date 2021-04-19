@@ -28,10 +28,6 @@ const makeUnbufferedNoCacheRequest = (options, logger, url) => {
     name,
     version
   } = (0, _index.getGatewayInfo)();
-  const requestLogger = logger.child({
-    requestedURL: url,
-    retries: 0
-  });
   return _superagent.default.get(url).agent(options.agent)
   /**
    * Configure retries since superagent can handle this for us.
@@ -41,7 +37,7 @@ const makeUnbufferedNoCacheRequest = (options, logger, url) => {
    * takes precedence over our callback response, so we can't retry
    * forever).
    */
-  .retry(options.retries, (0, _makeShouldRetry.makeShouldRetry)(requestLogger, options.shouldRetry))
+  .retry(options.retries, (0, _makeShouldRetry.makeShouldRetry)(logger, options.shouldRetry))
   /**
    * We add a user agent header so that we can easily identify our
    * requests in logs.
