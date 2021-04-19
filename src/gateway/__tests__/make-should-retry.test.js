@@ -54,25 +54,6 @@ describe("#makeShouldRetry", () => {
             );
         });
 
-        it("should up the retry count on the logger if there was an error", () => {
-            // Arrange
-            const fakeLogger: any = {
-                silly: jest.fn(),
-                defaultMeta: {retries: 0},
-            };
-            const fakeResponse: any = {status: "STATUS_CODE"};
-            jest.spyOn(Shared, "extractError").mockImplementation((e) => ({
-                error: e,
-            }));
-            const shouldRetry = makeShouldRetry(fakeLogger);
-
-            // Act
-            shouldRetry("ERROR", fakeResponse);
-
-            // Assert
-            expect(fakeLogger.defaultMeta.retries).toBe(1);
-        });
-
         it("should not log if no error", () => {
             // Arrange
             const fakeLogger: any = {silly: jest.fn()};

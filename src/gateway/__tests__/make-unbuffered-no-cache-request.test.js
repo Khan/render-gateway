@@ -19,9 +19,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             timeout: jest.fn().mockReturnThis(),
         };
         const fakeOptions: any = {};
-        const fakeLogger: any = {
-            child: jest.fn(),
-        };
+        const fakeLogger: any = {};
         const getSpy = jest
             .spyOn(Superagent, "get")
             .mockReturnValue(fakeSuperagent);
@@ -44,9 +42,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         };
         const fakeAgent = "FAKE_AGENT";
         const fakeOptions: any = {agent: fakeAgent};
-        const fakeLogger: any = {
-            child: jest.fn(),
-        };
+        const fakeLogger: any = {};
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(Shared, "getGatewayInfo").mockReturnValue({});
 
@@ -69,9 +65,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             retries: 42,
         };
         const fakeShouldRetry = jest.fn();
-        const fakeLogger: any = {
-            child: jest.fn(),
-        };
+        const fakeLogger: any = {};
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,
@@ -96,10 +90,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
         const fakeOptions: any = {
             shouldRetry: jest.fn(),
         };
-        const fakeChildLogger: any = {};
-        const fakeLogger: any = {
-            child: jest.fn().mockReturnValue(fakeChildLogger),
-        };
+        const fakeLogger: any = {};
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         const makeShouldRetrySpy = jest.spyOn(
             MakeShouldRetry,
@@ -112,7 +103,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
 
         // Assert
         expect(makeShouldRetrySpy).toHaveBeenCalledWith(
-            fakeChildLogger,
+            fakeLogger,
             fakeOptions.shouldRetry,
         );
     });
@@ -130,9 +121,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             timeout: jest.fn().mockReturnThis(),
         };
         const fakeOptions: any = {};
-        const fakeLogger: any = {
-            child: jest.fn(),
-        };
+        const fakeLogger: any = {};
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
 
         // Act
@@ -157,9 +146,7 @@ describe("#makeUnbufferedNoCacheRequest", () => {
             timeout: 42,
         };
         const fakeShouldRetry = jest.fn();
-        const fakeLogger: any = {
-            child: jest.fn(),
-        };
+        const fakeLogger: any = {};
         jest.spyOn(Superagent, "get").mockReturnValue(fakeSuperagent);
         jest.spyOn(MakeShouldRetry, "makeShouldRetry").mockReturnValue(
             fakeShouldRetry,

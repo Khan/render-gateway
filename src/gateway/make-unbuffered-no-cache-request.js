@@ -22,11 +22,6 @@ export const makeUnbufferedNoCacheRequest = (
     url: string,
 ): Request => {
     const {name, version} = getGatewayInfo();
-    const requestLogger = logger.child({
-        requestedURL: url,
-        retries: 0,
-    });
-
     return (
         superagent
             .get(url)
@@ -41,7 +36,7 @@ export const makeUnbufferedNoCacheRequest = (
              */
             .retry(
                 options.retries,
-                makeShouldRetry(requestLogger, options.shouldRetry),
+                makeShouldRetry(logger, options.shouldRetry),
             )
             /**
              * We add a user agent header so that we can easily identify our
