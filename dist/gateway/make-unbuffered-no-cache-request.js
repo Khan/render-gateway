@@ -29,7 +29,8 @@ const makeUnbufferedNoCacheRequest = (options, logger, url) => {
     version
   } = (0, _index.getGatewayInfo)();
   const requestLogger = logger.child({
-    requestedURL: url
+    requestedURL: url,
+    retries: 0
   });
   return _superagent.default.get(url).agent(options.agent)
   /**
