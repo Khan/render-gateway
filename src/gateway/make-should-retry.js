@@ -23,7 +23,12 @@ export const makeShouldRetry = (
          * log that the request failed if we don't have an error object.
          */
         if (err != null) {
-            logger.warn("Request failed. Might retry.", {
+            if (logger.defaultMeta != null) {
+                logger.defaultMeta.retries += 1;
+            }
+            // We log at the lowest level as usually we don't care about this
+            // as long as we ultimately succeed.
+            logger.silly("Request failed. Might retry.", {
                 ...extractError(err),
                 code: (err: any).code,
                 status: res?.status,

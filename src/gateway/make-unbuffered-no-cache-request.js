@@ -24,6 +24,7 @@ export const makeUnbufferedNoCacheRequest = (
     const {name, version} = getGatewayInfo();
     const requestLogger = logger.child({
         requestedURL: url,
+        retries: 0,
     });
 
     return (

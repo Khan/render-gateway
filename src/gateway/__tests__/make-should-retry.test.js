@@ -20,7 +20,7 @@ describe("#makeShouldRetry", () => {
         it("should extract the error string from the error", () => {
             // Arrange
             const fakeError: any = "FAKE_ERROR";
-            const fakeLogger: any = {warn: jest.fn()};
+            const fakeLogger: any = {silly: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
             const extractErrorSpy = jest.spyOn(Shared, "extractError");
             const shouldRetry = makeShouldRetry(fakeLogger);
@@ -34,7 +34,7 @@ describe("#makeShouldRetry", () => {
 
         it("should log the error and status code to the logger it was created with", () => {
             // Arrange
-            const fakeLogger: any = {warn: jest.fn()};
+            const fakeLogger: any = {silly: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
             jest.spyOn(Shared, "extractError").mockImplementation((e) => ({
                 error: e,
@@ -45,7 +45,7 @@ describe("#makeShouldRetry", () => {
             shouldRetry("ERROR", fakeResponse);
 
             // Assert
-            expect(fakeLogger.warn).toHaveBeenCalledWith(
+            expect(fakeLogger.silly).toHaveBeenCalledWith(
                 "Request failed. Might retry.",
                 {
                     error: "ERROR",
@@ -54,9 +54,28 @@ describe("#makeShouldRetry", () => {
             );
         });
 
+        it("should up the retry count on the logger if there was an error", () => {
+            // Arrange
+            const fakeLogger: any = {
+                silly: jest.fn(),
+                defaultMeta: {retries: 0},
+            };
+            const fakeResponse: any = {status: "STATUS_CODE"};
+            jest.spyOn(Shared, "extractError").mockImplementation((e) => ({
+                error: e,
+            }));
+            const shouldRetry = makeShouldRetry(fakeLogger);
+
+            // Act
+            shouldRetry("ERROR", fakeResponse);
+
+            // Assert
+            expect(fakeLogger.defaultMeta.retries).toBe(1);
+        });
+
         it("should not log if no error", () => {
             // Arrange
-            const fakeLogger: any = {warn: jest.fn()};
+            const fakeLogger: any = {silly: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
             const shouldRetry = makeShouldRetry(fakeLogger);
 
@@ -64,12 +83,12 @@ describe("#makeShouldRetry", () => {
             shouldRetry(null, fakeResponse);
 
             // Assert
-            expect(fakeLogger.warn).not.toHaveBeenCalled();
+            expect(fakeLogger.silly).not.toHaveBeenCalled();
         });
 
         it("should return undefined when there is no override", () => {
             // Arrange
-            const fakeLogger: any = {warn: jest.fn()};
+            const fakeLogger: any = {silly: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
             const shouldRetry = makeShouldRetry(fakeLogger);
 
@@ -82,7 +101,7 @@ describe("#makeShouldRetry", () => {
 
         it("should return the result of the override function", () => {
             // Arrange
-            const fakeLogger: any = {warn: jest.fn()};
+            const fakeLogger: any = {silly: jest.fn()};
             const fakeResponse: any = {status: "STATUS_CODE"};
             const overrideFn: any = jest.fn().mockReturnValue("OVERRIDE!");
             const shouldRetry = makeShouldRetry(fakeLogger, overrideFn);
