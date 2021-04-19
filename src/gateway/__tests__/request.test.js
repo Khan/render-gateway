@@ -192,9 +192,7 @@ describe("#request", () => {
         }
 
         // Assert
-        expect(fakeTraceSession.end).toHaveBeenCalledWith({
-            retries: 0,
-        });
+        expect(fakeTraceSession.end).toHaveBeenCalled();
     });
 
     it("should add cache and success info to the trace session when the request resolves", async () => {
@@ -267,7 +265,7 @@ describe("#request", () => {
         await request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(fakeTraceSession.end).toHaveBeenCalledWith({retries: 0});
+        expect(fakeTraceSession.end).toHaveBeenCalled();
     });
 
     describe("options.shouldRetry passed to makeRequest", () => {
@@ -388,9 +386,10 @@ describe("#request", () => {
                 await requestToAwait;
 
                 // Assert
-                expect(fakeTraceSession.end).toHaveBeenCalledWith({
-                    retries: expectation,
-                });
+                expect(fakeTraceSession.addLabel).toHaveBeenCalledWith(
+                    "retries",
+                    expectation,
+                );
             },
         );
     });
