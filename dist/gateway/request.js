@@ -65,11 +65,7 @@ const request = (logger, url, options) => {
    * Then we capture the abort function so we can reattach it later.
    */
 
-  const traceSession = (0, _index.trace)(`request`, url, requestLogger); // It would be nice if the metadata of the logger was automatically
-  // added as a trace label, but for child loggers, that's hard since
-  // the child metadata isn't currently accessible off the logger;
-  // the defaultMetadata prop is only the root logger's metadata.
-
+  const traceSession = (0, _index.trace)(`request`, url, requestLogger);
   traceSession.addLabel("url", url);
   const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, requestLogger, url);
   /**
@@ -86,9 +82,8 @@ const request = (logger, url, options) => {
     traceSession.addLabel("successful", true);
     return res;
   }).finally(() => {
-    traceSession.end({
-      retries: retryCount
-    });
+    traceSession.addLabel("retries", retryCount);
+    traceSession.end();
   });
   /**
    * Finally, we need to turn the promise back into an abortable and add it
