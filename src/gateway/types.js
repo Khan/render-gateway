@@ -228,13 +228,28 @@ export type Request = RequestWithLog<$Request>;
 export type Response = $Response;
 
 /**
+ * Timeouts for a request.
+ */
+export type Timeouts = {
+    /**
+     * The total time the request is allowed to take before it times out.
+     */
+    deadline?: number,
+
+    /**
+     * The time to wait for a response before a request times out.
+     */
+    response?: number,
+};
+
+/**
  * Options to configure a request.
  */
 export type RequestOptions = {
     /**
      * Time to wait in milliseconds before a request times out.
      */
-    +timeout: number,
+    +timeout: number | Timeouts,
 
     /**
      * The number of times a request is retried if it fails from a transient
