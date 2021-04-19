@@ -9,10 +9,39 @@ jest.mock("../make-request.js");
 jest.mock("../requests-from-cache.js");
 
 describe("#request", () => {
+    it("should create a child logger with the url of the request", () => {
+        // Arrange
+        const fakeOptions: any = "FAKE_OPTIONS";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
+        const fakeRequest: any = {
+            abort: jest.fn(),
+            then: jest.fn().mockReturnThis(),
+            finally: jest.fn().mockReturnThis(),
+        };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(MakeRequest, "makeRequest").mockReturnValue(fakeRequest);
+
+        // Act
+        request(fakeLogger, "URL", fakeOptions);
+
+        // Assert
+        expect(fakeLogger.child).toHaveBeenCalledWith({url: "URL"});
+    });
+
     it("should start a trace", () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -30,7 +59,11 @@ describe("#request", () => {
         request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(traceSpy).toHaveBeenCalledWith("request", "URL", fakeLogger);
+        expect(traceSpy).toHaveBeenCalledWith(
+            "request",
+            "URL",
+            fakeChildLogger,
+        );
     });
 
     it("should make a request including default options", () => {
@@ -38,7 +71,10 @@ describe("#request", () => {
         const fakeOptions: any = {
             opt: "FAKE_OPTIONS",
         };
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -61,9 +97,10 @@ describe("#request", () => {
             expect.objectContaining({
                 timeout: 60000,
                 retries: 2,
+                shouldRetry: expect.any(Function),
                 opt: "FAKE_OPTIONS",
             }),
-            fakeLogger,
+            fakeChildLogger,
             "URL",
         );
     });
@@ -71,7 +108,10 @@ describe("#request", () => {
     it("should start a trace before making the new request", () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -98,7 +138,10 @@ describe("#request", () => {
     it("should return the new request", () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -121,7 +164,10 @@ describe("#request", () => {
     it("should end the trace session when the request rejects", async () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -146,13 +192,18 @@ describe("#request", () => {
         }
 
         // Assert
-        expect(fakeTraceSession.end).toHaveBeenCalled();
+        expect(fakeTraceSession.end).toHaveBeenCalledWith({
+            retries: 0,
+        });
     });
 
     it("should add cache and success info to the trace session when the request resolves", async () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -189,7 +240,10 @@ describe("#request", () => {
     it("should end the trace session when the request resolves", async () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeLogger: any = "FAKE_LOGGER";
+        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
@@ -213,7 +267,132 @@ describe("#request", () => {
         await request(fakeLogger, "URL", fakeOptions);
 
         // Assert
-        expect(fakeTraceSession.end).toHaveBeenCalled();
+        expect(fakeTraceSession.end).toHaveBeenCalledWith({retries: 0});
+    });
+
+    describe("options.shouldRetry passed to makeRequest", () => {
+        it("should invoke the original shouldRetry with the error and response", () => {
+            // Arrange
+            const fakeOptions: any = {
+                shouldRetry: jest.fn(),
+            };
+            const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+            const fakeLogger: any = {
+                child: jest.fn().mockReturnValue(fakeChildLogger),
+            };
+            const fakeRequest: any = {
+                abort: jest.fn(),
+                then: jest.fn().mockReturnThis(),
+                finally: jest.fn().mockReturnThis(),
+            };
+            const fakeTraceSession: any = {
+                addLabel: jest.fn(),
+                end: jest.fn(),
+            };
+            jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+            const makeRequestSpy = jest
+                .spyOn(MakeRequest, "makeRequest")
+                .mockReturnValue(fakeRequest);
+
+            // Act
+            request(fakeLogger, "URL", fakeOptions);
+            const {shouldRetry} = makeRequestSpy.mock.calls[0][0];
+            shouldRetry("ERROR", "RESPONSE");
+
+            // Assert
+            expect(fakeOptions.shouldRetry).toHaveBeenCalledWith(
+                "ERROR",
+                "RESPONSE",
+            );
+        });
+
+        it.each([
+            [() => true, true],
+            [undefined, undefined],
+        ])(
+            "should return the result of the original shouldRetry if present",
+            (shouldRetryOption, expectation) => {
+                // Arrange
+                const fakeOptions: any = {
+                    shouldRetry: shouldRetryOption,
+                };
+                const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+                const fakeLogger: any = {
+                    child: jest.fn().mockReturnValue(fakeChildLogger),
+                };
+                const fakeRequest: any = {
+                    abort: jest.fn(),
+                    then: jest.fn().mockReturnThis(),
+                    finally: jest.fn().mockReturnThis(),
+                };
+                const fakeTraceSession: any = {
+                    addLabel: jest.fn(),
+                    end: jest.fn(),
+                };
+                jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+                const makeRequestSpy = jest
+                    .spyOn(MakeRequest, "makeRequest")
+                    .mockReturnValue(fakeRequest);
+
+                // Act
+                request(fakeLogger, "URL", fakeOptions);
+                const {shouldRetry} = makeRequestSpy.mock.calls[0][0];
+                const result = shouldRetry("ERROR", "RESPONSE");
+
+                // Assert
+                expect(result).toBe(expectation);
+            },
+        );
+
+        it.each`
+            errorArgs                    | expectation
+            ${["ERR", "ERR", undefined]} | ${2}
+            ${["ERR", undefined]}        | ${1}
+            ${[undefined]}               | ${0}
+        `(
+            "should track retries when called with errors",
+            async ({errorArgs, expectation}) => {
+                // Arrange
+                const fakeOptions: any = "FAKE_OPTIONS";
+                const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+                const fakeLogger: any = {
+                    child: jest.fn().mockReturnValue(fakeChildLogger),
+                };
+                const fakeRequest: any = {
+                    abort: jest.fn(),
+                    then: jest.fn().mockReturnThis(),
+                    finally: jest.fn().mockReturnThis(),
+                };
+                const fakeTraceSession: any = {
+                    addLabel: jest.fn(),
+                    end: jest.fn(),
+                };
+                const resolvedRequest: any = Promise.resolve("YAY!");
+                resolvedRequest.abort = jest.fn();
+                const makeRequestSpy = jest
+                    .spyOn(MakeRequest, "makeRequest")
+                    .mockReturnValueOnce(resolvedRequest)
+                    .mockReturnValueOnce(fakeRequest);
+                jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+                jest.spyOn(
+                    RequestsFromCache,
+                    "getResponseSource",
+                ).mockReturnValue("FAKE_FROM_CACHE");
+
+                // Act
+                const requestToAwait = request(fakeLogger, "URL", fakeOptions);
+                const {shouldRetry} = makeRequestSpy.mock.calls[0][0];
+                for (const errorArg of errorArgs) {
+                    shouldRetry(errorArg);
+                }
+                await requestToAwait;
+
+                // Assert
+                expect(fakeTraceSession.end).toHaveBeenCalledWith({
+                    retries: expectation,
+                });
+            },
+        );
     });
 
     describe("returned request", () => {
@@ -221,7 +400,10 @@ describe("#request", () => {
             it("should call abort on the traced request", () => {
                 // Arrange
                 const fakeOptions: any = "FAKE_OPTIONS";
-                const fakeLogger: any = "FAKE_LOGGER";
+                const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+                const fakeLogger: any = {
+                    child: jest.fn().mockReturnValue(fakeChildLogger),
+                };
                 const fakeThenFinallyPromise: any = {
                     then: jest.fn().mockReturnThis(),
                     finally: jest.fn().mockReturnThis(),
@@ -253,7 +435,10 @@ describe("#request", () => {
             it("should return value of aborted on the traced request", () => {
                 // Arrange
                 const fakeOptions: any = "FAKE_OPTIONS";
-                const fakeLogger: any = "FAKE_LOGGER";
+                const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+                const fakeLogger: any = {
+                    child: jest.fn().mockReturnValue(fakeChildLogger),
+                };
                 const fakeThenFinallyPromise: any = {
                     then: jest.fn().mockReturnThis(),
                     finally: jest.fn().mockReturnThis(),

@@ -26,10 +26,21 @@ export const request = (
     url: string,
     options?: RequestOptions,
 ): AbortablePromise<Response> => {
+    let retryCount = 0;
+    const retryTracker = (err, res) => {
+        if (err != null) {
+            // Only update the count on errors.
+            // This gets called even for successful requests.
+            retryCount++;
+        }
+        return options?.shouldRetry?.(err, res);
+    };
     const optionsToUse = {
         ...DefaultRequestOptions,
         ...options,
+        shouldRetry: retryTracker,
     };
+    const requestLogger = logger.child({url});
 
     /**
      * We don't already have this request in flight, so let's make a new
@@ -39,9 +50,13 @@ export const request = (
      * Then we make the request.
      * Then we capture the abort function so we can reattach it later.
      */
-    const traceSession = trace(`request`, url, logger);
+    const traceSession = trace(`request`, url, requestLogger);
+    // It would be nice if the metadata of the logger was automatically
+    // added as a trace label, but for child loggers, that's hard since
+    // the child metadata isn't currently accessible off the logger;
+    // the defaultMetadata prop is only the root logger's metadata.
     traceSession.addLabel("url", url);
-    const abortableRequest = makeRequest(optionsToUse, logger, url);
+    const abortableRequest = makeRequest(optionsToUse, requestLogger, url);
 
     /**
      * Now, let's do the infrastructure bits for tracing this request with
@@ -59,7 +74,9 @@ export const request = (
             return res;
         })
         .finally(() => {
-            traceSession.end();
+            traceSession.end({
+                retries: retryCount,
+            });
         });
 
     /**

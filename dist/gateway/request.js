@@ -35,7 +35,27 @@ const DefaultRequestOptions = {
 exports.DefaultRequestOptions = DefaultRequestOptions;
 
 const request = (logger, url, options) => {
-  const optionsToUse = _objectSpread(_objectSpread({}, DefaultRequestOptions), options);
+  let retryCount = 0;
+
+  const retryTracker = (err, res) => {
+    var _options$shouldRetry;
+
+    if (err != null) {
+      // Only update the count on errors.
+      // This gets called even for successful requests.
+      retryCount++;
+    }
+
+    return options === null || options === void 0 ? void 0 : (_options$shouldRetry = options.shouldRetry) === null || _options$shouldRetry === void 0 ? void 0 : _options$shouldRetry.call(options, err, res);
+  };
+
+  const optionsToUse = _objectSpread(_objectSpread(_objectSpread({}, DefaultRequestOptions), options), {}, {
+    shouldRetry: retryTracker
+  });
+
+  const requestLogger = logger.child({
+    url
+  });
   /**
    * We don't already have this request in flight, so let's make a new
    * request.
@@ -45,10 +65,13 @@ const request = (logger, url, options) => {
    * Then we capture the abort function so we can reattach it later.
    */
 
+  const traceSession = (0, _index.trace)(`request`, url, requestLogger); // It would be nice if the metadata of the logger was automatically
+  // added as a trace label, but for child loggers, that's hard since
+  // the child metadata isn't currently accessible off the logger;
+  // the defaultMetadata prop is only the root logger's metadata.
 
-  const traceSession = (0, _index.trace)(`request`, url, logger);
   traceSession.addLabel("url", url);
-  const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, logger, url);
+  const abortableRequest = (0, _makeRequest.makeRequest)(optionsToUse, requestLogger, url);
   /**
    * Now, let's do the infrastructure bits for tracing this request with
    * some useful logging data and removing completed requests from our
@@ -63,7 +86,9 @@ const request = (logger, url, options) => {
     traceSession.addLabel("successful", true);
     return res;
   }).finally(() => {
-    traceSession.end();
+    traceSession.end({
+      retries: retryCount
+    });
   });
   /**
    * Finally, we need to turn the promise back into an abortable and add it
