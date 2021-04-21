@@ -92,10 +92,15 @@ export interface CustomErrorHandlerFn {
      *
      * @param {string} url The URL that we were trying to render.
      * @param {SimplifiedError} error The error to be handled.
-     * @returns {?ErrorResult} An error result to be returned for the error,
+     * @returns {?ErrorResult|?Promise<ErrorResult>} An error result or the
+     * promise of an error result to be returned for the error,
      * or, `null` if the original error is to be given.
      */
-    (url: string, headers: any, error: SimplifiedError): ?ErrorResult;
+    (
+        url: string,
+        headers: any,
+        error: SimplifiedError,
+    ): ?ErrorResult | ?Promise<ErrorResult>;
 }
 
 /**

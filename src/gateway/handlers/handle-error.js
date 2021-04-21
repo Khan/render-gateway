@@ -18,14 +18,14 @@ import type {Request, Response, CustomErrorHandlerFn} from "../types.js";
  * error is reported.
  * @param {AmbiguousError} error The error that is to be handled.
  */
-export const handleError = (
+export const handleError = async (
     overallProblem: string,
     errorHandler: ?CustomErrorHandlerFn,
     defaultErrorResponse: ?string,
     req: Request,
     res: Response,
     error: AmbiguousError,
-): void => {
+): Promise<void> => {
     const logger = getLogger(req);
     /**
      * Something went wrong. Let's report it!
@@ -48,7 +48,7 @@ export const handleError = (
      * chance to make a nicer error page.
      */
     try {
-        const overriddenResponse = errorHandler?.(
+        const overriddenResponse = await errorHandler?.(
             requestURL,
             req.headers,
             simplifiedError,

@@ -38,7 +38,7 @@ describe("#handleError", () => {
     });
 
     describe("no custom error handler", () => {
-        it("should log the uncaught simplified error fields and URL", () => {
+        it("should log the uncaught simplified error fields and URL", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -58,7 +58,7 @@ describe("#handleError", () => {
             jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 undefined,
                 undefined,
@@ -79,7 +79,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should format the simplified error", () => {
+        it("should format the simplified error", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -102,7 +102,7 @@ describe("#handleError", () => {
                 .mockReturnValue("FORMATTED ERROR");
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 undefined,
                 undefined,
@@ -118,7 +118,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send the formatted response", () => {
+        it("should send the formatted response", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -141,7 +141,7 @@ describe("#handleError", () => {
             );
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 undefined,
                 undefined,
@@ -156,7 +156,7 @@ describe("#handleError", () => {
     });
 
     describe("with custom handler", () => {
-        it("should invoke the custom handler", () => {
+        it("should invoke the custom handler", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -178,7 +178,7 @@ describe("#handleError", () => {
             const customHandler = jest.fn().mockReturnValue(null);
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 undefined,
@@ -197,7 +197,7 @@ describe("#handleError", () => {
     });
 
     describe("with custom error handler that returns null", () => {
-        it("should log the uncaught simplified error fields and URL", () => {
+        it("should log the uncaught simplified error fields and URL", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -219,7 +219,7 @@ describe("#handleError", () => {
             const customHandler = jest.fn().mockReturnValue(null);
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 undefined,
@@ -240,7 +240,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should format the simplified error", () => {
+        it("should format the simplified error", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -264,7 +264,7 @@ describe("#handleError", () => {
                 .mockReturnValue("FORMATTED ERROR");
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 "FORMAT_RESPONSE",
@@ -280,7 +280,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send the formatted response", () => {
+        it("should send the formatted response", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -304,7 +304,7 @@ describe("#handleError", () => {
             const customHandler = jest.fn().mockReturnValue(null);
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 "FORMAT_RESPONSE",
@@ -319,7 +319,7 @@ describe("#handleError", () => {
     });
 
     describe("with custom error handler that throws error", () => {
-        it("should not throw", () => {
+        it("should not throw", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -338,26 +338,25 @@ describe("#handleError", () => {
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
             jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
-            const customHandler = jest.fn().mockImplementation(() => {
-                throw new Error("CUSTOM HANDLER BOOM!");
-            });
+            const customHandler = jest
+                .fn()
+                .mockRejectedValue(new Error("CUSTOM HANDLER BOOM!"));
 
             // Act
-            const underTest = () =>
-                handleError(
-                    "My test error",
-                    customHandler,
-                    undefined,
-                    fakeRequest,
-                    fakeResponse,
-                    new Error("Error!"),
-                );
+            const underTest = handleError(
+                "My test error",
+                customHandler,
+                undefined,
+                fakeRequest,
+                fakeResponse,
+                new Error("Error!"),
+            );
 
             // Assert
-            expect(underTest).not.toThrow();
+            expect(underTest).resolves.not.toThrow();
         });
 
-        it("should log original and handler errors", () => {
+        it("should log original and handler errors", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -382,12 +381,12 @@ describe("#handleError", () => {
                 .mockReturnValueOnce(originalError)
                 .mockReturnValueOnce(handlerError);
             jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
-            const customHandler = jest.fn().mockImplementation(() => {
-                throw new Error("CUSTOM HANDLER BOOM!");
-            });
+            const customHandler = jest
+                .fn()
+                .mockRejectedValue(new Error("CUSTOM HANDLER BOOM!"));
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 undefined,
@@ -412,7 +411,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should format the original and handler errors", () => {
+        it("should format the original and handler errors", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -444,7 +443,7 @@ describe("#handleError", () => {
                 .mockReturnValue("FORMATTED ERROR");
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 "FORMAT_RESPONSE",
@@ -464,7 +463,7 @@ describe("#handleError", () => {
             });
         });
 
-        it("should send the formatted response", () => {
+        it("should send the formatted response", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -496,7 +495,7 @@ describe("#handleError", () => {
             });
 
             // Act
-            handleError(
+            await handleError(
                 "My test error",
                 customHandler,
                 "FORMAT_RESPONSE",
@@ -511,7 +510,7 @@ describe("#handleError", () => {
     });
 
     describe("with custom error handler that returns response", () => {
-        it("should log that an error occurred", () => {
+        it("should log that an error occurred", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -531,7 +530,7 @@ describe("#handleError", () => {
             };
             jest.spyOn(Shared, "extractError").mockReturnValue(simplifiedError);
             jest.spyOn(Shared, "getLogger").mockReturnValue(fakeLogger);
-            const customHandler = jest.fn().mockReturnValue({
+            const customHandler = jest.fn().mockResolvedValue({
                 body: "My custom response",
                 headers: {
                     "X-HEADER-1": "VALUE",
@@ -540,7 +539,7 @@ describe("#handleError", () => {
             });
 
             // Act
-            handleError(
+            await handleError(
                 "TEST",
                 customHandler,
                 undefined,
@@ -561,7 +560,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send custom response in response", () => {
+        it("should send custom response in response", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -590,7 +589,7 @@ describe("#handleError", () => {
             });
 
             // Act
-            handleError(
+            await handleError(
                 "TEST",
                 customHandler,
                 undefined,
@@ -605,7 +604,7 @@ describe("#handleError", () => {
             );
         });
 
-        it("should send custom response headers in response", () => {
+        it("should send custom response headers in response", async () => {
             // Arrange
             const fakeLogger: any = {
                 error: jest.fn(),
@@ -634,7 +633,7 @@ describe("#handleError", () => {
             });
 
             // Act
-            handleError(
+            await handleError(
                 "TEST",
                 customHandler,
                 undefined,

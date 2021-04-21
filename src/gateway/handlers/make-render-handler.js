@@ -107,7 +107,7 @@ async function renderHandler(
         res.status(status);
         res.send(body);
     } catch (e) {
-        handleError(
+        await handleError(
             "Render failed",
             errorHandler,
             defaultErrorResponse,
