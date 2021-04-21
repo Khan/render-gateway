@@ -30,7 +30,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * error is reported.
  * @param {AmbiguousError} error The error that is to be handled.
  */
-const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, res, error) => {
+const handleError = async (overallProblem, errorHandler, defaultErrorResponse, req, res, error) => {
   const logger = (0, _index.getLogger)(req);
   /**
    * Something went wrong. Let's report it!
@@ -54,7 +54,7 @@ const handleError = (overallProblem, errorHandler, defaultErrorResponse, req, re
    */
 
   try {
-    const overriddenResponse = errorHandler === null || errorHandler === void 0 ? void 0 : errorHandler(requestURL, req.headers, simplifiedError);
+    const overriddenResponse = await (errorHandler === null || errorHandler === void 0 ? void 0 : errorHandler(requestURL, req.headers, simplifiedError));
 
     if (overriddenResponse != null) {
       const {
