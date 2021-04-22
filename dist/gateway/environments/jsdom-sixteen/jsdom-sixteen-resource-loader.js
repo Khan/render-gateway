@@ -174,7 +174,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
 
       if (!this._active || aborted) {
         if (!aborted) {
-          logger.silly(`File requested but never used: ${readableURLForLogging}`);
+          logger.info(`File requested but never used: ${readableURLForLogging}`);
         }
         /**
          * Just return an empty buffer so no code executes. The

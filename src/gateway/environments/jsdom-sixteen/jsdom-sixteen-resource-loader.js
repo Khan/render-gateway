@@ -165,7 +165,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
             const {aborted} = abortableFetch;
             if (!this._active || aborted) {
                 if (!aborted) {
-                    logger.silly(
+                    logger.info(
                         `File requested but never used: ${readableURLForLogging}`,
                     );
                 }
