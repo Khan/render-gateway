@@ -329,7 +329,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                         Promise.resolve(fakeResponse),
                     );
                     const fakeLogger = {
-                        silly: jest.fn(),
+                        info: jest.fn(),
                     };
                     const fakeRenderAPI: any = {
                         logger: fakeLogger,
@@ -356,7 +356,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                     expect(result.toString()).toBe("");
                 });
 
-                it("should log silly", async () => {
+                it("should log info", async () => {
                     // Arrange
                     const fakeResponse = {
                         text: "RESPONSE",
@@ -365,7 +365,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                         Promise.resolve(fakeResponse),
                     );
                     const fakeLogger = {
-                        silly: jest.fn(),
+                        info: jest.fn(),
                     };
                     const fakeRenderAPI: any = {
                         logger: fakeLogger,
@@ -388,7 +388,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                     await response;
 
                     // Assert
-                    expect(fakeLogger.silly).toHaveBeenCalledWith(
+                    expect(fakeLogger.info).toHaveBeenCalledWith(
                         "File requested but never used: http://example.com/test.js?p=1",
                     );
                 });

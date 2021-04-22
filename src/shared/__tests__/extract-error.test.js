@@ -55,22 +55,6 @@ describe("#extractError", () => {
         expect(result).toStrictEqual({error: "THIS IS THE ERROR!"});
     });
 
-    it("should use the stack for the error message if there is no error", () => {
-        // Arrange
-        const error = {
-            stack: "THIS IS THE STACK!",
-        };
-
-        // Act
-        const result = extractError(error);
-
-        // Assert
-        expect(result).toStrictEqual({
-            error: "THIS IS THE STACK!",
-            stack: "THIS IS THE STACK!",
-        });
-    });
-
     it("should have the result of toString if none of the other cases match", () => {
         // Arrange
         const error = {
@@ -84,6 +68,57 @@ describe("#extractError", () => {
         // Assert
         expect(result).toStrictEqual({
             error: "AND SO THIS IS THE ERROR!",
+            stack: undefined,
+            props: expect.any(Object),
+        });
+    });
+
+    it("should fallback to error.message if [object Object] returned by toString", () => {
+        // Arrange
+        const error = {
+            toString: () => "[object Object]",
+            message: "THIS MESSAGE IS THE ERROR MESSAGE NOW",
+        };
+
+        // Act
+        const result = extractError(error);
+
+        // Assert
+        expect(result).toStrictEqual({
+            error: "THIS MESSAGE IS THE ERROR MESSAGE NOW",
+            stack: undefined,
+        });
+    });
+
+    it("should fallback to error.name if [object Object] returned by toString and no error.message", () => {
+        // Arrange
+        const error = {
+            toString: () => "[object Object]",
+            name: "THIS ERROR NAME IS THE ERROR MESSAGE NOW",
+        };
+
+        // Act
+        const result = extractError(error);
+
+        // Assert
+        expect(result).toStrictEqual({
+            error: "THIS ERROR NAME IS THE ERROR MESSAGE NOW",
+            stack: undefined,
+        });
+    });
+
+    it("should fallback to Unknown if [object Object] returned by toString and no error.message or error.name", () => {
+        // Arrange
+        const error = {
+            toString: () => "[object Object]",
+        };
+
+        // Act
+        const result = extractError(error);
+
+        // Assert
+        expect(result).toStrictEqual({
+            error: "Unknown",
             stack: undefined,
         });
     });
@@ -110,6 +145,35 @@ describe("#extractError", () => {
         expect(result).toStrictEqual({
             error: "THIS IS THE ERROR!",
             stack: "THIS IS CYCLIC SO HERE'S A STACK",
+        });
+    });
+
+    it("should attach props with the primitive fields of the error, not including stack, message, name", () => {
+        // Arrange
+        const error = {
+            message: "A MESSAGE",
+            stack: "A STACK",
+            someValue: 5,
+            someOtherValue: "I'M A VALUE",
+            yetAnother: true,
+            thisShouldNotGetIncluded: {
+                because: "I'M AN OBJECT, not a primitive",
+            },
+            norThis: () => "I'M A FUNCTION, not a primitive",
+        };
+
+        // Act
+        const result = extractError(error);
+
+        // Assert
+        expect(result).toStrictEqual({
+            error: "A MESSAGE",
+            stack: "A STACK",
+            props: {
+                someValue: 5,
+                someOtherValue: "I'M A VALUE",
+                yetAnother: true,
+            },
         });
     });
 });

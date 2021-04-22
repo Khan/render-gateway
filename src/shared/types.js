@@ -76,6 +76,14 @@ export type SimplifiedError = {
      * The error's stack, if it has one.
      */
     +stack?: string,
+
+    /**
+     * Additional properties that the source error had.
+     */
+    +props?: {
+        +[key: string]: string | number | boolean,
+        ...
+    },
 };
 
 /**
@@ -92,6 +100,8 @@ export type AmbiguousError =
               error?: string,
           },
           stack?: string,
+          message?: string,
+          name?: string,
           ...
       }
     | Error;
