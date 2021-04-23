@@ -24,4 +24,3 @@ flow-typed
 emoji=true
 exact_by_default=true
 module.use_strict=true
-esproposal.optional_chaining=enable
