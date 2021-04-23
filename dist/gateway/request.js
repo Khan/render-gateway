@@ -81,6 +81,11 @@ const request = (logger, url, options) => {
     traceSession.addLabel("source", (0, _requestsFromCache.getResponseSource)(res, currentRequestCacheID));
     traceSession.addLabel("successful", true);
     return res;
+  }).catch(e => {
+    // Let's log why this request failed since JSDOM may not share that
+    // info with us.
+    requestLogger.error("Request failed", (0, _index.extractError)(e));
+    throw e;
   }).finally(() => {
     traceSession.addLabel("retries", retryCount);
     traceSession.end();

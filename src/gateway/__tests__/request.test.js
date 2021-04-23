@@ -19,6 +19,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -45,6 +46,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -78,6 +80,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -115,6 +118,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -145,6 +149,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -164,13 +169,16 @@ describe("#request", () => {
     it("should end the trace session when the request rejects", async () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
-        const fakeChildLogger: any = "FAKE_CHILD_LOGGER";
+        const fakeChildLogger: any = {
+            error: jest.fn(),
+        };
         const fakeLogger: any = {
             child: jest.fn().mockReturnValue(fakeChildLogger),
         };
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -195,6 +203,48 @@ describe("#request", () => {
         expect(fakeTraceSession.end).toHaveBeenCalled();
     });
 
+    it("should log the error when a request rejects", async () => {
+        // Arrange
+        const fakeOptions: any = "FAKE_OPTIONS";
+        const fakeChildLogger: any = {
+            error: jest.fn(),
+        };
+        const fakeLogger: any = {
+            child: jest.fn().mockReturnValue(fakeChildLogger),
+        };
+        const fakeRequest: any = {
+            abort: jest.fn(),
+            then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
+            finally: jest.fn().mockReturnThis(),
+        };
+        const fakeTraceSession: any = {
+            addLabel: jest.fn(),
+            end: jest.fn(),
+        };
+        const rejectedRequest: any = Promise.reject("OOPS!");
+        rejectedRequest.abort = jest.fn();
+        jest.spyOn(MakeRequest, "makeRequest")
+            .mockReturnValueOnce(rejectedRequest)
+            .mockReturnValueOnce(fakeRequest);
+        jest.spyOn(Shared, "trace").mockReturnValue(fakeTraceSession);
+        jest.spyOn(Shared, "extractError").mockReturnValue({
+            error: "EXTRACTED ERROR",
+        });
+
+        // Act
+        try {
+            await request(fakeLogger, "URL", fakeOptions);
+        } catch (e) {
+            expect(e).toBe("OOPS!");
+        }
+
+        // Assert
+        expect(fakeChildLogger.error).toHaveBeenCalledWith("Request failed", {
+            error: "EXTRACTED ERROR",
+        });
+    });
+
     it("should add cache and success info to the trace session when the request resolves", async () => {
         // Arrange
         const fakeOptions: any = "FAKE_OPTIONS";
@@ -205,6 +255,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -245,6 +296,7 @@ describe("#request", () => {
         const fakeRequest: any = {
             abort: jest.fn(),
             then: jest.fn().mockReturnThis(),
+            catch: jest.fn().mockReturnThis(),
             finally: jest.fn().mockReturnThis(),
         };
         const fakeTraceSession: any = {
@@ -281,6 +333,7 @@ describe("#request", () => {
             const fakeRequest: any = {
                 abort: jest.fn(),
                 then: jest.fn().mockReturnThis(),
+                catch: jest.fn().mockReturnThis(),
                 finally: jest.fn().mockReturnThis(),
             };
             const fakeTraceSession: any = {
@@ -321,6 +374,7 @@ describe("#request", () => {
                 const fakeRequest: any = {
                     abort: jest.fn(),
                     then: jest.fn().mockReturnThis(),
+                    catch: jest.fn().mockReturnThis(),
                     finally: jest.fn().mockReturnThis(),
                 };
                 const fakeTraceSession: any = {
@@ -359,6 +413,7 @@ describe("#request", () => {
                 const fakeRequest: any = {
                     abort: jest.fn(),
                     then: jest.fn().mockReturnThis(),
+                    catch: jest.fn().mockReturnThis(),
                     finally: jest.fn().mockReturnThis(),
                 };
                 const fakeTraceSession: any = {
@@ -405,6 +460,7 @@ describe("#request", () => {
                 };
                 const fakeThenFinallyPromise: any = {
                     then: jest.fn().mockReturnThis(),
+                    catch: jest.fn().mockReturnThis(),
                     finally: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {
@@ -440,6 +496,7 @@ describe("#request", () => {
                 };
                 const fakeThenFinallyPromise: any = {
                     then: jest.fn().mockReturnThis(),
+                    catch: jest.fn().mockReturnThis(),
                     finally: jest.fn().mockReturnThis(),
                 };
                 const fakeRequest: any = {

@@ -4,7 +4,7 @@ import type {RequestOptions, AbortablePromise} from "./types.js";
 import type {Logger} from "../shared/types.js";
 import {makeRequest} from "./make-request.js";
 import {getResponseSource} from "./requests-from-cache.js";
-import {trace} from "../shared/index.js";
+import {extractError, trace} from "../shared/index.js";
 
 /**
  * The defaults used for request options.
@@ -68,6 +68,12 @@ export const request = (
             );
             traceSession.addLabel("successful", true);
             return res;
+        })
+        .catch((e) => {
+            // Let's log why this request failed since JSDOM may not share that
+            // info with us.
+            requestLogger.error("Request failed", extractError(e));
+            throw e;
         })
         .finally(() => {
             traceSession.addLabel("retries", retryCount);
