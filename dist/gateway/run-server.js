@@ -43,19 +43,20 @@ const runServer = async options => {
     authentication,
     renderEnvironment,
     uncaughtRenderErrorHandler,
-    defaultRenderErrorResponse
+    defaultRenderErrorResponse,
+    warmUpHandler
   } = options,
-        remainingOptions = _objectWithoutProperties(options, ["authentication", "renderEnvironment", "uncaughtRenderErrorHandler", "defaultRenderErrorResponse"]);
+        remainingOptions = _objectWithoutProperties(options, ["authentication", "renderEnvironment", "uncaughtRenderErrorHandler", "defaultRenderErrorResponse", "warmUpHandler"]);
 
   const {
     version
   } = (0, _index.getGatewayInfo)();
-  const app = (0, _express.default)().use(
+  const app = (0, _express.default)()
   /**
    * This sets up the /_api/ route handlers that are used by the KA
-   * deployment system.
+   * deployment system. Has to go before we check secrets.
    */
-  (0, _index2.makeCommonServiceRouter)(version))
+  .use((0, _index2.makeCommonServiceRouter)(version, warmUpHandler))
   /**
    * This adds a check that requests below this point are coming from
    * a known source.

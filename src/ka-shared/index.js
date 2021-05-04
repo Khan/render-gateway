@@ -14,7 +14,12 @@ export {getRuntimeMode} from "./get-runtime-mode.js";
 export {getLogLevel} from "./get-log-level.js";
 export {Errors} from "./errors.js";
 
-export type {Secrets, SecretString, SecretsConfig} from "./types.js";
+export type {
+    Secrets,
+    SecretString,
+    SecretsConfig,
+    WarmUpHandlerFn,
+} from "./types.js";
 
 /**
  * NOTE: getRuntimeMode and startTraceAgent should be imported directly. They
