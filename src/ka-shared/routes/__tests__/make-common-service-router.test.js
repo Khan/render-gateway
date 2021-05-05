@@ -65,7 +65,33 @@ describe("#makeCommonServiceRouter", () => {
             );
         });
 
-        it("should send OK", () => {
+        it("should invoke the warm up handler, when present", async () => {
+            // Arrange
+            const fakeRequest = {
+                headers: "FAKE_HEADERS",
+            };
+            const fakeResponse = {
+                send: jest.fn(),
+            };
+            const mockRouter = {
+                get: jest.fn().mockReturnThis(),
+            };
+            const warmUpHandler = jest.fn().mockResolvedValue();
+            jest.spyOn(Express, "Router").mockReturnValue(mockRouter);
+            const getSpy = jest.spyOn(mockRouter, "get");
+            makeCommonServiceRouter("THE_VERSION", (warmUpHandler: any));
+            const routeArgs =
+                getSpy.mock.calls.find((c) => c[0] === "/_ah/warmup") || [];
+            const routeHandler = routeArgs[1];
+
+            // Act
+            await routeHandler(fakeRequest, fakeResponse);
+
+            // Assert
+            expect(warmUpHandler).toHaveBeenCalledWith("FAKE_HEADERS");
+        });
+
+        it("should send OK", async () => {
             // Arrange
             const fakeRequest = {};
             const fakeResponse = {
@@ -82,7 +108,7 @@ describe("#makeCommonServiceRouter", () => {
             const routeHandler = routeArgs[1];
 
             // Act
-            routeHandler(fakeRequest, fakeResponse);
+            await routeHandler(fakeRequest, fakeResponse);
 
             // Assert
             expect(fakeResponse.send).toHaveBeenCalledWith("OK\n");

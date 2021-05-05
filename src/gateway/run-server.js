@@ -28,18 +28,17 @@ export const runServer = async (
         renderEnvironment,
         uncaughtRenderErrorHandler,
         defaultRenderErrorResponse,
+        warmUpHandler,
         ...remainingOptions
     } = options;
     const {version} = getGatewayInfo();
 
     const app = express<Request, Response>()
-        .use(
-            /**
-             * This sets up the /_api/ route handlers that are used by the KA
-             * deployment system.
-             */
-            makeCommonServiceRouter(version),
-        )
+        /**
+         * This sets up the /_api/ route handlers that are used by the KA
+         * deployment system. Has to go before we check secrets.
+         */
+        .use(makeCommonServiceRouter(version, warmUpHandler))
         /**
          * This adds a check that requests below this point are coming from
          * a known source.
