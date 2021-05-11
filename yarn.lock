@@ -1078,16 +1078,14 @@
   dependencies:
     google-gax "^2.9.2"
 
-"@google-cloud/logging-winston@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.0.4.tgz#5d574ab9eab6a5112ed242fdbcb367eeeb2f2e9e"
-  integrity sha512-C3D05pPAnT4SneOhsdj1xrBjiRoCOTXHaWbodUGstjqGFjKv+zOUQJpW9wcK6Fp+i2ioOSLBW9ssNDOCBI1znQ==
+"@google-cloud/logging-winston@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.0.5.tgz#42ee54f9391b2264d04e29b69cf960446d8024af"
+  integrity sha512-62Qn71rPE1zU+lIH737sWBC7XLMCTcyemM7YUTxooBMIGIZPZtyEXAfOTyelCykFWd/H0dZllPq/39eED2VIKA==
   dependencies:
     "@google-cloud/logging" "^9.0.0"
     google-auth-library "^7.0.0"
     lodash.mapvalues "^4.6.0"
-    logform "^2.1.2"
-    triple-beam "^1.3.0"
     winston-transport "^4.3.0"
 
 "@google-cloud/logging@^9.0.0":
@@ -5757,7 +5755,7 @@ log-update@^4.0.0:
     slice-ansi "^4.0.0"
     wrap-ansi "^6.2.0"
 
-logform@^2.1.2, logform@^2.2.0:
+logform@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/logform/-/logform-2.2.0.tgz#40f036d19161fc76b68ab50fdc7fe495544492f2"
   integrity sha512-N0qPlqfypFx7UHNn4B3lzS/b0uLqt2hmuoa+PpuXNYgozdJYAyauF5Ky0BWVjrxDlMWiT3qN4zPq3vVAfZy7Yg==
