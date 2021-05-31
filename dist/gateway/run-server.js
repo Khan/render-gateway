@@ -19,6 +19,8 @@ var _logRequestInfoMiddleware = require("./middleware/log-request-info-middlewar
 
 var _makeRenderHandler = require("./handlers/make-render-handler.js");
 
+const _excluded = ["authentication", "renderEnvironment", "uncaughtRenderErrorHandler", "defaultRenderErrorResponse", "warmUpHandler"];
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
@@ -46,7 +48,7 @@ const runServer = async options => {
     defaultRenderErrorResponse,
     warmUpHandler
   } = options,
-        remainingOptions = _objectWithoutProperties(options, ["authentication", "renderEnvironment", "uncaughtRenderErrorHandler", "defaultRenderErrorResponse", "warmUpHandler"]);
+        remainingOptions = _objectWithoutProperties(options, _excluded);
 
   const {
     version
