@@ -1,7 +1,10 @@
 // @flow
 import {Router} from "express";
+import asyncHandler from "express-async-handler";
 
-import type {$Request, $Response} from "express";
+import type {$Request, $Response, NextFunction} from "express";
+import type {WarmUpHandlerFn} from "../types.js";
+import type {RequestWithLog} from "../../shared/index.js";
 
 /**
  * Make the router to handle the /_api routes.
@@ -10,6 +13,7 @@ import type {$Request, $Response} from "express";
  */
 export const makeCommonServiceRouter = <Req: $Request, Res: $Response>(
     version: string,
+    warmUpHandler: ?WarmUpHandlerFn,
 ): express$Router<Req, Res> =>
     new Router<Req, Res>()
         .get("/_api/ping", (req: Req, res: Res) => {
@@ -18,6 +22,16 @@ export const makeCommonServiceRouter = <Req: $Request, Res: $Response>(
         .get("/_api/version", (req: Req, res: Res) => {
             res.send({version});
         })
-        .get("/_ah/warmup", (req: Req, res: Res) => {
-            res.send("OK\n");
-        });
+        .get(
+            "/_ah/warmup",
+            asyncHandler(
+                async (
+                    req: RequestWithLog<Req>,
+                    res: Res,
+                    next: NextFunction,
+                ) => {
+                    await warmUpHandler?.(req.headers);
+                    res.send("OK\n");
+                },
+            ),
+        );

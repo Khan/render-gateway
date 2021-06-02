@@ -10,6 +10,7 @@ import type {
     SimplifiedError,
     CloudOptions,
 } from "../shared/index.js";
+import type {WarmUpHandlerFn} from "../ka-shared/index.js";
 
 export type ResponseSource = "unknown" | "cache" | "new request";
 
@@ -220,6 +221,11 @@ export type RenderGatewayOptions = {
      * Specify which cloud facilities we want.
      */
     +cloudOptions?: CloudOptions,
+
+    /**
+     * Optional handler for warming up a new instance.
+     */
+    +warmUpHandler?: WarmUpHandlerFn,
 };
 
 /**

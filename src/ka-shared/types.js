@@ -61,3 +61,15 @@ export type SecretsConfig =
            */
           lookupFn: (name: string, config: string) => ?SecretString,
       };
+
+export interface WarmUpHandlerFn {
+    /**
+     * Warm up a new instance of the server.
+     */
+    (
+        headers: $ReadOnly<{
+            +[header: string]: string,
+            ...
+        }>,
+    ): Promise<void>;
+}
