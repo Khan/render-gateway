@@ -81,7 +81,7 @@ jobs:
 
 
   test:
-    needs: [lint, publish_to_branch]
+    needs: [lint, coverage]
     name: Test
     env:
       CI: true
