@@ -158,7 +158,7 @@ jobs:
   # have access to secrets.
   publish_to_branch:
     needs: [prime_cache_primary]
-    name: Publish to branch and gather coverage
+    name: Publish to branch
     # We only want to run this if it's a push event, it won't work for
     # pull_request triggers.
     if: github.event_name == 'push'
