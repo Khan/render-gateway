@@ -300,9 +300,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, null, fakeNext);
@@ -326,9 +325,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, null, fakeNext);
@@ -363,9 +361,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     const underTest = () =>
@@ -395,9 +392,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         deprecatedSecretKey: "DEPRECATED_SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, null, fakeNext);
@@ -422,9 +418,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         deprecatedSecretKey: "DEPRECATED_SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, null, fakeNext);
@@ -455,9 +450,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, fakeResponse, null);
@@ -484,9 +478,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, fakeResponse, null);
@@ -521,9 +514,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, fakeResponse, fakeNext);
@@ -558,9 +550,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     const underTest = () =>
@@ -590,9 +581,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, fakeResponse, null);
@@ -617,9 +607,8 @@ describe("#makeCheckSecretMiddleware", () => {
                         secretKey: "SECRET_KEY",
                         headerName: "HEADER_NAME",
                     };
-                    const middleware: Function = await makeCheckSecretMiddleware(
-                        authenticationOptions,
-                    );
+                    const middleware: Function =
+                        await makeCheckSecretMiddleware(authenticationOptions);
 
                     // Act
                     middleware(fakeRequest, fakeResponse, null);

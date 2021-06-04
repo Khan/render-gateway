@@ -6,7 +6,8 @@ import type {Logger, ICloseable} from "../../../shared/index.js";
 
 export class CloseableVirtualConsole
     extends VirtualConsole
-    implements ICloseable {
+    implements ICloseable
+{
     _closed: boolean;
 
     constructor(logger: Logger) {

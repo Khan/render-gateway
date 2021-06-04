@@ -1446,10 +1446,10 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@khanacademy/eslint-config@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@khanacademy/eslint-config/-/eslint-config-0.0.5.tgz#690c8b29f764720fb6366694252d73b5aa344574"
-  integrity sha512-hyHAHJEH6bEcrl6vgFdb2AJG1DcMpSEmrcdydpELo6r6G/vSUW7XuVnylwAWN1a8Fd/Op+1v2FdW2cvoUr3bnw==
+"@khanacademy/eslint-config@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@khanacademy/eslint-config/-/eslint-config-0.1.0.tgz#e2b2c935be685f76075ee83136752b184c1ac733"
+  integrity sha512-fskDM6GuRgZWmHHt2oUspcbsYNh6HNSB211372P98m3YRwkZNOeRCTFB7Byd3owfSm1z2jDYtUozgQv9zCWiVA==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.4"

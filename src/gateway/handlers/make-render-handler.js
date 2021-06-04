@@ -130,19 +130,17 @@ async function renderHandler(
  * @param {IRenderEnvironment} renderEnvironment The environment responsible for
  * performing renders.
  */
-export const makeRenderHandler = (
-    renderEnvironment: IRenderEnvironment,
-    errorHandler: ?CustomErrorHandlerFn,
-    defaultErrorResponse: ?string,
-): Middleware<Request, Response> => (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-): Promise<void> =>
-    renderHandler(
-        renderEnvironment,
-        errorHandler,
-        defaultErrorResponse,
-        req,
-        res,
-    ).finally(next);
+export const makeRenderHandler =
+    (
+        renderEnvironment: IRenderEnvironment,
+        errorHandler: ?CustomErrorHandlerFn,
+        defaultErrorResponse: ?string,
+    ): Middleware<Request, Response> =>
+    (req: Request, res: Response, next: NextFunction): Promise<void> =>
+        renderHandler(
+            renderEnvironment,
+            errorHandler,
+            defaultErrorResponse,
+            req,
+            res,
+        ).finally(next);

@@ -194,179 +194,176 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
      * returned by the gateway service as the response to the render request.
      * This includes the body of the response and the status code information.
      */
-    render: (
-        url: string,
-        renderAPI: RenderAPI,
-    ) => Promise<RenderResult> = async (
-        url: string,
-        renderAPI: RenderAPI,
-    ): Promise<RenderResult> => {
-        /**
-         * We want to tidy up nicely if there's a problem and also if the render
-         * context is closed, so let's handle that by putting closeable things
-         * into a handy list and providing a way to close them all.
-         */
-        const closeables: Array<ICloseable> = [];
-        try {
+    render: (url: string, renderAPI: RenderAPI) => Promise<RenderResult> =
+        async (url: string, renderAPI: RenderAPI): Promise<RenderResult> => {
             /**
-             * We are going to need a resource loader so that we can obtain files
-             * both inside and outside the JSDOM VM.
+             * We want to tidy up nicely if there's a problem and also if the render
+             * context is closed, so let's handle that by putting closeable things
+             * into a handy list and providing a way to close them all.
              */
-            const resourceLoader = this._configuration.getResourceLoader(
-                url,
-                renderAPI,
-            );
-            closeables.push(resourceLoader);
-
-            // Let's get those files!
-            const files = await this._retrieveTargetFiles(
-                url,
-                renderAPI,
-                resourceLoader,
-            );
-
-            /**
-             * We want a JSDOM instance for the url we want to render. This is
-             * where we setup custom resource loading and our virtual console
-             * too.
-             */
-            const {JSDOM} = require("jsdom");
-            const {
-                CloseableVirtualConsole,
-            } = require("./closeable-virtual-console.js");
-            const virtualConsole = new CloseableVirtualConsole(
-                renderAPI.logger,
-            );
-            const jsdomInstance = new JSDOM(MinimalPage, {
-                url,
-                runScripts: "dangerously",
-                resources: (resourceLoader: any),
-                pretendToBeVisual: true,
-                virtualConsole,
-            });
-            closeables.push(virtualConsole);
-            closeables.push(jsdomInstance.window);
-
-            /**
-             * OK, we know this is a JSDOM instance but we want to expose a nice
-             * wrapper. As part of that wrapper, we want to make it easier to
-             * run scripts (like our rendering JS code) within the VM context.
-             * So, let's create a helper for that.
-             *
-             * We cast the context to any, because otherwise it is typed as an
-             * empty object, which makes life annoying.
-             */
-            const vmContext: any = jsdomInstance.getInternalVMContext();
-
-            /**
-             * Next, we want to patch timers so we can make sure they don't
-             * fire after we are done (and so we can catch dangling timers if
-             * necessary). To do this, we are going to hang the timer API off
-             * the vmContext and then execute it from inside the context.
-             * Super magic.
-             */
-            const tmpFnName = "__tmp_patchTimers";
-            const {
-                patchAgainstDanglingTimers,
-            } = require("./patch-against-dangling-timers.js");
-            vmContext[tmpFnName] = patchAgainstDanglingTimers;
-            const timerGateAPI: IGate = this._runScript(
-                vmContext,
-                `${tmpFnName}(window);`,
-            );
-            delete vmContext[tmpFnName];
-            closeables.push(timerGateAPI);
-
-            /**
-             * At this point, we give our configuration an opportunity to
-             * modify the render context and capture the return result, which
-             * can be used to tidy up after we're done.
-             */
-            const afterRenderTidyUp = await this._configuration.afterEnvSetup(
-                url,
-                files.urls,
-                renderAPI,
-                vmContext,
-            );
-            closeables.push(afterRenderTidyUp);
-
-            /**
-             * At this point, before loading the files for rendering, we must
-             * configure the registration point in our render context.
-             */
-            const {registrationCallbackName} = this._configuration;
-            const registeredCbName = "__registeredCallback";
-            vmContext[registrationCallbackName] = (
-                cb: RenderCallbackFn,
-            ): void => {
-                vmContext[registrationCallbackName][registeredCbName] = cb;
-            };
-            closeables.push({
-                close: () => {
-                    delete vmContext[registrationCallbackName];
-                },
-            });
-
-            /**
-             * The context is configured. Now we need to load the files into it
-             * which should cause our registration callback to be invoked.
-             * We pass the filename here so we can get some nicer stack traces.
-             */
-            for (const {content, url} of files.files) {
-                this._runScript(vmContext, content, {filename: url});
-            }
-
-            /**
-             * With the files all loaded, we should have a registered callback.
-             * Let's assert that and then invoke the render process.
-             */
-            if (
-                typeof vmContext[registrationCallbackName][registeredCbName] !==
-                "function"
-            ) {
-                throw new KAError(
-                    "No render callback was registered.",
-                    Errors.Internal,
+            const closeables: Array<ICloseable> = [];
+            try {
+                /**
+                 * We are going to need a resource loader so that we can obtain files
+                 * both inside and outside the JSDOM VM.
+                 */
+                const resourceLoader = this._configuration.getResourceLoader(
+                    url,
+                    renderAPI,
                 );
-            }
+                closeables.push(resourceLoader);
 
-            /**
-             * And now we run the registered callback inside the VM.
-             */
-            const result: RenderResult = await this._runScript(
-                vmContext,
-                `
+                // Let's get those files!
+                const files = await this._retrieveTargetFiles(
+                    url,
+                    renderAPI,
+                    resourceLoader,
+                );
+
+                /**
+                 * We want a JSDOM instance for the url we want to render. This is
+                 * where we setup custom resource loading and our virtual console
+                 * too.
+                 */
+                const {JSDOM} = require("jsdom");
+                const {
+                    CloseableVirtualConsole,
+                } = require("./closeable-virtual-console.js");
+                const virtualConsole = new CloseableVirtualConsole(
+                    renderAPI.logger,
+                );
+                const jsdomInstance = new JSDOM(MinimalPage, {
+                    url,
+                    runScripts: "dangerously",
+                    resources: (resourceLoader: any),
+                    pretendToBeVisual: true,
+                    virtualConsole,
+                });
+                closeables.push(virtualConsole);
+                closeables.push(jsdomInstance.window);
+
+                /**
+                 * OK, we know this is a JSDOM instance but we want to expose a nice
+                 * wrapper. As part of that wrapper, we want to make it easier to
+                 * run scripts (like our rendering JS code) within the VM context.
+                 * So, let's create a helper for that.
+                 *
+                 * We cast the context to any, because otherwise it is typed as an
+                 * empty object, which makes life annoying.
+                 */
+                const vmContext: any = jsdomInstance.getInternalVMContext();
+
+                /**
+                 * Next, we want to patch timers so we can make sure they don't
+                 * fire after we are done (and so we can catch dangling timers if
+                 * necessary). To do this, we are going to hang the timer API off
+                 * the vmContext and then execute it from inside the context.
+                 * Super magic.
+                 */
+                const tmpFnName = "__tmp_patchTimers";
+                const {
+                    patchAgainstDanglingTimers,
+                } = require("./patch-against-dangling-timers.js");
+                vmContext[tmpFnName] = patchAgainstDanglingTimers;
+                const timerGateAPI: IGate = this._runScript(
+                    vmContext,
+                    `${tmpFnName}(window);`,
+                );
+                delete vmContext[tmpFnName];
+                closeables.push(timerGateAPI);
+
+                /**
+                 * At this point, we give our configuration an opportunity to
+                 * modify the render context and capture the return result, which
+                 * can be used to tidy up after we're done.
+                 */
+                const afterRenderTidyUp =
+                    await this._configuration.afterEnvSetup(
+                        url,
+                        files.urls,
+                        renderAPI,
+                        vmContext,
+                    );
+                closeables.push(afterRenderTidyUp);
+
+                /**
+                 * At this point, before loading the files for rendering, we must
+                 * configure the registration point in our render context.
+                 */
+                const {registrationCallbackName} = this._configuration;
+                const registeredCbName = "__registeredCallback";
+                vmContext[registrationCallbackName] = (
+                    cb: RenderCallbackFn,
+                ): void => {
+                    vmContext[registrationCallbackName][registeredCbName] = cb;
+                };
+                closeables.push({
+                    close: () => {
+                        delete vmContext[registrationCallbackName];
+                    },
+                });
+
+                /**
+                 * The context is configured. Now we need to load the files into it
+                 * which should cause our registration callback to be invoked.
+                 * We pass the filename here so we can get some nicer stack traces.
+                 */
+                for (const {content, url} of files.files) {
+                    this._runScript(vmContext, content, {filename: url});
+                }
+
+                /**
+                 * With the files all loaded, we should have a registered callback.
+                 * Let's assert that and then invoke the render process.
+                 */
+                if (
+                    typeof vmContext[registrationCallbackName][
+                        registeredCbName
+                    ] !== "function"
+                ) {
+                    throw new KAError(
+                        "No render callback was registered.",
+                        Errors.Internal,
+                    );
+                }
+
+                /**
+                 * And now we run the registered callback inside the VM.
+                 */
+                const result: RenderResult = await this._runScript(
+                    vmContext,
+                    `
     const cb = window["${registrationCallbackName}"]["${registeredCbName}"];
     cb();`,
-            );
-
-            /**
-             * Let's make sure that the rendered function returned something
-             * resembling a render result.
-             */
-            if (
-                result == null ||
-                !Object.prototype.hasOwnProperty.call(result, "body") ||
-                !Object.prototype.hasOwnProperty.call(result, "status") ||
-                !Object.prototype.hasOwnProperty.call(result, "headers")
-            ) {
-                throw new KAError(
-                    `Malformed render result: ${JSON.stringify(result)}`,
-                    Errors.Internal,
                 );
-            }
 
-            /**
-             * After all that, we should have a result, so let's return it and
-             * let our finally tidy up all the render context we built.
-             */
-            return result;
-        } finally {
-            /**
-             * We need to make sure that whatever happens, we tidy everything
-             * up.
-             */
-            await this._closeAll(closeables, renderAPI.logger);
-        }
-    };
+                /**
+                 * Let's make sure that the rendered function returned something
+                 * resembling a render result.
+                 */
+                if (
+                    result == null ||
+                    !Object.prototype.hasOwnProperty.call(result, "body") ||
+                    !Object.prototype.hasOwnProperty.call(result, "status") ||
+                    !Object.prototype.hasOwnProperty.call(result, "headers")
+                ) {
+                    throw new KAError(
+                        `Malformed render result: ${JSON.stringify(result)}`,
+                        Errors.Internal,
+                    );
+                }
+
+                /**
+                 * After all that, we should have a result, so let's return it and
+                 * let our finally tidy up all the render context we built.
+                 */
+                return result;
+            } finally {
+                /**
+                 * We need to make sure that whatever happens, we tidy everything
+                 * up.
+                 */
+                await this._closeAll(closeables, renderAPI.logger);
+            }
+        };
 }
