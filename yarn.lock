@@ -1086,10 +1086,10 @@
     retry-request "^4.1.1"
     teeny-request "^7.0.0"
 
-"@google-cloud/debug-agent@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.2.0.tgz#75897c64e3be5bf14a5f760adbda2b42ddfb901b"
-  integrity sha512-hrlAXEWs2GIkSLAz8nnvidxEMs9AljOSrGjcggkzKHI1ZIR+Tvo648W7Q38KZnMdonB132qlOuealRZo4kYcdg==
+"@google-cloud/debug-agent@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.2.1.tgz#b3ba2a77fdb2fed788686c4b0c0c716fae41ff2e"
+  integrity sha512-FvpSCp4J2XkkIbeKvlVGy6oRCfEwKwcF+jkxWvsBqomtLB5k3JxixGUhOy0VUWFuWS/DTy01Z+9MykUI2aiRVA==
   dependencies:
     "@google-cloud/common" "^3.0.0"
     acorn "^8.0.0"
