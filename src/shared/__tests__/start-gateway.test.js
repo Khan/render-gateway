@@ -266,9 +266,7 @@ describe("#start-gateway", () => {
             listenCallback();
 
             // Assert
-            expect(
-                errorSpy,
-            ).toHaveBeenCalledWith(
+            expect(errorSpy).toHaveBeenCalledWith(
                 "TEST_GATEWAY appears not to have started: Unknown error",
                 {kind: "Internal"},
             );
@@ -299,9 +297,7 @@ describe("#start-gateway", () => {
             listenCallback(new Error("BOOM 🧨"));
 
             // Assert
-            expect(
-                errorSpy,
-            ).toHaveBeenCalledWith(
+            expect(errorSpy).toHaveBeenCalledWith(
                 "TEST_GATEWAY appears not to have started: BOOM 🧨",
                 {kind: "Internal"},
             );

@@ -32,9 +32,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
                 const getRequestLoggerSpy = jest.spyOn(
                     GetRequestLogger,
                     "getRequestLogger",
@@ -57,9 +56,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
                 jest.spyOn(
                     GetRequestLogger,
                     "getRequestLogger",
@@ -82,9 +80,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
 
                 // Act
                 /**
@@ -112,9 +109,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
                 const getRequestLoggerSpy = jest
                     .spyOn(GetRequestLogger, "getRequestLogger")
                     .mockReturnValue(pretendDefaultLogger);
@@ -139,9 +135,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
                 jest.spyOn(
                     GetRequestLogger,
                     "getRequestLogger",
@@ -169,9 +164,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
                 jest.spyOn(
                     GetRequestLogger,
                     "getRequestLogger",
@@ -194,9 +188,8 @@ describe("#makeAppEngineRequestIDMiddleware", () => {
                 const pretendRequest = ({}: any);
                 const pretendResponse = ({}: any);
                 const mockNext = jest.fn();
-                const middleware = makeAppEngineRequestIDMiddleware(
-                    pretendDefaultLogger,
-                );
+                const middleware =
+                    makeAppEngineRequestIDMiddleware(pretendDefaultLogger);
                 jest.spyOn(
                     GetRequestLogger,
                     "getRequestLogger",

@@ -84,7 +84,8 @@ export const request = (
      * Finally, we need to turn the promise back into an abortable and add it
      * to our list of in flight requests.
      */
-    const finalizedRequest: AbortablePromise<Response> = (finalizedPromise: any);
+    const finalizedRequest: AbortablePromise<Response> =
+        (finalizedPromise: any);
     finalizedRequest.abort = () => abortableRequest.abort();
     Object.defineProperty(finalizedRequest, "aborted", {
         get: () => abortableRequest.aborted,
