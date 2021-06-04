@@ -81,7 +81,7 @@ jobs:
 
 
   test:
-    needs: [lint, publish_to_branch]
+    needs: [lint, coverage]
     name: Test
     env:
       CI: true
@@ -114,17 +114,54 @@ jobs:
       run: yarn test
 
 
+  coverage:
+    needs: [prime_cache_primary]
+    name: Gather coverage
+    env:
+      CI: true
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - uses: actions/cache@v2
+      id: node-modules-cache # use this to check for `cache-hit` (`steps.node-modules-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: node_modules
+        key: ${{ runner.os }}${{ matrix.node-version }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}${{ matrix.node-version }}-node-modules-
+    - name: Install dependencies
+      if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      run: yarn install --frozen-lockfile
+    - name: Run tests with coverage
+      run: yarn coverage
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+
+
   # This workflow will build distributable artifacts and commit them to the
   # branch that is being used for the PR. This should work even on protected
   # branches because of secrets. This also is responsible for running and
   # uploading code coverage since it already runs the tests before the build
   # anyway.
+  # NOTE: This won't work for pull_request triggered runs because they don't
+  # have access to secrets.
   publish_to_branch:
     needs: [prime_cache_primary]
-    name: Publish to branch and gather coverage
-    # We only want to run this if it's a push event or a pull_request for
-    # a non-feature branch.
-    if: github.event_name == 'push' || !startsWith(github.head_ref, 'feature/')
+    name: Publish to branch
+    # We only want to run this if it's a push event, it won't work for
+    # pull_request triggers.
+    if: github.event_name == 'push'
     env:
       CI: true
     runs-on: ${{ matrix.os }}
@@ -168,13 +205,6 @@ jobs:
     - name: Install dependencies
       if: steps.node-modules-cache.outputs.cache-hit != 'true'
       run: yarn install --frozen-lockfile
-    - name: Run tests with coverage
-      run: yarn coverage
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
     - name: Build the distributable artifacts
       run: yarn build
     - name: Detect changes
