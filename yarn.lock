@@ -1090,10 +1090,10 @@
     retry-request "^4.1.1"
     teeny-request "^7.0.0"
 
-"@google-cloud/debug-agent@^5.2.1":
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.2.1.tgz#b3ba2a77fdb2fed788686c4b0c0c716fae41ff2e"
-  integrity sha512-FvpSCp4J2XkkIbeKvlVGy6oRCfEwKwcF+jkxWvsBqomtLB5k3JxixGUhOy0VUWFuWS/DTy01Z+9MykUI2aiRVA==
+"@google-cloud/debug-agent@^5.2.3":
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-5.2.3.tgz#bfbe251afb8bc2c56fc724fbbc25c77636f45368"
+  integrity sha512-vyFomaAd92cpgG/95t1R9nbUGrDICSClZgwU4BRESEESNKF1Xblpcp+PO9XYwxfDFX9WTPvvdwjqU1mOlPoyLw==
   dependencies:
     "@google-cloud/common" "^3.0.0"
     acorn "^8.0.0"
@@ -1104,7 +1104,7 @@
     gcp-metadata "^4.0.0"
     p-limit "^3.0.1"
     semver "^7.0.0"
-    source-map "^0.6.1"
+    source-map "^0.7.3"
     split "^1.0.0"
 
 "@google-cloud/kms@^2.3.3":
@@ -1928,12 +1928,7 @@ acorn@^7.1.1, acorn@^7.4.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.0.tgz#e1ad486e6c54501634c6c397c5c121daa383607c"
   integrity sha512-+G7P8jJmCHr+S+cLfQxygbWhXy+8YTVGzAkpEbcLo2mLoL7tij/VG41QSHACSf5QgYRhMZYHuNc6drJaO0Da+w==
 
-acorn@^8.0.0:
-  version "8.0.4"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.0.4.tgz#7a3ae4191466a6984eee0fe3407a4f3aa9db8354"
-  integrity sha512-XNP0PqF1XD19ZlLKvB7cMmnZswW4C/03pRHgirB30uSJTaS3A3V1/P4sS3HPvFmjoriPCJQs+JDSbm4bL1TxGQ==
-
-acorn@^8.2.4:
+acorn@^8.0.0, acorn@^8.2.4:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.3.0.tgz#1193f9b96c4e8232f00b11a9edff81b2c8b98b88"
   integrity sha512-tqPKHZ5CaBJw0Xmy0ZZvLs1qTV+BNFSyvn77ASXkpBNfIRk8ev26fKrD9iLGwGA9zedPao52GSHzq8lyZG0NUw==
