@@ -41,7 +41,8 @@ const writeFileAsync = promisify(fs.writeFile);
  *
  * The second regex grabs the filenames themselves from this block.
  */
-const regexAdditionalFiles = /^(?:\s*.*@additional-exports\s?\[)((?:\s*.*"(?:[./\-\w]+)",\s*)*)(?:\s*.*\])$/im;
+const regexAdditionalFiles =
+    /^(?:.*@additional-exports\s?\[)((?:\n?.*"(?:[./\-\w]+)",\s*)+)(?:.*\])$/im;
 const regexExtractFile = /^(?:\s*.*"([./\-\w]+)",\s*)$/gim;
 
 /**
