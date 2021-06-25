@@ -153,14 +153,16 @@ describe("JSDOMSixteenEnvironment", () => {
                 end: jest.fn(),
                 addLabel: jest.fn(),
             };
+            const traceSpy = jest.fn().mockReturnValue(fakeTraceSession);
+            const getFileListSpy = jest.fn().mockResolvedValue([]);
             const fakeRenderAPI: any = {
-                trace: jest.fn().mockReturnValue(fakeTraceSession),
+                trace: traceSpy,
                 headers: {},
                 logger: fakeLogger,
             };
             const fakeConfiguration = {
                 registrationCallbackName: "__register__",
-                getFileList: jest.fn().mockResolvedValue([]),
+                getFileList: getFileListSpy,
                 getResourceLoader: jest.fn(),
                 afterEnvSetup: jest.fn(),
             };
@@ -176,9 +178,7 @@ describe("JSDOMSixteenEnvironment", () => {
             }
 
             // Assert
-            expect(fakeRenderAPI.trace).toHaveBeenCalledBefore(
-                fakeConfiguration.getFileList,
-            );
+            expect(traceSpy).toHaveBeenCalledBefore(getFileListSpy);
         });
 
         it("should fetch the files via the resource loader", async () => {

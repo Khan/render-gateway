@@ -20,6 +20,7 @@ describe("index.js", () => {
             "startGateway",
             "trace",
             "getAgentForURL",
+            "safeHasOwnProperty",
         ]);
     });
 });

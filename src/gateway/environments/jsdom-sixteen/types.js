@@ -15,7 +15,7 @@ export interface IGate extends ICloseable {
     /**
      * Close the gate.
      */
-    close(): void;
+    close: () => ?Promise<void>;
 
     /**
      * True, if the gate is open; otherwise, false.
@@ -48,8 +48,6 @@ export interface CloseableResourceLoader extends ResourceLoader, ICloseable {
     +close?: () => void;
 }
 
-type FetchFn = $PropertyType<CloseableResourceLoader, "fetch">;
-
 /**
  * Configuration for a JSDOM Sixteen environment.
  */
@@ -81,7 +79,7 @@ export interface IJSDOMSixteenConfiguration {
      * @param {string} url The URL that is to be rendered.
      * @param {RenderAPI} renderAPI An API of utilities for assisting with the
      * render operation.
-     * @param {(url: string, options?: jsdom$FetchOptions) => ?Promise<Buffer>} fetchFn
+     * @param {(url: string) => ?Promise<Buffer>} fetchFn
      * Function to fetch a URL. Using this ensures proper tidy-up of associated
      * sockets and agents.
      * @returns {Promise<Array<string>>} An ordered array of absolute URLs for
@@ -91,7 +89,7 @@ export interface IJSDOMSixteenConfiguration {
     getFileList(
         url: string,
         renderAPI: RenderAPI,
-        fetchFn: FetchFn,
+        fetchFn: (url: string) => ?Promise<Buffer>,
     ): Promise<Array<string>>;
 
     /**

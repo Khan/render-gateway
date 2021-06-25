@@ -3,6 +3,7 @@ import * as traceAgent from "@google-cloud/trace-agent";
 import type {$Request} from "express";
 import {getLogger} from "./get-logger.js";
 import {traceImpl} from "./trace-impl.js";
+import {safeHasOwnProperty} from "./safe-has-own-property.js";
 
 import type {Logger, RequestWithLog, ITraceSession} from "./types.js";
 
@@ -57,10 +58,7 @@ export const trace: ITrace = (
     requestOrLogger: any,
 ): ITraceSession => {
     const tracer = traceAgent.get();
-    if (
-        requestOrLogger == null ||
-        Object.prototype.hasOwnProperty.call(requestOrLogger, "url")
-    ) {
+    if (requestOrLogger == null || safeHasOwnProperty(requestOrLogger, "url")) {
         const logger = getLogger(requestOrLogger);
         return traceImpl(logger, action, message, tracer);
     }
