@@ -1,7 +1,12 @@
 // @flow
 import {KAError} from "../../../shared/index.js";
 import {Errors} from "../../../ka-shared/index.js";
-import type {IJSDOMSixteenConfiguration} from "./types.js";
+import type {
+    IJSDOMSixteenConfiguration,
+    CloseableResourceLoader,
+} from "./types.js";
+import type {RenderAPI} from "../../types.js";
+import type {ICloseable} from "../../../shared/index.js";
 
 /**
  * Utility for creating a valid configuration to use with the JSDOM Sixteen
@@ -9,12 +14,21 @@ import type {IJSDOMSixteenConfiguration} from "./types.js";
  */
 export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
     +registrationCallbackName: string;
-    +getFileList: $PropertyType<IJSDOMSixteenConfiguration, "getFileList">;
-    +getResourceLoader: $PropertyType<
-        IJSDOMSixteenConfiguration,
-        "getResourceLoader",
-    >;
-    +afterEnvSetup: $PropertyType<IJSDOMSixteenConfiguration, "afterEnvSetup">;
+    +getFileList: (
+        url: string,
+        renderAPI: RenderAPI,
+        fetchFn: (url: string) => ?Promise<Buffer>,
+    ) => Promise<Array<string>>;
+    +getResourceLoader: (
+        url: string,
+        renderAPI: RenderAPI,
+    ) => CloseableResourceLoader;
+    +afterEnvSetup: (
+        url: string,
+        fileURLs: $ReadOnlyArray<string>,
+        renderAPI: RenderAPI,
+        vmContext: any,
+    ) => Promise<?ICloseable>;
 
     /**
      * Create a configuration for use with the JSDOM Sixteen environment.
@@ -40,15 +54,21 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
      * rendering. This defaults to `__jsdom_env_register`.
      */
     constructor(
-        getFileList: $PropertyType<IJSDOMSixteenConfiguration, "getFileList">,
-        getResourceLoader: $PropertyType<
-            IJSDOMSixteenConfiguration,
-            "getResourceLoader",
-        >,
-        afterEnvSetup?: $PropertyType<
-            IJSDOMSixteenConfiguration,
-            "afterEnvSetup",
-        >,
+        getFileList: (
+            url: string,
+            renderAPI: RenderAPI,
+            fetchFn: (url: string) => ?Promise<Buffer>,
+        ) => Promise<Array<string>>,
+        getResourceLoader: (
+            url: string,
+            renderAPI: RenderAPI,
+        ) => CloseableResourceLoader,
+        afterEnvSetup?: (
+            url: string,
+            fileURLs: $ReadOnlyArray<string>,
+            renderAPI: RenderAPI,
+            vmContext: any,
+        ) => Promise<?ICloseable>,
         registrationCallbackName?: string = "__jsdom_env_register",
     ) {
         if (typeof getFileList !== "function") {

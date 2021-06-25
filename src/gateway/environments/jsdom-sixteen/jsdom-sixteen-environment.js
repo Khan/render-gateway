@@ -1,5 +1,9 @@
 // @flow
-import {extractError, KAError} from "../../../shared/index.js";
+import {
+    extractError,
+    KAError,
+    safeHasOwnProperty,
+} from "../../../shared/index.js";
 import {Errors} from "../../../ka-shared/index.js";
 import type {Logger, ITraceSession, ICloseable} from "../../../shared/index.js";
 import type {
@@ -343,9 +347,9 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
                  */
                 if (
                     result == null ||
-                    !Object.prototype.hasOwnProperty.call(result, "body") ||
-                    !Object.prototype.hasOwnProperty.call(result, "status") ||
-                    !Object.prototype.hasOwnProperty.call(result, "headers")
+                    !safeHasOwnProperty(result, "body") ||
+                    !safeHasOwnProperty(result, "status") ||
+                    !safeHasOwnProperty(result, "headers")
                 ) {
                     throw new KAError(
                         `Malformed render result: ${JSON.stringify(result)}`,

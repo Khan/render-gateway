@@ -33,3 +33,4 @@ export {startGateway} from "./start-gateway.js";
 export {trace} from "./trace.js";
 export {extractError} from "./extract-error.js";
 export {getAgentForURL} from "./get-agent-for-url.js";
+export {safeHasOwnProperty} from "./safe-has-own-property.js";
