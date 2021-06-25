@@ -214,7 +214,7 @@ class JSDOMSixteenEnvironment {
          * resembling a render result.
          */
 
-        if (result == null || !Object.prototype.hasOwnProperty.call(result, "body") || !Object.prototype.hasOwnProperty.call(result, "status") || !Object.prototype.hasOwnProperty.call(result, "headers")) {
+        if (result == null || !(0, _index.safeHasOwnProperty)(result, "body") || !(0, _index.safeHasOwnProperty)(result, "status") || !(0, _index.safeHasOwnProperty)(result, "headers")) {
           throw new _index.KAError(`Malformed render result: ${JSON.stringify(result)}`, _index2.Errors.Internal);
         }
         /**

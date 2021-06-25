@@ -69,6 +69,12 @@ Object.defineProperty(exports, "getAgentForURL", {
     return _getAgentForUrl.getAgentForURL;
   }
 });
+Object.defineProperty(exports, "safeHasOwnProperty", {
+  enumerable: true,
+  get: function () {
+    return _safeHasOwnProperty.safeHasOwnProperty;
+  }
+});
 
 var _kaError = _interopRequireDefault(require("./ka-error.js"));
 
@@ -91,6 +97,8 @@ var _trace = require("./trace.js");
 var _extractError = require("./extract-error.js");
 
 var _getAgentForUrl = require("./get-agent-for-url.js");
+
+var _safeHasOwnProperty = require("./safe-has-own-property.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 //# sourceMappingURL=index.js.map
