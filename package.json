@@ -47,7 +47,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.24.0",
-    "flow-bin": "0.157.0",
+    "flow-bin": "0.158.0",
     "flow-typed": "^3.3.1",
     "husky": "^4.3.8",
     "jest": "^27.0.6",
