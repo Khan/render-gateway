@@ -75,7 +75,7 @@
     "@google-cloud/trace-agent": "^5.1.5",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
-    "express-winston": "^4.1.0",
+    "express-winston": "^4.2.0",
     "superagent": "^5.3.1",
     "winston": "^3.3.3"
   },
