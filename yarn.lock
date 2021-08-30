@@ -3662,13 +3662,13 @@ express-async-handler@^1.1.4:
   resolved "https://registry.yarnpkg.com/express-async-handler/-/express-async-handler-1.1.4.tgz#225a84908df63b35ae9df94b6f0f1af061266426"
   integrity sha512-HdmbVF4V4w1q/iz++RV7bUxIeepTukWewiJGkoCKQMtvPF11MLTa7It9PRc/reysXXZSEyD4Pthchju+IUbMiQ==
 
-express-winston@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/express-winston/-/express-winston-4.1.0.tgz#3fd3ecea55d50ff6aee49a66e1aaa3cba8b67c93"
-  integrity sha512-0DaIjvNADBzC/K4Qw3UwEQc8HRjbajTaP/M43rw0LJpZcQ7SQTPfxkLsnx3ABHEO7EFNQXTpqL0BZPiwkGV8hg==
+express-winston@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/express-winston/-/express-winston-4.2.0.tgz#e9d535d52aa4c125a54a29cce132ae2e3633f4fa"
+  integrity sha512-EMD74g63nVHi7pFleQw7KHCxiA1pjF5uCwbCfzGqmFxs9KvlDPIVS3cMGpULm6MshExMT9TjC3SqmRGB9kb7yw==
   dependencies:
     chalk "^2.4.2"
-    lodash "^4.17.20"
+    lodash "^4.17.21"
 
 express@^4.17.1:
   version "4.17.1"
@@ -5660,7 +5660,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.4, lodash@^4.7.0:
+lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
