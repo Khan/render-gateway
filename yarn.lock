@@ -1057,10 +1057,10 @@
     source-map "^0.7.3"
     split "^1.0.0"
 
-"@google-cloud/kms@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-2.7.0.tgz#d13fb8f0f7ad64957244be47b92498ad3e0399cb"
-  integrity sha512-FTVbPzNwrer+BdMfkybnv4jQXqju98a+WzeZyV31SLgYIdBn0X3bkKaviOtZuop0gwX3R3zLraOy0v5QBHfjYw==
+"@google-cloud/kms@^2.8.0":
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-2.8.0.tgz#202419f0a28572317766c580d3b094c11180c203"
+  integrity sha512-VhuXsOMN0ONQ29rviNyG9tbpJ3Oyy5hKgBI6QhW4g84FGgo2Q53Bp65H4Witxi2jEcTG9ft/BASXNriIXxjE1w==
   dependencies:
     google-gax "^2.24.1"
 
