@@ -3,12 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "runServer", {
-  enumerable: true,
-  get: function () {
-    return _runServer.runServer;
-  }
-});
 Object.defineProperty(exports, "Environments", {
   enumerable: true,
   get: function () {
@@ -16,6 +10,12 @@ Object.defineProperty(exports, "Environments", {
   }
 });
 exports.Requests = void 0;
+Object.defineProperty(exports, "runServer", {
+  enumerable: true,
+  get: function () {
+    return _runServer.runServer;
+  }
+});
 
 require("../ka-shared/start-trace-agent.js");
 

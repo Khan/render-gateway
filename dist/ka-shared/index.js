@@ -3,10 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-Object.defineProperty(exports, "makeCommonServiceRouter", {
+Object.defineProperty(exports, "Errors", {
   enumerable: true,
   get: function () {
-    return _makeCommonServiceRouter.makeCommonServiceRouter;
+    return _errors.Errors;
   }
 });
 Object.defineProperty(exports, "getGCloudSecrets", {
@@ -15,22 +15,22 @@ Object.defineProperty(exports, "getGCloudSecrets", {
     return _getGcloudSecrets.getGCloudSecrets;
   }
 });
-Object.defineProperty(exports, "getRuntimeMode", {
-  enumerable: true,
-  get: function () {
-    return _getRuntimeMode.getRuntimeMode;
-  }
-});
 Object.defineProperty(exports, "getLogLevel", {
   enumerable: true,
   get: function () {
     return _getLogLevel.getLogLevel;
   }
 });
-Object.defineProperty(exports, "Errors", {
+Object.defineProperty(exports, "getRuntimeMode", {
   enumerable: true,
   get: function () {
-    return _errors.Errors;
+    return _getRuntimeMode.getRuntimeMode;
+  }
+});
+Object.defineProperty(exports, "makeCommonServiceRouter", {
+  enumerable: true,
+  get: function () {
+    return _makeCommonServiceRouter.makeCommonServiceRouter;
   }
 });
 

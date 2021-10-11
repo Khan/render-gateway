@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createLogger = exports.getDefaultMetadata = void 0;
+exports.getDefaultMetadata = exports.createLogger = void 0;
 
 var _stream = _interopRequireDefault(require("stream"));
 
