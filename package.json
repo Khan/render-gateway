@@ -32,7 +32,7 @@
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-flow": "^7.16.0",
     "@khanacademy/eslint-config": "^0.1.0",
-    "ancesdir": "^3.0.0",
+    "ancesdir": "^3.1.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^27.3.1",
     "babel-watch": "^7.6.0",
