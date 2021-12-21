@@ -1067,6 +1067,27 @@
   dependencies:
     google-gax "^2.24.1"
 
+"@google-cloud/logging-min@^9.6.3":
+  version "9.6.4"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-min/-/logging-min-9.6.4.tgz#2a6b7a4f66c4b352543c801f31526804e8cc3481"
+  integrity sha512-4oZVEIbrZRQjji/+yPb3Orv5PeQysBXDbgHlO3bLhtgSWl9Wv3i7yJpKWLW1TCj48MYOr/J7Xwv1/MGuMLM9vA==
+  dependencies:
+    "@google-cloud/common" "^3.4.1"
+    "@google-cloud/paginator" "^3.0.0"
+    "@google-cloud/projectify" "^2.0.0"
+    "@google-cloud/promisify" "^2.0.0"
+    arrify "^2.0.1"
+    dot-prop "^6.0.0"
+    eventid "^2.0.0"
+    extend "^3.0.2"
+    gcp-metadata "^4.0.0"
+    google-auth-library "^7.0.0"
+    google-gax "^2.24.1"
+    on-finished "^2.3.0"
+    pumpify "^2.0.1"
+    stream-events "^1.0.5"
+    uuid "^8.0.0"
+
 "@google-cloud/logging-winston@^4.1.1":
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.1.1.tgz#daa5b700fcc611e995532cc5eb45bb955eace062"
@@ -1110,12 +1131,13 @@
     arrify "^2.0.0"
     extend "^3.0.2"
 
-"@google-cloud/profiler@^4.1.5":
-  version "4.1.5"
-  resolved "https://registry.yarnpkg.com/@google-cloud/profiler/-/profiler-4.1.5.tgz#5ad9c5b8545af4d60d020ffbbe825c81f057cba7"
-  integrity sha512-n+HAOicoPRo0JXwxWpDYdLN+M0gIqdQdMp77oe1B+bJY+5d4W2ye5e1SpxsDjcSC5864jO+xEd0tn/d7rMvS7g==
+"@google-cloud/profiler@^4.1.7":
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/@google-cloud/profiler/-/profiler-4.1.7.tgz#152364f8284ec35bd4d163499ff0db07055103ea"
+  integrity sha512-ycN2gdl7DlXVbZZYv4F5WcDLFLtpSNLzmchfNzQPyMMSAX2zg5DjhxJCJCu6CqLdJFTKSUylqEO5A3CU1T/vCQ==
   dependencies:
     "@google-cloud/common" "^3.0.0"
+    "@google-cloud/logging-min" "^9.6.3"
     "@types/console-log-level" "^1.4.0"
     "@types/semver" "^7.0.0"
     console-log-level "^1.4.0"
@@ -3476,6 +3498,13 @@ eventid@^1.0.0:
   dependencies:
     d64 "^1.0.0"
     uuid "^3.0.1"
+
+eventid@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/eventid/-/eventid-2.0.1.tgz#574e860149457a79a2efe788c459f0c3062d02ec"
+  integrity sha512-sPNTqiMokAvV048P2c9+foqVJzk49o6d4e0D/sq5jog3pw+4kBgyR0gaM1FM7Mx6Kzd9dztesh9oYz1LWWOpzw==
+  dependencies:
+    uuid "^8.0.0"
 
 execa@^1.0.0:
   version "1.0.0"
