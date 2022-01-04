@@ -5,6 +5,7 @@ import {startGateway} from "../start-gateway.js";
 import {createLogger} from "../create-logger.js";
 
 jest.mock("../root-logger.js");
+jest.mock("../setup-stackdriver.js");
 
 describe("#start-gateway", () => {
     beforeEach(() => {
