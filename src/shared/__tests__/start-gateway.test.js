@@ -6,6 +6,7 @@ import {createLogger} from "../create-logger.js";
 
 jest.mock("../root-logger.js");
 jest.mock("../setup-stackdriver.js");
+jest.mock("@google-cloud/profiler");
 
 describe("#start-gateway", () => {
     beforeEach(() => {
