@@ -1,12 +1,18 @@
 // @flow
 import * as DebugAgent from "@google-cloud/debug-agent";
-import * as Profiler from "@google-cloud/profiler";
 import {setupStackdriver} from "../setup-stackdriver.js";
 
 jest.mock("@google-cloud/debug-agent");
 jest.mock("@google-cloud/profiler");
 
 describe("#setupStackdriver", () => {
+    let Profiler;
+    beforeEach(() => {
+        // Cannot import at the top as @google-cloud/profiler makes a fetch on
+        // import and will cause errors in our test runs.
+        Profiler = require("@google-cloud/profiler");
+    });
+
     describe("in production", () => {
         it("should not setup @google-cloud/debug-agent if not set to", async () => {
             // Arrange
