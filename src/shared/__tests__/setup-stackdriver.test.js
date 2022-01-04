@@ -1,9 +1,9 @@
 // @flow
 import * as DebugAgent from "@google-cloud/debug-agent";
+import * as Profiler from "@google-cloud/profiler";
 import {setupStackdriver} from "../setup-stackdriver.js";
 
 jest.mock("@google-cloud/debug-agent");
-jest.mock("@google-cloud/profiler");
 
 describe("#setupStackdriver", () => {
     describe("in production", () => {
@@ -31,9 +31,6 @@ describe("#setupStackdriver", () => {
 
         it("should not setup @google-cloud/profiler when not set to", async () => {
             // Arrange
-            // Cannot import at the top as @google-cloud/profiler makes a fetch on
-            // import and will cause errors in our test runs.
-            const Profiler = await import("@google-cloud/profiler");
             const agentSpy = jest.spyOn(Profiler, "start");
 
             // Act
@@ -43,16 +40,16 @@ describe("#setupStackdriver", () => {
             expect(agentSpy).not.toHaveBeenCalled();
         });
 
-        // it("should setup @google-cloud/profiler when set to", async () => {
-        //     // Arrange
-        //     const agentSpy = jest.spyOn(Profiler, "start");
+        it("should setup @google-cloud/profiler when set to", async () => {
+            // Arrange
+            const agentSpy = jest.spyOn(Profiler, "start");
 
-        //     // Act
-        //     await setupStackdriver("production", {profiler: true});
+            // Act
+            await setupStackdriver("production", {profiler: true});
 
-        //     // Assert
-        //     expect(agentSpy).toHaveBeenCalled();
-        // });
+            // Assert
+            expect(agentSpy).toHaveBeenCalled();
+        });
     });
 
     describe("not in production", () => {
@@ -67,15 +64,15 @@ describe("#setupStackdriver", () => {
             expect(agentSpy).not.toHaveBeenCalled();
         });
 
-        // it("should not setup @google-cloud/profiler", async () => {
-        //     // Arrange
-        //     const agentSpy = jest.spyOn(Profiler, "start");
+        it("should not setup @google-cloud/profiler", async () => {
+            // Arrange
+            const agentSpy = jest.spyOn(Profiler, "start");
 
-        //     // Act
-        //     await setupStackdriver("development");
+            // Act
+            await setupStackdriver("development");
 
-        //     // Assert
-        //     expect(agentSpy).not.toHaveBeenCalled();
-        // });
+            // Assert
+            expect(agentSpy).not.toHaveBeenCalled();
+        });
     });
 });
