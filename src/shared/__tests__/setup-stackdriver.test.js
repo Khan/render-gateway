@@ -38,7 +38,7 @@ describe("#setupStackdriver", () => {
 
         it("should not setup @google-cloud/profiler when not set to", async () => {
             // Arrange
-            const agentSpy = jest.spyOn(Profiler, "start");
+            const agentSpy = jest.spyOn(Profiler, "start").mockResolvedValue();
 
             // Act
             await setupStackdriver("production");
