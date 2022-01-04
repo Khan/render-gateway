@@ -21,7 +21,7 @@ describe("#start-gateway", () => {
         }
     });
 
-    it("should set GAE_SERVICE if it is not set", () => {
+    it("should set GAE_SERVICE if it is not set", async () => {
         // Arrange
         delete process.env.GAE_SERVICE;
         const options = {
@@ -40,13 +40,13 @@ describe("#start-gateway", () => {
         ).mockReturnValue(Promise.resolve(pretendApp));
 
         // Act
-        startGateway(options, pretendApp);
+        await startGateway(options, pretendApp);
 
         // Assert
         expect(process.env.GAE_SERVICE).toBe("TEST_GATEWAY");
     });
 
-    it("should not set GAE_SERVICE if it is already set", () => {
+    it("should not set GAE_SERVICE if it is already set", async () => {
         // Arrange
         process.env.GAE_SERVICE = "GAE_SERVICE_NAME";
         const options = {
@@ -65,7 +65,7 @@ describe("#start-gateway", () => {
         ).mockReturnValue(Promise.resolve(pretendApp));
 
         // Act
-        startGateway(options, pretendApp);
+        await startGateway(options, pretendApp);
 
         // Assert
         expect(process.env.GAE_SERVICE).toBe("GAE_SERVICE_NAME");
