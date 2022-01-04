@@ -4,7 +4,6 @@ import * as Profiler from "@google-cloud/profiler";
 import {setupStackdriver} from "../setup-stackdriver.js";
 
 jest.mock("@google-cloud/debug-agent");
-jest.mock("@google-cloud/profiler");
 
 describe("#setupStackdriver", () => {
     describe("in production", () => {
