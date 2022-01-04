@@ -15,7 +15,7 @@
     "start": "yarn example simple",
     "clean": "rm -rf dist",
     "test": "jest --colors --config jest.config.js",
-    "coverage": "jest --colors --config jest.config.js --coverage setup-stackdriver start-gateway",
+    "coverage": "jest --colors --config jest.config.js --coverage setup-stackdriver",
     "lint:all": "yarn lint \"{examples,src,bin,__{tests,mocks}__}/**/*.js\"",
     "lint": "eslint --report-unused-disable-directives --config .eslintrc.js --ignore-path .eslintignore",
     "flow:ci": "flow check",
