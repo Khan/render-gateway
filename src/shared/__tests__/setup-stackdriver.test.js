@@ -3,11 +3,11 @@ import * as DebugAgent from "@google-cloud/debug-agent";
 import {setupStackdriver} from "../setup-stackdriver.js";
 
 jest.mock("@google-cloud/debug-agent");
-jest.mock("@google-cloud/profiler");
 
 describe("#setupStackdriver", () => {
     let Profiler;
     beforeEach(() => {
+        jest.mock("@google-cloud/profiler");
         // Cannot import at the top as @google-cloud/profiler makes a fetch on
         // import and will cause errors in our test runs.
         Profiler = require("@google-cloud/profiler");
