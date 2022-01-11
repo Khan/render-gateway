@@ -77,7 +77,7 @@
     "express-async-handler": "^1.2.0",
     "express-winston": "^4.2.0",
     "superagent": "^5.3.1",
-    "winston": "^3.3.4"
+    "winston": "^3.4.0"
   },
   "resolutions": {
     "**/**/braces": "^2.3.1",
