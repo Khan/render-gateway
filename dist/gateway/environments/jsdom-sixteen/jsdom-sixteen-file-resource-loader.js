@@ -41,8 +41,6 @@ class JSDOMSixteenFileResourceLoader extends _jsdom.ResourceLoader {
     (0, _applyAbortablePromisesPatch.applyAbortablePromisesPatch)();
     super();
 
-    _defineProperty(this, "_rootFolder", void 0);
-
     _defineProperty(this, "_makeFilePath", url => {
       /**
        * If the url is a url, we are going to use it as a file path from root.

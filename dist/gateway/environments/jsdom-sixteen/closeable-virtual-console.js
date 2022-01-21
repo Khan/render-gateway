@@ -21,8 +21,6 @@ class CloseableVirtualConsole extends _jsdom.VirtualConsole {
   constructor(logger) {
     super();
 
-    _defineProperty(this, "_closed", void 0);
-
     _defineProperty(this, "close", () => {
       this._closed = true;
     });

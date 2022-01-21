@@ -7,8 +7,6 @@ exports.default = void 0;
 
 var _extractError = require("./extract-error.js");
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /**
  * Error to be thrown and logged within KA code.
  *
@@ -25,10 +23,6 @@ class KAError extends Error {
   constructor(message, kind, sourceError = null) {
     super(message); // Set the name so we get a nice error output, like
     // KAInternalError
-
-    _defineProperty(this, "kind", void 0);
-
-    _defineProperty(this, "sourceError", void 0);
 
     this.name = `KA${kind}Error`; // The kind of error which could be used for categorization with
     // other error sources that use the same error taxonomy.

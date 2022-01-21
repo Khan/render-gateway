@@ -64,16 +64,6 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
     (0, _applyAbortablePromisesPatch.applyAbortablePromisesPatch)();
     super();
 
-    _defineProperty(this, "_active", void 0);
-
-    _defineProperty(this, "_renderAPI", void 0);
-
-    _defineProperty(this, "_requestOptions", void 0);
-
-    _defineProperty(this, "_agents", void 0);
-
-    _defineProperty(this, "_handleFetchResult", void 0);
-
     if (renderAPI == null) {
       throw new _index.KAError("Must provide render API.", _index2.Errors.Internal);
     }
