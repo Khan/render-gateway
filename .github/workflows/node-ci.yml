@@ -8,7 +8,7 @@ on:
 
   push:
     branches:
-    - master
+    - main
     - feature/*
 
 # Our jobs run like this to minimize wasting resource cycles:
