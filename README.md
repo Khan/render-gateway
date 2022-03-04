@@ -1,6 +1,6 @@
 # render-gateway
 
-[![codecov](https://codecov.io/gh/Khan/render-gateway/branch/master/graph/badge.svg?token=dJBz8T4PlI)](https://codecov.io/gh/Khan/render-gateway) [![Node CI](https://github.com/Khan/render-gateway/workflows/Node%20CI/badge.svg)](https://github.com/Khan/render-gateway/actions)
+[![codecov](https://codecov.io/gh/Khan/render-gateway/branch/main/graph/badge.svg?token=dJBz8T4PlI)](https://codecov.io/gh/Khan/render-gateway) [![Node CI](https://github.com/Khan/render-gateway/workflows/Node%20CI/badge.svg)](https://github.com/Khan/render-gateway/actions)
 
 The core implementation of a render-gateway service.
 

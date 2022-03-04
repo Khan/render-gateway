@@ -5,7 +5,7 @@
 The participation of others is a wonderful 🎁gift. When we are ready to accept that gift, we will update these guidelines.
 If you have already been invited to participate, the remainder of these guidelines are for you.
 
-📖 Be sure to read our [Code of Conduct](https://github.com/Khan/render-gateway/blob/master/CODE_OF_CONDUCT.md).
+📖 Be sure to read our [Code of Conduct](https://github.com/Khan/render-gateway/blob/main/CODE_OF_CONDUCT.md).
 
 ## 🛑 Bugs And Feature Requests
 
