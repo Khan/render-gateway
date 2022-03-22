@@ -1121,10 +1121,10 @@
     stream-events "^1.0.5"
     uuid "^8.0.0"
 
-"@google-cloud/logging-winston@^4.1.3":
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.1.3.tgz#b457e0736d682994c3c13579aeedff8dd99be835"
-  integrity sha512-UT6ChEyJwTnhTi6bj8CIA65ZDFSSZcS/cibJham5J68sIQh+BQPQ8oaTS2ThNsCOuhFq83JazsvhYfbd4/lBOw==
+"@google-cloud/logging-winston@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@google-cloud/logging-winston/-/logging-winston-4.2.1.tgz#90a043b66ac5c7ca38edcd8e63efa4a2ff19dcf6"
+  integrity sha512-/O7xG3iC0qFkrFh5d3RcnLTffzQqwHEGvcp0w1zgpkwQ9eD/heT28lPSSkrsq+PpXJJkVSJQHVC7Mjp8IjVaeA==
   dependencies:
     "@google-cloud/logging" "^9.6.9"
     google-auth-library "^7.0.0"
