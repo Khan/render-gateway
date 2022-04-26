@@ -266,7 +266,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 };
                 const customHandler = jest
                     .fn()
-                    .mockResolvedValue(new Buffer("CUSTOM"));
+                    .mockResolvedValue(Buffer.from("CUSTOM"));
                 const underTest = new JSDOMSixteenResourceLoader(
                     fakeRenderAPI,
                     undefined,
@@ -302,7 +302,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 };
                 const customHandler = jest
                     .fn()
-                    .mockResolvedValue(new Buffer("CUSTOM"));
+                    .mockResolvedValue(Buffer.from("CUSTOM"));
                 const underTest = new JSDOMSixteenResourceLoader(
                     fakeRenderAPI,
                     undefined,
