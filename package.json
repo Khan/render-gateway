@@ -50,7 +50,7 @@
     "flow-bin": "0.176.3",
     "flow-typed": "^3.7.0",
     "husky": "^4.3.8",
-    "jest": "^28.0.2",
+    "jest": "^28.0.3",
     "jest-extended": "^2.0.0",
     "lint-staged": "^12.4.1",
     "prettier": "^2.6.2",
