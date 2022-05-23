@@ -28,6 +28,8 @@ class JSDOMSixteenEnvironment {
    * Configuration for the environment.
    */
   constructor(configuration) {
+    _defineProperty(this, "_configuration", void 0);
+
     _defineProperty(this, "_retrieveTargetFiles", async (url, renderAPI, resourceLoader) => {
       const traceSession = renderAPI.trace("JSDOM16._retrieveTargetFiles", `JSDOMSixteenEnvironment retrieving files`);
 

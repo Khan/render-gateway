@@ -9,6 +9,8 @@ var _index = require("../../../shared/index.js");
 
 var _index2 = require("../../../ka-shared/index.js");
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Utility for creating a valid configuration to use with the JSDOM Sixteen
  * environment.
@@ -38,6 +40,14 @@ class JSDOMSixteenConfiguration {
    * rendering. This defaults to `__jsdom_env_register`.
    */
   constructor(getFileList, getResourceLoader, afterEnvSetup, registrationCallbackName = "__jsdom_env_register") {
+    _defineProperty(this, "registrationCallbackName", void 0);
+
+    _defineProperty(this, "getFileList", void 0);
+
+    _defineProperty(this, "getResourceLoader", void 0);
+
+    _defineProperty(this, "afterEnvSetup", void 0);
+
     if (typeof getFileList !== "function") {
       throw new _index.KAError("Must provide valid callback for obtaining file list", _index2.Errors.Internal);
     }
