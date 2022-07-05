@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-commonjs
 module.exports = {
     extends: ["@khanacademy"],
-    plugins: ["import", "promise", "disable"],
+    plugins: ["import", "promise", "disable", "ft-flow"],
     settings: {
         "eslint-plugin-disable": {
             paths: {
@@ -10,7 +10,7 @@ module.exports = {
         },
     },
     rules: {
-        "flowtype/no-types-missing-file-annotation": "error",
+        "ft-flow/no-types-missing-file-annotation": "error",
         "import/no-unresolved": "error",
         "import/named": "error",
         "import/default": "error",
