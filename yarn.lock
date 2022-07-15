@@ -1500,10 +1500,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@khanacademy/eslint-config@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@khanacademy/eslint-config/-/eslint-config-0.2.0.tgz#e9f57e743be10f74409eb79df7147081e0a8535f"
-  integrity sha512-yCzXifPo1Bo/r2YF7j92TEXAguBUSZOef2scwSD5upDJ5CR+pHW64tBtDfC2NVLm/72CilKXcroxJ7y9B92q1g==
+"@khanacademy/eslint-config@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@khanacademy/eslint-config/-/eslint-config-1.0.0.tgz#11c7044622933991539aeb5444b8b2c6a458e2f7"
+  integrity sha512-fB6zqg8JSXHsgmnyCchF6MPezz+1+vhL7bfl3jKRC46D2hSHoST1ICY8IJcP7Vawho42DefhjHI1VO1bxHGIqA==
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.4"
