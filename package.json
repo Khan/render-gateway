@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=10"
+    "node": ">=16"
   },
   "scripts": {
     "example": "bash -c 'RUNNER=\"./examples/$0/run.js\"; KA_LOG_LEVEL=silly NODE_ENV=development babel-watch \"$RUNNER\"'",
