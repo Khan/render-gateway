@@ -7,12 +7,6 @@ exports.makeShouldRetry = void 0;
 
 var _index = require("../shared/index.js");
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /**
  * Create a shouldRetry callback for use with superagent's retry() method.
  *
@@ -32,10 +26,10 @@ const makeShouldRetry = (logger, override) => {
     if (err != null) {
       // We log at the lowest level as usually we don't care about this
       // as long as we ultimately succeed.
-      logger.silly("Request failed. Might retry.", _objectSpread(_objectSpread({}, (0, _index.extractError)(err)), {}, {
+      logger.silly("Request failed. Might retry.", { ...(0, _index.extractError)(err),
         code: err.code,
         status: res === null || res === void 0 ? void 0 : res.status
-      }));
+      });
     }
     /**
      * According to https://github.com/visionmedia/superagent/blob/0de12b299d5d5b5ec05cc43e18e853a95bffb25a/src/request-base.js#L181-L206

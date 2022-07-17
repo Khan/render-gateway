@@ -17,12 +17,6 @@ var _errors = require("./errors.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /**
  * Start tracing an event.
  *
@@ -128,17 +122,27 @@ const traceImpl = (logger, action, message, tracer) => {
      * and any profile labels that were added.
      */
 
-    const metadata = _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, (0, _createLogger.getDefaultMetadata)()), profileLabels), info), {}, {
+    const metadata = {
+      /**
+       * We have to add the default metadata because winston does not
+       * include this for profiler.done calls, strangely.
+       *
+       * And we have to recreate it because we might be in a worker
+       * that doesn't have access directly to the root logger that has
+       * the default data.
+       */
+      ...(0, _createLogger.getDefaultMetadata)(),
+      ...profileLabels,
+      ...info,
       message: `TRACED ${logMessage}`,
       level: (info === null || info === void 0 ? void 0 : info.level) || "debug"
-    });
+    };
     /**
      * Let's mark our profile as done.
      *
      * We include the session info object, but make sure to set the level
      * and message ourselves.
      */
-
 
     profiler.done(metadata);
     /**

@@ -11,12 +11,6 @@ var _index2 = require("../../ka-shared/index.js");
 
 var _formatError = require("../format-error.js");
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /**
  * Handle an ambiguous error and determine an appropriate response.
  *
@@ -61,10 +55,10 @@ const handleError = async (overallProblem, errorHandler, defaultErrorResponse, r
         body,
         headers
       } = overriddenResponse;
-      logger.error(`${overallProblem}; custom error response generated`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
+      logger.error(`${overallProblem}; custom error response generated`, { ...simplifiedError,
         requestURL,
         kind: _index2.Errors.TransientKhanService
-      }));
+      });
       res.header(headers);
       res.send(body);
       return;
@@ -75,14 +69,14 @@ const handleError = async (overallProblem, errorHandler, defaultErrorResponse, r
      * Ouch. We should report this.
      */
     const innerError = (0, _index.extractError)(customHandlerError);
-    logger.error(`${overallProblem}; custom handler failed`, _objectSpread(_objectSpread({}, innerError), {}, {
+    logger.error(`${overallProblem}; custom handler failed`, { ...innerError,
       originalError: simplifiedError,
       requestURL,
       kind: _index2.Errors.TransientKhanService
-    }));
-    res.send((0, _formatError.formatError)(defaultErrorResponse, _objectSpread(_objectSpread({}, innerError), {}, {
+    });
+    res.send((0, _formatError.formatError)(defaultErrorResponse, { ...innerError,
       originalError: simplifiedError
-    })));
+    }));
     return;
   }
   /**
@@ -91,10 +85,10 @@ const handleError = async (overallProblem, errorHandler, defaultErrorResponse, r
    */
 
 
-  logger.error(`${overallProblem}; uncaught error`, _objectSpread(_objectSpread({}, simplifiedError), {}, {
+  logger.error(`${overallProblem}; uncaught error`, { ...simplifiedError,
     requestURL,
     kind: _index2.Errors.TransientKhanService
-  }));
+  });
   res.send((0, _formatError.formatError)(defaultErrorResponse, simplifiedError));
 };
 
