@@ -87,7 +87,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
             const fileURLs = await this._configuration.getFileList(
                 url,
                 renderAPI,
-                (url, options) => resourceLoader.fetch(url, options),
+                (url) => resourceLoader.fetch(url),
             );
             traceSession.addLabel("fileCount", fileURLs.length);
 
