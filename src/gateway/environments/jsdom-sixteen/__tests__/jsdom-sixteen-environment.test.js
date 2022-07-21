@@ -137,13 +137,10 @@ describe("JSDOMSixteenEnvironment", () => {
 
             // Act
             const fetchFn = fakeConfiguration.getFileList.mock.calls[0][2];
-            fetchFn("SOME_URL", "OPTIONS");
+            fetchFn("SOME_URL");
 
             // Assert
-            expect(fakeLoader.fetch).toHaveBeenCalledWith(
-                "SOME_URL",
-                "OPTIONS",
-            );
+            expect(fakeLoader.fetch).toHaveBeenCalledWith("SOME_URL");
         });
 
         it("should trace the file acquisition phase", async () => {
