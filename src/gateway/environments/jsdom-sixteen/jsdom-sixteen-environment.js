@@ -128,7 +128,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
         }
     };
 
-    _closeAll(closeables: Array<ICloseable>, logger: Logger): Promise<void> {
+    _closeAll(closeables: Array<?ICloseable>, logger: Logger): Promise<void> {
         return new Promise((resolve) => {
             /**
              * We wrap this in a timeout to hopefully mitigate any chances
@@ -205,7 +205,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * context is closed, so let's handle that by putting closeable things
              * into a handy list and providing a way to close them all.
              */
-            const closeables: Array<ICloseable> = [];
+            const closeables: Array<?ICloseable> = [];
             try {
                 /**
                  * We are going to need a resource loader so that we can obtain files
