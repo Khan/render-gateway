@@ -28,17 +28,17 @@ describe("#logRequestInfoMiddleware", () => {
         // Assert
         expect(fakeLogger.info).toHaveBeenCalledTimes(1);
         expect(fakeLogger.info.mock.calls[0]).toMatchInlineSnapshot(`
-Array [
-  "Request received: URL",
-  Object {
-    "allHeaders": "HEADER: VALUE
-ANOTHER: ANOTHER VALUE
-",
-    "method": "GET",
-    "url": "URL",
-  },
-]
-`);
+            [
+              "Request received: URL",
+              {
+                "allHeaders": "HEADER: VALUE
+            ANOTHER: ANOTHER VALUE
+            ",
+                "method": "GET",
+                "url": "URL",
+              },
+            ]
+        `);
     });
 
     it("should continue", async () => {

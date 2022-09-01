@@ -61,7 +61,7 @@ describe("#createLogger", () => {
             // Assert
             expect(result).toMatchInlineSnapshot(`
                 "debug: MESSAGE {
-                    \\"other\\": \\"metadata\\"
+                    "other": "metadata"
                 }"
             `);
         });

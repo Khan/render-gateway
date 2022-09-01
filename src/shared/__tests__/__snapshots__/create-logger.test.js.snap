@@ -2,7 +2,7 @@
 
 exports[`#createLogger during development should format log messages to include metadata when present ({ other: 'metadata' }) 1`] = `
 "debug: MESSAGE {
-    \\"other\\": \\"metadata\\"
+    "other": "metadata"
 }"
 `;
 
