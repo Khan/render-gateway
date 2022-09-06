@@ -15,8 +15,8 @@ describe("#formatError", () => {
         // Assert
         expect(result).toMatchInlineSnapshot(`
             "{
-                \\"some\\": \\"important\\",
-                \\"things\\": true
+                "some": "important",
+                "things": true
             }"
         `);
     });
@@ -56,8 +56,8 @@ describe("#formatError", () => {
         // Assert
         expect(result).toMatchInlineSnapshot(`
             "An error message. The error is {
-                \\"some\\": \\"important\\",
-                \\"things\\": true
+                "some": "important",
+                "things": true
             }."
         `);
     });

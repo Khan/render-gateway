@@ -491,7 +491,7 @@ describe("#makeCheckSecretMiddleware", () => {
                         }),
                     );
                     expect(
-                        fakeResponse.send.mock.calls[0][0].error,
+                        fakeResponse.send?.mock.calls[0][0].error,
                     ).toMatchInlineSnapshot(`"Missing or invalid secret"`);
                 });
 
@@ -620,7 +620,7 @@ describe("#makeCheckSecretMiddleware", () => {
                         }),
                     );
                     expect(
-                        fakeResponse.send.mock.calls[0][0].error,
+                        fakeResponse.send?.mock.calls[0][0].error,
                     ).toMatchInlineSnapshot(`"Missing or invalid secret"`);
                 });
             });
