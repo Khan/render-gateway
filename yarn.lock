@@ -1278,10 +1278,10 @@
     uuid "^8.0.0"
     xdg-basedir "^4.0.0"
 
-"@google-cloud/trace-agent@^7.1.1":
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-7.1.1.tgz#5ca3b1878ac1ca7c40253706295c198dbf0ae719"
-  integrity sha512-gQkNdsjgl7sy5q0LrSKLX4FQf8Ao/7i0jjA4t5ybnpJSa1Rb9y4A3Tj/Y9HHnDqlC29vfGZxc1uOIn0xO08fMA==
+"@google-cloud/trace-agent@^7.1.2":
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@google-cloud/trace-agent/-/trace-agent-7.1.2.tgz#e6420aa3013b98df6c49f933ec5321099fcf5037"
+  integrity sha512-LcPKMM80bBvaUG3Nb1R4FPYlGZQX/tDMmwN9bx3ML954W61Pj8D3bjwIleSWO36lIdo0tl+Cz6UHJEOKLSNcvw==
   dependencies:
     "@google-cloud/common" "^4.0.0"
     "@opencensus/propagation-stackdriver" "0.1.0"
@@ -1298,7 +1298,7 @@
     semver "^7.0.0"
     shimmer "^1.2.0"
     source-map-support "^0.5.16"
-    uuid "^8.0.0"
+    uuid "^9.0.0"
 
 "@grpc/grpc-js@~1.6.0":
   version "1.6.12"
@@ -7847,6 +7847,11 @@ uuid@^8.0.0, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"
