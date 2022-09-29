@@ -36,7 +36,10 @@ const applyAbortablePromisesPatch = (force = false) => {
    * patching more than once).
    */
 
-  const ourAbort = () => {};
+  const ourAbort = () => {}; // We know that the inferred type is wrong here and it's not worth
+  // convincing flow with a better type, so just suppress it.
+  // $FlowIgnore[prop-missing]
+
 
   ourAbort[patchedMarker] = true;
   /**
