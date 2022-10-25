@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.logRequestInfoMiddleware = logRequestInfoMiddleware;
-
 var _index = require("../../shared/index.js");
 
 /**

@@ -4,13 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.JSDOMSixteenConfiguration = void 0;
-
 var _index = require("../../../shared/index.js");
-
 var _index2 = require("../../../ka-shared/index.js");
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /**
  * Utility for creating a valid configuration to use with the JSDOM Sixteen
  * environment.
@@ -41,33 +37,23 @@ class JSDOMSixteenConfiguration {
    */
   constructor(getFileList, getResourceLoader, afterEnvSetup, registrationCallbackName = "__jsdom_env_register") {
     _defineProperty(this, "registrationCallbackName", void 0);
-
     _defineProperty(this, "getFileList", void 0);
-
     _defineProperty(this, "getResourceLoader", void 0);
-
     _defineProperty(this, "afterEnvSetup", void 0);
-
     if (typeof getFileList !== "function") {
       throw new _index.KAError("Must provide valid callback for obtaining file list", _index2.Errors.Internal);
     }
-
     if (typeof getResourceLoader !== "function") {
       throw new _index.KAError("Must provide valid callback for obtaining resource loader", _index2.Errors.Internal);
     }
-
     if (afterEnvSetup != null && typeof afterEnvSetup !== "function") {
       throw new _index.KAError("Must provide valid callback for after env setup or null", _index2.Errors.Internal);
     }
-
     this.registrationCallbackName = registrationCallbackName;
     this.getFileList = getFileList;
     this.getResourceLoader = getResourceLoader;
-
     this.afterEnvSetup = afterEnvSetup || (() => Promise.resolve(null));
   }
-
 }
-
 exports.JSDOMSixteenConfiguration = JSDOMSixteenConfiguration;
 //# sourceMappingURL=jsdom-sixteen-configuration.js.map

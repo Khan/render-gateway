@@ -4,17 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.traceImpl = void 0;
-
 var _getGatewayInfo = require("./get-gateway-info.js");
-
 var _getDelta = require("./get-delta.js");
-
 var _createLogger = require("./create-logger.js");
-
 var _kaError = _interopRequireDefault(require("./ka-error.js"));
-
 var _errors = require("./errors.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -45,8 +39,8 @@ const traceImpl = (logger, action, message, tracer) => {
   if (!action) {
     throw new _kaError.default("Must provide an action for the trace session.", _errors.Errors.Internal);
   }
-
   const logMessage = `${action}${message ? `: ${message}` : ""}`;
+
   /**
    * We are going to use the logger's profiling API (provided by winston).
    * However, we want to mark the start of the trace as it gives us some
@@ -58,17 +52,17 @@ const traceImpl = (logger, action, message, tracer) => {
    * Since this is noise in most situations, we will log this at the lowest
    * level of silly.
    */
-
   logger.silly(`TRACE ${logMessage}`);
+
   /**
    * Now we start the profiling timer.
    */
-
   const profiler = logger.startTimer();
   const beforeMemory = process.memoryUsage();
   const {
     name: gatewayName
   } = (0, _getGatewayInfo.getGatewayInfo)();
+
   /**
    * Next, if we were given a tracer, we start a trace section for this so
    * trace session so that it will appear in Stackdriver Trace.
@@ -77,34 +71,32 @@ const traceImpl = (logger, action, message, tracer) => {
    * trace which spans were created by this API and which were inserted by
    * other means.
    */
-
   const span = tracer === null || tracer === void 0 ? void 0 : tracer.createChildSpan({
     name: `${gatewayName}.${action}`
   });
   const profileLabels = {};
-
   const addLabel = (name, value) => {
     /**
      * Track this so we can also include it in our logging info.
      */
     profileLabels[name] = value;
+
     /**
      * Send this label on to the trace span.
      *
      * We disable this lint rule as the linter does not appear to
      * understand the optional chaining.
      */
-
     span === null || span === void 0 ? void 0 : span.addLabel(name, value);
   };
+
   /**
    * This is the function that we will return to our caller.
    * It can then be used to end and record the trace session.
    */
-
-
   const end = info => {
     const afterMemory = process.memoryUsage();
+
     /**
      * Add some session information to the span as labels.
      *
@@ -113,15 +105,14 @@ const traceImpl = (logger, action, message, tracer) => {
      * how to make that work.
      */
     // $FlowFixMe[incompatible-call]
-
     addLabel("/memory/delta", (0, _getDelta.getDelta)(beforeMemory, afterMemory));
     addLabel("/memory/final", afterMemory);
+
     /**
      * We need to build the metadata that we will be logging.
      * This is a combination of the given info, some custom things we add,
      * and any profile labels that were added.
      */
-
     const metadata = {
       /**
        * We have to add the default metadata because winston does not
@@ -137,33 +128,30 @@ const traceImpl = (logger, action, message, tracer) => {
       message: `TRACED ${logMessage}`,
       level: (info === null || info === void 0 ? void 0 : info.level) || "debug"
     };
+
     /**
      * Let's mark our profile as done.
      *
      * We include the session info object, but make sure to set the level
      * and message ourselves.
      */
-
     profiler.done(metadata);
+
     /**
      * If we started a tracer span, let's end it.
      *
      * We disable this lint rule as the linter does not appear to
      * understand the optional chaining.
      */
-
     span === null || span === void 0 ? void 0 : span.endSpan();
   };
-
   return {
     get action() {
       return action;
     },
-
     addLabel,
     end
   };
 };
-
 exports.traceImpl = traceImpl;
 //# sourceMappingURL=trace-impl.js.map

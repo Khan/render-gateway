@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getSecrets = void 0;
-
 var _index = require("../ka-shared/index.js");
 
 /**
@@ -16,7 +15,6 @@ const getSecrets = cryptoKeyPath => {
       return (0, _index.getGCloudSecrets)({
         cryptoKeyPath
       });
-
     default:
       /**
        * This should never get called, but I wanted to demonstrate
@@ -33,6 +31,5 @@ const getSecrets = cryptoKeyPath => {
       });
   }
 };
-
 exports.getSecrets = getSecrets;
 //# sourceMappingURL=get-secrets.js.map

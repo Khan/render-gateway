@@ -4,21 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.JSDOMSixteenResourceLoader = void 0;
-
 var _url = require("url");
-
 var _jsdom = require("jsdom");
-
 var _index = require("../../../shared/index.js");
-
 var _index2 = require("../../../ka-shared/index.js");
-
 var _request = require("../../request.js");
-
 var _applyAbortablePromisesPatch = require("./apply-abortable-promises-patch.js");
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /**
  * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
  * JSDOM that only allows for fetching JS files, and provides the ability to
@@ -38,9 +30,11 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
    * Used to indicate if any pending requests are still needed so that we
    * can report when an unused request is fulfilled.
    */
+
   static get EMPTY_RESPONSE() {
     return Promise.resolve(Buffer.from(""));
   }
+
   /**
    * Create instance of the resource loader.
    *
@@ -53,65 +47,50 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
    * to ensure additional work is done on each request within the loader
    * cycle, before the JSDOM call receives the result.
    */
-
-
   constructor(renderAPI, requestOptions = _request.DefaultRequestOptions, handleFetchResult) {
     // Patch before super to make sure promises get an abort.
     (0, _applyAbortablePromisesPatch.applyAbortablePromisesPatch)();
     super();
-
     _defineProperty(this, "_active", void 0);
-
     _defineProperty(this, "_renderAPI", void 0);
-
     _defineProperty(this, "_requestOptions", void 0);
-
     _defineProperty(this, "_agents", void 0);
-
     _defineProperty(this, "_handleFetchResult", void 0);
-
     if (renderAPI == null) {
       throw new _index.KAError("Must provide render API.", _index2.Errors.Internal);
     }
-
     this._active = true;
     this._renderAPI = renderAPI;
     this._requestOptions = requestOptions;
     this._agents = {};
     this._handleFetchResult = handleFetchResult;
   }
-
   _getAgent(url) {
     const parsedURL = new _url.URL(url);
     const agent = this._agents[parsedURL.protocol] || (0, _index.getAgentForURL)(parsedURL);
     this._agents[parsedURL.protocol] = agent;
     return agent;
   }
-
   get isActive() {
     return this._active;
   }
-
   close() {
     this._active = false;
+
     /**
      * We need to destroy any agents we created or they may retain
      * sockets that retain references to our JSDOM environment and cause
      * a memory leak.
      */
-
     for (const key of Object.keys(this._agents)) {
       this._agents[key].destroy();
-
       delete this._agents[key];
     }
   }
-
   fetch(url, options) {
     const logger = this._renderAPI.logger;
     const isInlineData = url.startsWith("data:");
     const readableURLForLogging = isInlineData ? "inline data" : url;
-
     if (!this._active) {
       /**
        * If we get here, then something is trying to fetch when our
@@ -124,63 +103,59 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
       if (!isInlineData) {
         logger.warn(`File fetch attempted after resource loader close: ${readableURLForLogging}`);
       }
+
       /**
        * Though we intentionally don't want to load this file, we can't
        * just return null per the spec as this can break promise
        * resolutions that are relying on this file. Instead, we resolve
        * as an empty string so things can tidy up properly.
        */
-
-
       return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
     }
+
     /**
      * We must still be active.
      * If this request is not a JavaScript file, we are going to return an
      * empty response as we don't care about non-JS resources.
      */
-
-
     const JSFileRegex = /^.*\.js(?:\?.*)?/g;
-
     if (!JSFileRegex.test(url)) {
       logger.silly(`EMPTY: ${readableURLForLogging}`);
+
       /**
        * Though we intentionally don't want to load this file, we can't
        * just return null per the spec as this can break promise
        * resolutions that are relying on this file. Instead, we resolve
        * as an empty string so things can tidy up properly.
        */
-
       return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
     }
+
     /**
      * This must be a JavaScript file request. Let's make a request for the
      * file and then handle it coming back.
      */
-
-
-    const abortableFetch = (0, _request.request)(logger, url, { ...this._requestOptions,
+    const abortableFetch = (0, _request.request)(logger, url, {
+      ...this._requestOptions,
       agent: this._getAgent(url)
     });
     const handleInactive = abortableFetch.then(response => {
       const {
         aborted
       } = abortableFetch;
-
       if (!this._active || aborted) {
         if (!aborted) {
           logger.info(`File requested but never used: ${readableURLForLogging}`);
         }
+
         /**
          * Just return an empty buffer so no code executes. The
          * request function passed at construction will have handled
          * caching of the real file request.
          */
-
-
         return Buffer.from("");
       }
+
       /**
        * Our requests are always buffered.
        *
@@ -191,28 +166,24 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
        *
        * Let's worry about that later.
        */
-
-
       return Buffer.from(response.text);
     });
+
     /**
      * If we have a custom handler, we now let that do work.
      */
-
     const finalResult = this._handleFetchResult == null ? handleInactive : this._handleFetchResult(handleInactive, url, options);
+
     /**
      * We have to turn this back into an abortable promise so that JSDOM
      * can abort it when closing, if it needs to.
      */
-
     finalResult.abort = abortableFetch.abort;
     Object.defineProperty(finalResult, "aborted", {
       get: () => abortableFetch.aborted
     });
     return finalResult;
   }
-
 }
-
 exports.JSDOMSixteenResourceLoader = JSDOMSixteenResourceLoader;
 //# sourceMappingURL=jsdom-sixteen-resource-loader.js.map

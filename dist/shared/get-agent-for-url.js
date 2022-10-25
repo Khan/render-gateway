@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getAgentForURL = void 0;
-
 var _errors = require("./errors.js");
-
 var _kaError = _interopRequireDefault(require("./ka-error.js"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -46,22 +43,16 @@ const getAgentForURL = url => {
   const agentOptions = {
     keepAlive: true
   };
-
   switch (url.protocol) {
     case "http:":
       const http = require("http");
-
       return new http.Agent(agentOptions);
-
     case "https:":
       const https = require("https");
-
       return new https.Agent(agentOptions);
-
     default:
       throw new _kaError.default(`Unsupported protocol: ${url.protocol}`, _errors.Errors.InvalidInput);
   }
 };
-
 exports.getAgentForURL = getAgentForURL;
 //# sourceMappingURL=get-agent-for-url.js.map

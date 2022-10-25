@@ -17,19 +17,15 @@ const getRuntimeMode = defaultMode => {
   switch (process.env.NODE_ENV) {
     case "test":
       return "test";
-
     case "production":
     case "prod":
       return "production";
-
     case "development":
     case "dev":
       return "development";
-
     default:
       return defaultMode;
   }
 };
-
 exports.getRuntimeMode = getRuntimeMode;
 //# sourceMappingURL=get-runtime-mode.js.map

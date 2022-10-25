@@ -75,30 +75,17 @@ Object.defineProperty(exports, "trace", {
     return _trace.trace;
   }
 });
-
 var _kaError = _interopRequireDefault(require("./ka-error.js"));
-
 var _errors = require("./errors.js");
-
 var _createLogger = require("./create-logger.js");
-
 var _getLogger = require("./get-logger.js");
-
 var _getGatewayInfo = require("./get-gateway-info.js");
-
 var _getRequestLogger = require("./get-request-logger.js");
-
 var _getRuntimeMode = require("./get-runtime-mode.js");
-
 var _startGateway = require("./start-gateway.js");
-
 var _trace = require("./trace.js");
-
 var _extractError = require("./extract-error.js");
-
 var _getAgentForUrl = require("./get-agent-for-url.js");
-
 var _safeHasOwnProperty = require("./safe-has-own-property.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 //# sourceMappingURL=index.js.map

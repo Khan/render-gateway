@@ -21,13 +21,12 @@ function extractError(error) {
       error
     };
   }
-
   const addPropPrimitives = (targetObj, sourceError) => {
     const props = {};
-    let addedProps = false; // This just gets any primitive (number/string/boolean/etc.) values off
+    let addedProps = false;
+    // This just gets any primitive (number/string/boolean/etc.) values off
     // the error that might be useful for diagnosing things and coerces them
     // to strings.
-
     for (const [key, value] of Object.entries(error)) {
       switch (key) {
         case "message":
@@ -38,11 +37,9 @@ function extractError(error) {
           // things like message and stack, but let's filter them
           // out just in case.
           continue;
-
         default:
           break;
       }
-
       switch (typeof value) {
         case "number":
         case "boolean":
@@ -50,26 +47,23 @@ function extractError(error) {
           addedProps = true;
           props[key] = value;
           break;
-
         default:
           // More complex things are ignored. We're not looking
           // to gather all the info.
           break;
       }
     }
-
     if (addedProps) {
       // It's OK, we want everyone else to see this as not writable,
       // but know what we're doing.
       // $FlowIgnore[cannot-write]
       targetObj.props = props;
     }
-
     return Object.freeze(targetObj);
-  }; // The error has a response property. This is the style of superagent
+  };
+
+  // The error has a response property. This is the style of superagent
   // failures which sometimes carry the response as a property.
-
-
   if (error.response && typeof error.response.error === "string") {
     const {
       response: {
@@ -80,16 +74,16 @@ function extractError(error) {
       error: errorMessage,
       stack: error.stack
     }, error);
-  } // The error references a child error, let's use that.
+  }
 
-
+  // The error references a child error, let's use that.
   if (error.error && error !== error.error) {
     return extractError(error.error);
-  } // It seems it's a regular error.
+  }
+
+  // It seems it's a regular error.
   // `toString` should give us a nice error message. If not, we can try
   // error.message.
-
-
   const errorString = error.toString();
   return addPropPrimitives({
     /**

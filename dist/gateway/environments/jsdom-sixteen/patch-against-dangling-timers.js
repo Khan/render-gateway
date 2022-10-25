@@ -18,13 +18,12 @@ const makeGate = () => {
     close: () => {
       gateOpen = false;
     },
-
     get isOpen() {
       return gateOpen;
     }
-
   };
 };
+
 /**
  * Return a function that patches timeout functions with shared warning.
  *
@@ -32,21 +31,17 @@ const makeGate = () => {
  * will only warn once if any of the patched functions invokes a callback
  * after the given gate is closed.
  */
-
-
 const makeSingleWarningPatchFn = () => {
   let warned = false;
   return (obj, fnName, gate) => {
     const old = obj[fnName];
     delete obj[fnName];
-
     obj[fnName] = (callback, ...args) => {
       const gatedCallback = () => {
         if (gate.isOpen) {
           callback();
           return;
         }
-
         if (!warned) {
           warned = true;
           /**
@@ -55,15 +50,14 @@ const makeSingleWarningPatchFn = () => {
            * Our virtual JSDOM console manages that.
            */
           // eslint-disable-next-line no-console
-
           console.warn("Dangling timer(s) detected");
         }
       };
-
       return old(gatedCallback, ...args);
     };
   };
 };
+
 /**
  * Patch the timer API to protect against dangling timers.
  *
@@ -71,32 +65,29 @@ const makeSingleWarningPatchFn = () => {
  * (gate is open), or when we should prevent them running and report dangling
  * timers (gate is closed).
  */
-
-
 const patchAgainstDanglingTimers = objToPatch => {
   /**
    * Make a gate so we can control how the timers are handled.
    * The gate is default open.
    */
   const gate = makeGate();
+
   /**
    * Get a patch function with single warning.
    * This ensures that each of the patched functions will only warn of
    * dangling timers if none of the others have warned already.
    * This keeps the log a little tidier and manageable.
    */
-
   const patchCallbackFnWithGate = makeSingleWarningPatchFn();
+
   /**
    * Patch the timer functions on window so that dangling timers don't kill
    * us when we close the window.
    */
-
   patchCallbackFnWithGate(objToPatch, "setTimeout", gate);
   patchCallbackFnWithGate(objToPatch, "setInterval", gate);
   patchCallbackFnWithGate(objToPatch, "requestAnimationFrame", gate);
   return gate;
 };
-
 exports.patchAgainstDanglingTimers = patchAgainstDanglingTimers;
 //# sourceMappingURL=patch-against-dangling-timers.js.map

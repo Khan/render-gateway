@@ -4,9 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.makeErrorMiddleware = void 0;
-
 var _expressWinston = _interopRequireDefault(require("express-winston"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -20,6 +18,5 @@ _expressWinston.default.errorLogger({
   level: "error",
   winstonInstance: logger
 });
-
 exports.makeErrorMiddleware = makeErrorMiddleware;
 //# sourceMappingURL=make-error-middleware.js.map

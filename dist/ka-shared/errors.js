@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Errors = void 0;
-
 var _index = require("../shared/index.js");
 
 /**
@@ -21,7 +20,8 @@ var _index = require("../shared/index.js");
 /**
  * @type {Errors} A utility for referencing our error taxonomy.
  */
-const Errors = Object.freeze({ ..._index.Errors,
+const Errors = Object.freeze({
+  ..._index.Errors,
   TransientKhanService: "TransientKhanService",
   KhanService: "KhanService"
 });

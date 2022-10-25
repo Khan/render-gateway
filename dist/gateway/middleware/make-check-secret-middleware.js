@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.makeCheckSecretMiddleware = makeCheckSecretMiddleware;
-
 var _index = require("../../ka-shared/index.js");
-
 var _index2 = require("../../shared/index.js");
-
 var _getSecrets = require("../get-secrets.js");
 
 const redactSecretHeader = (req, headerName) => {
@@ -19,12 +16,10 @@ const redactSecretHeader = (req, headerName) => {
   /**
    * Let's make sure that secret is gone.
    */
-
   if (req.header(headerName) != null) {
     throw new _index2.KAError("Secret header could not be redacted!", _index.Errors.NotAllowed);
   }
 };
-
 async function makeProductionMiddleware(options) {
   /**
    * We look up the secret when the middleware is created. That means
@@ -44,7 +39,6 @@ async function makeProductionMiddleware(options) {
   const secrets = await (0, _getSecrets.getSecrets)(cryptoKeyPath);
   const secret = secrets[secretKey];
   const deprecatedSecret = deprecatedSecretKey == null ? secret : secrets[deprecatedSecretKey];
-
   if (secret == null) {
     /**
      * We don't check if the deprecated secret is set or not. If it isn't
@@ -52,28 +46,24 @@ async function makeProductionMiddleware(options) {
      */
     throw new _index2.KAError("Unable to load secret", _index.Errors.NotFound);
   }
-
   return function (req, res, next) {
     const requestSecret = req.header(headerName);
+
     /**
      * We delete the header because we don't want it getting logged.
      * However, we need to be aware of the case to make sure we really do
      * delete it - headers are all lowercase in the express object.
      */
-
     redactSecretHeader(req, headerName);
-
     if (requestSecret !== secret && requestSecret !== deprecatedSecret) {
       res.status(401).send({
         error: "Missing or invalid secret"
       });
       return;
     }
-
     next();
   };
 }
-
 function makeDevelopmentMiddleware(options) {
   /**
    * The secrets middleware is a noop when not in production.
@@ -86,7 +76,6 @@ function makeDevelopmentMiddleware(options) {
      * we don't authenticate dev requests, but it is also useful to know
      * during testing if the header is missing.
      */
-
     if (options != null) {
       if (req.header(options.headerName) == null) {
         logger.warn("Authentication header was not included in request.", {
@@ -104,10 +93,10 @@ function makeDevelopmentMiddleware(options) {
     } else {
       logger.info("Authentication is not configured for this service.");
     }
-
     next();
   });
 }
+
 /**
  * Make the middleware to verify a request's authentication secret.
  *
@@ -115,13 +104,10 @@ function makeDevelopmentMiddleware(options) {
  * secret as identified by the options and then uses the configured header name
  * to identify the request header that it is to be matched against.
  */
-
-
 function makeCheckSecretMiddleware(authenticationOptions) {
   if (authenticationOptions != null && (0, _index.getRuntimeMode)() === "production") {
     return makeProductionMiddleware(authenticationOptions);
   }
-
   return makeDevelopmentMiddleware(authenticationOptions);
 }
 //# sourceMappingURL=make-check-secret-middleware.js.map

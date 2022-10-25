@@ -19,6 +19,5 @@ const getGatewayInfo = () => ({
   instance: process.env.GAE_INSTANCE || "unknown",
   pid: process.pid
 });
-
 exports.getGatewayInfo = getGatewayInfo;
 //# sourceMappingURL=get-gateway-info.js.map

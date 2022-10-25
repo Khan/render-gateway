@@ -13,7 +13,6 @@ exports.getLogLevel = void 0;
  */
 const getLogLevel = () => {
   const maybeLogLevel = process.env.KA_LOG_LEVEL;
-
   switch (maybeLogLevel) {
     case "silly":
     case "debug":
@@ -22,11 +21,9 @@ const getLogLevel = () => {
     case "warn":
     case "error":
       return maybeLogLevel;
-
     default:
       return "debug";
   }
 };
-
 exports.getLogLevel = getLogLevel;
 //# sourceMappingURL=get-log-level.js.map

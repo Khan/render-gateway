@@ -4,9 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getLogger = void 0;
-
 var _getRequestLogger = require("./get-request-logger.js");
-
 var _rootLogger = require("./root-logger.js");
 
 /**
@@ -26,6 +24,5 @@ const getLogger = request => {
   const rootLogger = (0, _rootLogger.getRootLogger)();
   return (0, _getRequestLogger.getRequestLogger)(rootLogger, request);
 };
-
 exports.getLogger = getLogger;
 //# sourceMappingURL=get-logger.js.map

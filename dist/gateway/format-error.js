@@ -19,13 +19,10 @@ exports.formatError = void 0;
  */
 const formatError = (errorFormat, errorMetadata) => {
   const formattedMetadata = JSON.stringify(errorMetadata, undefined, 4);
-
   if (errorFormat == null) {
     return formattedMetadata;
   }
-
   return errorFormat.replace("{error}", formattedMetadata);
 };
-
 exports.formatError = formatError;
 //# sourceMappingURL=format-error.js.map

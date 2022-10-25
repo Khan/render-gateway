@@ -4,13 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.startGateway = startGateway;
-
 var _useAppEngineMiddleware = require("./use-app-engine-middleware.js");
-
 var _setupStackdriver = require("./setup-stackdriver.js");
-
 var _rootLogger = require("./root-logger.js");
-
 var _errors = require("./errors.js");
 
 /**
@@ -28,25 +24,25 @@ async function startGateway(options, app) {
     mode,
     keepAliveTimeout
   } = options;
+
   /**
    * Make sure GAE_SERVICE has a value.
    *
    * If it isn't set at this point, we're not running in GAE, so we can
    * set it ourselves.
    */
-
   if (process.env.GAE_SERVICE == null) {
     process.env.GAE_SERVICE = name;
   }
+
   /**
    * Setup logging.
    * We create the root logger once and then share it via a singleton.
    * This avoids us creating a new one in each worker, which was happening
    * when we created the logger on import of `getLogger`.
    */
-
-
   (0, _rootLogger.setRootLogger)(logger);
+
   /**
    * In development mode, we include the heapdump module if it exists.
    * With this installed, `kill -USR2 <pid>` can be used to create a
@@ -54,34 +50,32 @@ async function startGateway(options, app) {
    *
    * We ignore this from coverage because we don't care enough to test it.
    */
-
   /* istanbul ignore next */
-
   if (process.env.KA_ALLOW_HEAPDUMP || mode === "development") {
     try {
       /* eslint-disable import/no-unassigned-import */
       // $FlowIgnore[cannot-resolve-module]
       require("heapdump");
       /* eslint-enable import/no-unassigned-import */
-
-
       logger.debug(`Heapdumps enabled. To create a heap snapshot at any time, run "kill -USR2 ${process.pid}".`);
-    } catch (e) {// heapdump is an optional peer dependency, so if it is absent,
+    } catch (e) {
+      // heapdump is an optional peer dependency, so if it is absent,
       // that is perfectly fine.
     }
-  } // Set up stackdriver integrations.
+  }
 
+  // Set up stackdriver integrations.
+  await (0, _setupStackdriver.setupStackdriver)(mode, options.cloudOptions);
 
-  await (0, _setupStackdriver.setupStackdriver)(mode, options.cloudOptions); // Add GAE middleware.
-
+  // Add GAE middleware.
   const appWithMiddleware = await (0, _useAppEngineMiddleware.useAppEngineMiddleware)(app, mode, logger);
+
   /**
    * Start the gateway listening.
    *
    * We need the variable so we can reference it inside the error handling
    * callback. Feels a bit nasty, but it works.
    */
-
   const gateway = appWithMiddleware.listen(port, host, err => {
     if (gateway == null || err != null) {
       logger.error(`${name} appears not to have started: ${err && err.message || "Unknown error"}`, {
@@ -89,33 +83,28 @@ async function startGateway(options, app) {
       });
       return;
     }
-
     const address = gateway.address();
-
     if (address == null || typeof address === "string") {
       logger.warn(`${name} may not have started properly: ${address}`);
       return;
     }
-
     const host = address.address;
     const port = address.port;
     logger.info(`${name} running at http://${host}:${port}`);
   });
+
   /**
    * We use keep-alive connections with other resources. These can prevent
    * the gateway process from shutting down if they are open when we're
    * trying to close. So, let's track them and provide a means for us to\
    * destroy them.
    */
-
   const connections = {};
-
   const closeConnections = () => {
     for (const connection of Object.values(connections)) {
       connection.destroy();
     }
   };
-
   gateway === null || gateway === void 0 ? void 0 : gateway.on("connection", connection => {
     const key = `${connection.remoteAddress}:${connection.remotePort}`;
     connections[key] = connection;
@@ -123,6 +112,7 @@ async function startGateway(options, app) {
       delete connections[key];
     });
   });
+
   /**
    * When this server is being run (by direct invocation, or using a process
    * manager, such as PM2), we may be asked to shutdown gracefully.
@@ -137,14 +127,11 @@ async function startGateway(options, app) {
    * If we fail to respond then the process manager may try to forcefully
    * shutdown the server after a timeout.
    */
-
   process.on("SIGINT", () => {
     if (!gateway) {
       return;
     }
-
     logger.info("SIGINT received, shutting down server.");
-
     try {
       gateway.close(err => {
         if (err) {
@@ -164,6 +151,7 @@ async function startGateway(options, app) {
       process.exit(1);
     }
   });
+
   /**
    * NOTE(somewhatabstract): We have seen many 502 BAD GATEWAY errors in
    * production Node services. It seems this is because the Node server
@@ -185,9 +173,9 @@ async function startGateway(options, app) {
    * [2] https://blog.percy.io/tuning-nginx-behind-google-cloud-platform-http-s-load-balancer-305982ddb340
    * [3] https://khanacademy.slack.com/archives/CJSE4TMQX/p1573252787333500
    */
-
   if (gateway != null) {
     gateway.keepAliveTimeout = keepAliveTimeout || 90000;
+
     /**
      * The Flow type for a Node server does not include headersTimeout.
      * However, if we don't do the following shenanigans, it puts an error
@@ -195,11 +183,9 @@ async function startGateway(options, app) {
      * just feels wrong. I tried a $FlowIgnore here, but that doesn't work,
      * it has to be suppressed above in that case.
      */
-
     const trickFlow = gateway;
     trickFlow.headersTimeout = gateway.keepAliveTimeout + 5000;
   }
-
   return gateway;
 }
 //# sourceMappingURL=start-gateway.js.map

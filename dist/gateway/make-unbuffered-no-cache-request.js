@@ -4,13 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.makeUnbufferedNoCacheRequest = void 0;
-
 var _superagent = _interopRequireDefault(require("superagent"));
-
 var _makeShouldRetry = require("./make-should-retry.js");
-
 var _index = require("../shared/index.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -36,17 +32,14 @@ const makeUnbufferedNoCacheRequest = (options, logger, url) => {
    * allow us to short circuit the retry count (the max retries still
    * takes precedence over our callback response, so we can't retry
    * forever).
-   */
-  .retry(options.retries, (0, _makeShouldRetry.makeShouldRetry)(logger, options.shouldRetry))
+   */.retry(options.retries, (0, _makeShouldRetry.makeShouldRetry)(logger, options.shouldRetry))
   /**
    * We add a user agent header so that we can easily identify our
    * requests in logs.
    *
    * The header has a form like:
    *     SERVICE_NAME_HERE (VERSION_STRING_HERE)
-   */
-  .set("User-Agent", `${name} (${version})`).timeout(options.timeout);
+   */.set("User-Agent", `${name} (${version})`).timeout(options.timeout);
 };
-
 exports.makeUnbufferedNoCacheRequest = makeUnbufferedNoCacheRequest;
 //# sourceMappingURL=make-unbuffered-no-cache-request.js.map

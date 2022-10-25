@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.handleError = void 0;
-
 var _index = require("../../shared/index.js");
-
 var _index2 = require("../../ka-shared/index.js");
-
 var _formatError = require("../format-error.js");
 
 /**
@@ -29,33 +26,32 @@ const handleError = async (overallProblem, errorHandler, defaultErrorResponse, r
   /**
    * Something went wrong. Let's report it!
    */
-
   const simplifiedError = (0, _index.extractError)(error);
+
   /**
    * We're definitely returning an error for this one.
    */
-
   res.status(500);
+
   /**
    * The calling code should handle if the original request was valid or
    * not, so we just appease flow here.
    */
-
   const requestURL = typeof req.query.url === "string" ? req.query.url : "";
+
   /**
    * Before we return the basic 500 error, let's give our configuration a
    * chance to make a nicer error page.
    */
-
   try {
     const overriddenResponse = await (errorHandler === null || errorHandler === void 0 ? void 0 : errorHandler(requestURL, req.headers, simplifiedError));
-
     if (overriddenResponse != null) {
       const {
         body,
         headers
       } = overriddenResponse;
-      logger.error(`${overallProblem}; custom error response generated`, { ...simplifiedError,
+      logger.error(`${overallProblem}; custom error response generated`, {
+        ...simplifiedError,
         requestURL,
         kind: _index2.Errors.TransientKhanService
       });
@@ -69,28 +65,29 @@ const handleError = async (overallProblem, errorHandler, defaultErrorResponse, r
      * Ouch. We should report this.
      */
     const innerError = (0, _index.extractError)(customHandlerError);
-    logger.error(`${overallProblem}; custom handler failed`, { ...innerError,
+    logger.error(`${overallProblem}; custom handler failed`, {
+      ...innerError,
       originalError: simplifiedError,
       requestURL,
       kind: _index2.Errors.TransientKhanService
     });
-    res.send((0, _formatError.formatError)(defaultErrorResponse, { ...innerError,
+    res.send((0, _formatError.formatError)(defaultErrorResponse, {
+      ...innerError,
       originalError: simplifiedError
     }));
     return;
   }
+
   /**
    * This is the default response if there was no error handler or the
    * error handler didn't provide an override response.
    */
-
-
-  logger.error(`${overallProblem}; uncaught error`, { ...simplifiedError,
+  logger.error(`${overallProblem}; uncaught error`, {
+    ...simplifiedError,
     requestURL,
     kind: _index2.Errors.TransientKhanService
   });
   res.send((0, _formatError.formatError)(defaultErrorResponse, simplifiedError));
 };
-
 exports.handleError = handleError;
 //# sourceMappingURL=handle-error.js.map

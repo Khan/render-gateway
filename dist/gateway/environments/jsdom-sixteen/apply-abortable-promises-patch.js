@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.applyAbortablePromisesPatch = void 0;
 const patchedMarker = "__patched__";
+
 /**
  * JSDOM assumes that all fetchs are abortable. However, this is not always
  * the case, due to how some can be regular promises.
@@ -17,38 +18,37 @@ const patchedMarker = "__patched__";
  * instance and we can guarantee that all truly abortable requests are actually
  * aborted.
  */
-
 const applyAbortablePromisesPatch = (force = false) => {
   /**
    * We know that this doesn't exist on the promise type, but it does if
    * we already patched it.
    */
-  if (!force && // $FlowIgnore[prop-missing]
-  Promise.prototype.abort && // $FlowIgnore[incompatible-use]
+  if (!force &&
+  // $FlowIgnore[prop-missing]
+  Promise.prototype.abort &&
+  // $FlowIgnore[incompatible-use]
   Promise.prototype.abort[patchedMarker]) {
     return;
-  } // $FlowIgnore[prop-missing]
+  }
 
-
+  // $FlowIgnore[prop-missing]
   delete Promise.prototype.abort;
+
   /**
    * Make a noop and tag it as our patched version (that way we prevent
    * patching more than once).
    */
-
-  const ourAbort = () => {}; // We know that the inferred type is wrong here and it's not worth
+  const ourAbort = () => {};
+  // We know that the inferred type is wrong here and it's not worth
   // convincing flow with a better type, so just suppress it.
   // $FlowIgnore[prop-missing]
-
-
   ourAbort[patchedMarker] = true;
+
   /**
    * $FlowIgnore[prop-missing]
    * We still know that this doesn't exist on the promise type.
    */
-
   Promise.prototype.abort = ourAbort;
 };
-
 exports.applyAbortablePromisesPatch = applyAbortablePromisesPatch;
 //# sourceMappingURL=apply-abortable-promises-patch.js.map

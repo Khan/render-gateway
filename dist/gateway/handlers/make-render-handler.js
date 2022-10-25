@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.makeRenderHandler = void 0;
-
 var _index = require("../../shared/index.js");
-
 var _index2 = require("../../ka-shared/index.js");
-
 var _handleError = require("./handle-error.js");
 
 /**
@@ -22,31 +19,26 @@ var _handleError = require("./handle-error.js");
  */
 async function renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res) {
   const logger = (0, _index.getLogger)(req);
+
   /**
    * TODO(somewhatabstract, WEB-2057): Make sure that we don't leave trace
    * sessions open on rejection (or otherwise).
    *
    * For now, we'll assume callers will tidy up.
    */
-
   const traceFn = (action, message) => (0, _index.trace)(action, message, req);
+
   /**
    * The URL being rendered is given in a query param named, url.
    */
-
-
   const renderURL = req.query.url;
-
   if (typeof renderURL !== "string") {
     if (renderURL == null) {
       throw new _index.KAError(`Missing url query param`, _index2.Errors.InvalidInput);
     }
-
     throw new _index.KAError(`More than one url query param given`, _index2.Errors.InvalidInput);
   }
-
   const traceSession = traceFn("render", `Rendering ${renderURL}`);
-
   try {
     /**
      * Put together the API we make available when rendering.
@@ -55,13 +47,14 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
       trace: traceFn,
       logger,
       // Passthrough the request headers
-      headers: { ...req.headers
+      headers: {
+        ...req.headers
       }
     };
+
     /**
      * Defer this bit to the render callback.
      */
-
     const {
       body,
       status,
@@ -69,6 +62,7 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
     } = await renderEnvironment.render(renderURL, renderAPI);
     traceSession.addLabel("/result/status", status);
     traceSession.addLabel("/result/headers", headers);
+
     /**
      * We don't do anything to the response headers other than validate
      * that redirect-type statuses include a Location header.
@@ -78,7 +72,6 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
      * - 307
      * - 308
      */
-
     if ([301, 302, 307, 308].includes(status) && headers["Location"] == null) {
       throw new _index.KAError("Render resulted in redirection status without required Location header", _index2.Errors.NotAllowed);
     }
@@ -93,8 +86,6 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
     /**
      * Finally, we set the headers, status and send the response body.
      */
-
-
     res.header(headers);
     res.status(status);
     res.send(body);
@@ -106,6 +97,7 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
     });
   }
 }
+
 /**
  * Create a render handler.
  *
@@ -116,9 +108,6 @@ async function renderHandler(renderEnvironment, errorHandler, defaultErrorRespon
  * @param {IRenderEnvironment} renderEnvironment The environment responsible for
  * performing renders.
  */
-
-
 const makeRenderHandler = (renderEnvironment, errorHandler, defaultErrorResponse) => (req, res, next) => renderHandler(renderEnvironment, errorHandler, defaultErrorResponse, req, res).finally(next);
-
 exports.makeRenderHandler = makeRenderHandler;
 //# sourceMappingURL=make-render-handler.js.map
