@@ -20,9 +20,9 @@ export function extractError(
 
     const addPropPrimitives = (
         targetObj: SimplifiedError,
-        sourceError,
+        sourceError: AmbiguousError,
     ): $ReadOnly<SimplifiedError> => {
-        const props = {};
+        const props: {...$NonMaybeType<SimplifiedError["props"]>} = {};
         let addedProps = false;
         // This just gets any primitive (number/string/boolean/etc.) values off
         // the error that might be useful for diagnosing things and coerces them

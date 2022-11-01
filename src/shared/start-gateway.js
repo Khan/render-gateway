@@ -108,7 +108,9 @@ export async function startGateway<
      * trying to close. So, let's track them and provide a means for us to\
      * destroy them.
      */
-    const connections = {};
+    const connections: {
+        [key: string]: net$Socket | tls$TLSSocket,
+    } = {};
     const closeConnections = () => {
         for (const connection of Object.values(connections)) {
             (connection: any).destroy();

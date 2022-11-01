@@ -5,7 +5,12 @@ import {
     safeHasOwnProperty,
 } from "../../../shared/index.js";
 import {Errors} from "../../../ka-shared/index.js";
-import type {Logger, ITraceSession, ICloseable} from "../../../shared/index.js";
+import type {
+    Logger,
+    ITraceSession,
+    ICloseable,
+    AmbiguousError,
+} from "../../../shared/index.js";
 import type {
     IJSDOMSixteenConfiguration,
     CloseableResourceLoader,
@@ -135,7 +140,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
              * of https://github.com/jsdom/jsdom/issues/1682
              */
             setTimeout(async () => {
-                const reportCloseableError = (e) => {
+                const reportCloseableError = (e: AmbiguousError) => {
                     // We do not want to stop closing just because something
                     // errored.
                     const simplifiedError = extractError(e);

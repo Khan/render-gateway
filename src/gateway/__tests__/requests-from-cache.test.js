@@ -88,7 +88,7 @@ describe("#asUncachedRequest", () => {
         const fakeResponse = {};
         const fakeRequest: any = Promise.resolve(fakeResponse);
         fakeRequest._abort = jest.fn();
-        fakeRequest.abort = function () {
+        fakeRequest.abort = function (this: any) {
             this._abort();
         };
         fakeRequest.buffer = jest.fn().mockReturnThis();
@@ -244,7 +244,7 @@ describe("#asCachedRequest", () => {
             use: jest.fn().mockReturnThis(),
             then: jest.fn().mockReturnValue(fakeResult),
             _abort: jest.fn(),
-            abort: function () {
+            abort: function (this: any) {
                 this._abort();
             },
         };
