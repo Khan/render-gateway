@@ -454,13 +454,15 @@ describe("JSDOMSixteenEnvironment", () => {
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const patchSpy = jest.spyOn(
@@ -507,13 +509,15 @@ describe("JSDOMSixteenEnvironment", () => {
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const fakeGate = {
@@ -560,13 +564,15 @@ describe("JSDOMSixteenEnvironment", () => {
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -617,13 +623,15 @@ describe("JSDOMSixteenEnvironment", () => {
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -674,13 +682,15 @@ describe("JSDOMSixteenEnvironment", () => {
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -738,13 +748,15 @@ describe("JSDOMSixteenEnvironment", () => {
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -795,13 +807,15 @@ window["__register__"](fakeRender);
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -860,9 +874,11 @@ window["__register__"](fakeRender);
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -915,9 +931,11 @@ window["__register__"](fakeRender);
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const fakeGate = {
@@ -980,9 +998,11 @@ window["__register__"](fakeRender);
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
@@ -1044,9 +1064,11 @@ window["__register__"](fakeRender);
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const fakeGate = {
@@ -1121,9 +1143,11 @@ window["__register__"](fakeRender);
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const fakeGate = {
@@ -1184,13 +1208,15 @@ window["__register__"](fakeRender);
                 CloseableVirtualConsole,
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
-            const fakeWindow = {};
+            const fakeWindow: any = {};
             fakeWindow.window = fakeWindow;
             const fakeJSDOM = {
                 window: vm.createContext(fakeWindow),
-                getInternalVMContext: jest.fn().mockImplementation(function () {
-                    return this.window;
-                }),
+                getInternalVMContext: jest
+                    .fn()
+                    .mockImplementation(function (this: any) {
+                        return this.window;
+                    }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
             const environment = new JSDOMSixteenEnvironment(fakeConfiguration);

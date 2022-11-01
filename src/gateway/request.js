@@ -1,5 +1,5 @@
 // @flow
-import type {Response} from "superagent";
+import type {Response, CallbackHandler} from "superagent";
 import type {RequestOptions, AbortablePromise} from "./types.js";
 import type {Logger} from "../shared/types.js";
 import {makeRequest} from "./make-request.js";
@@ -27,7 +27,7 @@ export const request = (
     options?: RequestOptions,
 ): AbortablePromise<Response> => {
     let retryCount = 0;
-    const retryTracker = (err, res) => {
+    const retryTracker: CallbackHandler = (err, res) => {
         if (err != null) {
             // Only update the count on errors.
             // This gets called even for successful requests.
