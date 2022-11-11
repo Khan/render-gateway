@@ -1146,12 +1146,12 @@
     google-gax "^2.24.1"
     protobufjs "^6.8.6"
 
-"@google-cloud/kms@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-3.0.1.tgz#2e86889f2c08f13208afc5bd272a7f25326c9f17"
-  integrity sha512-xUrhzattC5mkNqbfMcIgBzwAab9eXCYrn1R1KYUNV5E96fK7ciT57bJESaUQvin7XKd18sQcLRD+uOJ6eTfXbg==
+"@google-cloud/kms@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-3.1.0.tgz#a5e7db31a696f77a08684f0cbae9c896fa03b453"
+  integrity sha512-NWVRJ7R5ZodOyzifB7NtK9iKXH6+uXiw5UJH1pw6MkUk35xlI0fjCeU5CC9jFFPmXb/vDY60ADq9ubdzfPOfMA==
   dependencies:
-    google-gax "^3.0.1"
+    google-gax "^3.5.2"
 
 "@google-cloud/logging-min@^10.0.0":
   version "10.1.8"
@@ -4315,27 +4315,7 @@ google-gax@^2.24.1:
     protobufjs "6.11.3"
     retry-request "^4.0.0"
 
-google-gax@^3.0.1, google-gax@^3.2.2:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-3.5.0.tgz#cc49c855feb26a528c9d8dc86a3b1906a90d643e"
-  integrity sha512-OuorXXsPRYxW071Z2GH6K6DSeauNkXu8c5wdpxgJ2a9o7/fyXS4bi+UCmMFqRusluC9vAmSbu9g7y9g90LkScw==
-  dependencies:
-    "@grpc/grpc-js" "~1.6.0"
-    "@grpc/proto-loader" "^0.7.0"
-    "@types/long" "^4.0.0"
-    abort-controller "^3.0.0"
-    duplexify "^4.0.0"
-    fast-text-encoding "^1.0.3"
-    google-auth-library "^8.0.2"
-    is-stream-ended "^0.1.4"
-    node-fetch "^2.6.1"
-    object-hash "^3.0.0"
-    proto3-json-serializer "^1.0.0"
-    protobufjs "7.1.0"
-    protobufjs-cli "1.0.1"
-    retry-request "^5.0.0"
-
-google-gax@^3.3.0:
+google-gax@^3.2.2, google-gax@^3.3.0, google-gax@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/google-gax/-/google-gax-3.5.2.tgz#7c3ad61dbf366a55527b803caead276668b160d8"
   integrity sha512-AyP53w0gHcWlzxm+jSgqCR3Xu4Ld7EpSjhtNBnNhzwwWaIUyphH9kBGNIEH+i4UGkTUXOY29K/Re8EiAvkBRGw==
@@ -6588,22 +6568,6 @@ proto3-json-serializer@^1.0.0:
   dependencies:
     protobufjs "^7.0.0"
 
-protobufjs-cli@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/protobufjs-cli/-/protobufjs-cli-1.0.1.tgz#282d7b9b0fd90e72a2a61452c1f5710aacc013e2"
-  integrity sha512-d7m/aaXimDTaVvvPdU0HFwzieKJqo3x+z6iVly79jqLFyg5EmY9tl3vGbBqdytcOzT/acriOhOtB4xj3Kqixmw==
-  dependencies:
-    chalk "^4.0.0"
-    escodegen "^1.13.0"
-    espree "^9.0.0"
-    estraverse "^5.1.0"
-    glob "^8.0.0"
-    jsdoc "^3.6.3"
-    minimist "^1.2.0"
-    semver "^7.1.2"
-    tmp "^0.2.1"
-    uglify-js "^3.7.7"
-
 protobufjs-cli@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/protobufjs-cli/-/protobufjs-cli-1.0.2.tgz#905fc49007cf4aaf3c45d5f250eb294eedeea062"
@@ -6638,24 +6602,6 @@ protobufjs@6.11.3, protobufjs@^6.11.2, protobufjs@^6.11.3, protobufjs@^6.8.6, pr
     "@types/long" "^4.0.1"
     "@types/node" ">=13.7.0"
     long "^4.0.0"
-
-protobufjs@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.1.0.tgz#5174b5f96fad4f7dea7dd4abd594042ac360e665"
-  integrity sha512-rCuxKlh0UQKSMjrpIcTLbR5TtGQ52cgs1a5nUoPBAKOccdPblN67BJtjrbtudUJK6HmBvUdsmymyYOzO7lxZEA==
-  dependencies:
-    "@protobufjs/aspromise" "^1.1.2"
-    "@protobufjs/base64" "^1.1.2"
-    "@protobufjs/codegen" "^2.0.4"
-    "@protobufjs/eventemitter" "^1.1.0"
-    "@protobufjs/fetch" "^1.1.0"
-    "@protobufjs/float" "^1.0.2"
-    "@protobufjs/inquire" "^1.1.0"
-    "@protobufjs/path" "^1.1.2"
-    "@protobufjs/pool" "^1.1.0"
-    "@protobufjs/utf8" "^1.1.0"
-    "@types/node" ">=13.7.0"
-    long "^5.0.0"
 
 protobufjs@7.1.2, protobufjs@^7.0.0, protobufjs@~7.1.0:
   version "7.1.2"
