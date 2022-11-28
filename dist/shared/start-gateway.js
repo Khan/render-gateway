@@ -8,7 +8,6 @@ var _useAppEngineMiddleware = require("./use-app-engine-middleware.js");
 var _setupStackdriver = require("./setup-stackdriver.js");
 var _rootLogger = require("./root-logger.js");
 var _errors = require("./errors.js");
-
 /**
  * Start a gateway application server.
  *

@@ -11,7 +11,6 @@ var _getRuntimeMode = require("../shared/get-runtime-mode.js");
  * imported before other things like express, so we don't want to import
  * shared/index.js before that.
  */
-
 /**
  * Get the runtime mode based off process.env.NODE_ENV or KA_IS_DEV_SERVER.
  */

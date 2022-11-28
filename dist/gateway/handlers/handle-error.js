@@ -7,7 +7,6 @@ exports.handleError = void 0;
 var _index = require("../../shared/index.js");
 var _index2 = require("../../ka-shared/index.js");
 var _formatError = require("../format-error.js");
-
 /**
  * Handle an ambiguous error and determine an appropriate response.
  *

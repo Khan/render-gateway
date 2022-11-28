@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.makeAppEngineRequestIDMiddleware = makeAppEngineRequestIDMiddleware;
 var _getAppEngineRequestId = require("../get-app-engine-request-id.js");
 var _getRequestLogger = require("../get-request-logger.js");
-
 /**
  * Create a middleware that sets the log property of a request to a logger
  * that will attach the GAE requestID to the log metadata.

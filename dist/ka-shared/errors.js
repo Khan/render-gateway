@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Errors = void 0;
 var _index = require("../shared/index.js");
-
 /**
  * @typedef {Object} Errors The different errors in our error taxononomy.
  * @extends SharedErrors
@@ -16,7 +15,6 @@ var _index = require("../shared/index.js");
  * @property {ErrorKind} KhanService There was a non-transient problem when
  * contacting another Khan service.
  */
-
 /**
  * @type {Errors} A utility for referencing our error taxonomy.
  */

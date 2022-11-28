@@ -7,7 +7,6 @@ exports.setRootLogger = exports.getRootLogger = void 0;
 var _kaError = _interopRequireDefault(require("./ka-error.js"));
 var _errors = require("./errors.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 let rootLogger = null;
 const getRootLogger = () => rootLogger;
 exports.getRootLogger = getRootLogger;

@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.getLogger = void 0;
 var _getRequestLogger = require("./get-request-logger.js");
 var _rootLogger = require("./root-logger.js");
-
 /**
  * Get the logger to use in the current context.
  *

@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.patchAgainstDanglingTimers = void 0;
-
 /**
  * Make a gate that can be open and closed.
  * Default open.

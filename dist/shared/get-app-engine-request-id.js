@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getAppEngineRequestID = void 0;
-
 /**
  * Get the GAE request ID for a given request if it exists.
  */

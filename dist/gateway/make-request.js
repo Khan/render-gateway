@@ -7,7 +7,6 @@ exports.makeRequest = void 0;
 var _isCacheable = require("./is-cacheable.js");
 var _makeUnbufferedNoCacheRequest = require("./make-unbuffered-no-cache-request.js");
 var _requestsFromCache = require("./requests-from-cache.js");
-
 /**
  * Make a request for a given URL
  *

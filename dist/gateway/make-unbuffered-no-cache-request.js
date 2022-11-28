@@ -8,7 +8,6 @@ var _superagent = _interopRequireDefault(require("superagent"));
 var _makeShouldRetry = require("./make-should-retry.js");
 var _index = require("../shared/index.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Make a request for a given URL without buffering or caching.
  *

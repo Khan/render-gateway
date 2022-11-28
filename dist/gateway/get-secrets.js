@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getSecrets = void 0;
 var _index = require("../ka-shared/index.js");
-
 /**
  * Get the secrets table for the service.
  */

@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.extractError = extractError;
-
 /**
  * Extract the root cause error from an ambiguous error.
  *

@@ -7,11 +7,9 @@ exports.readFile = void 0;
 var _fs = _interopRequireDefault(require("fs"));
 var _util = require("util");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Utilities for reading secrets from secrets files.
  */
-
 /**
  * Read file.
  *

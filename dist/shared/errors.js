@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Errors = void 0;
-
 /**
  * @typedef {Object} Errors The different errors in our error taxononomy.
  *
@@ -40,7 +39,6 @@ exports.Errors = void 0;
  * @property {ErrorKind} Service There was a non-transient problem when making
  * a request to a non-Khan service, e.g. datastore.
  */
-
 /**
  * @type {Errors} A utility for referencing our error taxonomy.
  *

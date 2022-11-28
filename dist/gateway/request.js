@@ -7,7 +7,6 @@ exports.request = exports.DefaultRequestOptions = void 0;
 var _makeRequest = require("./make-request.js");
 var _requestsFromCache = require("./requests-from-cache.js");
 var _index = require("../shared/index.js");
-
 /**
  * The defaults used for request options.
  */

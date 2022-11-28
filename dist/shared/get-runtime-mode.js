@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getRuntimeMode = void 0;
-
 /**
  * Determine the node runtime mode.
  *

@@ -10,7 +10,6 @@ var _createLogger = require("./create-logger.js");
 var _kaError = _interopRequireDefault(require("./ka-error.js"));
 var _errors = require("./errors.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Start tracing an event.
  *

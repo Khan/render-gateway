@@ -7,7 +7,6 @@ exports.makeRenderHandler = void 0;
 var _index = require("../../shared/index.js");
 var _index2 = require("../../ka-shared/index.js");
 var _handleError = require("./handle-error.js");
-
 /**
  * Handle a request as a render.
  *

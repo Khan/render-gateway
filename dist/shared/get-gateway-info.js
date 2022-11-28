@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getGatewayInfo = void 0;
-
 /**
  * Get info about the running gateway.
  *

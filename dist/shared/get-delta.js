@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getDelta = void 0;
-
 const getDelta = (first, second) => {
   const result = {};
   for (const key of Object.keys(first)) {

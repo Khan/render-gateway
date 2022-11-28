@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.formatError = void 0;
-
 /**
  * Format error metadata into a given error format string.
  *

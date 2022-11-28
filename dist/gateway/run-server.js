@@ -12,7 +12,6 @@ var _makeCheckSecretMiddleware = require("./middleware/make-check-secret-middlew
 var _logRequestInfoMiddleware = require("./middleware/log-request-info-middleware.js");
 var _makeRenderHandler = require("./handlers/make-render-handler.js");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Run the render-gateway server using the provided options.
  *

@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.getLogLevel = void 0;
-
 /**
  * Determine the level at which to log.
  *

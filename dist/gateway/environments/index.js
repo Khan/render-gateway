@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Environments = void 0;
 var _index = require("./jsdom-sixteen/index.js");
-
 const Environments = {
   JSDOMSixteen: _index.JSDOMSixteen
 };

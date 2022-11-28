@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.getResponseSource = exports.asUncachedRequest = exports.asCachedRequest = exports.CACHE_ID_PROP_NAME = void 0;
 var _index = require("../shared/index.js");
 var _index2 = require("../ka-shared/index.js");
-
 /**
  * This is the name of the property we attach to responses so that we can
  * indicate if a response was from the cache or not.

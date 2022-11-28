@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.makeShouldRetry = void 0;
 var _index = require("../shared/index.js");
-
 /**
  * Create a shouldRetry callback for use with superagent's retry() method.
  *

@@ -7,7 +7,6 @@ exports.makeCheckSecretMiddleware = makeCheckSecretMiddleware;
 var _index = require("../../ka-shared/index.js");
 var _index2 = require("../../shared/index.js");
 var _getSecrets = require("../get-secrets.js");
-
 const redactSecretHeader = (req, headerName) => {
   /**
    * We delete the header because we don't want it getting logged.
