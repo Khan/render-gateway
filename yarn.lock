@@ -2473,10 +2473,10 @@ babel-preset-jest@^29.2.0:
     babel-plugin-jest-hoist "^29.2.0"
     babel-preset-current-node-syntax "^1.0.0"
 
-babel-watch@^7.7.0:
-  version "7.7.0"
-  resolved "https://registry.yarnpkg.com/babel-watch/-/babel-watch-7.7.0.tgz#a87083cdfe8bc38d3905bfb64814d3480c53877f"
-  integrity sha512-PKytGmhgXWcNmNK+Y0fEQ/0+re8jDVAAppL1JGqdPKihab2siG5dzbM1dnKXvn0VWOW1ybJjiW+dDb6nV0S1KA==
+babel-watch@^7.7.1:
+  version "7.7.1"
+  resolved "https://registry.yarnpkg.com/babel-watch/-/babel-watch-7.7.1.tgz#ed2edeef6ee76cb78a1e945ebeec08f82cc68587"
+  integrity sha512-BpKRanE9Zjt2XXhz4xspgWUqOg5HKR1mc8Bz0HnQ061uP1vVc0GSCnhxogwx4W18WVA+yaG0vRWxELwHeURejw==
   dependencies:
     chalk "^4.1.0"
     chokidar "^3.4.3"
@@ -2485,6 +2485,7 @@ babel-watch@^7.7.0:
     lodash.debounce "^4.0.8"
     lodash.isregexp "^4.0.1"
     lodash.isstring "^4.0.1"
+    signal-exit "^2.1.2"
     source-map-support "^0.5.19"
     string-argv "^0.3.1"
 
@@ -7136,6 +7137,11 @@ side-channel@^1.0.4:
     call-bind "^1.0.0"
     get-intrinsic "^1.0.2"
     object-inspect "^1.9.0"
+
+signal-exit@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-2.1.2.tgz#375879b1f92ebc3b334480d038dc546a6d558564"
+  integrity sha512-Hjt8MofEmj5vFgJ5vnad1V8msp7lJg/gdBP7fOmEnlgeUYkg9ntdQEzBPMc0sjJf6MVkBALNSo/KvfVn34MIwQ==
 
 signal-exit@^3.0.0, signal-exit@^3.0.2, signal-exit@^3.0.3, signal-exit@^3.0.7:
   version "3.0.7"
