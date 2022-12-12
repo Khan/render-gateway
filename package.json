@@ -69,7 +69,7 @@
     ]
   },
   "dependencies": {
-    "@google-cloud/debug-agent": "^7.1.1",
+    "@google-cloud/debug-agent": "^7.2.0",
     "@google-cloud/kms": "^3.1.0",
     "@google-cloud/logging-winston": "^5.2.3",
     "@google-cloud/profiler": "^5.0.3",
