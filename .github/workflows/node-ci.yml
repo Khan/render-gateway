@@ -172,7 +172,7 @@ jobs:
     steps:
     - uses: webfactory/ssh-agent@v0.4.1
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.KHAN_ACTIONS_BOT_SSH_PRIVATE_KEY }}
     - name: Clone repository
       run: git clone git@github.com:Khan/render-gateway.git .
 
