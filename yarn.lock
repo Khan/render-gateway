@@ -1147,10 +1147,10 @@
     google-gax "^2.24.1"
     protobufjs "^6.8.6"
 
-"@google-cloud/kms@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-3.1.0.tgz#a5e7db31a696f77a08684f0cbae9c896fa03b453"
-  integrity sha512-NWVRJ7R5ZodOyzifB7NtK9iKXH6+uXiw5UJH1pw6MkUk35xlI0fjCeU5CC9jFFPmXb/vDY60ADq9ubdzfPOfMA==
+"@google-cloud/kms@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-3.2.0.tgz#da17ec2261e03d9bb8068938bb4288e3de49a6e0"
+  integrity sha512-n/SMnNHatFnAZRKaoUq1wjWqvYTcjGbKGZKizRA+y42E2Zn9P8SBioThfhTpjqI0pP+JYad49qI6EsuiI1TTkA==
   dependencies:
     google-gax "^3.5.2"
 
