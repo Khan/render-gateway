@@ -1031,7 +1031,7 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@fastify/busboy@^1.1.0":
+"@fastify/busboy@1.1.0", "@fastify/busboy@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-1.1.0.tgz#4472f856e2bb5a9ee34ad64b93891b73b73537ca"
   integrity sha512-Fv854f94v0CzIDllbY3i/0NJPNBRNLDawf3BTYVGCe9VrIIs3Wi7AFx24F9NzCxdf0wyx/x0Q9kEVnvDOPnlxA==
@@ -1117,11 +1117,12 @@
     retry-request "^5.0.0"
     teeny-request "^8.0.0"
 
-"@google-cloud/debug-agent@^7.2.1":
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-7.2.1.tgz#7764bef96fa6fce906c75b3850349736ef66e243"
-  integrity sha512-LZm/cfEqC143BzQYucwhjGnIsVEJ3QOHtSFpiftlbMPLaXWtjwxAwu9xx7fPTAURR6vTxv1SFPr3iAPskcR/Zw==
+"@google-cloud/debug-agent@^7.2.2":
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/@google-cloud/debug-agent/-/debug-agent-7.2.2.tgz#e8b0f8c0cf1f137ee2d71a3de0f2848e2dedf188"
+  integrity sha512-yo0apMSG5/d2l2EokYSbv8skZrS/BJxX7AQlT6LPUVeNQkjm80kTjHQ2nDcX4RkJbSllk2qgMJIjrGuLav8AYA==
   dependencies:
+    "@fastify/busboy" "1.1.0"
     "@google-cloud/common" "^4.0.0"
     acorn "^8.0.0"
     coffeescript "^2.0.0"
