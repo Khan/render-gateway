@@ -1221,10 +1221,10 @@
     arrify "^2.0.0"
     extend "^3.0.2"
 
-"@google-cloud/profiler@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@google-cloud/profiler/-/profiler-5.0.3.tgz#498eae4232c71884a7da5bd67381e9566feb17a4"
-  integrity sha512-ivO33ZdzRZiUURXvkhYRF+kedpG7GFq8De8894/iFhWLpBYTFMGy6cvZak2g/GdJOZr5bhMeAhADU2KYjxJ+BA==
+"@google-cloud/profiler@^5.0.4":
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/@google-cloud/profiler/-/profiler-5.0.4.tgz#116f6cb2a7ab3c74436c41a2c3a4f3748075491c"
+  integrity sha512-Tdsl5ApOBeyhklkj/g2steHij5YBNJjWI39HqLZwhpHJwMuDmk3HV8IBqgU5x8+/qbkS+RKi1L5JsmNU7W4Rwg==
   dependencies:
     "@google-cloud/common" "^4.0.0"
     "@google-cloud/logging-min" "^10.0.0"
@@ -1237,7 +1237,7 @@
     parse-duration "^1.0.0"
     pprof "3.2.0"
     pretty-ms "^7.0.0"
-    protobufjs "~7.1.0"
+    protobufjs "~7.2.0"
     semver "^7.0.0"
     teeny-request "^8.0.0"
 
@@ -6800,10 +6800,28 @@ protobufjs@6.11.3, protobufjs@^6.11.2, protobufjs@^6.11.3, protobufjs@^6.8.6, pr
     "@types/node" ">=13.7.0"
     long "^4.0.0"
 
-protobufjs@7.1.2, protobufjs@^7.0.0, protobufjs@~7.1.0:
+protobufjs@7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.1.2.tgz#a0cf6aeaf82f5625bffcf5a38b7cd2a7de05890c"
   integrity sha512-4ZPTPkXCdel3+L81yw3dG6+Kq3umdWKh7Dc7GW/CpNk4SX3hK58iPCWeCyhVTDrbkNeKrYNZ7EojM5WDaEWTLQ==
+  dependencies:
+    "@protobufjs/aspromise" "^1.1.2"
+    "@protobufjs/base64" "^1.1.2"
+    "@protobufjs/codegen" "^2.0.4"
+    "@protobufjs/eventemitter" "^1.1.0"
+    "@protobufjs/fetch" "^1.1.0"
+    "@protobufjs/float" "^1.0.2"
+    "@protobufjs/inquire" "^1.1.0"
+    "@protobufjs/path" "^1.1.2"
+    "@protobufjs/pool" "^1.1.0"
+    "@protobufjs/utf8" "^1.1.0"
+    "@types/node" ">=13.7.0"
+    long "^5.0.0"
+
+protobufjs@^7.0.0, protobufjs@~7.2.0:
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.2.2.tgz#2af401d8c547b9476fb37ffc65782cf302342ca3"
+  integrity sha512-++PrQIjrom+bFDPpfmqXfAGSQs40116JRrqqyf53dymUMvvb5d/LMRyicRoF1AUKoXVS1/IgJXlEgcpr4gTF3Q==
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"
