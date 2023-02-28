@@ -6,7 +6,7 @@ import {getSecrets} from "../get-secrets.js";
 
 import type {AuthenticationOptions, Request} from "../types.js";
 
-const redactSecretHeader = <Req: Request>(req: Req, headerName: string) => {
+function redactSecretHeader<Req: Request>(req: Req, headerName: string): void {
     /**
      * We delete the header because we don't want it getting logged.
      */
@@ -20,7 +20,7 @@ const redactSecretHeader = <Req: Request>(req: Req, headerName: string) => {
             Errors.NotAllowed,
         );
     }
-};
+}
 
 async function makeProductionMiddleware<Req: Request, Res: $Response>(
     options: AuthenticationOptions,
