@@ -76,7 +76,6 @@ describe("#start-gateway", () => {
         // Arrange
         const options = {
             cloudOptions: {
-                debugAgent: false,
                 profiler: false,
             },
             name: "TEST_GATEWAY",

@@ -12,11 +12,6 @@ export const setupStackdriver = async (
         return;
     }
 
-    if (options?.debugAgent) {
-        const debugAgent = await import("@google-cloud/debug-agent");
-        debugAgent.start({allowExpressions: true});
-    }
-
     if (options?.profiler) {
         const profiler = await import("@google-cloud/profiler");
         profiler.start();
