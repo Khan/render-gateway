@@ -7,7 +7,7 @@ exports.makeCheckSecretMiddleware = makeCheckSecretMiddleware;
 var _index = require("../../ka-shared/index.js");
 var _index2 = require("../../shared/index.js");
 var _getSecrets = require("../get-secrets.js");
-const redactSecretHeader = (req, headerName) => {
+function redactSecretHeader(req, headerName) {
   /**
    * We delete the header because we don't want it getting logged.
    */
@@ -18,7 +18,7 @@ const redactSecretHeader = (req, headerName) => {
   if (req.header(headerName) != null) {
     throw new _index2.KAError("Secret header could not be redacted!", _index.Errors.NotAllowed);
   }
-};
+}
 async function makeProductionMiddleware(options) {
   /**
    * We look up the secret when the middleware is created. That means
