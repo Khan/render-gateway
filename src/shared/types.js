@@ -33,7 +33,6 @@ export type LogLevel = $Keys<NpmLogLevels>;
 export type Logger = WinstonLogger<NpmLogLevels>;
 
 export type CloudOptions = {
-    +debugAgent?: boolean,
     +profiler?: boolean,
 };
 
