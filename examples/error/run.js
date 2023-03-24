@@ -8,8 +8,8 @@
  * NOTE: We import everything from index.js to ensure we're testing the public
  * interface of this package.
  */
-const {runServer} = require("../../src/gateway/index.js");
-/*:: import type {RenderAPI, RenderResult} from "../../src/gateway/index.js"; */
+const {runServer} = require("../../src/index.js");
+/*:: import type {RenderAPI, RenderResult} from "../../src/index.js"; */
 
 async function main() {
     const renderEnvironment = {
@@ -24,7 +24,11 @@ async function main() {
         name: "DEV_LOCAL",
         port: 8080,
         host: "127.0.0.1",
-
+        authentication: {
+            headerName: "IGNORED",
+            cryptoKeyPath: "IGNORED",
+            secretKey: "IGNORED",
+        },
         renderEnvironment,
     });
 }
