@@ -18,21 +18,6 @@ export type ErrorKind = $Values<Errors>;
 export opaque type SecretString = string;
 
 /**
- * A named secret and its value.
- */
-export type Secret = {
-    /**
-     * The name of the secret.
-     */
-    name: string,
-
-    /**
-     * The secret. 🤫ssshhhhh!
-     */
-    value: SecretString,
-};
-
-/**
  * A collection of secrets keyed by their names.
  */
 export type Secrets = {[string]: SecretString, ...};
