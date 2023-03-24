@@ -73,6 +73,7 @@ export const runServer = async (
             requestAuthentication: await getRequestAuthentication(
                 authentication,
             ),
+            allowHeapDumps: process.env.KA_ALLOW_HEAPDUMP === "1",
         },
         app,
     );
