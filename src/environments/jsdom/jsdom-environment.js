@@ -5,7 +5,7 @@ import type {Logger, ITraceSession} from "@khanacademy/wonder-stuff-server";
 import {safeHasOwnProperty} from "../../safe-has-own-property.js";
 import {extractError} from "../../extract-error.js";
 import type {
-    IJSDOMSixteenConfiguration,
+    IJSDOMConfiguration,
     CloseableResourceLoader,
     IGate,
     ICloseable,
@@ -49,16 +49,16 @@ const MinimalPage = "<!DOCTYPE html><html><head></head><body></body></html>";
 /**
  * A render environment built to support the JSDOM 16.x API.
  */
-export class JSDOMSixteenEnvironment implements IRenderEnvironment {
-    _configuration: IJSDOMSixteenConfiguration;
+export class JSDOMEnvironment implements IRenderEnvironment {
+    _configuration: IJSDOMConfiguration;
 
     /**
      * Create a new instance of this environment.
      *
-     * @param {IJSDOMSixteenConfiguration} configuration
+     * @param {IJSDOMConfiguration} configuration
      * Configuration for the environment.
      */
-    constructor(configuration: IJSDOMSixteenConfiguration) {
+    constructor(configuration: IJSDOMConfiguration) {
         if (configuration == null) {
             throw new KindError(
                 "Must provide environment configuration",
@@ -79,7 +79,7 @@ export class JSDOMSixteenEnvironment implements IRenderEnvironment {
     ): Promise<JavaScriptFiles> => {
         const traceSession: ITraceSession = renderAPI.trace(
             "JSDOM16._retrieveTargetFiles",
-            `JSDOMSixteenEnvironment retrieving files`,
+            `JSDOMEnvironment retrieving files`,
         );
         try {
             /**

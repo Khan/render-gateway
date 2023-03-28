@@ -4,12 +4,12 @@ import * as JSDOM from "jsdom";
 
 import * as ApplyAbortablePromisesPatch from "../apply-abortable-promises-patch.js";
 
-import {JSDOMSixteenFileResourceLoader} from "../jsdom-sixteen-file-resource-loader.js";
+import {JSDOMFileResourceLoader} from "../jsdom-file-resource-loader.js";
 
 jest.mock("jsdom");
 jest.mock("../apply-abortable-promises-patch.js");
 
-describe("JSDOMSixteenFileResourceLoader", () => {
+describe("JSDOMFileResourceLoader", () => {
     describe("#constructor", () => {
         it("should invoke applyAbortablePromisesPatch before super()", () => {
             // Arrange
@@ -21,7 +21,7 @@ describe("JSDOMSixteenFileResourceLoader", () => {
 
             // Act
             // eslint-disable-next-line no-new
-            new JSDOMSixteenFileResourceLoader(__dirname);
+            new JSDOMFileResourceLoader(__dirname);
 
             // Assert
             expect(applyAbortablePromisesPatchSpy).toHaveBeenCalledBefore(
@@ -33,8 +33,7 @@ describe("JSDOMSixteenFileResourceLoader", () => {
             // Arrange
 
             // Act
-            const underTest = () =>
-                new JSDOMSixteenFileResourceLoader((null: any));
+            const underTest = () => new JSDOMFileResourceLoader((null: any));
 
             // Assert
             expect(underTest).toThrowErrorMatchingInlineSnapshot(
@@ -52,7 +51,7 @@ describe("JSDOMSixteenFileResourceLoader", () => {
             ),
         ])("should read file", async (filePath) => {
             // Arrange
-            const underTest = new JSDOMSixteenFileResourceLoader(__dirname);
+            const underTest = new JSDOMFileResourceLoader(__dirname);
 
             // Act
             const result: any = await underTest.fetch(filePath);

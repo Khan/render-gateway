@@ -1,8 +1,8 @@
 // @flow
-import {JSDOMSixteen} from "./jsdom-sixteen/index.js";
+import {JSDOM} from "./jsdom/index.js";
 
-export type * from "./jsdom-sixteen/index.js";
+export type * from "./jsdom/index.js";
 
 export const Environments = {
-    JSDOMSixteen,
+    JSDOM,
 };

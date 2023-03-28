@@ -3,13 +3,13 @@ import vm from "vm";
 import * as JSDOM from "jsdom";
 import * as CloseableVirtualConsole from "../closeable-virtual-console.js";
 import * as PatchAgainstDanglingTimers from "../patch-against-dangling-timers.js";
-import {JSDOMSixteenEnvironment} from "../jsdom-sixteen-environment.js";
+import {JSDOMEnvironment} from "../jsdom-environment.js";
 
 jest.mock("jsdom");
 jest.mock("../closeable-virtual-console.js");
 jest.mock("../patch-against-dangling-timers.js");
 
-describe("JSDOMSixteenEnvironment", () => {
+describe("JSDOMEnvironment", () => {
     beforeEach(() => {
         jest.useRealTimers();
     });
@@ -19,7 +19,7 @@ describe("JSDOMSixteenEnvironment", () => {
             // Arrange
 
             // Act
-            const underTest = () => new JSDOMSixteenEnvironment((null: any));
+            const underTest = () => new JSDOMEnvironment((null: any));
 
             // Assert
             expect(underTest).toThrowErrorMatchingInlineSnapshot(
@@ -47,7 +47,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 getResourceLoader: jest.fn(),
                 afterEnvSetup: jest.fn(),
             };
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -86,7 +86,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 getResourceLoader: jest.fn().mockReturnValue(fakeLoader),
                 afterEnvSetup: jest.fn(),
             };
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -126,7 +126,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 getResourceLoader: jest.fn().mockReturnValue(fakeLoader),
                 afterEnvSetup: jest.fn(),
             };
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
             try {
                 await underTest.render("URL", fakeRenderAPI);
             } catch (e) {
@@ -163,7 +163,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 getResourceLoader: jest.fn(),
                 afterEnvSetup: jest.fn(),
             };
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -207,7 +207,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     .mockReturnValue(fakeResourceLoader),
                 afterEnvSetup: jest.fn(),
             };
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -247,7 +247,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     .mockReturnValue(fakeResourceLoader),
                 afterEnvSetup: jest.fn(),
             };
-            const env = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const env = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const underTest = env.render("URL", fakeRenderAPI);
@@ -281,7 +281,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     .mockReturnValue(fakeResourceLoader),
                 afterEnvSetup: jest.fn(),
             };
-            const env = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const env = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             await env.render("URL", fakeRenderAPI).catch(() => {
@@ -321,7 +321,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     .mockReturnValue(fakeResourceLoader),
                 afterEnvSetup: jest.fn(),
             };
-            const env = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const env = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -362,7 +362,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 "CloseableVirtualConsole",
             ).mockImplementation(() => ({fakeConsole: "FAKE_CONSOLE"}));
             const jsdomSpy = jest.spyOn(JSDOM, "JSDOM");
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -419,7 +419,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 getInternalVMContext: jest.fn().mockReturnValue(fakeWindow),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const underTest = environment.render("URL", fakeRenderAPI);
@@ -469,7 +469,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 PatchAgainstDanglingTimers,
                 "patchAgainstDanglingTimers",
             );
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -527,7 +527,7 @@ describe("JSDOMSixteenEnvironment", () => {
                 PatchAgainstDanglingTimers,
                 "patchAgainstDanglingTimers",
             ).mockReturnValue(fakeGate);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const underTest = environment.render("URL", fakeRenderAPI);
@@ -575,7 +575,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const underTest = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const underTest = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -634,7 +634,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const underTest = environment.render("URL", fakeRenderAPI);
@@ -693,7 +693,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             try {
@@ -759,7 +759,7 @@ describe("JSDOMSixteenEnvironment", () => {
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const underTest = environment.render("URL", fakeRenderAPI);
@@ -818,7 +818,7 @@ window["__register__"](fakeRender);
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const result = await environment.render("URL", fakeRenderAPI);
@@ -881,7 +881,7 @@ window["__register__"](fakeRender);
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             await environment.render("URL", fakeRenderAPI);
@@ -945,7 +945,7 @@ window["__register__"](fakeRender);
                 PatchAgainstDanglingTimers,
                 "patchAgainstDanglingTimers",
             ).mockReturnValue(fakeGate);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             await environment.render("URL", fakeRenderAPI);
@@ -1005,7 +1005,7 @@ window["__register__"](fakeRender);
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             await environment.render("URL", fakeRenderAPI);
@@ -1078,7 +1078,7 @@ window["__register__"](fakeRender);
                 PatchAgainstDanglingTimers,
                 "patchAgainstDanglingTimers",
             ).mockReturnValue(fakeGate);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             await environment.render("URL", fakeRenderAPI);
@@ -1157,7 +1157,7 @@ window["__register__"](fakeRender);
                 PatchAgainstDanglingTimers,
                 "patchAgainstDanglingTimers",
             ).mockReturnValue(fakeGate);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             await environment.render("URL", fakeRenderAPI);
@@ -1219,7 +1219,7 @@ window["__register__"](fakeRender);
                     }),
             };
             jest.spyOn(JSDOM, "JSDOM").mockReturnValue(fakeJSDOM);
-            const environment = new JSDOMSixteenEnvironment(fakeConfiguration);
+            const environment = new JSDOMEnvironment(fakeConfiguration);
 
             // Act
             const underTest = environment.render("URL", fakeRenderAPI);

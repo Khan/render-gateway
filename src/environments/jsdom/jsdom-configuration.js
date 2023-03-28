@@ -1,17 +1,16 @@
 // @flow
 import {KindError, Errors} from "@khanacademy/wonder-stuff-core";
 import type {
-    IJSDOMSixteenConfiguration,
+    IJSDOMConfiguration,
     CloseableResourceLoader,
     ICloseable,
 } from "./types.js";
 import type {RenderAPI} from "../../types.js";
 
 /**
- * Utility for creating a valid configuration to use with the JSDOM Sixteen
- * environment.
+ * Utility for creating a valid configuration to use with the JSDOM environment.
  */
-export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
+export class JSDOMConfiguration implements IJSDOMConfiguration {
     +registrationCallbackName: string;
     +getFileList: (
         url: string,
@@ -30,7 +29,7 @@ export class JSDOMSixteenConfiguration implements IJSDOMSixteenConfiguration {
     ) => Promise<?ICloseable>;
 
     /**
-     * Create a configuration for use with the JSDOM Sixteen environment.
+     * Create a configuration for use with the JSDOM  environment.
      *
      * @param {(url: string, renderAPI: RenderAPI) => Promise<Array<string>>} getFileList
      * Callback that should return a promise for the list of JavaScript files

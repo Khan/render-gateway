@@ -10,10 +10,9 @@ import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 const readFileAsync = promisify(fs.readFile);
 
 /**
- * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
- * JSDOM that loads files from disk.
+ * A ResourceLoader implementation for JSDOM that loads files from disk.
  */
-export class JSDOMSixteenFileResourceLoader extends ResourceLoader {
+export class JSDOMFileResourceLoader extends ResourceLoader {
     _rootFolder: string;
 
     /**

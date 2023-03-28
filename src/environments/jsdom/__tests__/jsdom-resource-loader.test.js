@@ -5,14 +5,14 @@ import * as WSServer from "@khanacademy/wonder-stuff-server";
 import * as Request from "../../../request.js";
 import * as ApplyAbortablePromisesPatch from "../apply-abortable-promises-patch.js";
 
-import {JSDOMSixteenResourceLoader} from "../jsdom-sixteen-resource-loader.js";
+import {JSDOMResourceLoader} from "../jsdom-resource-loader.js";
 
 jest.mock("jsdom");
 jest.mock("@khanacademy/wonder-stuff-server");
 jest.mock("../../../request.js");
 jest.mock("../apply-abortable-promises-patch.js");
 
-describe("JSDOMSixteenResourceLoader", () => {
+describe("JSDOMResourceLoader", () => {
     describe("#constructor", () => {
         it("should invoke applyAbortablePromisesPatch before super()", () => {
             // Arrange
@@ -25,7 +25,7 @@ describe("JSDOMSixteenResourceLoader", () => {
 
             // Act
             // eslint-disable-next-line no-new
-            new JSDOMSixteenResourceLoader(fakeRenderAPI);
+            new JSDOMResourceLoader(fakeRenderAPI);
 
             // Assert
             expect(applyAbortablePromisesPatchSpy).toHaveBeenCalledBefore(
@@ -37,7 +37,7 @@ describe("JSDOMSixteenResourceLoader", () => {
             // Arrange
 
             // Act
-            const underTest = () => new JSDOMSixteenResourceLoader((null: any));
+            const underTest = () => new JSDOMResourceLoader((null: any));
 
             // Assert
             expect(underTest).toThrowErrorMatchingInlineSnapshot(
@@ -48,7 +48,7 @@ describe("JSDOMSixteenResourceLoader", () => {
         it("should initialize isActive to true", () => {
             // Arrange
             const fakeRenderAPI: any = {};
-            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+            const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
             // Act
             const result = underTest.isActive;
@@ -63,7 +63,7 @@ describe("JSDOMSixteenResourceLoader", () => {
             // Arrange
 
             // Act
-            const result = await JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+            const result = await JSDOMResourceLoader.EMPTY_RESPONSE;
 
             // Assert
             expect(result).toBeInstanceOf(Buffer);
@@ -75,7 +75,7 @@ describe("JSDOMSixteenResourceLoader", () => {
         it("should set isActive to false", () => {
             // Arrange
             const fakeRenderAPI: any = {};
-            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+            const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
             // Act
             underTest.close();
@@ -98,7 +98,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 destroy: jest.fn(),
             };
             jest.spyOn(WSServer, "getAgentForURL").mockReturnValue(fakeAgent);
-            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+            const underTest = new JSDOMResourceLoader(fakeRenderAPI);
             underTest.fetch("http://example.com/test.js?p=1");
 
             // Act
@@ -118,14 +118,14 @@ describe("JSDOMSixteenResourceLoader", () => {
                         silly: jest.fn(),
                     },
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                 // Act
                 const result = underTest.fetch("http://example.com/test.png");
 
                 // Assert
                 expect(result).toStrictEqual(
-                    JSDOMSixteenResourceLoader.EMPTY_RESPONSE,
+                    JSDOMResourceLoader.EMPTY_RESPONSE,
                 );
             });
 
@@ -137,7 +137,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                         silly: jest.fn(),
                     },
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                 // Act
                 underTest.fetch("http://example.com/test.png");
@@ -164,7 +164,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 jest.spyOn(WSServer, "getAgentForURL").mockReturnValue(
                     fakeAgent,
                 );
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                 // Act
                 underTest.fetch("http://example.com/test.js?p=1");
@@ -195,7 +195,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const fakeRenderAPI: any = {
                     logger: fakeLogger,
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                 // Act
                 const result: any = underTest.fetch(
@@ -222,7 +222,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const fakeRenderAPI: any = {
                     logger: fakeLogger,
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                 // Act
                 const result: any = underTest.fetch(
@@ -243,7 +243,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const fakeRenderAPI: any = {
                     logger: fakeLogger,
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                 // Act
                 const result: any = await underTest.fetch(
@@ -271,7 +271,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const customHandler = jest
                     .fn()
                     .mockResolvedValue(Buffer.from("CUSTOM"));
-                const underTest = new JSDOMSixteenResourceLoader(
+                const underTest = new JSDOMResourceLoader(
                     fakeRenderAPI,
                     undefined,
                     customHandler,
@@ -307,7 +307,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                 const customHandler = jest
                     .fn()
                     .mockResolvedValue(Buffer.from("CUSTOM"));
-                const underTest = new JSDOMSixteenResourceLoader(
+                const underTest = new JSDOMResourceLoader(
                     fakeRenderAPI,
                     undefined,
                     customHandler,
@@ -344,9 +344,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                     jest.spyOn(WSServer, "getAgentForURL").mockReturnValue(
                         fakeAgent,
                     );
-                    const underTest = new JSDOMSixteenResourceLoader(
-                        fakeRenderAPI,
-                    );
+                    const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                     // Act
                     const response: any = underTest.fetch(
@@ -380,9 +378,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                     jest.spyOn(WSServer, "getAgentForURL").mockReturnValue(
                         fakeAgent,
                     );
-                    const underTest = new JSDOMSixteenResourceLoader(
-                        fakeRenderAPI,
-                    );
+                    const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
                     // Act
                     const response: any = underTest.fetch(
@@ -411,7 +407,7 @@ describe("JSDOMSixteenResourceLoader", () => {
             const fakeRenderAPI: any = {
                 logger: fakeLogger,
             };
-            const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+            const underTest = new JSDOMResourceLoader(fakeRenderAPI);
 
             // Act
             const result: any = await underTest.fetch(
@@ -430,7 +426,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                         warn: jest.fn(),
                     },
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
                 underTest.close();
 
                 // Act
@@ -449,7 +445,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                         warn: jest.fn(),
                     },
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
                 underTest.close();
 
                 // Act
@@ -466,7 +462,7 @@ describe("JSDOMSixteenResourceLoader", () => {
                         warn: jest.fn(),
                     },
                 };
-                const underTest = new JSDOMSixteenResourceLoader(fakeRenderAPI);
+                const underTest = new JSDOMResourceLoader(fakeRenderAPI);
                 underTest.close();
 
                 // Act
@@ -474,7 +470,7 @@ describe("JSDOMSixteenResourceLoader", () => {
 
                 // Assert
                 expect(result).toStrictEqual(
-                    JSDOMSixteenResourceLoader.EMPTY_RESPONSE,
+                    JSDOMResourceLoader.EMPTY_RESPONSE,
                 );
             });
         });

@@ -12,9 +12,8 @@ import {applyAbortablePromisesPatch} from "./apply-abortable-promises-patch.js";
 import type {RequestOptions, RenderAPI} from "../../types.js";
 
 /**
- * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
- * JSDOM that only allows for fetching JS files, and provides the ability to
- * handle and modify the fetch return result.
+ * A ResourceLoader implementation for JSDOM that only allows for fetching JS
+ * files, and provides the ability to handle and modify the fetch return result.
  *
  * This can be useful for various things, such as intercepting script requests
  * to execute them in a different manner than letting the DOM use a script tag.
@@ -25,7 +24,7 @@ import type {RequestOptions, RenderAPI} from "../../types.js";
  * A JS file request is identified by the regular expression:
  *   /^.*\.js(?:\?.*)?/g
  */
-export class JSDOMSixteenResourceLoader extends ResourceLoader {
+export class JSDOMResourceLoader extends ResourceLoader {
     /**
      * Used to indicate if any pending requests are still needed so that we
      * can report when an unused request is fulfilled.
@@ -132,7 +131,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
              * resolutions that are relying on this file. Instead, we resolve
              * as an empty string so things can tidy up properly.
              */
-            return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+            return JSDOMResourceLoader.EMPTY_RESPONSE;
         }
 
         /**
@@ -150,7 +149,7 @@ export class JSDOMSixteenResourceLoader extends ResourceLoader {
              * resolutions that are relying on this file. Instead, we resolve
              * as an empty string so things can tidy up properly.
              */
-            return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+            return JSDOMResourceLoader.EMPTY_RESPONSE;
         }
 
         /**

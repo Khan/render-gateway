@@ -8,15 +8,15 @@ describe("index.js", () => {
         const result = await importedModule;
 
         // Assert
-        expect(result).toContainAllKeys(["JSDOMSixteen"]);
+        expect(result).toContainAllKeys(["JSDOM"]);
     });
 
-    it("should export JSDOMSixteen pieces", async () => {
+    it("should export JSDOM pieces", async () => {
         // Arrange
         const importedModule = import("../index.js");
 
         // Act
-        const {JSDOMSixteen: result} = await importedModule;
+        const {JSDOM: result} = await importedModule;
 
         // Assert
         expect(result).toContainAllKeys([

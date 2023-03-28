@@ -58,9 +58,9 @@ export interface CloseableResourceLoader extends ResourceLoader, ICloseable {
 }
 
 /**
- * Configuration for a JSDOM Sixteen environment.
+ * Configuration for a JSDOM environment.
  */
-export interface IJSDOMSixteenConfiguration {
+export interface IJSDOMConfiguration {
     /**
      * The name of the callback function that should be exposed by the
      * environment for renderable code to use when registering for rendering.

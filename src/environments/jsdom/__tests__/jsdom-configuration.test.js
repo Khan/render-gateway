@@ -1,8 +1,8 @@
 // @flow
 
-import {JSDOMSixteenConfiguration} from "../jsdom-sixteen-configuration.js";
+import {JSDOMConfiguration} from "../jsdom-configuration.js";
 
-describe("JSDOMSixteenConfiguration", () => {
+describe("JSDOMConfiguration", () => {
     describe("#constructor", () => {
         it.each([null, "not a function"])(
             "should throw if invalid getFileList is provided",
@@ -11,7 +11,7 @@ describe("JSDOMSixteenConfiguration", () => {
 
                 // Act
                 const underTest = () =>
-                    new JSDOMSixteenConfiguration(badGetFileList, jest.fn());
+                    new JSDOMConfiguration(badGetFileList, jest.fn());
 
                 // Assert
                 expect(underTest).toThrowErrorMatchingSnapshot();
@@ -25,10 +25,7 @@ describe("JSDOMSixteenConfiguration", () => {
 
                 // Act
                 const underTest = () =>
-                    new JSDOMSixteenConfiguration(
-                        jest.fn(),
-                        badGetResourceLoader,
-                    );
+                    new JSDOMConfiguration(jest.fn(), badGetResourceLoader);
 
                 // Assert
                 expect(underTest).toThrowErrorMatchingSnapshot();
@@ -40,7 +37,7 @@ describe("JSDOMSixteenConfiguration", () => {
 
             // Act
             const underTest = () =>
-                new JSDOMSixteenConfiguration(
+                new JSDOMConfiguration(
                     jest.fn(),
                     jest.fn(),
                     ("not a function": any),
@@ -59,7 +56,7 @@ describe("JSDOMSixteenConfiguration", () => {
             const fakeGetFileList = jest
                 .fn()
                 .mockReturnValue(Promise.resolve(("FILE_LIST": any)));
-            const underTest = new JSDOMSixteenConfiguration(
+            const underTest = new JSDOMConfiguration(
                 fakeGetFileList,
                 jest.fn(),
             );
@@ -89,7 +86,7 @@ describe("JSDOMSixteenConfiguration", () => {
             const fakeGetResourceLoader = jest
                 .fn()
                 .mockReturnValue(("RESOURCE_LOADER": any));
-            const underTest = new JSDOMSixteenConfiguration(
+            const underTest = new JSDOMConfiguration(
                 jest.fn(),
                 fakeGetResourceLoader,
             );
@@ -111,7 +108,7 @@ describe("JSDOMSixteenConfiguration", () => {
         it("should invoke method passed at construction", async () => {
             // Arrange
             const fakeAfterEnvSetup = jest.fn().mockResolvedValue(null);
-            const underTest = new JSDOMSixteenConfiguration(
+            const underTest = new JSDOMConfiguration(
                 jest.fn(),
                 jest.fn(),
                 fakeAfterEnvSetup,
@@ -131,10 +128,7 @@ describe("JSDOMSixteenConfiguration", () => {
 
         it("should resolve to null if no method passed at construction", async () => {
             // Arrange
-            const underTest = new JSDOMSixteenConfiguration(
-                jest.fn(),
-                jest.fn(),
-            );
+            const underTest = new JSDOMConfiguration(jest.fn(), jest.fn());
             const fakeRenderAPI: any = "FAKE_RENDER_API";
 
             // Act
