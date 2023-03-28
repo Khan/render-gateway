@@ -10,6 +10,12 @@ Object.defineProperty(exports, "Environments", {
   }
 });
 exports.Requests = void 0;
+Object.defineProperty(exports, "extractError", {
+  enumerable: true,
+  get: function () {
+    return _extractError.extractError;
+  }
+});
 Object.defineProperty(exports, "runServer", {
   enumerable: true,
   get: function () {
@@ -19,6 +25,7 @@ Object.defineProperty(exports, "runServer", {
 require("./start-trace-agent.js");
 var _Requests = _interopRequireWildcard(require("./request.js"));
 exports.Requests = _Requests;
+var _extractError = require("./extract-error.js");
 var _runServer = require("./run-server.js");
 var _index = require("./environments/index.js");
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
