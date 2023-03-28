@@ -21,7 +21,7 @@ export const getRequestAuthentication = async (
     authentication?: AuthenticationOptions,
 ): Promise<ServerOptions["requestAuthentication"]> => {
     if (authentication == null) {
-        return undefined;
+        return Promise.resolve();
     }
 
     const {cryptoKeyPath, headerName, secretKey, deprecatedSecretKey} =

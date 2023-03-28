@@ -6,6 +6,16 @@ import * as GetSecrets from "../get-secrets.js";
 jest.mock("../get-secrets.js");
 
 describe("#getRequestAuthentication", () => {
+    it("should resolve to undefined if there are no authentication options", async () => {
+        // Arrange
+
+        // Act
+        const result = await getRequestAuthentication(undefined);
+
+        // Assert
+        expect(result).toBeUndefined();
+    });
+
     it("should get the secrets for the given crypto key path", async () => {
         // Arrange
         const authentication: AuthenticationOptions = {
