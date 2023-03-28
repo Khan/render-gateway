@@ -58,7 +58,8 @@ const runServer = async options => {
     integrations: {
       profiler: cloudOptions === null || cloudOptions === void 0 ? void 0 : cloudOptions.profiler
     },
-    requestAuthentication: await (0, _getRequestAuthentication.getRequestAuthentication)(authentication)
+    requestAuthentication: await (0, _getRequestAuthentication.getRequestAuthentication)(authentication),
+    allowHeapDumps: process.env.KA_ALLOW_HEAPDUMP === "1"
   }, app);
 };
 exports.runServer = runServer;

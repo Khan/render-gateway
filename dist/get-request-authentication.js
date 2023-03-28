@@ -20,6 +20,9 @@ var _getSecrets = require("./get-secrets.js");
  * the request authentication values.
  */
 const getRequestAuthentication = async authentication => {
+  if (authentication == null) {
+    return Promise.resolve();
+  }
   const {
     cryptoKeyPath,
     headerName,
@@ -28,7 +31,7 @@ const getRequestAuthentication = async authentication => {
   } = authentication;
   const secrets = await (0, _getSecrets.getSecrets)(cryptoKeyPath);
   const secret = secrets[secretKey];
-  const deprecatedSecret = deprecatedSecretKey == null ? secret : secrets[deprecatedSecretKey];
+  const deprecatedSecret = deprecatedSecretKey == null ? secret : secrets[deprecatedSecretKey] ?? secret;
   if (secret == null) {
     /**
      * We don't check if the deprecated secret is set or not. If it isn't

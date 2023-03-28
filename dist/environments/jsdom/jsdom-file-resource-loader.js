@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.JSDOMSixteenFileResourceLoader = void 0;
+exports.JSDOMFileResourceLoader = void 0;
 var _fs = _interopRequireDefault(require("fs"));
 var _path = _interopRequireDefault(require("path"));
 var _util = require("util");
@@ -17,10 +17,9 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
 const readFileAsync = (0, _util.promisify)(_fs.default.readFile);
 
 /**
- * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
- * JSDOM that loads files from disk.
+ * A ResourceLoader implementation for JSDOM that loads files from disk.
  */
-class JSDOMSixteenFileResourceLoader extends _jsdom.ResourceLoader {
+class JSDOMFileResourceLoader extends _jsdom.ResourceLoader {
   /**
    * Create instance of the resource loader.
    *
@@ -62,5 +61,5 @@ class JSDOMSixteenFileResourceLoader extends _jsdom.ResourceLoader {
     return readFileAsync(filePath);
   }
 }
-exports.JSDOMSixteenFileResourceLoader = JSDOMSixteenFileResourceLoader;
-//# sourceMappingURL=jsdom-sixteen-file-resource-loader.js.map
+exports.JSDOMFileResourceLoader = JSDOMFileResourceLoader;
+//# sourceMappingURL=jsdom-file-resource-loader.js.map

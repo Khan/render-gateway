@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.JSDOMSixteenResourceLoader = void 0;
+exports.JSDOMResourceLoader = void 0;
 var _url = require("url");
 var _jsdom = require("jsdom");
 var _wonderStuffServer = require("@khanacademy/wonder-stuff-server");
@@ -14,9 +14,8 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return typeof key === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (typeof input !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (typeof res !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
- * A ResourceLoader implementation for JSDOM sixteen-compatible versions of
- * JSDOM that only allows for fetching JS files, and provides the ability to
- * handle and modify the fetch return result.
+ * A ResourceLoader implementation for JSDOM that only allows for fetching JS
+ * files, and provides the ability to handle and modify the fetch return result.
  *
  * This can be useful for various things, such as intercepting script requests
  * to execute them in a different manner than letting the DOM use a script tag.
@@ -27,7 +26,7 @@ function _toPrimitive(input, hint) { if (typeof input !== "object" || input === 
  * A JS file request is identified by the regular expression:
  *   /^.*\.js(?:\?.*)?/g
  */
-class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
+class JSDOMResourceLoader extends _jsdom.ResourceLoader {
   /**
    * Used to indicate if any pending requests are still needed so that we
    * can report when an unused request is fulfilled.
@@ -112,7 +111,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
        * resolutions that are relying on this file. Instead, we resolve
        * as an empty string so things can tidy up properly.
        */
-      return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+      return JSDOMResourceLoader.EMPTY_RESPONSE;
     }
 
     /**
@@ -130,7 +129,7 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
        * resolutions that are relying on this file. Instead, we resolve
        * as an empty string so things can tidy up properly.
        */
-      return JSDOMSixteenResourceLoader.EMPTY_RESPONSE;
+      return JSDOMResourceLoader.EMPTY_RESPONSE;
     }
 
     /**
@@ -187,5 +186,5 @@ class JSDOMSixteenResourceLoader extends _jsdom.ResourceLoader {
     return finalResult;
   }
 }
-exports.JSDOMSixteenResourceLoader = JSDOMSixteenResourceLoader;
-//# sourceMappingURL=jsdom-sixteen-resource-loader.js.map
+exports.JSDOMResourceLoader = JSDOMResourceLoader;
+//# sourceMappingURL=jsdom-resource-loader.js.map

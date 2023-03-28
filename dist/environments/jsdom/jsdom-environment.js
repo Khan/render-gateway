@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.JSDOMSixteenEnvironment = void 0;
+exports.JSDOMEnvironment = void 0;
 var _wonderStuffCore = require("@khanacademy/wonder-stuff-core");
 var _wonderStuffServer = require("@khanacademy/wonder-stuff-server");
 var _safeHasOwnProperty = require("../../safe-has-own-property.js");
@@ -16,17 +16,17 @@ const MinimalPage = "<!DOCTYPE html><html><head></head><body></body></html>";
 /**
  * A render environment built to support the JSDOM 16.x API.
  */
-class JSDOMSixteenEnvironment {
+class JSDOMEnvironment {
   /**
    * Create a new instance of this environment.
    *
-   * @param {IJSDOMSixteenConfiguration} configuration
+   * @param {IJSDOMConfiguration} configuration
    * Configuration for the environment.
    */
   constructor(configuration) {
     _defineProperty(this, "_configuration", void 0);
     _defineProperty(this, "_retrieveTargetFiles", async (url, renderAPI, resourceLoader) => {
-      const traceSession = renderAPI.trace("JSDOM16._retrieveTargetFiles", `JSDOMSixteenEnvironment retrieving files`);
+      const traceSession = renderAPI.trace("JSDOM16._retrieveTargetFiles", `JSDOMEnvironment retrieving files`);
       try {
         /**
          * First, we need to know what files to execute so that we can
@@ -277,5 +277,5 @@ class JSDOMSixteenEnvironment {
    * This includes the body of the response and the status code information.
    */
 }
-exports.JSDOMSixteenEnvironment = JSDOMSixteenEnvironment;
-//# sourceMappingURL=jsdom-sixteen-environment.js.map
+exports.JSDOMEnvironment = JSDOMEnvironment;
+//# sourceMappingURL=jsdom-environment.js.map
