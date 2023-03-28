@@ -25,7 +25,9 @@ export const getRequestAuthentication = async (
     const secrets = await getSecrets(cryptoKeyPath);
     const secret = secrets[secretKey];
     const deprecatedSecret =
-        deprecatedSecretKey == null ? secret : secrets[deprecatedSecretKey];
+        deprecatedSecretKey == null
+            ? secret
+            : secrets[deprecatedSecretKey] ?? secret;
     if (secret == null) {
         /**
          * We don't check if the deprecated secret is set or not. If it isn't
