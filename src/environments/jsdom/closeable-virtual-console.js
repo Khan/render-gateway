@@ -3,7 +3,7 @@ import {VirtualConsole} from "jsdom";
 import {Errors} from "@khanacademy/wonder-stuff-core";
 import type {Logger} from "@khanacademy/wonder-stuff-server";
 import {extractError} from "../../extract-error.js";
-import type {ICloseable} from "./types.js";
+import type {ICloseable} from "../../types.js";
 
 export class CloseableVirtualConsole
     extends VirtualConsole

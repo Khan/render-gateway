@@ -8,13 +8,13 @@ import type {
     IJSDOMConfiguration,
     CloseableResourceLoader,
     IGate,
-    ICloseable,
 } from "./types.js";
 import type {
     AmbiguousError,
     IRenderEnvironment,
     RenderAPI,
     RenderResult,
+    ICloseable,
 } from "../../types.js";
 
 interface RenderCallbackFn {

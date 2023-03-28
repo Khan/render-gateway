@@ -1,11 +1,7 @@
 // @flow
 import {KindError, Errors} from "@khanacademy/wonder-stuff-core";
-import type {
-    IJSDOMConfiguration,
-    CloseableResourceLoader,
-    ICloseable,
-} from "./types.js";
-import type {RenderAPI} from "../../types.js";
+import type {IJSDOMConfiguration, CloseableResourceLoader} from "./types.js";
+import type {RenderAPI, ICloseable} from "../../types.js";
 
 /**
  * Utility for creating a valid configuration to use with the JSDOM environment.
