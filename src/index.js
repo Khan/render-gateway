@@ -22,6 +22,8 @@ export type {
     Request,
     Timeouts,
     ICloseable,
+    SimplifiedError,
+    AmbiguousError,
 } from "./types.js";
 export type * from "./environments/index.js";
 
