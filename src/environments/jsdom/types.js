@@ -1,16 +1,6 @@
 // @flow
 import type {ResourceLoader} from "jsdom";
-import type {RenderAPI} from "../../types.js";
-
-/**
- * A thing that can be closed.
- */
-export interface ICloseable {
-    /**
-     * Close the closeable.
-     */
-    +close?: () => ?Promise<void>;
-}
+import type {RenderAPI, ICloseable} from "../../types.js";
 
 /**
  * Gate API for control flow.

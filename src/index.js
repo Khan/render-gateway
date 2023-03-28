@@ -21,6 +21,7 @@ export type {
     Response,
     Request,
     Timeouts,
+    ICloseable,
 } from "./types.js";
 export type * from "./environments/index.js";
 

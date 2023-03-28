@@ -5,11 +5,20 @@ import type {$Response} from "express";
 import type {CallbackHandler, Plugin} from "superagent";
 import type {SecretString} from "@khanacademy/wonder-stuff-core";
 import type {
-    // RequestWithLog,
     Logger,
     ServerOptions,
     ITraceSession,
 } from "@khanacademy/wonder-stuff-server";
+
+/**
+ * A thing that can be closed.
+ */
+export interface ICloseable {
+    /**
+     * Close the closeable.
+     */
+    +close?: () => ?Promise<void>;
+}
 
 export type ResponseSource = "unknown" | "cache" | "new request";
 
