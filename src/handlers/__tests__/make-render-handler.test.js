@@ -3,7 +3,6 @@ import * as WSServer from "@khanacademy/wonder-stuff-server";
 import * as HandleError from "../handle-error.js";
 import {makeRenderHandler} from "../make-render-handler.js";
 
-jest.mock("@khanacademy/wonder-stuff-core");
 jest.mock("@khanacademy/wonder-stuff-server");
 jest.mock("../handle-error.js");
 
@@ -103,7 +102,7 @@ describe("#makeRenderHandler", () => {
 
             // Assert
             expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
-                `"Missing url query param,InvalidInput"`,
+                `"Missing url query param"`,
             );
         });
 
@@ -147,7 +146,7 @@ describe("#makeRenderHandler", () => {
 
             // Assert
             expect(underTest).rejects.toThrowErrorMatchingInlineSnapshot(
-                `"More than one url query param given,InvalidInput"`,
+                `"More than one url query param given"`,
             );
         });
 

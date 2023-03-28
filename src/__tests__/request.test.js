@@ -2,11 +2,13 @@
 import * as WSServer from "@khanacademy/wonder-stuff-server";
 import * as MakeRequest from "../make-request.js";
 import * as RequestsFromCache from "../requests-from-cache.js";
+import * as ExtractError from "../extract-error.js";
 import {request} from "../request.js";
 
 jest.mock("@khanacademy/wonder-stuff-server");
 jest.mock("../make-request.js");
 jest.mock("../requests-from-cache.js");
+jest.mock("../extract-error.js");
 
 describe("#request", () => {
     it("should create a child logger with the url of the request", () => {
@@ -228,7 +230,7 @@ describe("#request", () => {
             .mockReturnValueOnce(rejectedRequest)
             .mockReturnValueOnce(fakeRequest);
         jest.spyOn(WSServer, "trace").mockReturnValue(fakeTraceSession);
-        jest.spyOn(WSServer, "extractError").mockReturnValue({
+        jest.spyOn(ExtractError, "extractError").mockReturnValue({
             error: "EXTRACTED ERROR",
         });
 

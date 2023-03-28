@@ -3,6 +3,12 @@ import {patchAgainstDanglingTimers} from "../patch-against-dangling-timers.js";
 import type {IGate} from "../types.js";
 
 describe("#patchAgainstDanglingTimers", () => {
+    beforeEach(() => {
+        // Let's silence the actual console.warn calls for a cleaner test
+        // output.
+        jest.spyOn(console, "warn").mockImplementation(() => {});
+    });
+
     it("should return a gate for controlling the timers", () => {
         // Arrange
         const fakeWindow = {

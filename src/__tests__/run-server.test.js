@@ -3,6 +3,7 @@ import * as Express from "express";
 import * as ExpressAsyncHandler from "express-async-handler";
 import * as WSServer from "@khanacademy/wonder-stuff-server";
 import * as MakeRenderHandler from "../handlers/make-render-handler.js";
+//import * as GetRequestAuthentication from "../get-request-authentication.js";
 
 import {runServer} from "../run-server.js";
 
@@ -10,8 +11,7 @@ jest.mock("express");
 jest.mock("express-async-handler");
 jest.mock("@khanacademy/wonder-stuff-server");
 jest.mock("../handlers/make-render-handler.js");
-jest.mock("../middleware/make-check-secret-middleware.js");
-jest.mock("../middleware/log-request-info-middleware.js");
+jest.mock("../get-request-authentication.js");
 
 describe("#runServer", () => {
     it("should create an express app", async () => {
@@ -98,12 +98,14 @@ describe("#runServer", () => {
         );
     });
 
+    it("should get the authentication details", async () => {
+        // TODO
+    });
+
     it("should start the gateway", async () => {
         // Arrange
-        const pretendLogger = ({}: any);
         const fakeRenderEnvironment: any = {render: jest.fn()};
         jest.spyOn(WSServer, "getRuntimeMode").mockReturnValue("test");
-        jest.spyOn(WSServer, "createLogger").mockReturnValue(pretendLogger);
         jest.spyOn(WSServer, "getAppEngineInfo").mockReturnValue({});
         const pretendApp = ({
             use: jest.fn().mockReturnThis(),
@@ -132,8 +134,10 @@ describe("#runServer", () => {
                 name: "MY_TEST",
                 port: 42,
                 host: "127.0.0.1",
-                logger: pretendLogger,
                 mode: "test",
+                allowHeapDumps: false,
+                integrations: {},
+                logLevel: "debug",
             },
             pretendApp,
         );
