@@ -1448,10 +1448,10 @@
   resolved "https://registry.yarnpkg.com/@khanacademy/wonder-stuff-core/-/wonder-stuff-core-1.3.0.tgz#4ac2a2c7898a52702383d8891deecf80866a263e"
   integrity sha512-+VYSJEos04HpG5aoJz0T3peqne7LVuPPFBAkZ2EyAfh5bx3SzaVBozZxOm1wMdIK0g5dULkw8sUUQK7+HpPmUg==
 
-"@khanacademy/wonder-stuff-server@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@khanacademy/wonder-stuff-server/-/wonder-stuff-server-4.0.1.tgz#59d6a567aad5cb5374c4bdd37c44bf14a54c8142"
-  integrity sha512-6+v8rxn7AVbhzD0nQdr5z00gP53kZ985/ka+Te2dAlX5jzuZwCInOwGE6CRWDexPBp+evQlVi9zOBJP/AnTd6Q==
+"@khanacademy/wonder-stuff-server@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@khanacademy/wonder-stuff-server/-/wonder-stuff-server-4.0.2.tgz#37c4dbbcab1ac76a5b02ab7e26ef9f3db88ffa8f"
+  integrity sha512-W0CKSgjGOi3XfUv5/xq09bpUe1mR04mGCXso9h21XyI7te66OZLNApnD0ZAZtiN4qPgqNCgFIvO5RdyJ7phg6A==
   dependencies:
     "@khanacademy/wonder-stuff-core" "^1.3.0"
 

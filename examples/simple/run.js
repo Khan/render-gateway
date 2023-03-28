@@ -28,11 +28,6 @@ async function main() {
         name: "DEV_LOCAL",
         port: 8080,
         host: "127.0.0.1",
-        authentication: {
-            headerName: "IGNORED",
-            cryptoKeyPath: "IGNORED",
-            secretKey: "IGNORED",
-        },
         renderEnvironment,
     });
 }

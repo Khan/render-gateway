@@ -18,8 +18,12 @@ import type {AuthenticationOptions} from "./types.js";
  * the request authentication values.
  */
 export const getRequestAuthentication = async (
-    authentication: AuthenticationOptions,
+    authentication?: AuthenticationOptions,
 ): Promise<ServerOptions["requestAuthentication"]> => {
+    if (authentication == null) {
+        return undefined;
+    }
+
     const {cryptoKeyPath, headerName, secretKey, deprecatedSecretKey} =
         authentication;
     const secrets = await getSecrets(cryptoKeyPath);

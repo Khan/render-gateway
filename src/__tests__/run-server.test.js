@@ -75,11 +75,6 @@ describe("#runServer", () => {
                 port: 42,
                 host: "127.0.0.1",
                 renderEnvironment: fakeRenderEnvironment,
-                authentication: {
-                    cryptoKeyPath: "IGNORED",
-                    headerName: "IGNORED",
-                    secretKey: "IGNORED",
-                },
             });
 
             // Assert
@@ -108,11 +103,6 @@ describe("#runServer", () => {
                 port: 42,
                 host: "127.0.0.1",
                 renderEnvironment: fakeRenderEnvironment,
-                authentication: {
-                    cryptoKeyPath: "IGNORED",
-                    headerName: "IGNORED",
-                    secretKey: "IGNORED",
-                },
             });
 
             // Assert
@@ -144,11 +134,6 @@ describe("#runServer", () => {
             port: 42,
             host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
-            authentication: {
-                cryptoKeyPath: "IGNORED",
-                headerName: "IGNORED",
-                secretKey: "IGNORED",
-            },
         });
 
         // Assert
@@ -190,11 +175,6 @@ describe("#runServer", () => {
             port: 42,
             host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
-            authentication: {
-                cryptoKeyPath: "IGNORED",
-                headerName: "IGNORED",
-                secretKey: "IGNORED",
-            },
         });
 
         // Assert
@@ -319,11 +299,6 @@ describe("#runServer", () => {
             port: 42,
             host: "127.0.0.1",
             renderEnvironment: fakeRenderEnvironment,
-            authentication: {
-                cryptoKeyPath: "IGNORED",
-                headerName: "IGNORED",
-                secretKey: "IGNORED",
-            },
         });
 
         // Assert

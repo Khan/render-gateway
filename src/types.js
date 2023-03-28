@@ -232,7 +232,7 @@ export type RenderGatewayOptions = {
     /**
      * Options to indicate how to authenticate incoming render requests.
      */
-    +authentication: AuthenticationOptions,
+    +authentication?: AuthenticationOptions,
 
     /**
      * The environment that will handle rendering.
