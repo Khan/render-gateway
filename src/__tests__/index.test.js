@@ -11,6 +11,7 @@ describe("index.js", () => {
         expect(result).toContainAllKeys([
             "Environments",
             "runServer",
+            "extractError",
             "Requests",
         ]);
     });
