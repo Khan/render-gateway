@@ -1026,10 +1026,10 @@
     retry-request "^5.0.0"
     teeny-request "^8.0.0"
 
-"@google-cloud/kms@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-3.4.0.tgz#ecca761544b657b0f8fbb59dbd6cae7405a7ecbf"
-  integrity sha512-t9oCP7L+ECIonSj5LM35WcgHt1p+HXV1KYmhvB0pmFqoKXBoqIQxaysAyLM9bOQsCyyQBhAI1aOppJKQ7JbL3Q==
+"@google-cloud/kms@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@google-cloud/kms/-/kms-3.5.0.tgz#10e35ee028e970f67971204e5279195d54e17fb1"
+  integrity sha512-G4vLAhAcinbX4W4Uhff2qmp9jglxW1MLvrE6b7/ftKnAHh6nWgGmFLn83GSVSCdnc8W6u0wd66b8ljVlCq7qWQ==
   dependencies:
     google-gax "^3.5.2"
 
