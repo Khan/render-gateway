@@ -8,14 +8,14 @@
  * NOTE: We import everything from index.js to ensure we're testing the public
  * interface of our package.
  */
-const {runServer, Environments} = require("../../src/gateway/index.js");
-/*:: import type {RenderAPI, RenderResult} from "../../src/gateway/index.js"; */
+const {runServer, Environments} = require("../../src/index.js");
+/*:: import type {RenderAPI, RenderResult} from "../../src/index.js"; */
 
 async function main() {
-    const {JSDOMSixteen} = Environments;
-    const config = new JSDOMSixteen.Configuration(
+    const {JSDOM} = Environments;
+    const config = new JSDOM.Configuration(
         () => Promise.resolve(["http://localhost:8080/render.js"]),
-        (url, renderAPI) => new JSDOMSixteen.FileResourceLoader(__dirname),
+        (url, renderAPI) => new JSDOM.FileResourceLoader(__dirname),
         (url, fileURLs, renderAPI, vmContext) => {
             vmContext._renderAPI = renderAPI;
             vmContext._API = {
@@ -26,7 +26,7 @@ async function main() {
             return Promise.resolve(null);
         },
     );
-    const renderEnvironment = new JSDOMSixteen.Environment(config);
+    const renderEnvironment = new JSDOM.Environment(config);
 
     runServer({
         name: "DEV_LOCAL",

@@ -121,35 +121,29 @@ const outputFlowTypesForDist = async () /*: Promise<void>*/ => {
     /**
      * We only care about packages in our distribution.
      */
-    const packages = fs.readdirSync(distDir);
-    console.log(`Building flow files for ${packages.join(", ")}`);
-    for (const pkg of packages) {
-        const pkgSrcDir = path.join(srcDir, pkg);
-        const pkgDistDir = path.join(distDir, pkg);
-
-        const srcIndexJSPath = path.join(pkgSrcDir, "index.js");
-        const filesThatNeedTypes = await getExportsFrom(srcIndexJSPath);
-        for (const file of filesThatNeedTypes) {
-            const fileInSrc = path.normalize(path.join(pkgSrcDir, file));
-            const fileInDist = path.normalize(path.join(pkgDistDir, file));
-            if (!fs.existsSync(fileInSrc)) {
-                throw new Error(
-                    `Invalid file path in @additional-files block for "${path.relative(
-                        rootDir,
-                        srcIndexJSPath,
-                    )}": "${file}"`,
-                );
-            }
-
-            const pathToImportFrom = path.relative(
-                path.dirname(fileInDist),
-                fileInSrc,
+    console.log(`Building flow files`);
+    const srcIndexJSPath = path.join(srcDir, "index.js");
+    const filesThatNeedTypes = await getExportsFrom(srcIndexJSPath);
+    for (const file of filesThatNeedTypes) {
+        const fileInSrc = path.normalize(path.join(srcDir, file));
+        const fileInDist = path.normalize(path.join(distDir, file));
+        if (!fs.existsSync(fileInSrc)) {
+            throw new Error(
+                `Invalid file path in @additional-files block for "${path.relative(
+                    rootDir,
+                    srcIndexJSPath,
+                )}": "${file}"`,
             );
-            const flowFileDistPath = fileInDist + ".flow";
-            console.info(`    -> ${path.relative(rootDir, flowFileDistPath)}`);
-
-            await writeFlowFile(pathToImportFrom, flowFileDistPath);
         }
+
+        const pathToImportFrom = path.relative(
+            path.dirname(fileInDist),
+            fileInSrc,
+        );
+        const flowFileDistPath = fileInDist + ".flow";
+        console.info(`    -> ${path.relative(rootDir, flowFileDistPath)}`);
+
+        await writeFlowFile(pathToImportFrom, flowFileDistPath);
     }
 };
 
