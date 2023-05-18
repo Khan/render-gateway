@@ -1,5 +1,11 @@
 # render-gateway
 
+This repository is deprecated and no longer maintained. All relevant functionality is now implemented as part of [Wonder Stuff][1] and the following packages:
+
+- [@khanacademy/wonder-stuff-server][2]
+- [@khanacademy/wonder-stuff-render-server][3]
+- [@khanacademy/wonder-stuff-render-environment-jsdom][4]
+
 [![codecov](https://codecov.io/gh/Khan/render-gateway/branch/main/graph/badge.svg?token=dJBz8T4PlI)](https://codecov.io/gh/Khan/render-gateway) [![Node CI](https://github.com/Khan/render-gateway/workflows/Node%20CI/badge.svg)](https://github.com/Khan/render-gateway/actions)
 
 The core implementation of a render-gateway service.
@@ -33,3 +39,8 @@ Some behaviors are controlled via environment variables.
 
 We believe in fostering an open, welcoming, and collaborative environment for
 all. Please read and abide by our [CODE OF CONDUCT](./CODE_OF_CONDUCT.md).
+
+[1]: https://github.com/Khan/wonder-stuff
+[2]: https://www.npmjs.com/package/@khanacademy/wonder-stuff-server
+[3]: https://www.npmjs.com/package/@khanacademy/wonder-stuff-render-server
+[4]: https://www.npmjs.com/package/@khanacademy/wonder-stuff-render-environment-jsdom
