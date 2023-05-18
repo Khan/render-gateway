@@ -1,24 +1,18 @@
 # Contributing to `render-gateway`
 
-🙇Thank you for your interest in contributing to the Render Gateway repository. However, **we are not currently accepting community contributions** on this project.
-
-The participation of others is a wonderful 🎁gift. When we are ready to accept that gift, we will update these guidelines.
-If you have already been invited to participate, the remainder of these guidelines are for you.
+🙇Thank you for your interest in contributing to the Render Gateway repository. The participation of others is a wonderful 🎁gift. However, **we are not accepting contributions** on this project as it is now deprecated.
 
 📖 Be sure to read our [Code of Conduct](https://github.com/Khan/render-gateway/blob/main/CODE_OF_CONDUCT.md).
 
 ## 🛑 Bugs And Feature Requests
 
-⚠️ **We are not currently accepting externally raised bugs and feature requests**
-If you identify a bug or want to suggest enhancements to the project, head on over to the [🔗Issues](https://github.com/Khan/render-gateway/issues) section and raise an issue. The issue templates will guide you in providing details that will help others help you.
+⚠️ **We are not accepting raised bugs and feature requests**
 
 ## 💻 Code Changes
 
-⚠️ **We are not currently accepting externally provided code changes**
+⚠️ **We are not accepting code changes**
 
-### ⓵ Making your first change
-
-Look for bugs or feature requests with the [good first issue](https://github.com/Khan/render-gateway/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) or [help wanted](https://github.com/Khan/render-gateway/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22+) labels and have a go at implementing a change. Once your change is ready, you can submit a pull request.
+Read on for information on how we developed this code when it was active, in case you need to resurrect it somehow.
 
 ### 🎬 Getting Started
 
